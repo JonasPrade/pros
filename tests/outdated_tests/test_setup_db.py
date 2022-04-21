@@ -2,7 +2,7 @@ import prosd
 
 # TODO: Add a config.py to specifiy which db is used!
 
-filepath_shp = '../example_data/monorail/shp/monorail.shp'
+filepath_shp = '../../example_data/monorail/shp/monorail.shp'
 column_names_railwaylines = {
     "id": "id",
     "mifcode": "mifcode",

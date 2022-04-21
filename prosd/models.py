@@ -1,6 +1,12 @@
-from prosd import db
+import datetime
+import jwt
+
 from geoalchemy2 import Geometry
-from prosd import conf
+
+from prosd import db, app, conf, bcrypt
+
+
+
 
 # TODO: Table railway_line to projects
 
@@ -51,8 +57,9 @@ class RailwayLine(db.Model):
     number_tracks = db.Column(db.Integer)
     vmax = db.Column(db.String(20))
     type_of_transport = db.Column(db.String(20))
-    #coordinates = db.Column(Geometry(geometry_type="GEOMETRY", srid=4326), nullable=False)
+    # coordinates = db.Column(Geometry(geometry_type="GEOMETRY", srid=4326), nullable=False)
     coordinates = db.Column(Geometry(srid=4326), nullable=False)
+
 
 class RailwayPoint(db.Model):
     __tablename__ = 'railway_points'
@@ -74,7 +81,6 @@ class Project(db.Model):
     """
     __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
-    ProjectGroup = db.Column(db.Integer, db.ForeignKey('project_groups.id'))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     # id_point_start_id = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
@@ -85,6 +91,9 @@ class Project(db.Model):
     project_contents = db.relationship('ProjectContent', backref='project_contents', lazy=True)
     project_groups = db.relationship('ProjectGroup', secondary=project_to_group,
                                      backref=db.backref('project_groups', lazy=True))
+    project_railway_lines = db.relationship('RailwayLine', secondary=project_to_line,
+                                            backref=db.backref('railway_lines', lazy=True))
+    superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
 
 
 class ProjectContent(db.Model):
@@ -131,6 +140,11 @@ class ProjectContent(db.Model):
     planned_total_cost = db.Column(db.Integer)
     actual_cost = db.Column(db.Integer)
 
+    # references
+    budgets = db.relationship('Budget', backref='budgets', lazy=True)
+    texts = db.relationship('Text', secondary=texts_to_project_content,
+                                            backref=db.backref('texts', lazy=True))
+
 
 class ProjectGroup(db.Model):
     __tablename__ = 'project_groups'
@@ -158,4 +172,104 @@ class Text(db.Model):
     __tablename__ = 'texts'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
-    type = db.Column(db.String(100))  # TODO: ENUM
+    type = db.Column(db.Integer, db.ForeignKey('text_types.id'))
+
+    # relationship
+    text_type = db.relationship('TextType', backref='text_types', lazy=True)
+
+
+class TextType(db.Model):
+    __tablename__ = 'text_types'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40))
+
+
+class User(db.Model):
+    __tablename__= 'user'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    registered_on = db.Column(db.DateTime, nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __init__(self, email, password, admin=False):
+        # TODO: Add name
+        self.email = email
+        self.password = bcrypt.generate_password_hash(
+            password, app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
+        self.registered_on = datetime.datetime.now()
+        self.admin = admin
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :param user_id:
+        :return: string
+        """
+        try:
+            payload = {
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                "iat": datetime.datetime.utcnow(),
+                "sub": user_id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer | string
+        """
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms=['HS256'])
+            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            if is_blacklisted_token:
+                return 'Token blacklisted. Please log in again.'
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
+
+
+class BlacklistToken(db.Model):
+    """
+    Token Model for storing JWT Tokens
+    """
+    __tablename__ = 'blacklist_tokens'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(500), unique=True, nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, token):
+        self.token = token
+        self.blacklisted_on = datetime.datetime.now()
+
+    def __repr__(self):
+        return "<id: token: {}".format(self.token)
+
+    @staticmethod
+    def check_blacklist(auth_token):
+        # check whether auth token has been blacklisted
+        res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
+        if res:
+            return True
+        else:
+            return False
+
+
+
+
+
+
+

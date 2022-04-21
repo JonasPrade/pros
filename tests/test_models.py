@@ -1,15 +1,35 @@
-from unittest import TestCase
+import unittest
 
-import prosd
-
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from prosd import db
+from prosd.models import User
+from tests.base import BaseTestCase
 
 
+class TestUserModel(BaseTestCase):
 
-# TODO: Create a test environment with a separate table. Because of the geo-files, it have to be in postgis server.
+    def test_encode_auth_token(self):
+        user = User(
+            email='test@test.com',
+            password='test'
+        )
+        db.session.add(user)
+        db.session.commit()
+        auth_token = user.encode_auth_token(user.id)
+        self.assertTrue(isinstance(auth_token, str))
+
+    def test_decode_auth_token(self):
+        user = User(
+            email='test@test.com',
+            password='test'
+        )
+        db.session.add(user)
+        db.session.commit()
+        auth_token = user.encode_auth_token(user.id)
+        self.assertTrue(isinstance(auth_token, str))
+
+        self.assertTrue(User.decode_auth_token(
+            auth_token.decode("utf-8") ) == 1)
 
 
-class Testrailway_line(TestCase):
-    pass
+if __name__ == '__main__':
+    unittest.main()
