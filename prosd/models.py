@@ -95,6 +95,11 @@ class Project(db.Model):
                                             backref=db.backref('railway_lines', lazy=True))
     superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
 
+    def __init__(self, name, description = '', superior_project_id = None):
+        self.name = name
+        self.description = description
+        self.superior_project = superior_project_id
+
 
 class ProjectContent(db.Model):
     __tablename__ = 'projects_contents'
@@ -239,6 +244,10 @@ class User(db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    @staticmethod
+    def verify_auth_token(token):
+        pass
 
 
 class BlacklistToken(db.Model):

@@ -1,27 +1,68 @@
-from flask import jsonify, request, Response
+from flask import jsonify, request, Response, make_response
+from functools import wraps
 
 from prosd import app
 from prosd import models
 from prosd import views
 
 
+# TODO: Define a authentication checker and make it possible to call it as decorator function
+# Hind: Maybe in /auth/views/UserApi there is a authentication checker
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            try:
+                auth_token = auth_header.split(" ")[1]
+            except IndexError:
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Bearer token malformed.'
+                }
+                return make_response(jsonify(responseObject)), 401
+        else:
+            auth_token = ''
+        if auth_token:
+            resp = models.User.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                user = models.User.query.filter_by(id=resp).first()
+                return f(user, *args, **kwargs)
+            responseObject = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(responseObject)), 401
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return make_response(jsonify(responseObject)), 401
+    return decorated
+
+
 @app.route("/project/<id>", methods=['GET'])
-def project_get(id):
-    project = models.Project.query.get(id)
+@token_required
+def project_get(user, **kwargs):
+    project_id = kwargs.pop('id')
+    project = models.Project.query.get(project_id)
     project_schema = views.ProjectSchema()
     output = project_schema.dump(project)
     return jsonify({'project': output})
 
 
 @app.route("/project/<id>", methods=['POST'])
+@token_required
 def project_create():
+
     data = request.get_json()
     project_schema = views.ProjectSchema()
     project = project_schema.load(data)
 
     status_code = Response(status=201)
     return status_code
-
 
 
 @app.route("/projects")
