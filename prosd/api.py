@@ -6,8 +6,7 @@ from prosd import models
 from prosd import views
 
 
-# TODO: Define a authentication checker and make it possible to call it as decorator function
-# Hind: Maybe in /auth/views/UserApi there is a authentication checker
+# Have in mind that the user login and authorization proess is in /auth/views.py
 
 def token_required(f):
     @wraps(f)
@@ -70,7 +69,10 @@ def projects():
     projects = models.Project.query.all()
     projects_schema = views.ProjectSchema(many=True)
     output = projects_schema.dump(projects)
-    return jsonify({'projects': output})
+    response = make_response({'projects': output})
+    #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 """
 @app.route("/projectgroups")
@@ -91,3 +93,4 @@ def projectcontent(id):
 """
 
 
+# TODO: Add Authentication for POST https://dev.to/matheusguimaraes/fast-way-to-enable-cors-in-flask-servers-42p0

@@ -6,6 +6,9 @@ from prosd.models import User, Project
 from tests.base import BaseTestCase
 
 
+# TODO: test for other models
+# TODO: Add username for all user Tests
+
 def register_user(self, email, password):
     return self.client.post(
         '/auth/register',
@@ -16,6 +19,7 @@ def register_user(self, email, password):
         content_type='application/json',
     )
 
+
 def login_user(self, email, password):
     return self.client.post(
         '/auth/login',
@@ -25,6 +29,7 @@ def login_user(self, email, password):
         )),
         content_type='application/json',
     )
+
 
 class TestUserModel(BaseTestCase):
 
@@ -49,7 +54,7 @@ class TestUserModel(BaseTestCase):
         self.assertTrue(isinstance(auth_token, str))
 
         self.assertTrue(User.decode_auth_token(
-            auth_token.decode("utf-8") ) == 1)
+            auth_token.decode("utf-8")) == 1)
 
 
 class TestProjectModel(BaseTestCase):
@@ -95,7 +100,10 @@ class TestProjectModel(BaseTestCase):
                 )
             )
             project_response = json.loads(project_response.data)
-            project_data_input = {'project': {'description': 'Testbeschreibung', 'id': 1, 'name': 'Testprojekt', 'project_contents': [], 'project_groups': [], 'project_railway_lines': [], 'superior_project': None, 'superior_project_id': None}}
+            project_data_input = {
+                'project': {'description': 'Testbeschreibung', 'id': 1, 'name': 'Testprojekt', 'project_contents': [],
+                            'project_groups': [], 'project_railway_lines': [], 'superior_project': None,
+                            'superior_project_id': None}}
             self.assertTrue(project_response == project_data_input)
 
     def test_get_project_without_header(self):
@@ -112,7 +120,6 @@ class TestProjectModel(BaseTestCase):
         project_response = json.loads(project_response.data)
         self.assertTrue(project_response['status'] == 'fail')
         self.assertTrue(project_response['message'] == 'Provide a valid auth token.')
-
 
     def test_get_project_with_wrong_header(self):
         # create a simple project
@@ -134,9 +141,7 @@ class TestProjectModel(BaseTestCase):
 
 
 def test_get_project_without_existing_project(self):
-        pass
-
-
+    pass
 
 
 if __name__ == '__main__':

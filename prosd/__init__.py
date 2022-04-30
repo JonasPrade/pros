@@ -7,7 +7,7 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__)
-CORS(app)
+# TODO origin list to settings.py
 
 app_settings = os.getenv(
     'APP_SETTINGS',
@@ -26,4 +26,5 @@ from prosd import views
 from prosd import api
 
 from prosd.auth.views import auth_blueprint
+
 app.register_blueprint(auth_blueprint)

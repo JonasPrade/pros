@@ -1,10 +1,14 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
+from flask_cors import CORS
 
 from prosd import bcrypt, db
 from prosd.models import User, BlacklistToken
 
 auth_blueprint = Blueprint('auth', __name__)
+# cors = CORS()
+# cors.init_app(auth_blueprint, resources={r"/*": {"origins": "*", "supports_credentials": True}})
+
 
 class RegisterAPI(MethodView):
     """
@@ -15,10 +19,11 @@ class RegisterAPI(MethodView):
         # get the post data
         post_data = request.get_json()
         # check if user already exists
-        user = User.query.filter_by(email=post_data.get('email')).first()
+        user = User.query.filter_by(email=post_data.get('username')).first()
         if not user:
             try:
                 user = User(
+                    username=post_data.get('username'),
                     email=post_data.get('email'),
                     password=post_data.get('password')
                 )
@@ -57,7 +62,7 @@ class LoginAPI(MethodView):
         try:
             # fetch the user data
             user = User.query.filter_by(
-                email=post_data.get('email')
+                username=post_data.get('username')
             ).first()
             if user and bcrypt.check_password_hash(
                 user.password, post_data.get('password')
