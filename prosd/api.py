@@ -1,12 +1,19 @@
 from flask import jsonify, request, Response, make_response
 from functools import wraps
+from flask_cors import cross_origin
 
 from prosd import app
 from prosd import models
+from prosd.models import Project
 from prosd import views
+from prosd.auth import views as auth
+
+allowed_ip = 'http://localhost:3000'
+
+# TODO Change auth.views to remove this stupid blueprints
 
 
-# Have in mind that the user login and authorization proess is in /auth/views.py
+# Have in mind that the user login and authorization process is in /auth/views.py
 
 def token_required(f):
     @wraps(f)
@@ -43,19 +50,21 @@ def token_required(f):
 
 
 @app.route("/project/<id>", methods=['GET'])
+@cross_origin()
 @token_required
 def project_get(user, **kwargs):
     project_id = kwargs.pop('id')
     project = models.Project.query.get(project_id)
     project_schema = views.ProjectSchema()
     output = project_schema.dump(project)
-    return jsonify({'project': output})
+    response = make_response({'project': output})
+    return response
 
 
 @app.route("/project/<id>", methods=['POST'])
+@cross_origin()
 @token_required
 def project_create():
-
     data = request.get_json()
     project_schema = views.ProjectSchema()
     project = project_schema.load(data)
@@ -66,13 +75,27 @@ def project_create():
 
 @app.route("/projects")
 def projects():
-    projects = models.Project.query.all()
+    projects = models.Project.query.filter(models.Project.superior_project_id==None).all()
     projects_schema = views.ProjectSchema(many=True)
     output = projects_schema.dump(projects)
     response = make_response({'projects': output})
     #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+@app.route("/auth/login", methods=['POST'])
+@cross_origin()
+def auth_login():
+    response = auth.login()
+    # response[0].headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route("/auth/checktoken", methods=['POST'])
+@cross_origin()
+def check_token():
+    response = auth.check_auth_token()
+    return response
+
 
 """
 @app.route("/projectgroups")
@@ -92,5 +115,3 @@ def projectcontent(id):
     return jsonify({'projectcontent': output})
 """
 
-
-# TODO: Add Authentication for POST https://dev.to/matheusguimaraes/fast-way-to-enable-cors-in-flask-servers-42p0

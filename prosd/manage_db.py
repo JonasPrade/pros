@@ -74,3 +74,4 @@ class DBManager:
         takes some projectdata in .csv .xlsx or somewhat and takes at to the postgres DB
         :return:
         """
+        pass

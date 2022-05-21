@@ -1,0 +1,11 @@
+Flask>=2.1.2
+GeoAlchemy2>=0.11.1
+geojson>=2.5.0
+Shapely>=1.8.2
+marshmallow>=3.15.0
+PyJWT>=2.3.0
+pandas>=1.4.2
+geopandas>=0.10.2
+requests>=2.27.1
+SQLAlchemy>=1.4.36
+alembic>=1.7.7

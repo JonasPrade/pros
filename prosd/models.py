@@ -58,7 +58,7 @@ class RailwayLine(db.Model):
     vmax = db.Column(db.String(20))
     type_of_transport = db.Column(db.String(20))
     # coordinates = db.Column(Geometry(geometry_type="GEOMETRY", srid=4326), nullable=False)
-    coordinates = db.Column(Geometry(srid=4326), nullable=False)
+    coordinates = db.Column(Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
 
 
 class RailwayPoint(db.Model):
@@ -111,8 +111,8 @@ class ProjectContent(db.Model):
     description = db.Column(db.Text)
 
     # traffic forecast and economical data
-    nkv = db.Column(db.Integer)
-    length = db.Column(db.Integer)
+    nkv = db.Column(db.Float)
+    length = db.Column(db.Float)
     priority = db.Column(db.String(100))
 
     # properties of project
@@ -216,7 +216,7 @@ class User(db.Model):
         """
         try:
             payload = {
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=60),
                 "iat": datetime.datetime.utcnow(),
                 "sub": user_id
             }

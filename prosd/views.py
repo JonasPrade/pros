@@ -1,8 +1,13 @@
+import geoalchemy2.shape
+import geojson
+import json
+import shapely
+
 from prosd import db
 from prosd import ma
 from prosd import models
 
-from marshmallow_sqlalchemy import ModelConverter
+from marshmallow_sqlalchemy import ModelConverter, auto_field
 from marshmallow import fields
 from geoalchemy2.types import Geometry
 
@@ -53,9 +58,23 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 class RailwayLinesSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.RailwayLine
-        model_converter = GeoConverter
+        # exclude = (['coordinates'])
         include_fk = True
 
+    coordinates = fields.Method('geom_to_geojson')
+
+    def geom_to_geojson(self, obj):
+        coords = geoalchemy2.shape.to_shape(obj.coordinates)
+        xy = coords.xy
+        x_array = xy[0]
+        y_array = xy[1]
+        coords_geojson = []
+
+        for x, y in zip(x_array, y_array):
+            coords_geojson.append((x,y))
+
+        geo = geojson.LineString(coords_geojson)
+        return geo
 
 class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -70,6 +89,16 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
     project_railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     superior_project = ma.Nested(lambda: ProjectSchema)
 
+
     class Meta:
         model = models.Project
         include_fk = True
+
+    # TODO: Add a bounds field which searches the bounds of all geo combinded
+    '''
+    bounds_of_geo = fields.Method('bounds_geo')
+
+    def bounds_geo(self, obj):
+        return 'bounds'
+    '''
+
