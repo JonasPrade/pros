@@ -11,6 +11,7 @@ from marshmallow_sqlalchemy import ModelConverter, auto_field
 from marshmallow import fields
 from geoalchemy2.types import Geometry
 
+
 # Model Converter for Geoalchemy
 class GeoConverter(ModelConverter):
     SQLA_TYPE_MAPPING = {

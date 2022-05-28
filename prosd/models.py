@@ -3,18 +3,16 @@ import jwt
 
 from geoalchemy2 import Geometry
 
-from prosd import db, app, conf, bcrypt
-
-
-
+from prosd import db, app, bcrypt
 
 # TODO: Table railway_line to projects
 
 # allowed_values_type_of_station = conf.allowed_values_type_of_station  # TODO: Add enum to type of station
 
-### m:n tables
+# m:n tables
 
 # project to group
+# TODO: Change that to projectcontent
 project_to_group = db.Table('project_to_group',
                             db.Column('project_id', db.Integer, db.ForeignKey('projects.id')),
                             db.Column('projectgroup_id', db.Integer, db.ForeignKey('project_groups.id'))
@@ -38,7 +36,7 @@ texts_to_project_content = db.Table('texts_to_projects',
                                     )
 
 
-############ classes/Tables
+# classes/Tables
 
 class RailwayLine(db.Model):
     """
@@ -54,9 +52,11 @@ class RailwayLine(db.Model):
     from_km = db.Column(db.Integer)
     to_km = db.Column(db.Integer)
     electrified = db.Column(db.String(20))
-    number_tracks = db.Column(db.Integer)
+    number_tracks = db.Column(db.String(100))
     vmax = db.Column(db.String(20))
     type_of_transport = db.Column(db.String(20))
+    strecke_kuerzel = db.Column(db.String(100))
+    bahnart = db.Column(db.String(100))
     # coordinates = db.Column(Geometry(geometry_type="GEOMETRY", srid=4326), nullable=False)
     coordinates = db.Column(Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
 
@@ -70,7 +70,7 @@ class RailwayPoint(db.Model):
     db_kuerzel = db.Column(
         db.String(5))  # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
 
-    ## References
+    # References
     # projects_start = db.relationship('Project', backref='project_starts', lazy=True)
     # projects_end = db.relationship('Project', backref='project_ends', lazy=True)
 
@@ -95,7 +95,7 @@ class Project(db.Model):
                                             backref=db.backref('railway_lines', lazy=True))
     superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
 
-    def __init__(self, name, description = '', superior_project_id = None):
+    def __init__(self, name, description='', superior_project_id=None):
         self.name = name
         self.description = description
         self.superior_project = superior_project_id
@@ -115,14 +115,27 @@ class ProjectContent(db.Model):
     length = db.Column(db.Float)
     priority = db.Column(db.String(100))
 
+    # planning status
+    ibn_planned = db.Column(db.Date)
+    ibn_final = db.Column(db.Date)
+    hoai = db.Column(db.Integer, nullable=False, default=0)
+    parl_befassung_planned = db.Column(db.Boolean, nullable=False, default=False)
+    parl_befassung_date = db.Column(db.Date)
+    ro_finished = db.Column(db.Boolean, nullable=False, default=False)  # Raumordnung
+    ro_finished_date = db.Column(db.Date)
+    pf_finished = db.Column(db.Boolean, nullable=False, default=False)  # Planfeststellung fertiggestellt?
+    pf_finished_date = db.Column(db.Date)
+
     # properties of project
     nbs = db.Column(db.Boolean, nullable=False, default=False)
+    abs = db.Column(db.Boolean, nullable=False, default=False)
     elektrification = db.Column(db.Boolean, nullable=False, default=False)
+    batterie = db.Column(db.Boolean, nullable=False, default=False)
     second_track = db.Column(db.Boolean, nullable=False, default=False)
     third_track = db.Column(db.Boolean, nullable=False, default=False)
     fourth_track = db.Column(db.Boolean, nullable=False, default=False)
-    curve = db.Column(db.Boolean, nullable=False, default=False)
-    platform = db.Column(db.Boolean, nullable=False, default=False)
+    curve = db.Column(db.Boolean, nullable=False, default=False)  # Neue Verbindungskurve
+    platform = db.Column(db.Boolean, nullable=False, default=False)  # Neuer Bahnsteig
     junction_station = db.Column(db.Boolean, nullable=False, default=False)
     number_junction_station = db.Column(db.Integer)  # TODO: Set it minimum 1 if junction_station is true
     overtaking_station = db.Column(db.Boolean, nullable=False, default=False)
@@ -134,6 +147,8 @@ class ProjectContent(db.Model):
     increase_speed = db.Column(db.Boolean, nullable=False, default=False)
     new_vmax = db.Column(db.Integer)
     level_free_platform_entrance = db.Column(db.Boolean, nullable=False, default=False)
+    etcs = db.Column(db.Boolean, nullable=False, default=False)
+    etcs_level = db.Column(db.Integer)
 
     # environmental data
     # TODO: Add environmental data
@@ -148,7 +163,7 @@ class ProjectContent(db.Model):
     # references
     budgets = db.relationship('Budget', backref='budgets', lazy=True)
     texts = db.relationship('Text', secondary=texts_to_project_content,
-                                            backref=db.backref('texts', lazy=True))
+                            backref=db.backref('texts', lazy=True))
 
 
 class ProjectGroup(db.Model):
@@ -190,7 +205,7 @@ class TextType(db.Model):
 
 
 class User(db.Model):
-    __tablename__= 'user'
+    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
@@ -276,10 +291,3 @@ class BlacklistToken(db.Model):
             return True
         else:
             return False
-
-
-
-
-
-
-
