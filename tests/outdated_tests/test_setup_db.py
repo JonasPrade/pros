@@ -18,5 +18,5 @@ column_names_railwaylines = {
     "coordinates": "geometry"
 }
 
-db_manager = prosd.manage_db.DBManager()
+db_manager = prosd.manage_db.manage_db.DBManager()
 db_manager.shp_to_railwaylines(filepath_shp, column_names_railwaylines, overwrite=True)

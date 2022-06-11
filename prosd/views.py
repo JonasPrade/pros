@@ -47,15 +47,6 @@ class TextSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
-    budgets = ma.Nested(BudgetSchema, many=True)
-    texts = ma.Nested(TextSchema, many=True)
-
-    class Meta:
-        model = models.ProjectContent
-        include_fk = True
-
-
 class RailwayLinesSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.RailwayLine
@@ -72,10 +63,11 @@ class RailwayLinesSchema(ma.SQLAlchemyAutoSchema):
         coords_geojson = []
 
         for x, y in zip(x_array, y_array):
-            coords_geojson.append((x,y))
+            coords_geojson.append((x, y))
 
         geo = geojson.LineString(coords_geojson)
         return geo
+
 
 class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -84,16 +76,38 @@ class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
+    budgets = ma.Nested(BudgetSchema, many=True)
+    texts = ma.Nested(TextSchema, many=True)
+    projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
+    projectcontent_railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+
+    class Meta:
+        model = models.ProjectContent
+        include_fk = True
+
+
 class ProjectSchema(ma.SQLAlchemyAutoSchema):
-    project_groups = ma.Nested(ProjectGroupSchema, many=True)
     project_contents = ma.Nested(ProjectContentSchema, many=True)
-    project_railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     superior_project = ma.Nested(lambda: ProjectSchema)
 
+    first_project_content = fields.Str()
 
     class Meta:
         model = models.Project
         include_fk = True
+
+    first_project_content = fields.Method('get_first_project_content')
+
+    def get_first_project_content(self, obj):
+        if obj.project_contents:
+            first_project_content = obj.project_contents[0].id
+        else:
+            first_project_content = None
+
+        # first_project_content = obj.project_contents[0]
+        return first_project_content
+
 
     # TODO: Add a bounds field which searches the bounds of all geo combinded
     '''

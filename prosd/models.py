@@ -13,14 +13,14 @@ from prosd import db, app, bcrypt
 
 # project to group
 # TODO: Change that to projectcontent
-project_to_group = db.Table('project_to_group',
-                            db.Column('project_id', db.Integer, db.ForeignKey('projects.id')),
+projectcontent_to_group = db.Table('projectcontent_to_group',
+                            db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
                             db.Column('projectgroup_id', db.Integer, db.ForeignKey('project_groups.id'))
                             )
 
 # project to railway Lines
-project_to_line = db.Table('projects_to_lines',
-                           db.Column('project_id', db.Integer, db.ForeignKey('projects.id')),
+projectcontent_to_line = db.Table('projectcontent_to_lines',
+                           db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
                            db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
                            )
 
@@ -89,10 +89,6 @@ class Project(db.Model):
 
     # references
     project_contents = db.relationship('ProjectContent', backref='project_contents', lazy=True)
-    project_groups = db.relationship('ProjectGroup', secondary=project_to_group,
-                                     backref=db.backref('project_groups', lazy=True))
-    project_railway_lines = db.relationship('RailwayLine', secondary=project_to_line,
-                                            backref=db.backref('railway_lines', lazy=True))
     superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
 
     def __init__(self, name, description='', superior_project_id=None):
@@ -164,6 +160,10 @@ class ProjectContent(db.Model):
     budgets = db.relationship('Budget', backref='budgets', lazy=True)
     texts = db.relationship('Text', secondary=texts_to_project_content,
                             backref=db.backref('texts', lazy=True))
+    projectcontent_groups = db.relationship('ProjectGroup', secondary=projectcontent_to_group,
+                                            backref=db.backref('project_groups', lazy=True))
+    projectcontent_railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
+                                                   backref=db.backref('railway_lines', lazy=True))
 
 
 class ProjectGroup(db.Model):
