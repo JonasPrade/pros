@@ -83,12 +83,14 @@ def projects():
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+
 @app.route("/auth/login", methods=['POST'])
 @cross_origin()
 def auth_login():
     response = auth.login()
     # response[0].headers['Access-Control-Allow-Origin'] = '*'
     return response
+
 
 @app.route("/auth/checktoken", methods=['POST'])
 @cross_origin()

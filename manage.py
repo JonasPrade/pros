@@ -5,6 +5,7 @@ cli = FlaskGroup(app)
 
 # TODO: Add cli command for creating an user
 
+
 """
 @cli.command("create_db")
 def create_db():
