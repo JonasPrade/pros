@@ -8,7 +8,6 @@ from prosd import db
 
 
 class DBManager:
-
     def shp_to_counties(self, filepath_shp, column_names, model, model_state, overwrite=False):
         if overwrite:
             db.session.query(model).delete()
@@ -126,6 +125,30 @@ class DBManager:
             db.session.commit()
 
         logging.info('added shp to RailwayLines')
+
+    def shp_to_railwaypoints(self, filepath_shp, column_names, model, overwrite=False):
+        if overwrite:
+            db.session.query(model).delete()
+            db.session.commit()
+
+        shp_data = geopandas.read_file(filepath_shp, encoding='ISO-8859-1')
+
+        shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
+        shp_data.drop('geometry', 1, inplace=True)
+
+        # TODO: finish dict
+        for index, row in shp_data.iterrows():
+            county_input = model(
+                mifcode=row.mifcode,
+                name=row.krs_name,
+                type=row.krs_type,
+                name_short=row.krs_name_sh,
+                polygon=row.geo,
+            )
+            db.session.add(county_input)
+            db.session.commit()
+
+        logging.info('finished import shp_to_counties')
 
     def projectdata_to_postgres(self):
         """

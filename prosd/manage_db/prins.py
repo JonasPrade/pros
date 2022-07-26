@@ -713,7 +713,7 @@ class BvwpRail(Bvwp):
             self.use_sum_passenger_yearly = self._convert(
                 self.soup.find_all('table')[tbl_nr].contents[44].contents[2].text)
             self.use_sum_passenger_present_value = self._convert(
-                self.soup.find_all('table')[tbl_nr].contents[44].contents[2].text)
+                self.soup.find_all('table')[tbl_nr].contents[44].contents[3].text)
 
             add_dict = {
                 "use_change_operation_cost_car_yearly": self.use_change_operating_cost_car_yearly,
@@ -730,7 +730,7 @@ class BvwpRail(Bvwp):
                 "use_change_pollution_air_present_value": self.use_change_pollution_air_present_value,
                 "use_change_safety_car_yearly": self.use_change_safety_car_yearly,
                 "use_change_safety_car_present_value": self.use_change_safety_car_present_value,
-                "use_change_safety_rail_yearly": self.use_change_safety_car_yearly,
+                "use_change_safety_rail_yearly": self.use_change_safety_rail_yearly,
                 "use_change_safety_rail_present_value": self.use_change_safety_rail_present_value,
 
                 "use_change_travel_time_rail_yearly": self.use_change_travel_time_rail_yearly,

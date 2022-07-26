@@ -61,6 +61,7 @@ def project_get(user, **kwargs):
     return response
 
 
+"""
 @app.route("/project/<id>", methods=['POST'])
 @cross_origin()
 @token_required
@@ -71,8 +72,9 @@ def project_create():
 
     status_code = Response(status=201)
     return status_code
+"""
 
-
+"""
 @app.route("/projects")
 def projects():
     projects = models.Project.query.filter(models.Project.superior_project_id==None).all()
@@ -80,6 +82,17 @@ def projects():
     output = projects_schema.dump(projects)
     response = make_response({'projects': output})
     #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+"""
+
+
+@app.route("/projects")
+def projects_short():
+    projects = models.Project.query.filter(models.Project.superior_project_id == None).all()
+    projects_schema = views.ProjectShortSchema(many=True)
+    output = projects_schema.dump(projects)
+    response = make_response({'projects': output})
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 

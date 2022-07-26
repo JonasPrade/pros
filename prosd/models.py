@@ -1,7 +1,8 @@
 import datetime
 import jwt
-
-from geoalchemy2 import Geometry
+import geojson
+from geoalchemy2 import Geometry, shape
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from prosd import db, app, bcrypt
 
@@ -53,18 +54,25 @@ project_contents_to_constituencies = db.Table('projectcontent_to_constituencies'
                                               db.Column('constituencies_id', db.Integer, db.ForeignKey('constituencies.id'))
                                               )
 
+railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
+                           db.Column('node_id', db.Integer, db.ForeignKey('railway_nodes.id')),
+                           db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
+                           )
 
 # classes/Tables
 
+
 class RailwayLine(db.Model):
     """
-    defines a RailwayLine, which is part of a railway network and has geolocated attributes (Multiline oder Line)
+    defines a RailwayLine, which is part of a railway network and has geolocated attributes (Multiline oder Line).
+    The RailwayLine are small pieces of rail, because they can quickly change attributes like allowed speed.
+    A RailwayLine is part of a RailRoute (German: VzG)
     """
     # TODO: Check if this RailwayLine can be used for import RailML infrastructure
     __tablename__ = 'railway_lines'
     id = db.Column(db.Integer, primary_key=True)
     mifcode = db.Column(db.String(30))
-    streckennummer = db.Column(db.Integer)
+    route_number = db.Column(db.Integer, db.ForeignKey('railway_route.number', onupdate='CASCADE', ondelete='SET NULL'))
     direction = db.Column(db.Integer)
     length = db.Column(db.Integer)
     from_km = db.Column(db.Integer)
@@ -75,8 +83,35 @@ class RailwayLine(db.Model):
     type_of_transport = db.Column(db.String(20))
     strecke_kuerzel = db.Column(db.String(100))
     bahnart = db.Column(db.String(100))
-    # coordinates = db.Column(Geometry(geometry_type="GEOMETRY", srid=4326), nullable=False)
+    active_until = db.Column(db.Integer)
+    active_since = db.Column(db.Integer)
     coordinates = db.Column(Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
+    railway_infrastructure_company = db.Column(db.Integer, db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
+
+    # graph
+    start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
+    end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
+
+    @hybrid_property
+    def nodes(self):
+        nodes = []
+        nodes.append(self.start_node)
+        nodes.append(self.end_node)
+        return nodes
+
+    @classmethod
+    def geojson(self, obj):
+        coords = shape.to_shape(obj.coordinates)
+        xy = coords.xy
+        x_array = xy[0]
+        y_array = xy[1]
+        coords_geojson = []
+
+        for x, y in zip(x_array, y_array):
+            coords_geojson.append((x, y))
+
+        geo = geojson.LineString(coords_geojson)
+        return geo
 
 
 class RailwayPoint(db.Model):
@@ -85,12 +120,69 @@ class RailwayPoint(db.Model):
     mifcode = db.Column(db.Integer)
     bezeichnung = db.Column(db.String(255))
     type = db.Column(db.String(255))  # db.Enum(allowed_values_type_of_station)
-    db_kuerzel = db.Column(
-        db.String(5))  # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
+    db_kuerzel = db.Column(db.String(5))
+    coordinates = db.Column(Geometry(geometry_type='POINT', srid=4326), nullable=False)
+    # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
 
     # References
     # projects_start = db.relationship('Project', backref='project_starts', lazy=True)
     # projects_end = db.relationship('Project', backref='project_ends', lazy=True)
+
+
+class RailwayNodes(db.Model):
+    """
+    keeps all nodes for the railway network to create a network graph
+    """
+    __tablename__='railway_nodes'
+    id = db.Column(db.Integer, primary_key=True)
+    coordinate = db.Column(Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
+
+    start_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.start_node]")
+    end_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.end_node]")
+
+    @hybrid_property
+    def lines(self):
+        lines = []
+        for line in self.start_lines:
+            lines.append(line)
+
+        for line in self.end_lines:
+            lines.append(line)
+
+        return lines
+
+class RailwayRoute(db.Model):
+    """
+    German: VzG-Strecken
+    """
+    __tablename__ = 'railway_route'
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.Integer, unique=True)  # for example the VzG-number
+    name = db.Column(db.String(255))
+    infotext = db.Column(db.Text)
+    start_point = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
+    start_km = db.Column(db.Float)
+    end_point = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
+    end_km = db.Column(db.Float)
+
+    railway_lines = db.relationship("RailwayLine", backref="railway_route", lazy="dynamic")
+
+    boundary_nodes = db.relationship("RailwayNodes", secondary=railway_nodes_to_railway_routes,
+                               backref=db.backref('railway_route', lazy=True))
+
+    # TODO: m:n Project_Contents to RailwayRoutes
+
+
+class RailwayInfrastructureCompany(db.Model):
+    """
+
+    """
+    __tablename__ = "railway_infrastructure_company"
+    id = db.Column(db.Integer, primary_key=True)
+    name_short = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+
+    # TODO: Set all to DB Netz that are not to some company else.
 
 
 class Project(db.Model):
@@ -126,6 +218,9 @@ class ProjectContent(db.Model):
     description = db.Column(db.Text)
     reason_project = db.Column(db.Text)
     bvwp_alternatives = db.Column(db.Text)
+    effects_passenger_long_rail = db.Column(db.Boolean)
+    effects_passenger_local_rail = db.Column(db.Boolean)
+    effects_cargo_rail = db.Column(db.Boolean)
 
     #economical data
     nkv = db.Column(db.Float)

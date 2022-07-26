@@ -2,8 +2,7 @@ from prins import BvwpRail
 from prosd import models, db
 import logging
 
-# TODO: Get all bvwp-projects from db
-# TODO: iterate through the db
+# TODO: move this script to an seperat Script Folder
 
 logging.basicConfig(filename='../log/log_import_prins_rail.log', encoding='utf-8', level=logging.DEBUG)
 
