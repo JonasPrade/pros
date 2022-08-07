@@ -27,6 +27,12 @@ class ProjectGroupSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class ProjectGroupSchemaShort(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.ProjectGroup
+        include_fk = True
+
+
 class TextTypeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.TextType
@@ -243,5 +249,4 @@ class ProjectShortSchema(ma.SQLAlchemyAutoSchema):
 
         # first_project_content = obj.project_contents[0]
         return first_project_content
-
 

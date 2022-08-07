@@ -2,6 +2,7 @@ from prosd.graph.railgraph import RailGraph, models
 import logging
 import networkx
 import matplotlib.pyplot as pyplot
+import shapely
 
 logging.basicConfig(filename='/Users/jonas/PycharmProjects/pros/prosd/log/log_creating_railgraph.log', encoding='utf-8', level=logging.WARNING)
 
@@ -9,11 +10,12 @@ rg = RailGraph()
 # rg.combine_nodes(225008, 70970)
 # rg.create_nodes_new_railwaylines()
 
-# test create graph
-rg.create_graph(new_nodes=False)
+# # test create graph
+graph = rg.create_graph(new_nodes=False)
+print(graph)
 
-# # test create graph route for one route
-# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 1240).first()
+# test create graph route for one route
+# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 5216).first()
 # graph_list = rg.create_graph_route(route=route)
 # graph = graph_list[0]
 
@@ -44,6 +46,31 @@ rg.create_graph(new_nodes=False)
 # logging.info('finished creating Graph')
 
 
+# test find line that intersects the point
+# node = models.RailwayNodes.query.filter(models.RailwayNodes.id == 290586).one()
+# coordinate = node.coordinate.desc
+# # line = models.RailwayLine.query.filter(models.RailwayLine.id == 39552).one()
+# rg._split_railway_line(line_id=39552, blade_point=node.coordinate)
 
+# # test remove railline from graph
+# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 4950).one()
+# graph_list = rg.create_graph_route(route=route)
+# graph = graph_list[0]
+# line = models.RailwayLine.query.filter(models.RailwayLine.id == 39552).one()
+# graph = rg._remove_line_from_graph(G=graph, line=line)
+# graph = rg._add_line_to_graph(G=graph, line=line)
+
+# # test connect_end_node_to_line
+# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 4950).one()
+# graph_list = rg.create_graph_route(route=route)
+# graph_continuing = graph_list[0]
+# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 4930).one()
+# graph_list = rg.create_graph_route(route=route)
+# graph_of_node = graph_list[0]
+#
+# node = models.RailwayNodes.query.get(290586)
+# line_of_node = models.RailwayLine.query.get(39515)
+# graph = rg._connect_end_node_to_line(G_continuing_line=graph_continuing, G_of_node=graph_of_node, node=node, line_of_node=line_of_node)
+# print(graph)
 
 

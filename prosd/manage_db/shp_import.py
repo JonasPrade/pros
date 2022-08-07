@@ -126,7 +126,7 @@ class DBManager:
 
         logging.info('added shp to RailwayLines')
 
-    def shp_to_railwaypoints(self, filepath_shp, column_names, model, overwrite=False):
+    def shp_to_railwaypoints(self, filepath_shp, model, overwrite=False):
         if overwrite:
             db.session.query(model).delete()
             db.session.commit()
@@ -137,16 +137,23 @@ class DBManager:
         shp_data.drop('geometry', 1, inplace=True)
 
         # TODO: finish dict
+        objects = []
         for index, row in shp_data.iterrows():
-            county_input = model(
+            railway_point = model(
                 mifcode=row.mifcode,
-                name=row.krs_name,
-                type=row.krs_type,
-                name_short=row.krs_name_sh,
-                polygon=row.geo,
+                route_number=row.streckennu,
+                richtung=row.richtung,
+                km_i=row.km_i,
+                km_l=row.km_l,
+                name=row.bezeichnun,
+                type=row.art,
+                db_kuerzel=row.kuerzel,
+                coordinates=row.geo
             )
-            db.session.add(county_input)
-            db.session.commit()
+            objects.append(railway_point)
+
+        db.session.add_all(objects)
+        db.session.commit()
 
         logging.info('finished import shp_to_counties')
 

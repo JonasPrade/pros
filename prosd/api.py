@@ -61,6 +61,28 @@ def project_get(user, **kwargs):
     return response
 
 
+@app.route("/projectgroups", methods=['GET'])
+@cross_origin()
+# @token_required
+def get_projectgroups(**kwargs):
+    project_groups = models.ProjectGroup.query.all()
+    project_group_schema = views.ProjectGroupSchema(many=True)
+    output = project_group_schema.dump(project_groups)
+    response = make_response({'projectgroups': output})
+    return response
+
+
+@app.route("/projectgroup/first", methods=['GET'])
+@cross_origin()
+# @token_required
+def get_first_projectgroup(**kwargs):
+    project_groups = models.ProjectGroup.query.first()
+    project_group_schema = views.ProjectGroupSchema()
+    output = project_group_schema.dump(project_groups)
+    response = make_response({'projectgroup': output})
+    return response
+
+
 """
 @app.route("/project/<id>", methods=['POST'])
 @cross_origin()
@@ -74,19 +96,6 @@ def project_create():
     return status_code
 """
 
-"""
-@app.route("/projects")
-def projects():
-    projects = models.Project.query.filter(models.Project.superior_project_id==None).all()
-    projects_schema = views.ProjectSchema(many=True)
-    output = projects_schema.dump(projects)
-    response = make_response({'projects': output})
-    #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
-"""
-
-
 @app.route("/projects")
 def projects_short():
     projects = models.Project.query.filter(models.Project.superior_project_id == None).all()
@@ -94,6 +103,19 @@ def projects_short():
     output = projects_schema.dump(projects)
     response = make_response({'projects': output})
     response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+@app.route("/projects/group/<id>", methods=['GET'])
+@cross_origin()
+# @token_required
+def get_projects_by_projectgroup(**kwargs):
+    project_group_id = kwargs.pop('id')
+    # get all projects that have a project_content that is part of the project_group_id
+    projects = models.Project.query.join(models.ProjectContent.query.join(models.ProjectContent.projectcontent_groups).filter(models.ProjectGroup.id == project_group_id)).all()
+    project_schema = views.ProjectShortSchema(many=True)
+    output = project_schema.dump(projects)
+    response = make_response({"projects": output})
     return response
 
 

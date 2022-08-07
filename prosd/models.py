@@ -69,18 +69,19 @@ class RailwayLine(db.Model):
     A RailwayLine is part of a RailRoute (German: VzG)
     """
     # TODO: Check if this RailwayLine can be used for import RailML infrastructure
+
     __tablename__ = 'railway_lines'
     id = db.Column(db.Integer, primary_key=True)
-    mifcode = db.Column(db.String(30))
+    mifcode = db.Column(db.String(30))  # MapInfo-interne Objektbezeichnung
     route_number = db.Column(db.Integer, db.ForeignKey('railway_route.number', onupdate='CASCADE', ondelete='SET NULL'))
     direction = db.Column(db.Integer)
     length = db.Column(db.Integer)
     from_km = db.Column(db.Integer)
     to_km = db.Column(db.Integer)
-    electrified = db.Column(db.String(20))
-    number_tracks = db.Column(db.String(100))
+    electrified = db.Column(db.String(20))  # Add allowed values: Oberleitung, nicht elektrifiziert, Stromschiene
+    number_tracks = db.Column(db.String(100))  # eingleisig, zweigleisig
     vmax = db.Column(db.String(20))
-    type_of_transport = db.Column(db.String(20))
+    type_of_transport = db.Column(db.String(20))  # Pz-Bahn, Gz- Bahn, Pz/Gz-Bahn, S-Bahn, Hafenbahn, Seilzugbahn
     strecke_kuerzel = db.Column(db.String(100))
     bahnart = db.Column(db.String(100))
     active_until = db.Column(db.Integer)
@@ -91,6 +92,25 @@ class RailwayLine(db.Model):
     # graph
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
+
+    def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None, electrified=None,
+                 number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
+                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None):
+        self.route_number = route_number
+        self.direction = direction
+        self.length = length
+        self.from_km = from_km
+        self.to_km = to_km
+        self.electrified = electrified
+        self.number_tracks = number_tracks
+        self.vmax = vmax
+        self.type_of_transport = type_of_transport
+        self.strecke_kuerzel = strecke_kuerzel
+        self.bahnart = bahnart
+        self.active_until = active_until
+        self.active_since = active_since
+        self.coordinates = coordinates
+        self.railway_infrastructure_company = railway_infrastructure_company
 
     @hybrid_property
     def nodes(self):
@@ -117,11 +137,16 @@ class RailwayLine(db.Model):
 class RailwayPoint(db.Model):
     __tablename__ = 'railway_points'
     id = db.Column(db.Integer, primary_key=True)
-    mifcode = db.Column(db.Integer)
-    bezeichnung = db.Column(db.String(255))
+    mifcode = db.Column(db.String(255))
+    route_number = db.Column(db.Integer, db.ForeignKey('railway_route.number', onupdate='CASCADE', ondelete='SET NULL'))
+    richtung=db.Column(db.Integer)
+    km_i = db.Column(db.Integer)
+    km_l = db.Column(db.String(255))
+    name = db.Column(db.String(255))
     type = db.Column(db.String(255))  # db.Enum(allowed_values_type_of_station)
     db_kuerzel = db.Column(db.String(5))
-    coordinates = db.Column(Geometry(geometry_type='POINT', srid=4326), nullable=False)
+    coordinates = db.Column(Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
+
     # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
 
     # References
@@ -139,6 +164,9 @@ class RailwayNodes(db.Model):
 
     start_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.start_node]")
     end_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.end_node]")
+
+    routes = db.relationship("RailwayRoute", secondary=railway_nodes_to_railway_routes,
+                             backref=db.backref('end_nodes', lazy=True))
 
     @hybrid_property
     def lines(self):
@@ -198,7 +226,7 @@ class Project(db.Model):
     superior_project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
 
     # references
-    project_contents = db.relationship('ProjectContent', backref='project_contents', lazy=True)
+    project_contents = db.relationship('ProjectContent', backref='project', lazy=True)
     superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
 
     def __init__(self, name, description='', superior_project_id=None):
@@ -435,7 +463,7 @@ class ProjectContent(db.Model):
     lfd_nr = db.Column(db.Integer)
     finve_nr = db.Column(db.Integer)
     bedarfsplan_nr = db.Column(db.Integer)
-    planned_total_cost = db.Column(db.Integer)
+    planned_total_cost = db.Column(db.Float)
     actual_cost = db.Column(db.Integer)
     bvwp_planned_cost = db.Column(db.Float)
     bvwp_planned_maintenance_cost = db.Column(db.Float)
@@ -509,9 +537,9 @@ class ProjectContent(db.Model):
     texts = db.relationship('Text', secondary=texts_to_project_content,
                             backref=db.backref('texts', lazy=True))
     projectcontent_groups = db.relationship('ProjectGroup', secondary=projectcontent_to_group,
-                                            backref=db.backref('project_groups', lazy=True))
+                                            backref=db.backref('projects_content', lazy=True))
     projectcontent_railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
-                                                   backref=db.backref('railway_lines', lazy=True))
+                                                   backref=db.backref('project_content', lazy=True))
     states = db.relationship("States", secondary=project_contents_to_states,
                                             backref=db.backref('states', lazy=True))
     counties = db.relationship("Counties", secondary=project_contents_to_counties,
