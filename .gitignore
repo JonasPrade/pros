@@ -1,6 +1,6 @@
 /prosd/conf.py
 /example_data/bvwp_data/
-/example_data/betriebsstellen/
+/example_data/betriebsstellen_rohdaten/
 /example_data/d-takt/
 /example_data/vzg/
 /prosd/log/
@@ -11,3 +11,6 @@
 /example_data/monorail/
 /example_data/monorail_2/
 /example_data/railgraph/
+/example_data/db_tmp_backup/
+/example_data/streckennetz_rohdaten/
+/example_data/test_save_and_load/

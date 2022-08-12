@@ -1,12 +1,13 @@
 import json
 import unittest
+import geoalchemy2
+import sqlalchemy
+import shapely
 
 from prosd import db
-from prosd.models import User, Project
+from prosd.models import User, Project, RailwayNodes, RailwayLine, RailwayPoint
 from tests.base import BaseTestCase
 
-
-# TODO: test for other models
 # TODO: Add username for all user Tests
 
 def register_user(self, email, password):
@@ -140,9 +141,45 @@ class TestProjectModel(BaseTestCase):
         self.assertTrue(project_response['message'] == 'Invalid token. Please log in again.')
 
 
-def test_get_project_without_existing_project(self):
-    pass
+class TestRailwayLine(BaseTestCase):
+    def test_create_railline_from_old(self):
+        line_old = RailwayLine.query.get(16)
+        coordinates = line_old.coordinates
+        railline_new = RailwayLine.create_railline_from_old(line_old, coordinates)
+        self.assertIsInstance(railline_new, RailwayLine)
 
+    def test_split_railwayline(self):
+        old_line_id = 39601
+        blade_point = RailwayPoint.query.get(50658).coordinates
+        newline_1, newline_2 = RailwayLine.split_railwayline(old_line_id=old_line_id, blade_point=blade_point)
+
+        with self.subTest():
+            self.assertIsInstance(newline_1, RailwayLine)
+        with self.subTest():
+            self.assertIsInstance(newline_2, RailwayLine)
+
+    def test_get_line_that_intersects_point(self):
+        coordinate = RailwayNodes.query.get(240838).coordinate
+        from_line = RailwayLine.query.get(39516)
+        line = RailwayLine.get_line_that_intersects_point_excluding_line(coordinate, from_line)
+        self.assertIsInstance(line, RailwayLine)
+
+    def test_get_other_node_of_line(self):
+        line = RailwayLine.query.get(16)
+        node1 = line.start_node
+        node2_id = RailwayLine.get_other_node_of_line(line, node1)
+        self.assertIsInstance(node2_id, RailwayNodes)
+
+    def test_get_next_point_of_line(self):
+        line = RailwayLine.query.get(16)
+        point = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(line.coordinates))).one()[0]
+        next_point = RailwayLine.get_next_point_of_line(line, point)
+
+class TestRailwayNode(BaseTestCase):
+    def test_add_node_no_existing(self):
+        coordinate = shapely.geometry.Point(0,0)
+        node = RailwayNodes.add_node_if_not_exists(coordinate)
+        self.assertIsInstance(node, RailwayNodes)
 
 if __name__ == '__main__':
     unittest.main()

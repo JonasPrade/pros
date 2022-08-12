@@ -10,6 +10,8 @@ import json
 import geoalchemy2
 import math
 import itertools
+import time
+
 
 
 class PointOfLineNotAtEndError(Exception):
@@ -21,7 +23,8 @@ class RailGraph:
     def __init__(self):
         self.railgraph = networkx.DiGraph()
 
-        self.filepath_save_graphml = '../example_data/railgraph/railgraph.pajek'
+        self.filepath_save_graphml = '../example_data/railgraph/railgraph.pickle'
+        self.filepath_save_graph_route = '../example_data/railgraph/graphes_routes/{}.pickle'
 
         filepath_whitelist_parallel_routes = os.path.abspath(
             '../example_data/railgraph/whitelist_parallel_routes.json')
@@ -54,12 +57,12 @@ class RailGraph:
         railway_lines = models.RailwayLine.query.all()
 
         if new_nodes:
-            self._create_nodes(railway_lines, overwrite=True)
+            self.create_nodes(railway_lines, overwrite=True)
         else:
             self.create_nodes_new_railwaylines()
 
         # create graphes of each route
-        graph_list = self._create_graphes_routes()
+        graph_list = self._create_graphes_routes(use_saved=True)
 
         # connect graphes to one graph
         for graph in graph_list:
@@ -71,18 +74,34 @@ class RailGraph:
         return
 
     def save_graph(self, filepath, graph):
-        networkx.write_pajek(filepath=filepath, G=graph)
+        """
+        saves a graph
+        :param filepath:
+        :param graph: a list of graphes or a graph itself
+        :return:
+        """
+
+        networkx.write_gpickle(path=filepath, G=graph)
 
     def load_graph(self, filepath):
-        G = networkx.read_pajekt(filepath=filepath)
+        """
+        loads a graph
+        :param filepath:
+        :return:
+        """
+        G = networkx.read_gpickle(path=filepath)
         return G
 
     def create_nodes_new_railwaylines(self):
+        """
+        get all railway_lines tahat have no start_node or end_node. Check if a node already exists at that coordiante
+        if not, create a new node
+        :return:
+        """
         # get all railway_lines, that have no start_node or no end_node
         # check if a node already exists at that coordinate
         # if not, create a new node
         RailwayLine = models.RailwayLine
-        Nodes = models.RailwayNodes
 
         new_lines = db.session.query(RailwayLine).filter(
             sqlalchemy.or_(RailwayLine.start_node == None, RailwayLine.end_node == None)
@@ -95,13 +114,13 @@ class RailGraph:
             end_coord = shapely.wkb.dumps(end_coord, hex=True, srid=4326)
 
             if not line.start_node:
-                node_id = self.__add_node(coordinate=start_coord)
+                node_id = models.RailwayNodes.add_node_if_not_exists(coordinate=start_coord).id
                 db.session.query(RailwayLine).filter(RailwayLine.id == line.id).update(dict(start_node=node_id),
                                                                                        synchronize_session=False)
                 db.session.commit()
 
             if not line.end_node:
-                node_id = self.__add_node(coordinate=end_coord)
+                node_id = models.RailwayNodes.add_node_if_not_exists(coordinate=end_coord).id
                 db.session.query(RailwayLine).filter(RailwayLine.id == line.id).update(dict(end_node=node_id),
                                                                                        synchronize_session=False)
                 db.session.commit()
@@ -131,11 +150,11 @@ class RailGraph:
         db.session.query(Nodes).filter(Nodes.id == node2_id).delete()
         db.session.commit()
 
-    def _create_nodes(self, railway_lines, overwrite=True):
+    def create_nodes(self, railway_lines, overwrite=True):
         """
         Creates nodes based on a railway_lines (geodata)
         :param railway_lines:
-        :param overwrite:
+        :param overwrite: Boolean, if True it deletes all existing nodes
         :return:
         """
         Nodes = models.RailwayNodes
@@ -178,9 +197,9 @@ class RailGraph:
         db.session.commit()
         logging.info('Creation of all nodes finished')
 
-    def _create_graphes_routes(self):
+    def _create_graphes_routes(self, use_saved=True):
         """
-
+        create graphes for all routes
         :return:
         """
         # Get all Routes
@@ -189,17 +208,30 @@ class RailGraph:
         # Iterate trough Routes
         graph_list = []
         for route in railway_routes:
-            graph_list_route = self.create_graph_route(route)
-            graph_list.append(graph_list_route)
+            filepath_graph_route = self.filepath_save_graph_route.format(str(route.number))
+            if os.path.exists(filepath_graph_route):
+                graph = self.load_graph(filepath_graph_route)
+                if graph:
+                    graph_list.append(graph)
+            else:
+                try:
+                    st = time.time()
+                    graph = self.create_graph_one_route(route)
+                    if graph:
+                        graph_list.append(graph)
+                    et = time.time()
+                    run_time = et-st
+                    logging.debug("RunTime route " + str(route.number) + " " + str(run_time))
+                except Exception as e:
+                    logging.error("Error at route " + str(route.number) + " " + str(route.name) + " " + str(e))
 
         return graph_list
 
-    def create_graph_route(self, route):
+    def create_graph_one_route(self, route, save=True):
         """
         creates a graph for one route
         :return:
         """
-        Line = models.RailwayLine
         lines = route.railway_lines
         graph_list = list()
 
@@ -211,21 +243,23 @@ class RailGraph:
             return
         else:
             G, remaining_lines = self.__build_graph_railway_line(lines, route)
-            graph_list.append(G)
 
             # There is a possibility, that not all railway lines have been used. Either because of parallel route or
             # an interrupted route
             if len(remaining_lines.all()) > 0:
                 if str(route.number) in self.whitelist_parallel_routes:
                     while remaining_lines.all():
-                        G, remaining_lines = self.__build_graph_railway_line(lines=remaining_lines, route=route)
-                        graph_list.append(G)
+                        new_graph, remaining_lines = self.__build_graph_railway_line(lines=remaining_lines, route=route)
+                        G.update(new_graph)
                 else:
                     logging.warning("For route " + str(route.number) + " " + str(
                         route.name) + " there are RailwayLines that are not part of Graph. RailwayLines are" + str(
                         remaining_lines.all()))
 
-            return graph_list
+            if save:
+                self.save_graph(graph=G, filepath=self.filepath_save_graph_route.format(str(route.number)))
+
+            return G
 
     def _create_turner(self, G, node, connect_same_route=False, allow_turn_on_same_line=True):
         """
@@ -236,7 +270,7 @@ class RailGraph:
         """
 
         G = self.__build_directed_graph_with_subnodes(G=G, node=node)
-        G = self.__find_and_connect_allowed_connetions(G=G, node=node, connect_same_route=connect_same_route)
+        G = self.__find_and_connect_allowed_connections(G=G, node=node, connect_same_route=connect_same_route)
 
         return G
 
@@ -277,8 +311,8 @@ class RailGraph:
         start_node = models.RailwayNodes.query.get(line.start_node)
         end_node = models.RailwayNodes.query.get(line.end_node)
 
-        G = self.__find_and_connect_allowed_connetions(G=G, node=start_node)
-        G = self.__find_and_connect_allowed_connetions(G=G, node=end_node)
+        G = self.__find_and_connect_allowed_connections(G=G, node=start_node)
+        G = self.__find_and_connect_allowed_connections(G=G, node=end_node)
 
         return G
 
@@ -295,7 +329,7 @@ class RailGraph:
 
         for u, v in incoming_edges:
             line = models.RailwayLine.query.filter(models.RailwayLine.id == G.get_edge_data(u, v)["line"]).one()
-            node_u_id = self.__line_other_node(line, node)
+            node_u_id = models.RailwayLine.get_other_node_of_line(line, node.id).id
             subnode_u_id = self.__create_subnode_id(node_id=node_u_id, line_id=line.id, direction=1)
             subnode_v_id = self.__create_subnode_id(node_id=node.id, line_id=line.id, direction=0)
             G.add_edge(subnode_u_id, subnode_v_id, line=line.id)
@@ -305,7 +339,7 @@ class RailGraph:
         outgoing_edges = list(G.edges(node.id))
         for u, v in outgoing_edges:
             line = models.RailwayLine.query.filter(models.RailwayLine.id == G.get_edge_data(u, v)["line"]).one()
-            node_v_id = self.__line_other_node(line, node)
+            node_v_id = models.RailwayLine.get_other_node_of_line(line, node.id).id
             subnode_u_id = self.__create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
             subnode_v_id = self.__create_subnode_id(node_id=node_v_id, line_id=line.id, direction=0)
             G.add_edge(subnode_u_id, subnode_v_id, line=line.id)
@@ -315,7 +349,7 @@ class RailGraph:
 
         return G
 
-    def __find_and_connect_allowed_connetions(self, G, node, connect_same_route=False):
+    def __find_and_connect_allowed_connections(self, G, node, connect_same_route=False):
         """
 
         :param G:
@@ -341,26 +375,26 @@ class RailGraph:
                         G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,
                                                                              line2=out_line,
                                                                              allowed_connections=allowed_connections)
-
         return G
 
     def __connect_lines_turner(self, G, node, line1, line2, allowed_connections):
         if not [line1, line2] in allowed_connections:
-            # TODO: Use the self.__create_subnode_id
-            subnode_1_in = int(str(node.id) + str(line1.id) + "0")
-            subnode_1_out = int(str(node.id) + str(line1.id) + "1")
-            subnode_2_in = int(str(node.id) + str(line2.id) + "0")
-            subnode_2_out = int(str(node.id) + str(line2.id) + "1")
+            subnode_1_in = self.__create_subnode_id(node_id=node.id, line_id=line1.id, direction=0)
+            subnode_1_out = self.__create_subnode_id(node_id=node.id, line_id=line1.id, direction=1)
+            subnode_2_in = self.__create_subnode_id(node_id=node.id, line_id=line2.id, direction=0)
+            subnode_2_out = self.__create_subnode_id(node_id=node.id, line_id=line2.id, direction=1)
             G.add_edge(subnode_1_in, subnode_2_out)
             G.add_edge(subnode_2_in, subnode_1_out)
             allowed_connections.append([line1, line2])
         return G, allowed_connections
 
     def __get_angle_two_lines(self, line1, line2, node):
+        # TODO: Move that to railway_lines
         angle_check = False
-        line1_point = self.__next_point_of_line(line=line1, point=node.coordinate)
-        line2_point = self.__next_point_of_line(line=line2, point=node.coordinate)
-        statement = db.session.query(geoalchemy2.func.ST_Angle(node.coordinate, line1_point, node.coordinate,
+
+        line1_point = models.RailwayLine.get_next_point_of_line(line=line1, point=node.coordinate)
+        line2_point = models.RailwayLine.get_next_point_of_line(line=line2, point=node.coordinate)
+        statement = sqlalchemy.select(geoalchemy2.func.ST_Angle(node.coordinate, line1_point, node.coordinate,
                                                                line2_point))  # 2 times node.coordinate so it is node - line1 to node - line2
         angle = math.degrees(db.session.execute(statement).one()[0])
         if self.angle_allowed_min < angle < self.angle_allowed_max:
@@ -390,29 +424,7 @@ class RailGraph:
         return subnode_id
 
     def __next_point_of_line(self, line, point):
-        """
-        Gets the next point of an line.
-        :param line:
-        :param point:
-        :return:
-        """
-        line_points = db.session.execute(db.session.query(geoalchemy2.func.ST_DumpPoints(line.coordinates))).all()
-        line_start = db.session.execute(db.session.query(geoalchemy2.func.ST_StartPoint(line.coordinates))).one()[0]
-        line_end = db.session.execute(db.session.query(geoalchemy2.func.ST_EndPoint(line.coordinates))).one()[0]
-
-        if point == line_start:
-            next_point = line_points[1][0].split(',')[1][:-1]
-        elif point == line_end:
-            next_point = line_points[-2][0].split(',')[1][:-1]
-        else:
-            if db.session.execute(db.session.query(geoalchemy2.func.ST_DWithin(point, line_start, self.ALLOWED_DISTANCE_IN_NODE))).one()[0]:
-                next_point = line_points[1][0].split(',')[1][:-1]
-            elif db.session.execute(db.session.query(geoalchemy2.func.ST_DWithin(point, line_end, self.ALLOWED_DISTANCE_IN_NODE))).one()[0]:
-                next_point = line_points[-2][0].split(',')[1][:-1]
-            else:
-                raise PointOfLineNotAtEndError("The searched node is not the starting or end point of line " + str(line.id))
-
-        return next_point
+        pass
 
     def __build_graph_railway_line(self, lines, route):
         """
@@ -435,6 +447,7 @@ class RailGraph:
         open_nodes.add(first_line.end_node)
         added_lines.add(first_line.id)
 
+        # create the graph
         if len(lines.all()) > 1:
             while open_nodes:
                 node = list(open_nodes).pop()
@@ -455,7 +468,8 @@ class RailGraph:
                 else:  # no other line of that route exists at this point
                     end_nodes.add(node)
                 open_nodes.remove(node)
-        else: # in this case, the whole graph only exists of one line. There for the start and end node of the line are the end-nodes of the graphs
+        else:  # in this case, the whole graph only exists of one line. There for the start and end node of the line
+            # are the end-nodes of the graphs
             end_nodes = lines.one().nodes
 
         # it is possible, that an edge is still in end_nodes but it is inside the Graph with more than one edge.
@@ -465,19 +479,19 @@ class RailGraph:
             edges = G.edges(node)
             if len(edges) < 2:
                 end_nodes_new.add(node)
-
         end_nodes = end_nodes_new  # Return end_nodes
 
-        # it is possible that an end_node has more than on connected line from the same route. In this case, the endpoint is added to that Graphes, that has the node as part of it
+        # it is possible that an end_node has more than on connected line from the same route. In this case,
+        # the endpoint is added to that Graphes, that has the node as part of it
         additional_end_nodes = self.whitelist_endpoints.get(str(route.number))
         if additional_end_nodes:
             for node in additional_end_nodes:
                 if node in G.nodes:
                     end_nodes.add(node)
 
-        # add the end_nodes to routes to nodes
+        # add the end_nodes to routes to nodes table
         for node_id in end_nodes:
-            route.end_nodes.append(models.RailwayNodes.query.get(node_id))
+            route.boundary_nodes.append(models.RailwayNodes.query.get(node_id))
         db.session.commit()
 
         remaining_lines = lines.filter(Line.id.not_in(added_lines))
@@ -491,9 +505,37 @@ class RailGraph:
             except PointOfLineNotAtEndError:
                 logging.warning("For " + str(node_id) + " on route " + str(route.number) + " is not the start or end point.")
 
+        # TODO add the stations to the graph
+        self._add_stations_to_route_graph(graph=G, route=route)
+
         self.__check_existing_connection_route(end_nodes=end_nodes, route=route, graph=G)
 
         return G, remaining_lines
+
+    def _add_stations_to_route_graph(self, graph, route):
+        """
+        ad the stations of a route to the graph of that route
+        :param graph:
+        :return:
+        """
+        Nodes = models.RailwayNodes
+        Lines = models.RailwayLine
+        points = route.railway_points
+        for point in points:
+            # check if station has a node
+            node = Nodes.check_if_nodes_exists_for_coordinate(point.coordinates)
+            if not node:
+                node = Nodes.add_node(point.coordinates)
+                old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
+                newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
+                self._remove_line_from_graph(G=graph, line=old_line)
+                self._add_line_to_graph(G=graph, line=newline_1)
+                self._add_line_to_graph(G=graph, line=newline_2)
+
+            point.node_id = node.id
+            node = None
+
+        return graph
 
     def __check_existing_connection_route(self, end_nodes, route, graph):
         """
@@ -501,6 +543,7 @@ class RailGraph:
         :param end_nodes:
         :return:
         """
+        # TODO: Write test for this function
         connections = []
         possible_routes = []
         Line = models.RailwayLine
@@ -538,179 +581,33 @@ class RailGraph:
 
         return possible_routes
 
-    def __line_other_node(self, line, node1):
-        """
-        returns the other end/start node of the line depending on the input node
-        :param line:
-        :return:
-        """
-        line_nodes = line.nodes
-        line_nodes.remove(node1.id)
-        node2_id = line_nodes[0]
-
-        return node2_id
-
     def _connect_end_node_to_line(self, G_of_node, G_continuing_line, node, line_of_node):
         """
 
         :return:
         """
+        # TODO: Write test for this method
         # get the line which intersects the endpoint
-        line = self._find_line_intersects_point(coordinate=node.coordinate, from_line=line_of_node)
+        line = models.RailwayLine.get_line_that_intersects_point(coordinate=node.coordinate, from_line=line_of_node)
 
         G_continuing_line = self._remove_line_from_graph(G=G_continuing_line, line=line)
 
         # split the line which intersects the endpoint
-        newline1, newline2 = self._split_railway_lines(old_line_id=line.id, blade_point=node.coordinate)
+
+        newline1, newline2 = models.RailwayLine.split_railwayline(old_line_id=line.id, blade_point=node.coordinate)
 
         G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline1)
         G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline2)
 
         # connect the graphes together
         G_continuing_line.update(G_of_node)
-        G_continuing_line = self.__find_and_connect_allowed_connetions(G=G_continuing_line, node=node)
+        G_continuing_line = self.__find_and_connect_allowed_connections(G=G_continuing_line, node=node)
 
         return G_continuing_line
 
-    def _find_line_intersects_point(self, coordinate, from_line):
-        """
-
-        :param coordinate: coordinates in wkb string
-        :param from_line: defines a line where the coordinate is from so this line gets ignored
-        :return:
-        """
-        line = models.RailwayLine.query.filter(geoalchemy2.func.ST_Intersects(models.RailwayLine.coordinates, coordinate), models.RailwayLine.id != from_line.id).one()
-
-        return line
-
-    def _split_railway_lines(self, old_line_id, blade_point):
-        """
-
-        :param line: id of line that gets splitted
-        :param blade_point: point where the railway_line gets splitted (wkb)
-        :return:
-        """
-        old_line = models.RailwayLine.query.filter(models.RailwayLine.id == old_line_id).one()
-
-        # get the coordinates
-        # TODO: Not all rail station are directly on the line
-
-        # not all rail stations/blade points are dirctly on the line. So this algorithmus searches the clostes point on the linestring.
-
-        coordinates = db.session.execute(
-            db.session.query(
-                geoalchemy2.func.ST_Dump(
-                    geoalchemy2.func.ST_CollectionExtract(
-                        geoalchemy2.func.ST_Split(old_line.coordinates, blade_point)
-                    )
-                )
-            )
-            ).all()
-
-        if len(coordinates) != 2:
-            coordinates = None
-            # a split was not possible.
-            # create a line from the blade_point with a mirrod blade_point on the line
-
-            # get the closest point on the line
-            # but even then, sometimes the split doesnt work so...
-            blade_point_on_line = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_ClosestPoint(
-                        old_line.coordinates,
-                        blade_point),
-                )
-            ).one()[0]
-
-            # get the mirrod point
-            blade_point_reversed = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_Rotate(
-                    blade_point,
-                    3.14,
-                    blade_point_on_line)
-                )
-            ).one()[0]
-
-            blade_line = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_MakeLine(
-                        blade_point,
-                        blade_point_reversed
-                    )
-                )
-            ).one()[0]
-
-            # blade_point_reversed_wkt = shapely.wkb.loads(blade_point_reversed.desc, hex=True)
-            # b_wkt = shapely.wkb.loads(blade_point_on_line.desc, hex=True)
-            blade_line_wkt = shapely.wkb.loads(blade_line.desc, hex=True)
-
-            coordinates = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_Dump(
-                        geoalchemy2.func.ST_CollectionExtract(
-                            geoalchemy2.func.ST_Split(old_line.coordinates, blade_line)
-                        )
-                    )
-                )
-            ).all()
-
-        coordinates_newline_1 = coordinates[0]
-        coordinates_newline_2 = coordinates[1]
-
-        # TODO: Throw error if there is a third linestring in the geometry collection
-
-        newline_1 = self.__create_new_railline_from_oldline(line_old=old_line, coordinates=coordinates_newline_1)
-        newline_2 = self.__create_new_railline_from_oldline(line_old=old_line, coordinates=coordinates_newline_2)
-
-        db.session.delete(old_line)
-        db.session.commit()
-
-        return newline_1, newline_2
-
-    def __create_new_railline_from_oldline(self, line_old, coordinates):
-        """
-
-        :param line_old: a object of an existing line, all attributes will be cloned
-        :param coordinates: coordinates of the new line (LINESTRING)
-        :return:
-        """
-        # have in mind, that all attribute are copied, also the kilometer distance from DB. This is because it is not always the length of the line.
-
-        coordinates = coordinates[0].split(",")[1][:-1]
-        coordinates_wkb = db.session.execute(db.session.query(geoalchemy2.func.ST_Force2D(coordinates))).one()[0]
-
-        railline = models.RailwayLine(
-            coordinates=coordinates_wkb,
-            route_number=line_old.route_number,
-            direction=line_old.direction,
-            length=line_old.length,
-            from_km=line_old.from_km,
-            to_km=line_old.to_km,
-            electrified=line_old.electrified,
-            number_tracks=line_old.number_tracks,
-            vmax=line_old.vmax,
-            type_of_transport=line_old.type_of_transport,
-            bahnart=line_old.bahnart,
-            strecke_kuerzel=line_old.strecke_kuerzel,
-            active_until=line_old.active_until,
-            active_since=line_old.active_since,
-            railway_infrastructure_company=line_old.railway_infrastructure_company
-        )
-
-        railline_start_coordinate = db.session.execute(db.session.query(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
-        railline.start_node = self.__add_node(railline_start_coordinate)
-        railline_end_coordinates = db.session.execute(db.session.query(geoalchemy2.func.ST_EndPoint(coordinates_wkb))).one()[0]
-        railline.end_node = self.__add_node(railline_end_coordinates)
-
-        db.session.add(railline)
-        db.session.commit()
-
-        return railline
-
     def _check_nodes_exists(self, coord, nodes_list, Model, commit_list, idlist):
         """
-        Checks if a node already exists
+        Checks if a node already exists based on a list of new nodes
         :param node:
         :param nodes_list: dict with coordinate -> Model.Node
         :param model: SQLAlchemy Model of a railway_nodes table
@@ -726,56 +623,6 @@ class RailGraph:
             nodes_list[node.coordinate] = node
 
         return node, nodes_list, commit_list
-
-    def __add_node(self, coordinate):
-        """
-        checks if for the given coordinate a nodes exists (tolerance included). If not, a new node gets created.
-        :param coordinate: wkb element coordinate
-        :return:
-        """
-        Nodes = models.RailwayNodes
-
-        # TODO: Check why this is necessary
-        # if not isinstance(coordinate, str):
-        #     coordinate = db.session.execute(
-        #         db.session.query(
-        #         geoalchemy2.func.ST_GeogFromWKB(coordinate)
-        #         )).one()[0]
-
-        node = Nodes.query.filter(geoalchemy2.func.ST_DWithin(models.RailwayNodes.coordinate, coordinate, self.ALLOWED_DISTANCE_IN_NODE)).first()
-
-        # check if coordinate is 2d. If this is case, make it 3 dimensional
-        coordinate_dimensions = db.session.execute(
-            db.session.query(
-                geoalchemy2.func.ST_NDims(coordinate)
-            )
-        ).one()[0]
-        if coordinate_dimensions == 2:
-            x = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_X(coordinate)
-                )
-            ).one()[0]
-            y = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_Y(coordinate)
-                )
-            ).one()[0]
-            z = 0
-            coordinate = db.session.execute(
-                db.session.query(
-                    geoalchemy2.func.ST_MakePoint(x, y, z)
-                )
-            ).one()[0]
-
-        if not node:
-            # create a new node
-            node = Nodes(coordinate=coordinate)
-            db.session.add(node)
-            db.session.commit()
-            db.session.refresh(node)
-
-        return node.id
 
     def __create_id(self, reference):
         """

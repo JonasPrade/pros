@@ -10,14 +10,12 @@ rg = RailGraph()
 # rg.combine_nodes(225008, 70970)
 # rg.create_nodes_new_railwaylines()
 
-# # test create graph
+# test create graph
 graph = rg.create_graph(new_nodes=False)
 print(graph)
 
 # test create graph route for one route
-# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 5216).first()
-# graph_list = rg.create_graph_route(route=route)
-# graph = graph_list[0]
+
 
 # pyplot.figure(3, figsize=(12,12))
 # networkx.draw_networkx(graph, with_labels=True, node_size=100)
@@ -37,20 +35,12 @@ print(graph)
 # networkx.dijkstra_path(graph, 531176, 223816)
 # networkx.dijkstra_path(graph, 531176, 149650)
 
-
 # # test node with more than two edges
 # node = models.RailwayNodes.query.filter(models.RailwayNodes.id == 325375).one()
 # node_lines = []
 # node_lines.append(node.start_node)
 # node_lines.append(node.end_node)
 # logging.info('finished creating Graph')
-
-
-# test find line that intersects the point
-# node = models.RailwayNodes.query.filter(models.RailwayNodes.id == 290586).one()
-# coordinate = node.coordinate.desc
-# # line = models.RailwayLine.query.filter(models.RailwayLine.id == 39552).one()
-# rg._split_railway_line(line_id=39552, blade_point=node.coordinate)
 
 # # test remove railline from graph
 # route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 4950).one()
@@ -67,7 +57,7 @@ print(graph)
 # route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 4930).one()
 # graph_list = rg.create_graph_route(route=route)
 # graph_of_node = graph_list[0]
-#
+
 # node = models.RailwayNodes.query.get(290586)
 # line_of_node = models.RailwayLine.query.get(39515)
 # graph = rg._connect_end_node_to_line(G_continuing_line=graph_continuing, G_of_node=graph_of_node, node=node, line_of_node=line_of_node)

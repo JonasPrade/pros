@@ -1,7 +1,7 @@
 from prosd.manage_db import shp_import
 from prosd import models
 
-filepath_shp = "../../example_data/betriebsstellen/betriebsstellen_point.shp"
+filepath_shp = "../../example_data/betriebsstellen_rohdaten/betriebsstellen_point.shp"
 column_names = {}
 Points = models.RailwayPoint
 

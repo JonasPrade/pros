@@ -1,10 +1,18 @@
 import datetime
 import jwt
 import geojson
-from geoalchemy2 import Geometry, shape
+import geoalchemy2
+import shapely
+import sqlalchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 
+
 from prosd import db, app, bcrypt
+
+
+class PointOfLineNotAtEndError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 # TODO: Table railway_line to projects
 
@@ -86,7 +94,7 @@ class RailwayLine(db.Model):
     bahnart = db.Column(db.String(100))
     active_until = db.Column(db.Integer)
     active_since = db.Column(db.Integer)
-    coordinates = db.Column(Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
+    coordinates = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
     railway_infrastructure_company = db.Column(db.Integer, db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
 
     # graph
@@ -121,7 +129,7 @@ class RailwayLine(db.Model):
 
     @classmethod
     def geojson(self, obj):
-        coords = shape.to_shape(obj.coordinates)
+        coords = geoalchemy2.shape.to_shape(obj.coordinates)
         xy = coords.xy
         x_array = xy[0]
         y_array = xy[1]
@@ -133,6 +141,194 @@ class RailwayLine(db.Model):
         geo = geojson.LineString(coords_geojson)
         return geo
 
+    @classmethod
+    def create_railline_from_old(self, line_old, coordinates):
+        """
+        :param line_old: a object of an existing line, all attributes will be cloned
+        :param coordinates: coordinates of the new line (LINESTRING)
+        :return:
+        """
+        # have in mind, that all attribute are copied, also the kilometer distance from DB. This is because it is not always the length of the line.
+
+        if isinstance(coordinates, str):
+            coordinates = coordinates.split(",")[1][:-1]
+            coordinates_wkb = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates))).one()[0]
+        else:
+            coordinates_wkb = coordinates
+
+        railline = RailwayLine(
+            coordinates=coordinates_wkb,
+            route_number=line_old.route_number,
+            direction=line_old.direction,
+            length=line_old.length,
+            from_km=line_old.from_km,
+            to_km=line_old.to_km,
+            electrified=line_old.electrified,
+            number_tracks=line_old.number_tracks,
+            vmax=line_old.vmax,
+            type_of_transport=line_old.type_of_transport,
+            bahnart=line_old.bahnart,
+            strecke_kuerzel=line_old.strecke_kuerzel,
+            active_until=line_old.active_until,
+            active_since=line_old.active_since,
+            railway_infrastructure_company=line_old.railway_infrastructure_company
+        )
+
+        railline_start_coordinate = \
+        db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
+        railline.start_node = RailwayNodes.add_node_if_not_exists(railline_start_coordinate).id
+        railline_end_coordinates = \
+        db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_EndPoint(coordinates_wkb))).one()[0]
+        railline.end_node = RailwayNodes.add_node_if_not_exists(railline_end_coordinates).id
+
+        db.session.add(railline)
+        db.session.commit()
+
+        return railline
+
+    @classmethod
+    def split_railwayline(self, old_line_id, blade_point):
+        """
+        :param line: id of line that gets splitted
+        :param blade_point: point where the railway_line gets splitted (wkb)
+        :return:
+        """
+        old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
+
+        # get the coordinates
+        # TODO: Not all rail station are directly on the line
+
+        # not all rail stations/blade points are dirctly on the line. So this algorithmus searches the clostes point on the linestring.
+
+        coordinates = db.session.execute(
+            sqlalchemy.select(
+                geoalchemy2.func.ST_Dump(
+                    geoalchemy2.func.ST_CollectionExtract(
+                        geoalchemy2.func.ST_Split(old_line.coordinates, blade_point)
+                    )
+                )
+            )
+        ).all()
+
+        if len(coordinates) != 2:
+            coordinates = None
+            # a split was not possible.
+            # create a line from the blade_point with a mirrod blade_point on the line
+
+            # get the closest point on the line
+            # but even then, sometimes the split doesnt work so...
+            blade_point_on_line = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_ClosestPoint(
+                        old_line.coordinates,
+                        blade_point),
+                )
+            ).one()[0]
+
+            # get the mirrod point
+            blade_point_reversed = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_Rotate(
+                        blade_point,
+                        3.14,
+                        blade_point_on_line)
+                )
+            ).one()[0]
+
+            blade_line = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_MakeLine(
+                        blade_point,
+                        blade_point_reversed
+                    )
+                )
+            ).one()[0]
+
+            # for debugging
+            # blade_point_reversed_wkt = shapely.wkb.loads(blade_point_reversed.desc, hex=True)
+            # b_wkt = shapely.wkb.loads(blade_point_on_line.desc, hex=True)
+            # blade_line_wkt = shapely.wkb.loads(blade_line.desc, hex=True)
+
+            coordinates = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_Dump(
+                        geoalchemy2.func.ST_CollectionExtract(
+                            geoalchemy2.func.ST_Split(old_line.coordinates, blade_line)
+                        )
+                    )
+                )
+            ).all()
+
+        coordinates_newline_1 = coordinates[0][0]
+        coordinates_newline_2 = coordinates[1][0]
+
+        # TODO: Throw error if there is a third linestring in the geometry collection
+
+        newline_1 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_1)
+        newline_2 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_2)
+
+        db.session.delete(old_line)
+        db.session.commit()
+
+        return newline_1, newline_2
+
+    @classmethod
+    def get_line_that_intersects_point_excluding_line(self, coordinate, from_line):
+        """
+        :param coordinate: coordinates in wkb string
+        :param from_line: defines a line where the coordinate is from so this line gets ignored
+        :return:
+        """
+        line = RailwayLine.query.filter(
+            geoalchemy2.func.ST_Intersects(RailwayLine.coordinates, coordinate),
+            RailwayLine.id != from_line.id).one()
+
+        return line
+
+    @classmethod
+    def get_other_node_of_line(self, line, node1_id):
+        """
+        returns the other end/start node of the line depending on the input node
+        :param line:
+        :return:
+        """
+        # TODO: Change that, so it can be called as attribute of an RailwayLine instance
+        line_nodes = line.nodes
+        line_nodes.remove(node1_id)
+        node2_id = line_nodes[0]
+        node_2 = RailwayNodes.query.get(node2_id)
+
+        return node_2
+
+    @classmethod
+    def get_next_point_of_line(self, line, point, allowed_distance = 1/111000):
+        """
+        Gets the next point of an line.
+        :param line:
+        :param point:
+        :return:
+        """
+
+        line_points = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_DumpPoints(line.coordinates))).all()
+        line_start = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(line.coordinates))).one()[0]
+        line_end = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_EndPoint(line.coordinates))).one()[0]
+
+        if point == line_start:
+            next_point = line_points[1][0].split(',')[1][:-1]
+        elif point == line_end:
+            next_point = line_points[-2][0].split(',')[1][:-1]
+        else:
+            if db.session.execute(sqlalchemy.select(
+                    geoalchemy2.func.ST_DWithin(point, line_start, allowed_distance))).one()[0]:
+                next_point = line_points[1][0].split(',')[1][:-1]
+            elif db.session.execute(sqlalchemy.select(
+                    geoalchemy2.func.ST_DWithin(point, line_end, allowed_distance))).one()[0]:
+                next_point = line_points[-2][0].split(',')[1][:-1]
+            else:
+                raise PointOfLineNotAtEndError(
+                    "The searched node is not the starting or end point of line " + str(line.id))
+
+        return next_point
 
 class RailwayPoint(db.Model):
     __tablename__ = 'railway_points'
@@ -145,13 +341,31 @@ class RailwayPoint(db.Model):
     name = db.Column(db.String(255))
     type = db.Column(db.String(255))  # db.Enum(allowed_values_type_of_station)
     db_kuerzel = db.Column(db.String(5))
-    coordinates = db.Column(Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
+    coordinates = db.Column(geoalchemy2.Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
+    node_id = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', onupdate='CASCADE', ondelete='SET NULL'))
 
     # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
 
     # References
     # projects_start = db.relationship('Project', backref='project_starts', lazy=True)
     # projects_end = db.relationship('Project', backref='project_ends', lazy=True)
+
+    @classmethod
+    # TODO: Write test
+    def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1 / 111000):
+        """
+
+        :param coordinate:
+        :param route_number:
+        :param allowed_distance_in_node:
+        :return:
+        """
+        line = RailwayLine.query.filter(
+            geoalchemy2.func.ST_DWithin(RailwayLine.coordinates, coordinate, allowed_distance_in_node),
+            RailwayLine.route_number == route_number
+        ).one()
+
+        return line
 
 
 class RailwayNodes(db.Model):
@@ -160,13 +374,12 @@ class RailwayNodes(db.Model):
     """
     __tablename__='railway_nodes'
     id = db.Column(db.Integer, primary_key=True)
-    coordinate = db.Column(Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
+    coordinate = db.Column(geoalchemy2.Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
 
     start_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.start_node]")
     end_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.end_node]")
 
-    routes = db.relationship("RailwayRoute", secondary=railway_nodes_to_railway_routes,
-                             backref=db.backref('end_nodes', lazy=True))
+    station = db.relationship('RailwayPoint', lazy=True)
 
     @hybrid_property
     def lines(self):
@@ -179,6 +392,147 @@ class RailwayNodes(db.Model):
 
         return lines
 
+    @classmethod
+    def add_node_if_not_exists(self, coordinate, allowed_distance_in_node=1/111000):
+        """
+        checks if for the given coordinate a nodes exists (tolerance included). If not, a new node gets created.
+        :param coordinate: wkb element coordinate
+        :return:
+        """
+        coordinate = self.coordinate_check_to_wkb(coordinate)
+        node = self.check_if_nodes_exists_for_coordinate(coordinate, allowed_distance_in_node)
+        if not node:
+            node = self.add_node(coordinate)
+
+        return node
+
+    @classmethod
+    def coordinate_check_to_wkb(self, coordinate):
+        """
+        checks if a coordinate is wkb, if not it converts it to wkb
+        :return:
+        """
+        # TODO: Move that to a BaseClasse, so all models can use it
+        if isinstance(coordinate, shapely.geometry.Point):
+            coordinate = shapely.wkb.dumps(coordinate)
+
+        # TODO: Move that to models.RailwayNode
+        # TODO: Check why this is necessary
+        # if not isinstance(coordinate, str):
+        #     coordinate = db.session.execute(
+        #         db.session.query(
+        #         geoalchemy2.func.ST_GeogFromWKB(coordinate)
+        #         )).one()[0]
+
+        return coordinate
+
+    @classmethod
+    def check_if_nodes_exists_for_coordinate(self, coordinate, allowed_distance_in_node = 1/111000):
+        """
+
+        :param coordinate:
+        :param allowed_distance_in_node:
+        :return node: models.RailwayNode, if there is no node it returns a None
+        """
+        node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
+                                                              allowed_distance_in_node)).first()
+
+        return node
+
+    @classmethod
+    def add_node(self, coordinate):
+        """
+
+        :param coordinate: wkb
+        :return:
+        """
+        # check if coordinate is 2d. If this is case, make it 3 dimensional
+        coordinate_dimensions = db.session.execute(
+            sqlalchemy.select(
+                geoalchemy2.func.ST_NDims(coordinate)
+            )
+        ).one()[0]
+
+        if coordinate_dimensions == 2:
+            x = db.session.execute(
+                db.session.query(
+                    geoalchemy2.func.ST_X(coordinate)
+                )
+            ).one()[0]
+            y = db.session.execute(
+                db.session.query(
+                    geoalchemy2.func.ST_Y(coordinate)
+                )
+            ).one()[0]
+            z = 0
+            coordinate = db.session.execute(
+                db.session.query(
+                    geoalchemy2.func.ST_MakePoint(x, y, z)
+                )
+            ).one()[0]
+
+        # create a new node
+        node = RailwayNodes(coordinate=coordinate)
+        db.session.add(node)
+        db.session.commit()
+        db.session.refresh(node)
+
+        return node
+
+    @classmethod
+    def get_line_for_node_and_route(self, node_id, route_number):
+        """
+        gets all lines for an route that are connected to a node
+        (for example all lines that are connected with an end-node of that line)
+        :param node:
+        :param route:
+        :return:
+        """
+        lines = RailwayLine.query.filter(
+            sqlalchemy.or_(
+                node_id == RailwayLine.start_node,
+                node_id == RailwayLine.end_node
+            ),
+            RailwayLine.route_number == route_number
+        ).all()
+
+        return lines
+
+    @classmethod
+    def get_line_for_node_and_other_routes(self, node_id, route_number):
+        """
+        gets all lines that are connect to that line and that are not part of the route
+        :param node_id:
+        :param route_number:
+        :return:
+        """
+        lines = RailwayLine.query.filter(
+            sqlalchemy.or_(
+                node_id == RailwayLine.start_node,
+                node_id == RailwayLine.end_node
+            ),
+            RailwayLine.route_number != route_number
+        ).all()
+
+        return lines
+
+    @classmethod
+    def get_other_routes_for_node(self, node_id, route_number):
+        """
+        get all other routes that are connect to that node via at least one line
+        :param node_id:
+        :return:
+        """
+        routes_on_node = db.session.query(RailwayRoute).join(RailwayLine).filter(
+            sqlalchemy.or_(
+                RailwayLine.end_node == node_id,
+                RailwayLine.start_node == node_id
+            ),
+            RailwayRoute.number != route_number
+        ).all()
+
+        return routes_on_node
+
 class RailwayRoute(db.Model):
     """
     German: VzG-Strecken
@@ -188,17 +542,18 @@ class RailwayRoute(db.Model):
     number = db.Column(db.Integer, unique=True)  # for example the VzG-number
     name = db.Column(db.String(255))
     infotext = db.Column(db.Text)
-    start_point = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
     start_km = db.Column(db.Float)
-    end_point = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
     end_km = db.Column(db.Float)
 
-    railway_lines = db.relationship("RailwayLine", backref="railway_route", lazy="dynamic")
+    railway_lines = db.relationship("RailwayLine", backref="railway_routes", lazy="dynamic")
 
     boundary_nodes = db.relationship("RailwayNodes", secondary=railway_nodes_to_railway_routes,
                                backref=db.backref('railway_route', lazy=True))
 
+    railway_points = db.relationship("RailwayPoint", lazy=True)
+
     # TODO: m:n Project_Contents to RailwayRoutes
+
 
 
 class RailwayInfrastructureCompany(db.Model):
@@ -223,7 +578,7 @@ class Project(db.Model):
     description = db.Column(db.Text)
     # id_point_start_id = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
     # id_point_end_id = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
-    superior_project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    superior_project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))  # TODO: Change that to project_content
 
     # references
     project_contents = db.relationship('ProjectContent', backref='project', lazy=True)
@@ -243,12 +598,12 @@ class ProjectContent(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
     project_number = db.Column(db.String(50))  # string because bvwp uses strings vor numbering projects, don't ask
     name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    reason_project = db.Column(db.Text)
-    bvwp_alternatives = db.Column(db.Text)
-    effects_passenger_long_rail = db.Column(db.Boolean)
-    effects_passenger_local_rail = db.Column(db.Boolean)
-    effects_cargo_rail = db.Column(db.Boolean)
+    description = db.Column(db.Text, default=None)
+    reason_project = db.Column(db.Text, default=None)
+    bvwp_alternatives = db.Column(db.Text, default=None)
+    effects_passenger_long_rail = db.Column(db.Boolean, default=False)
+    effects_passenger_local_rail = db.Column(db.Boolean, default=False)
+    effects_cargo_rail = db.Column(db.Boolean, default=False)
 
     #economical data
     nkv = db.Column(db.Float)
@@ -533,9 +888,9 @@ class ProjectContent(db.Model):
     bvwp_additional_informations = db.Column(db.Text)
 
     # references
-    budgets = db.relationship('Budget', backref='budgets', lazy=True)
+    budgets = db.relationship('Budget', backref='project_content', lazy=True)
     texts = db.relationship('Text', secondary=texts_to_project_content,
-                            backref=db.backref('texts', lazy=True))
+                            backref=db.backref('project_content', lazy=True))
     projectcontent_groups = db.relationship('ProjectGroup', secondary=projectcontent_to_group,
                                             backref=db.backref('projects_content', lazy=True))
     projectcontent_railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
@@ -595,7 +950,7 @@ class States(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     name_short_2 = db.Column(db.String, nullable=False)
-    polygon = db.Column(Geometry(geometry_type='POLYGON', srid=4326), nullable=True)
+    polygon = db.Column(geoalchemy2.Geometry(geometry_type='POLYGON', srid=4326), nullable=True)
 
 
 class Counties(db.Model):
@@ -608,7 +963,7 @@ class Counties(db.Model):
     name = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(255), nullable=False)
     name_short = db.Column(db.String(255), nullable=False)
-    polygon = db.Column(Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)
+    polygon = db.Column(geoalchemy2.Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)
     state_id = db.Column(db.Integer, db.ForeignKey('states.id'))
 
 
@@ -619,7 +974,7 @@ class Constituencies(db.Model):
     __tablename__= 'constituencies'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    polygon = db.Column(Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)
+    polygon = db.Column(geoalchemy2.Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)
     state_id = db.Column(db.Integer, db.ForeignKey('states.id'))
 
 
