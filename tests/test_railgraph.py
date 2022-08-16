@@ -1,14 +1,33 @@
 import networkx
 import itertools
 import logging
+import math
+
+import sqlalchemy
+import geoalchemy2
 
 from prosd.graph.railgraph import RailGraph
-from prosd.models import RailwayRoute, RailwayNodes, RailwayLine
+from prosd.models import RailwayRoute, RailwayNodes, RailwayLine, RailwayStation
+from prosd import db
 from tests.base import BaseTestCase
 
+
 class TestRailGraph(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+
+        logging.basicConfig(filename='/Users/jonas/PycharmProjects/pros/prosd/log/log_creating_railgraph.log',
+                            encoding='utf-8', level=logging.WARNING)
+
+        self.rg = RailGraph()
+        self.rg.filepath_save_graphml = '../example_data/railgraph_test/railgraph.pickle'
+        self.rg.filepath_save_graph_route = '../example_data/railgraph_test/graphes_routes/{}.pickle'
+        self.rg.filepath_save_with_station = '../example_data/railgraph_test/railgraph_with_station.pickle'
+        self.rg.filepath_save_with_station_and_parallel_connections = '../example_data/railgraph_test/railgraph_with_station_and_parallel_connections.pickle'
 
     def test_save_and_load_graph(self):
+        # not correct any more
+        # TODO: Correct this test
         filepath_base = '../example_data/test_save_and_load/{route_number}/{route_number}_{graph_number}.pickle'
         route = RailwayRoute.query.filter(RailwayRoute.number == 4950).one()
         filepath = filepath_base.format(route_number=str(route.number))
@@ -26,10 +45,9 @@ class TestRailGraph(BaseTestCase):
         rg = RailGraph()
         routes = [
             4950,
-            4930,
+            4940,
             4953,
-            4922,
-            4713
+            4951
         ]
         graph_list = []
         for route_number in routes:
@@ -50,16 +68,44 @@ class TestRailGraph(BaseTestCase):
         self.assertIsInstance(route, list)
 
     def test_create_all_graphes(self):
-        logging.basicConfig(filename='/Users/jonas/PycharmProjects/pros/prosd/log/log_creating_railgraph.log',
-                            encoding='utf-8', level=logging.DEBUG)
-        rg = RailGraph()
-        rg.create_graph()
+        self.rg.create_graph(use_saved=True)
+
+    def test_add_station_incoming_and_outgoing(self):
+        graph = self.rg.load_graph(self.rg.filepath_save_graphml)
+
+        graph_with_station = self.rg.add_station_source_and_sink(graph)
+
+        self.assertIsInstance(graph_with_station, networkx.DiGraph)
+
+    def test_path_beetween_station(self):
+        graph = self.rg.load_graph(self.rg.filepath_save_with_station_and_parallel_connections)
+        station_from = 'TS'
+        station_to = 'BLS'
+        path = self.rg.path_between_stations(graph, station_from, station_to)
+        self.assertIsInstance(path, list)
+
+    def test_draw_map(self):
+        graph = self.rg.load_graph(self.rg.filepath_save_with_station)
+        self.rg.draw_map(graph)
+
+    def test_create_connection_parallel_routes_in_station(self):
+        graph = self.rg.load_graph(self.rg.filepath_save_with_station)
+        graph_with_parallel_connections = self.rg.create_connection_parallel_lines(graph)
+        self.rg.save_graph(filepath=self.rg.filepath_save_with_station_and_parallel_connections, graph=graph_with_parallel_connections)
+
+    def test_create_connection_parallel_routes_one_station(self):
+        graph = self.rg.load_graph(self.rg.filepath_save_with_station)
+        station = RailwayStation.query.get(636)
+        graph_new = self.rg.create_connection_parallel_lines_one_station(graph=graph, station=station)
+
+    def test_create_nodes_new_railwaylines(self):
+        self.rg.create_nodes_new_railwaylines()
 
     def test_create_graph_one_route(self):
         # that test covers also;
         # __build_graph_railway_line
         rg = RailGraph()
-        route = RailwayRoute.query.filter(RailwayRoute.number == 1000).first()
+        route = RailwayRoute.query.filter(RailwayRoute.number == 10007).first()
         graph = rg.create_graph_one_route(route=route)
         if graph:
             self.assertIsInstance(graph, networkx.DiGraph)

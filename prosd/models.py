@@ -5,12 +5,19 @@ import geoalchemy2
 import shapely
 import sqlalchemy
 from sqlalchemy.ext.hybrid import hybrid_property
-
+from sqlalchemy.ext.associationproxy import association_proxy
+import math
+import logging
 
 from prosd import db, app, bcrypt
 
 
 class PointOfLineNotAtEndError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class NoSplitPossibleError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
@@ -195,11 +202,6 @@ class RailwayLine(db.Model):
         """
         old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
 
-        # get the coordinates
-        # TODO: Not all rail station are directly on the line
-
-        # not all rail stations/blade points are dirctly on the line. So this algorithmus searches the clostes point on the linestring.
-
         coordinates = db.session.execute(
             sqlalchemy.select(
                 geoalchemy2.func.ST_Dump(
@@ -259,8 +261,52 @@ class RailwayLine(db.Model):
                 )
             ).all()
 
-        coordinates_newline_1 = coordinates[0][0]
-        coordinates_newline_2 = coordinates[1][0]
+        if len(coordinates) != 2:
+            coordinates = None
+
+            buffer = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_Buffer(
+                        blade_point,
+                        1/80000000
+                    )
+                )
+            ).scalar()
+
+            coordinates = db.session.execute(
+                sqlalchemy.select(
+                    geoalchemy2.func.ST_Dump(
+                        geoalchemy2.func.ST_CollectionExtract(
+                            geoalchemy2.func.ST_Split(old_line.coordinates, buffer)
+                        )
+                    )
+                )
+            ).all()
+
+            # TODO: add coordinate 1 und 2 to one coordinate
+
+        if len(coordinates) < 2 or len(coordinates) >3:
+            raise NoSplitPossibleError(
+                "For line " + str(old_line.id) + " at point " + str(shapely.wkb.loads(blade_point.desc, hex=True)) + " not possible"
+            )
+        elif len(coordinates) == 2:
+            coordinates_newline_1 = coordinates[0][0]
+            coordinates_newline_2 = coordinates[1][0]
+        elif len(coordinates) == 3:
+            coordinates_1 = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[0][0].split(",")[1][:-1]))).scalar()
+            coordinates_2 = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[1][0].split(",")[1][:-1]))).scalar()
+
+            coordinates_newline_1 = db.session.execute(
+                db.select(
+                    geoalchemy2.func.ST_LineMerge(
+                        geoalchemy2.func.ST_Union(
+                            coordinates_1,
+                            coordinates_2
+                        )
+                    )
+                )
+            ).scalar()
+            coordinates_newline_2 = coordinates[2][0]
 
         # TODO: Throw error if there is a third linestring in the geometry collection
 
@@ -301,7 +347,7 @@ class RailwayLine(db.Model):
         return node_2
 
     @classmethod
-    def get_next_point_of_line(self, line, point, allowed_distance = 1/111000):
+    def get_next_point_of_line(self, line, point, allowed_distance = 1/222000):
         """
         Gets the next point of an line.
         :param line:
@@ -330,10 +376,33 @@ class RailwayLine(db.Model):
 
         return next_point
 
+    @classmethod
+    def get_angle_two_lines(self, line1, line2, node, angle_allowed_min=60):
+        angle_allowed_max = 360 - angle_allowed_min
+
+        angle_check = False
+
+        line1_point = RailwayLine.get_next_point_of_line(line=line1, point=node.coordinate)
+        line2_point = RailwayLine.get_next_point_of_line(line=line2, point=node.coordinate)
+        angle_rad = db.session.execute(sqlalchemy.select(
+            geoalchemy2.func.ST_Angle(node.coordinate, line1_point, node.coordinate,
+                                                                       line2_point))).one()[
+            0]  # 2 times node.coordinate so it is node - line1 to node - line2
+
+        if angle_rad is not None:
+            angle = math.degrees(angle_rad)
+            if angle_allowed_min < angle < angle_allowed_max:
+                angle_check = True
+        else:
+            logging.warning("Could not calculate angle(radian) for " + str(line1.id) + " and " + str(line2.id) + " angle rad is " + str(angle_rad))
+        return angle_check
+
+
 class RailwayPoint(db.Model):
     __tablename__ = 'railway_points'
     id = db.Column(db.Integer, primary_key=True)
     mifcode = db.Column(db.String(255))
+    station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id', ondelete='SET NULL'))
     route_number = db.Column(db.Integer, db.ForeignKey('railway_route.number', onupdate='CASCADE', ondelete='SET NULL'))
     richtung=db.Column(db.Integer)
     km_i = db.Column(db.Integer)
@@ -352,7 +421,8 @@ class RailwayPoint(db.Model):
 
     @classmethod
     # TODO: Write test
-    def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1 / 111000):
+    # TODO: Move that to an class that inherits point, node and station
+    def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1/2220000):
         """
 
         :param coordinate:
@@ -360,12 +430,72 @@ class RailwayPoint(db.Model):
         :param allowed_distance_in_node:
         :return:
         """
-        line = RailwayLine.query.filter(
-            geoalchemy2.func.ST_DWithin(RailwayLine.coordinates, coordinate, allowed_distance_in_node),
-            RailwayLine.route_number == route_number
-        ).one()
+        try:
+            line = RailwayLine.query.filter(
+                geoalchemy2.func.ST_DWithin(RailwayLine.coordinates, coordinate, allowed_distance_in_node),
+                RailwayLine.route_number == route_number
+            ).one()
+        except sqlalchemy.exc.NoResultFound:
+            allowed_distance_in_node = allowed_distance_in_node*10
+            line = RailwayLine.query.filter(
+                geoalchemy2.func.ST_DWithin(RailwayLine.coordinates, coordinate, allowed_distance_in_node),
+                RailwayLine.route_number == route_number
+            ).one()
 
         return line
+
+
+class RailwayStation(db.Model):
+    """
+    a railway point is always connected with one route. The station collects all railway_points of the same station
+    """
+    __tablename__ = 'railway_stations'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    db_kuerzel = db.Column(db.String(5), unique=True)
+    type = db.Column(db.String(10))
+
+    railway_points = db.relationship("RailwayPoint", lazy="dynamic")
+    railway_nodes = db.relationship("RailwayNodes", secondary="join(RailwayPoint, RailwayNodes, RailwayPoint.node_id == RailwayNodes.id)", viewonly=True)
+
+
+    @hybrid_property
+    def railway_lines(self):
+        nodes = self.railway_nodes
+        railway_lines = []
+        for node in nodes:
+            lines = node.lines
+            for line in lines:
+                railway_lines.append(line)
+
+        return railway_lines
+
+    @hybrid_property
+    def coordinate_centroid(self):
+        """
+        calculate the coordinate at centroid of the coordinates of the points connected to the stations
+        :return:
+        """
+        points = self.railway_points.all()
+        coord_list = []
+
+        for point in points:
+            coord = point.coordinates.desc
+            coord_list.append(coord)
+
+        coordinates = db.session.execute(
+            db.select(
+                geoalchemy2.func.ST_Union(coord_list)
+            )
+        ).scalar()
+        
+        coordinate_centroid = db.session.execute(
+            db.select(
+                geoalchemy2.func.ST_Centroid(coordinates)
+            )
+        ).scalar()
+        
+        return coordinate_centroid
 
 
 class RailwayNodes(db.Model):
@@ -379,7 +509,7 @@ class RailwayNodes(db.Model):
     start_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.start_node]")
     end_lines = db.relationship('RailwayLine', lazy=True, foreign_keys="[RailwayLine.end_node]")
 
-    station = db.relationship('RailwayPoint', lazy=True)
+    point = db.relationship('RailwayPoint', lazy=True)
 
     @hybrid_property
     def lines(self):
@@ -392,8 +522,16 @@ class RailwayNodes(db.Model):
 
         return lines
 
+    @hybrid_property
+    def routes_number(self):
+        routes_number = set()
+        for line in self.lines:
+            routes_number.add(line.route_number)
+
+        return routes_number
+
     @classmethod
-    def add_node_if_not_exists(self, coordinate, allowed_distance_in_node=1/111000):
+    def add_node_if_not_exists(self, coordinate, allowed_distance_in_node=1/222000):
         """
         checks if for the given coordinate a nodes exists (tolerance included). If not, a new node gets created.
         :param coordinate: wkb element coordinate
@@ -427,15 +565,20 @@ class RailwayNodes(db.Model):
         return coordinate
 
     @classmethod
-    def check_if_nodes_exists_for_coordinate(self, coordinate, allowed_distance_in_node = 1/111000):
+    def check_if_nodes_exists_for_coordinate(self, coordinate, allowed_distance_in_node = 1/222000):
         """
 
         :param coordinate:
         :param allowed_distance_in_node:
         :return node: models.RailwayNode, if there is no node it returns a None
         """
-        node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
-                                                              allowed_distance_in_node)).first()
+        try:
+            node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
+                                                              allowed_distance_in_node)).scalar()
+        except sqlalchemy.exc.MultipleResultsFound:
+            allowed_distance_in_node = allowed_distance_in_node*(1/100)
+            node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
+                                                                         allowed_distance_in_node)).scalar()
 
         return node
 
@@ -533,6 +676,7 @@ class RailwayNodes(db.Model):
 
         return routes_on_node
 
+
 class RailwayRoute(db.Model):
     """
     German: VzG-Strecken
@@ -548,13 +692,47 @@ class RailwayRoute(db.Model):
     railway_lines = db.relationship("RailwayLine", backref="railway_routes", lazy="dynamic")
 
     boundary_nodes = db.relationship("RailwayNodes", secondary=railway_nodes_to_railway_routes,
-                               backref=db.backref('railway_route', lazy=True))
+                               backref=db.backref('railway_route_ending', lazy=True))
 
     railway_points = db.relationship("RailwayPoint", lazy=True)
 
     # TODO: m:n Project_Contents to RailwayRoutes
 
+    @hybrid_property
+    def coordinates(self):
 
+        lines = self.railway_lines.all()
+        coord_list = []
+
+        for line in lines:
+            coord = line.coordinates.desc
+            coord_list.append(coord)
+
+        coordinates = db.session.execute(
+            db.select(
+                geoalchemy2.func.ST_Union(coord_list)
+            )
+        ).scalar()
+
+        return coordinates
+
+    @classmethod
+    def get_nodes_whose_endpoints_on_input_route(self, input_route):
+        """
+        gets all coordinates from nodes of routes whose endpoints lies on the given route.
+        :param input_route:
+        :return:
+        """
+        all_nodes = RailwayNodes.query.filter(
+            geoalchemy2.func.ST_Intersects(input_route.coordinates, RailwayNodes.coordinate),
+        ).all()
+
+        nodes = list()
+        for node in all_nodes:
+            if input_route.number not in node.routes_number:
+                nodes.append(node)
+
+        return nodes
 
 class RailwayInfrastructureCompany(db.Model):
     """

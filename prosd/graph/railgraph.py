@@ -1,5 +1,3 @@
-import prosd.models
-from prosd import models, db
 import networkx
 import shapely
 import logging
@@ -12,6 +10,8 @@ import math
 import itertools
 import time
 
+from prosd import models, db
+from prosd.graph.graph import GraphBasic
 
 
 class PointOfLineNotAtEndError(Exception):
@@ -19,7 +19,12 @@ class PointOfLineNotAtEndError(Exception):
         super().__init__(message)
 
 
-class RailGraph:
+class SubnodeHasNoNodeID(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class RailGraph(GraphBasic):
     def __init__(self):
         self.railgraph = networkx.DiGraph()
 
@@ -41,12 +46,16 @@ class RailGraph:
         with open(filepath_whitelist_endpoints) as json_file:
             self.whitelist_endpoints = json.load(json_file)
 
+        self.filepath_save_with_station = '../example_data/railgraph/railgraph_with_station.pickle'
+        self.filepath_save_with_station_and_parallel_connections = '../example_data/railgraph/railgraph_with_station_and_parallel_connections.pickle'
+
         self.angle_allowed_min = 60
         self.angle_allowed_max = 360 - self.angle_allowed_min
 
-        self.ALLOWED_DISTANCE_IN_NODE = self.__meter_to_degree(1)  # allowed distance between that are assumed to be on node [m]
+        self.ALLOWED_DISTANCE_IN_NODE = self.__meter_to_degree(
+            1)  # allowed distance between that are assumed to be on node [m]
 
-    def create_graph(self, new_nodes=False):
+    def create_graph(self, new_nodes=False, use_saved=True):
         """
         Imports the RailwayLines of the db and creates a graph out of the data
         :return:
@@ -62,7 +71,7 @@ class RailGraph:
             self.create_nodes_new_railwaylines()
 
         # create graphes of each route
-        graph_list = self._create_graphes_routes(use_saved=True)
+        graph_list = self._create_graphes_routes(use_saved=use_saved)
 
         # connect graphes to one graph
         for graph in graph_list:
@@ -70,7 +79,14 @@ class RailGraph:
 
         self.save_graph(self.filepath_save_graphml, graph=self.railgraph)
 
-        # Create edges and nodes with networkX
+        graph_with_station = self.add_station_source_and_sink(graph=self.railgraph)
+        self.save_graph(self.filepath_save_with_station, graph=graph_with_station)
+        self.railgraph = graph_with_station
+
+        graph_with_station_and_connection_in_station = self.create_connection_parallel_lines(graph=self.railgraph)
+        self.save_graph(self.filepath_save_with_station_and_parallel_connections, graph=self.railgraph)
+        self.railgraph = graph_with_station_and_connection_in_station
+
         return
 
     def save_graph(self, filepath, graph):
@@ -189,7 +205,7 @@ class RailGraph:
         db.session.commit()
 
         for line_id, nodes in lines_to_nodes.items():
-            db.session.query(prosd.models.RailwayLine).filter(prosd.models.RailwayLine.id == line_id).update(
+            db.session.query(models.RailwayLine).filter(models.RailwayLine.id == line_id).update(
                 dict(start_node=nodes[0], end_node=nodes[1]),
                 synchronize_session=False
             )
@@ -209,7 +225,7 @@ class RailGraph:
         graph_list = []
         for route in railway_routes:
             filepath_graph_route = self.filepath_save_graph_route.format(str(route.number))
-            if os.path.exists(filepath_graph_route):
+            if os.path.exists(filepath_graph_route) and use_saved:
                 graph = self.load_graph(filepath_graph_route)
                 if graph:
                     graph_list.append(graph)
@@ -220,7 +236,7 @@ class RailGraph:
                     if graph:
                         graph_list.append(graph)
                     et = time.time()
-                    run_time = et-st
+                    run_time = et - st
                     logging.debug("RunTime route " + str(route.number) + " " + str(run_time))
                 except Exception as e:
                     logging.error("Error at route " + str(route.number) + " " + str(route.name) + " " + str(e))
@@ -233,7 +249,6 @@ class RailGraph:
         :return:
         """
         lines = route.railway_lines
-        graph_list = list()
 
         if len(lines.all()) == 0:
             logging.info("No railwaylines for route: " + str(route.number) + " " + str(route.name))
@@ -242,14 +257,21 @@ class RailGraph:
             logging.info("Route " + str(route.number) + " " + str(route.name) + " is ignored")
             return
         else:
-            G, remaining_lines = self.__build_graph_railway_line(lines, route)
+            # first check, if all stations have a node. If not, new nodes are created and lines are splitted
+            self._check_all_stations_have_nodes(route=route)
+            db.session.refresh(route)
+
+            self._check_end_nodes_other_lines(route=route)
+            db.session.refresh(route)
+
+            G, remaining_lines = self._build_graph_railway_line(lines, route)
 
             # There is a possibility, that not all railway lines have been used. Either because of parallel route or
             # an interrupted route
             if len(remaining_lines.all()) > 0:
                 if str(route.number) in self.whitelist_parallel_routes:
                     while remaining_lines.all():
-                        new_graph, remaining_lines = self.__build_graph_railway_line(lines=remaining_lines, route=route)
+                        new_graph, remaining_lines = self._build_graph_railway_line(lines=remaining_lines, route=route)
                         G.update(new_graph)
                 else:
                     logging.warning("For route " + str(route.number) + " " + str(
@@ -261,18 +283,137 @@ class RailGraph:
 
             return G
 
-    def _create_turner(self, G, node, connect_same_route=False, allow_turn_on_same_line=True):
+    def add_station_source_and_sink(self, graph):
+        """
+        adds for all stations the source and sink for easier routing
+        :return:
+        """
+        stations = models.RailwayStation.query.all()
+
+        for station in stations:
+            # get the station db_kuerzel
+            station_sink_node = str(station.db_kuerzel) + "_in"
+            station_source_node = str(station.db_kuerzel) + "_out"
+
+            node_data = {"node_id":station.id}
+            graph = self.add_node_to_graph(graph=graph, node_name=station_sink_node, node_data=node_data)
+            graph = self.add_node_to_graph(graph=graph, node_name=station_source_node, node_data=node_data)
+            # graph.add_node(station_sink_node)
+            # graph.add_node(station_source_node)
+
+            nodes = station.railway_nodes
+            # iterate through nodes and establish connections from each input of a node to the station_in
+            # and from the station_out to each output of a node
+            for node in nodes:
+                lines_of_node = node.lines
+                for line in lines_of_node:
+                    # incoming
+                    line_incoming_node = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=0)
+                    graph = self.add_node_to_graph(graph=graph, node_name=line_incoming_node, node_data={"node_id": node.id})
+                    graph = self.add_edge(graph, line_incoming_node, station_sink_node, edge_data={"line": "station_line_sink"})
+
+                    # outgoing
+                    line_outgoing_node = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
+                    graph = self.add_node_to_graph(graph=graph, node_name=line_outgoing_node, node_data={"node_id": node.id})
+                    graph = self.add_edge(graph, station_source_node, line_outgoing_node,  edge_data={"line": "station_line_source"})
+
+        return graph
+
+    def create_connection_parallel_lines(self, graph):
+        """
+        some lines are parallel in stations and are not connect. So allow them to connect, if the station is a "Bahnhof".
+        :return:
+        """
+        stations = models.RailwayStation.query.filter(models.RailwayStation.type == "Bf").all()
+
+        for station in stations:
+            graph = self.create_connection_parallel_lines_one_station(station=station, graph=graph)
+        return graph
+
+    def create_connection_parallel_lines_one_station(self, station, graph):
+        """
+
+        :param station:
+        :param graph:
+        :return:
+        """
+        nodes = station.railway_nodes
+
+        if len(nodes) > 1:
+            node_ids = []
+            for node in nodes:
+                node_ids.append(node.id)
+
+            graph_nodes = []
+            for n in graph.nodes(data=True):
+                try:
+                    if n[1]["node_id"] in node_ids:
+                        graph_nodes.append(n[0])
+                except KeyError:
+                    logging.info("node " + str(n) + " has no <node_id>")
+
+            # graph_nodes = [n for n, v in graph.nodes(data=True) if v["node_id"] in node_ids]
+            graph_station = graph.subgraph(graph_nodes)
+
+            for node in nodes:
+                lines = node.lines
+                for line in lines:
+                    outgoing_line = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
+                    lines_other_nodes = set(station.railway_lines) - set(node.lines)
+
+                    for line_other_node in lines_other_nodes:
+                        node_of_other_line = list(set(node_ids) & set(line_other_node.nodes))[0]
+                        ingoing_line = self._create_subnode_id(node_id=node_of_other_line,
+                                                               line_id=line_other_node.id, direction=0)
+                        path_exists = self.check_path_exists(graph_station, outgoing_line, ingoing_line)
+                        if not path_exists:
+                            # Check if the angle allows a path. Because they have no same node, get_angle_two_lines does not work
+                            line_outgoing_node = node
+                            line_outgoing_next_point = models.RailwayLine.get_next_point_of_line(line=line,
+                                                                                                 point=line_outgoing_node.coordinate)
+                            line_ingoing_node = models.RailwayNodes.query.get(node_of_other_line)
+                            line_ingoing_next_point = models.RailwayLine.get_next_point_of_line(line=line_other_node,
+                                                                                                point=line_ingoing_node.coordinate)
+                            angle_rad = db.session.execute(sqlalchemy.select(
+                                geoalchemy2.func.ST_Angle(line_outgoing_node.coordinate, line_outgoing_next_point,
+                                                          line_ingoing_node.coordinate, line_ingoing_next_point)
+                            )).scalar()
+                            angle_degree = math.degrees(angle_rad)
+
+                            if self.angle_allowed_min < angle_degree < self.angle_allowed_max:
+                                self.add_edge(graph=graph, node1=outgoing_line, node2=ingoing_line,
+                                              edge_data={"line": "inside_node_line"})
+
+        return graph
+
+
+    def _create_turner(self, G, node, connect_same_route=False, allow_turn_on_same_line=False):
         """
         in some nodes not all combination of edges are allowed. This function creates a sub-node where only that combination are allowed that are possibly to use.
         For that generally:
 
         :return:
         """
+        if node.point:
+            if node.point[0].type == 'Bf':
+                allow_turn_on_same_line=True
 
         G = self.__build_directed_graph_with_subnodes(G=G, node=node)
-        G = self.__find_and_connect_allowed_connections(G=G, node=node, connect_same_route=connect_same_route)
+        G = self.__find_and_connect_allowed_connections(G=G, node=node, connect_same_route=connect_same_route, allow_turn_on_same_line=allow_turn_on_same_line)
 
         return G
+
+    def _check_end_nodes_other_lines(self, route):
+        """
+        # check, if there are ending-nodes of other lines that are on that line and the line has no node at that point. In this case split the lines there
+        :return:
+        """
+        nodes = models.RailwayRoute.get_nodes_whose_endpoints_on_input_route(input_route=route)
+        for node in nodes:
+            if len(node.routes_number)>0:
+                old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(coordinate=node.coordinate,
+                                                                                       route_number=route.number)
+                models.RailwayLine.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
 
     def _remove_line_from_graph(self, G, line):
         """
@@ -281,17 +422,17 @@ class RailGraph:
         :param line: a line (from model RailwayLine)
         :return:
         """
-        start_node_out = self.__create_subnode_id(node_id=line.start_node, line_id=line.id, direction=1)
-        start_node_in = self.__create_subnode_id(node_id=line.start_node, line_id=line.id, direction=0)
-        end_node_in = self.__create_subnode_id(node_id=line.end_node, line_id=line.id, direction=0)
-        end_node_out = self.__create_subnode_id(node_id=line.end_node, line_id=line.id, direction=1)
+        start_node_out = self._create_subnode_id(node_id=line.start_node, line_id=line.id, direction=1)
+        start_node_in = self._create_subnode_id(node_id=line.start_node, line_id=line.id, direction=0)
+        end_node_in = self._create_subnode_id(node_id=line.end_node, line_id=line.id, direction=0)
+        end_node_out = self._create_subnode_id(node_id=line.end_node, line_id=line.id, direction=1)
 
         G.remove_edge(start_node_out, end_node_in)
         G.remove_edge(end_node_out, start_node_in)
 
         return G
 
-    def _add_line_to_graph(self, G, line):
+    def _add_line_to_graph(self, graph, line):
         """
         adds a line to an existing graph
         :param G:
@@ -299,22 +440,29 @@ class RailGraph:
         :return:
         """
         # add the edges
-        start_node_out = self.__create_subnode_id(node_id=line.start_node, line_id=line.id, direction=1)
-        start_node_in = self.__create_subnode_id(node_id=line.start_node, line_id=line.id, direction=0)
-        end_node_in = self.__create_subnode_id(node_id=line.end_node, line_id=line.id, direction=0)
-        end_node_out = self.__create_subnode_id(node_id=line.end_node, line_id=line.id, direction=1)
+        start_node_out = self._create_subnode_id(node_id=line.start_node, line_id=line.id, direction=1)
+        start_node_in = self._create_subnode_id(node_id=line.start_node, line_id=line.id, direction=0)
+        end_node_in = self._create_subnode_id(node_id=line.end_node, line_id=line.id, direction=0)
+        end_node_out = self._create_subnode_id(node_id=line.end_node, line_id=line.id, direction=1)
 
-        G.add_edge(start_node_out, end_node_in)
-        G.add_edge(end_node_out, start_node_in)
+        graph = self.add_node_to_graph(graph=graph, node_name=start_node_out, node_data={"node_id": line.start_node})
+        graph = self.add_node_to_graph(graph=graph, node_name=start_node_in, node_data={"node_id": line.start_node})
+        graph = self.add_node_to_graph(graph=graph, node_name=end_node_in, node_data={"node_id": line.end_node})
+        graph = self.add_node_to_graph(graph=graph, node_name=end_node_out, node_data={"node_id": line.end_node})
+
+        graph = self.add_edge(graph=graph, node1=start_node_out, node2=end_node_in, edge_data={"line": line.id})
+        graph = self.add_edge(graph=graph, node1=end_node_out, node2=start_node_in, edge_data={"line": line.id})
+        # G.add_edge(start_node_out, end_node_in)
+        # G.add_edge(end_node_out, start_node_in)
 
         # recalculate the turner
         start_node = models.RailwayNodes.query.get(line.start_node)
         end_node = models.RailwayNodes.query.get(line.end_node)
 
-        G = self.__find_and_connect_allowed_connections(G=G, node=start_node)
-        G = self.__find_and_connect_allowed_connections(G=G, node=end_node)
+        graph = self.__find_and_connect_allowed_connections(G=graph, node=start_node)
+        graph = self.__find_and_connect_allowed_connections(G=graph, node=end_node)
 
-        return G
+        return graph
 
     def __build_directed_graph_with_subnodes(self, G, node):
         """
@@ -323,16 +471,18 @@ class RailGraph:
         :return: 
         """
         ## correct the Graph for the node.
-        lines=node.lines
+        lines = node.lines
         # Adds new edges that point to an own subnode and remove the old edges
         incoming_edges = list(G.in_edges(node.id))
 
         for u, v in incoming_edges:
             line = models.RailwayLine.query.filter(models.RailwayLine.id == G.get_edge_data(u, v)["line"]).one()
             node_u_id = models.RailwayLine.get_other_node_of_line(line, node.id).id
-            subnode_u_id = self.__create_subnode_id(node_id=node_u_id, line_id=line.id, direction=1)
-            subnode_v_id = self.__create_subnode_id(node_id=node.id, line_id=line.id, direction=0)
-            G.add_edge(subnode_u_id, subnode_v_id, line=line.id)
+            subnode_u_id = self._create_subnode_id(node_id=node_u_id, line_id=line.id, direction=1)
+            subnode_v_id = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=0)
+            G = self.add_node_to_graph(graph=G, node_name=subnode_u_id, node_data={"node_id": node_u_id})
+            G = self.add_node_to_graph(graph=G, node_name=subnode_v_id, node_data={"node_id": node.id})
+            G = self.add_edge(graph=G, node1=subnode_u_id, node2=subnode_v_id, edge_data={"line": line.id})
 
         G.remove_edges_from(incoming_edges)
 
@@ -340,16 +490,18 @@ class RailGraph:
         for u, v in outgoing_edges:
             line = models.RailwayLine.query.filter(models.RailwayLine.id == G.get_edge_data(u, v)["line"]).one()
             node_v_id = models.RailwayLine.get_other_node_of_line(line, node.id).id
-            subnode_u_id = self.__create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
-            subnode_v_id = self.__create_subnode_id(node_id=node_v_id, line_id=line.id, direction=0)
-            G.add_edge(subnode_u_id, subnode_v_id, line=line.id)
+            subnode_u_id = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
+            subnode_v_id = self._create_subnode_id(node_id=node_v_id, line_id=line.id, direction=0)
+            G = self.add_node_to_graph(graph=G, node_name=subnode_u_id, node_data={"node_id": node.id})
+            G = self.add_node_to_graph(graph=G, node_name=subnode_v_id, node_data={"node_id": node_v_id})
+            G = self.add_edge(graph=G, node1=subnode_u_id, node2=subnode_v_id, edge_data={"line": line.id})
 
         G.remove_edges_from(outgoing_edges)
         G.remove_node(node.id)
 
         return G
 
-    def __find_and_connect_allowed_connections(self, G, node, connect_same_route=False):
+    def __find_and_connect_allowed_connections(self, G, node, connect_same_route=False, allow_turn_on_same_line=False):
         """
 
         :param G:
@@ -362,6 +514,8 @@ class RailGraph:
         for in_line in lines:
             for out_line in lines:
                 if in_line.id == out_line.id:
+                    if allow_turn_on_same_line:
+                        G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line, line2=out_line, allowed_connections=allowed_connections)
                     # allow_turn_on_same_line
                     # TODO: Implement logic with a weight
                     continue
@@ -370,7 +524,8 @@ class RailGraph:
                                                                          line2=out_line,
                                                                          allowed_connections=allowed_connections)
                 else:
-                    angle_check = self.__get_angle_two_lines(line1=in_line, line2=out_line, node=node)
+
+                    angle_check = models.RailwayLine.get_angle_two_lines(line1=in_line, line2=out_line, node=node)
                     if angle_check:
                         G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,
                                                                              line2=out_line,
@@ -379,39 +534,28 @@ class RailGraph:
 
     def __connect_lines_turner(self, G, node, line1, line2, allowed_connections):
         if not [line1, line2] in allowed_connections:
-            subnode_1_in = self.__create_subnode_id(node_id=node.id, line_id=line1.id, direction=0)
-            subnode_1_out = self.__create_subnode_id(node_id=node.id, line_id=line1.id, direction=1)
-            subnode_2_in = self.__create_subnode_id(node_id=node.id, line_id=line2.id, direction=0)
-            subnode_2_out = self.__create_subnode_id(node_id=node.id, line_id=line2.id, direction=1)
-            G.add_edge(subnode_1_in, subnode_2_out)
-            G.add_edge(subnode_2_in, subnode_1_out)
+            subnode_1_in = self._create_subnode_id(node_id=node.id, line_id=line1.id, direction=0)
+            subnode_1_out = self._create_subnode_id(node_id=node.id, line_id=line1.id, direction=1)
+            subnode_2_in = self._create_subnode_id(node_id=node.id, line_id=line2.id, direction=0)
+            subnode_2_out = self._create_subnode_id(node_id=node.id, line_id=line2.id, direction=1)
+
+            G = self.add_node_to_graph(graph=G, node_name=subnode_1_in,
+                                       node_data={"node_id": node.id})
+            G = self.add_node_to_graph(graph=G, node_name=subnode_1_out,
+                                       node_data={"node_id": node.id})
+            G = self.add_node_to_graph(graph=G, node_name=subnode_2_in, node_data={"node_id": node.id})
+            G = self.add_node_to_graph(graph=G, node_name=subnode_2_out, node_data={"node_id": node.id})
+
+            G = self.add_edge(graph=G, node1=subnode_1_in, node2=subnode_2_out, edge_data={"line": "inside_node_line"})
+            G = self.add_edge(graph=G, node1=subnode_2_in, node2=subnode_1_out,
+                              edge_data={"line": "inside_node_line"})
+
+            # G.add_edge(subnode_1_in, subnode_2_out)
+            # G.add_edge(subnode_2_in, subnode_1_out)
             allowed_connections.append([line1, line2])
         return G, allowed_connections
 
-    def __get_angle_two_lines(self, line1, line2, node):
-        # TODO: Move that to railway_lines
-        angle_check = False
-
-        line1_point = models.RailwayLine.get_next_point_of_line(line=line1, point=node.coordinate)
-        line2_point = models.RailwayLine.get_next_point_of_line(line=line2, point=node.coordinate)
-        statement = sqlalchemy.select(geoalchemy2.func.ST_Angle(node.coordinate, line1_point, node.coordinate,
-                                                               line2_point))  # 2 times node.coordinate so it is node - line1 to node - line2
-        angle = math.degrees(db.session.execute(statement).one()[0])
-        if self.angle_allowed_min < angle < self.angle_allowed_max:
-            angle_check = True
-        return angle_check
-
-    def _shortest_path_nodes(self, from_node, from_line, to_node, to_line, graph):
-        start_node = self.__create_subnode_id(from_node, from_line, 1)
-        end_node = self.__create_subnode_id(to_node, to_line, 0)
-        route = self.__shortest_path(graph=graph, source=start_node, target=end_node)
-        return route
-
-    def __shortest_path(self, graph, source, target):
-        route = networkx.shortest_path(G=graph, source=source, target=target)  # TODO: Add weight function
-        return route
-
-    def __create_subnode_id(self, node_id, line_id, direction):
+    def _create_subnode_id(self, node_id, line_id, direction):
         """
 
         :param node_id: int id of node
@@ -420,13 +564,10 @@ class RailGraph:
         :return:
         """
         # TODO: Change all creation of subnodes_id to this function
-        subnode_id = int(str(node_id)+str(line_id)+str(direction))
+        subnode_id = int(str(node_id) + str(line_id) + str(direction))
         return subnode_id
 
-    def __next_point_of_line(self, line, point):
-        pass
-
-    def __build_graph_railway_line(self, lines, route):
+    def _build_graph_railway_line(self, lines, route):
         """
 
         :return:
@@ -440,8 +581,9 @@ class RailGraph:
         first_line = lines[0]
 
         # add two edges (each direction)
-        G.add_edge(first_line.start_node, first_line.end_node, line=first_line.id)
-        G.add_edge(first_line.end_node, first_line.start_node, line=first_line.id)
+        G = self.__add_edges_both_directions(graph=G, node1=first_line.start_node, node2=first_line.end_node, line=first_line)
+        # G.add_edge(first_line.start_node, first_line.end_node, line=first_line.id)
+        # G.add_edge(first_line.end_node, first_line.start_node, line=first_line.id)
 
         open_nodes.add(first_line.start_node)
         open_nodes.add(first_line.end_node)
@@ -459,8 +601,9 @@ class RailGraph:
 
                 if len(next_lines) > 0:
                     for next_line in next_lines:
-                        G.add_edge(next_line.start_node, next_line.end_node, line=next_line.id)
-                        G.add_edge(next_line.end_node, next_line.start_node, line=next_line.id)
+                        # G.add_edge(next_line.start_node, next_line.end_node, line=next_line.id)
+                        # G.add_edge(next_line.end_node, next_line.start_node, line=next_line.id)
+                        G = self.__add_edges_both_directions(graph=G, node1=next_line.start_node, node2=next_line.end_node, line=next_line)
                         open_nodes.add(next_line.start_node)
                         open_nodes.add(next_line.end_node)
                         added_lines.add(next_line.id)
@@ -503,43 +646,65 @@ class RailGraph:
                 node = models.RailwayNodes.query.filter(models.RailwayNodes.id == node_id).first()
                 G = self._create_turner(G=G, node=node)
             except PointOfLineNotAtEndError:
-                logging.warning("For " + str(node_id) + " on route " + str(route.number) + " is not the start or end point.")
+                logging.warning(
+                    "For " + str(node_id) + " on route " + str(route.number) + " is not the start or end point.")
 
         # TODO add the stations to the graph
-        self._add_stations_to_route_graph(graph=G, route=route)
+        # self._add_stations_to_route_graph(graph=G, route=route)
 
-        self.__check_existing_connection_route(end_nodes=end_nodes, route=route, graph=G)
+        self._check_existing_connection_route(end_nodes=end_nodes, route=route, graph=G)
 
         return G, remaining_lines
 
-    def _add_stations_to_route_graph(self, graph, route):
+    # def _add_stations_to_route_graph(self, graph, route):
+    #     """
+    #     ad the stations of a route to the graph of that route
+    #     :param graph:
+    #     :return:
+    #     """
+    #     # TODO: Maybe not used anymore
+    #     Nodes = models.RailwayNodes
+    #     Lines = models.RailwayLine
+    #     points = route.railway_points
+    #     for point in points:
+    #         # check if station has a node
+    #         node = Nodes.check_if_nodes_exists_for_coordinate(point.coordinates)
+    #         if not node:
+    #             node = Nodes.add_node(point.coordinates)
+    #             old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
+    #             newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
+    #             self._remove_line_from_graph(G=graph, line=old_line)
+    #             self._add_line_to_graph(G=graph, line=newline_1)
+    #             self._add_line_to_graph(G=graph, line=newline_2)
+    #
+    #         point.node_id = node.id
+    #         node = None
+    #
+    #     return graph
+
+    def _check_all_stations_have_nodes(self, route):
         """
-        ad the stations of a route to the graph of that route
-        :param graph:
+        controls thatt all stations have a node
+        :param route:
         :return:
         """
+        # TODO: Move that to models.RailwayStation
         Nodes = models.RailwayNodes
         Lines = models.RailwayLine
         points = route.railway_points
         for point in points:
-            # check if station has a node
             node = Nodes.check_if_nodes_exists_for_coordinate(point.coordinates)
             if not node:
                 node = Nodes.add_node(point.coordinates)
                 old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
                 newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
-                self._remove_line_from_graph(G=graph, line=old_line)
-                self._add_line_to_graph(G=graph, line=newline_1)
-                self._add_line_to_graph(G=graph, line=newline_2)
+            elif route.number not in node.routes_number:
+                old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
+                newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
 
-            point.node_id = node.id
-            node = None
-
-        return graph
-
-    def __check_existing_connection_route(self, end_nodes, route, graph):
+    def _check_existing_connection_route(self, end_nodes, route, graph):
         """
-
+        controls if a graph is able to route between any combination of end_nodes
         :param end_nodes:
         :return:
         """
@@ -571,7 +736,8 @@ class RailGraph:
                         except networkx.NetworkXNoPath:
                             continue
                         except networkx.NodeNotFound as e:
-                            logging.error("For route " + str(route.number) + " " + str(route.name) + " a node is not part of G " + str(e))
+                            logging.error("For route " + str(route.number) + " " + str(
+                                route.name) + " a node is not part of G " + str(e))
 
         # iterate through all possible combinations of connections and check if there exists a allowed connection
 
@@ -581,29 +747,30 @@ class RailGraph:
 
         return possible_routes
 
-    def _connect_end_node_to_line(self, G_of_node, G_continuing_line, node, line_of_node):
-        """
-
-        :return:
-        """
-        # TODO: Write test for this method
-        # get the line which intersects the endpoint
-        line = models.RailwayLine.get_line_that_intersects_point(coordinate=node.coordinate, from_line=line_of_node)
-
-        G_continuing_line = self._remove_line_from_graph(G=G_continuing_line, line=line)
-
-        # split the line which intersects the endpoint
-
-        newline1, newline2 = models.RailwayLine.split_railwayline(old_line_id=line.id, blade_point=node.coordinate)
-
-        G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline1)
-        G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline2)
-
-        # connect the graphes together
-        G_continuing_line.update(G_of_node)
-        G_continuing_line = self.__find_and_connect_allowed_connections(G=G_continuing_line, node=node)
-
-        return G_continuing_line
+    # def _connect_end_node_to_line(self, G_of_node, G_continuing_line, node, line_of_node):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     # TODO: Write test for this method
+    #     # TODO check if this method is still in use
+    #     # get the line which intersects the endpoint
+    #     line = models.RailwayLine.get_line_that_intersects_point(coordinate=node.coordinate, from_line=line_of_node)
+    #
+    #     G_continuing_line = self._remove_line_from_graph(G=G_continuing_line, line=line)
+    #
+    #     # split the line which intersects the endpoint
+    #
+    #     newline1, newline2 = models.RailwayLine.split_railwayline(old_line_id=line.id, blade_point=node.coordinate)
+    #
+    #     G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline1)
+    #     G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline2)
+    #
+    #     # connect the graphes together
+    #     G_continuing_line.update(G_of_node)
+    #     G_continuing_line = self.__find_and_connect_allowed_connections(G=G_continuing_line, node=node)
+    #
+    #     return G_continuing_line
 
     def _check_nodes_exists(self, coord, nodes_list, Model, commit_list, idlist):
         """
@@ -614,6 +781,7 @@ class RailGraph:
         :commit_list: a list of open commits
         :return:
         """
+        # TODO: Remove Model
         if coord in nodes_list:
             node = nodes_list[coord]
         else:
@@ -641,6 +809,57 @@ class RailGraph:
 
         return id
 
+    def __add_edges_both_directions(self, graph, node1, node2, line):
+        """
+        add edges for both directions given the nodes and the line as edge
+        :param graph:
+        :param node1:
+        :param node2:
+        :param line:
+        :return:
+        """
+        graph = self.add_node_to_graph(graph=graph, node_name=node1, node_data={"node_id": node1})
+        graph = self.add_node_to_graph(graph=graph, node_name=node2, node_data={"node_id": node2})
+
+        graph = self.add_edge(graph=graph, node1=node1, node2=node2, edge_data={"line": line.id})
+        graph = self.add_edge(graph=graph, node1=node2, node2=node1, edge_data={"line": line.id})
+
+        return graph
+
+    def add_edge(self, graph, node1, node2, edge_data):
+        """
+        adds a edge to an graph.
+        :param graph:
+        :param node1:
+        :param nod2:
+        :param edge_data: dict of node_data
+        :return:
+        """
+
+        # have in mind: directed graph!
+        graph.add_edge(node1, node2, **edge_data)
+
+        return graph
+
+    def add_node_to_graph(self, graph, node_name, node_data):
+        """
+        checks if node is in graph, if not, it creates the node
+        :param graph:
+        :param node:
+        :param node_data: dict of node_data
+        :return:
+        """
+
+        if "node_id" not in node_data:
+            raise SubnodeHasNoNodeID(
+                "For graph " + str(graph) + " for node " + node_name + " there is no node_id"
+            )
+
+        if not node_name in graph:
+            graph.add_node(node_name, **node_data)
+
+        return graph
+
     def __degree_to_meter(self, degree):
         """
         Converts degree (the distance unit of srid 4326) to meter. Notice that this is an aproximation
@@ -661,7 +880,6 @@ class RailGraph:
 
         return meter
 
-
     def __meter_to_degree(self, meter):
         """
         Converts meter to degree (srid 4326). Notice that this is an approximation
@@ -669,9 +887,68 @@ class RailGraph:
         :return:
         """
         convertion_dict = {
-            1: 1/111000
+            1: 1 / 111000
         }
 
         degree = convertion_dict[meter]
 
         return degree
+
+    def path_between_stations(self, graph, station_from, station_to):
+        """
+        find a path between stations. Returns list of nodes
+        :param graph:
+        :param station_from: kuerzel of station
+        :param station_to: kuerzel of station
+        :return:
+        """
+        station_source = str(station_from) + "_out"
+        station_sink = str(station_to) + "_in"
+
+        path = super().shortest_path(graph=graph, source=station_source, target=station_sink)
+        return path
+
+    def draw_map(self, graph):
+        """
+
+        :return:
+        """
+
+        #TODO: Calculation of positions in separate function
+        nodes_pos = dict()
+        for subnode in graph.nodes:
+            if isinstance(subnode, int):
+                node_id = graph.nodes[subnode]["node_id"]
+                coordinate = models.RailwayNodes.query.get(node_id).coordinate
+            elif isinstance(subnode, str):
+                station_id = graph.nodes[subnode]["node_id"]
+                coordinate = models.RailwayStation.query.get(station_id).coordinate_centroid
+            else:
+                logging.warning("For subnode " + subnode + "there is no node_id")
+
+            nodes_pos[subnode] = coordinate
+
+        super().show_path_on_map(graph, nodes_pos)
+
+    def _shortest_path_nodes(self, from_node, from_line, to_node, to_line, graph):
+        start_node = self._create_subnode_id(from_node, from_line, 1)
+        end_node = self._create_subnode_id(to_node, to_line, 0)
+        route = super().shortest_path(graph=graph, source=start_node, target=end_node)
+        return route
+
+    def check_path_exists(self, graph, from_node, to_node):
+        """
+        checks if a past exists
+        :param graph:
+        :param from_node:
+        :param to_node:
+        :return: bool
+        """
+        path_exists = False
+        try:
+            networkx.shortest_path(graph, from_node, to_node)
+            path_exists=True
+        except networkx.NetworkXNoPath:
+            path_exists=False
+
+        return path_exists

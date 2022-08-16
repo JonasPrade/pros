@@ -175,6 +175,14 @@ class TestRailwayLine(BaseTestCase):
         point = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(line.coordinates))).one()[0]
         next_point = RailwayLine.get_next_point_of_line(line, point)
 
+    def test_get_angle_two_lines(self):
+        line1 = RailwayLine.query.get(40147)
+        line2 = RailwayLine.query.get(19046)
+        node = RailwayNodes.query.get(332046)
+
+        angle_check = RailwayLine.get_angle_two_lines(line1=line1, line2=line2, node=node)
+        self.assertFalse(angle_check)
+
 class TestRailwayNode(BaseTestCase):
     def test_add_node_no_existing(self):
         coordinate = shapely.geometry.Point(0,0)
