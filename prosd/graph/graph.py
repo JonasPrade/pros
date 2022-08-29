@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class GraphBasic:
     """
-    provides basic methods for a routable graph for transportion cases
+    provides basic methods for a routable manipulate_geodata_and_db for transportion cases
     """
 
     def shortest_path(self, graph, source, target):
@@ -13,7 +13,7 @@ class GraphBasic:
 
     def show_path_on_map(self, graph, nodes_pos):
         """
-        shows the path of an shortest_path on a map based on the graph
+        shows the path of an shortest_path on a map based on the manipulate_geodata_and_db
         :param graph:
         :param path:
         :return:

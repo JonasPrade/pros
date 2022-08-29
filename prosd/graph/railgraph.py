@@ -28,26 +28,34 @@ class RailGraph(GraphBasic):
     def __init__(self):
         self.railgraph = networkx.DiGraph()
 
-        self.filepath_save_graphml = '../example_data/railgraph/railgraph.pickle'
-        self.filepath_save_graph_route = '../example_data/railgraph/graphes_routes/{}.pickle'
+        dirname = os.path.dirname(__file__)
 
-        filepath_whitelist_parallel_routes = os.path.abspath(
-            '../example_data/railgraph/whitelist_parallel_routes.json')
+        self.filepath_save_graphml = os.path.realpath(
+            os.path.join(dirname, '../../example_data/railgraph/railgraph.pickle'))
+        self.filepath_save_graph_route = os.path.realpath(
+            os.path.join(dirname, '../../example_data/railgraph/graphes_routes/{}.pickle'))
+
+        filepath_whitelist_parallel_routes = os.path.realpath(
+            os.path.join(dirname, '../../example_data/railgraph/whitelist_parallel_routes.json'))
         with open(filepath_whitelist_parallel_routes) as json_file:
             self.whitelist_parallel_routes = json.load(json_file)
 
-        filepath_whitelist_ignore_route_graph = os.path.abspath(
-            '../example_data/railgraph/whitelist_ignore_route_graph.json')
+        filepath_whitelist_ignore_route_graph = os.path.realpath(os.path.join(dirname,
+                                                                              '../../example_data/railgraph/whitelist_ignore_route_graph.json'))
         with open(filepath_whitelist_ignore_route_graph) as json_file:
             self.whitelist_ignore_route_graph = json.load(json_file)
 
-        filepath_whitelist_endpoints = os.path.abspath(
-            '../example_data/railgraph/whitelist_endpoints.json')
+        filepath_whitelist_endpoints = os.path.realpath(os.path.join(dirname,
+                                                                     '../../example_data/railgraph/whitelist_endpoints.json'))
         with open(filepath_whitelist_endpoints) as json_file:
             self.whitelist_endpoints = json.load(json_file)
 
-        self.filepath_save_with_station = '../example_data/railgraph/railgraph_with_station.pickle'
-        self.filepath_save_with_station_and_parallel_connections = '../example_data/railgraph/railgraph_with_station_and_parallel_connections.pickle'
+        self.filepath_save_with_station = os.path.realpath(
+            os.path.join(dirname, '../../example_data/railgraph/railgraph_with_station.pickle'))
+        self.filepath_save_with_station_and_parallel_connections = os.path.realpath(os.path.join(dirname,
+                                                                                                 '../../example_data/railgraph/railgraph_with_station_and_parallel_connections.pickle'))
+        self.filepath_save_path = os.path.realpath(
+            os.path.join(dirname, '../../example_data/railgraph/paths/{}_to_{}.json'))
 
         self.angle_allowed_min = 60
         self.angle_allowed_max = 360 - self.angle_allowed_min
@@ -57,7 +65,7 @@ class RailGraph(GraphBasic):
 
     def create_graph(self, new_nodes=False, use_saved=True):
         """
-        Imports the RailwayLines of the db and creates a graph out of the data
+        Imports the RailwayLines of the db and creates a manipulate_geodata_and_db out of the data
         :return:
         """
         # Import RailwayLines
@@ -73,7 +81,7 @@ class RailGraph(GraphBasic):
         # create graphes of each route
         graph_list = self._create_graphes_routes(use_saved=use_saved)
 
-        # connect graphes to one graph
+        # connect graphes to one manipulate_geodata_and_db
         for graph in graph_list:
             self.railgraph.update(graph)
 
@@ -91,9 +99,9 @@ class RailGraph(GraphBasic):
 
     def save_graph(self, filepath, graph):
         """
-        saves a graph
+        saves a manipulate_geodata_and_db
         :param filepath:
-        :param graph: a list of graphes or a graph itself
+        :param graph: a list of graphes or a manipulate_geodata_and_db itself
         :return:
         """
 
@@ -101,7 +109,7 @@ class RailGraph(GraphBasic):
 
     def load_graph(self, filepath):
         """
-        loads a graph
+        loads a manipulate_geodata_and_db
         :param filepath:
         :return:
         """
@@ -245,7 +253,7 @@ class RailGraph(GraphBasic):
 
     def create_graph_one_route(self, route, save=True):
         """
-        creates a graph for one route
+        creates a manipulate_geodata_and_db for one route
         :return:
         """
         lines = route.railway_lines
@@ -295,11 +303,11 @@ class RailGraph(GraphBasic):
             station_sink_node = str(station.db_kuerzel) + "_in"
             station_source_node = str(station.db_kuerzel) + "_out"
 
-            node_data = {"node_id":station.id}
+            node_data = {"node_id": station.id}
             graph = self.add_node_to_graph(graph=graph, node_name=station_sink_node, node_data=node_data)
             graph = self.add_node_to_graph(graph=graph, node_name=station_source_node, node_data=node_data)
-            # graph.add_node(station_sink_node)
-            # graph.add_node(station_source_node)
+            # manipulate_geodata_and_db.add_node(station_sink_node)
+            # manipulate_geodata_and_db.add_node(station_source_node)
 
             nodes = station.railway_nodes
             # iterate through nodes and establish connections from each input of a node to the station_in
@@ -309,13 +317,17 @@ class RailGraph(GraphBasic):
                 for line in lines_of_node:
                     # incoming
                     line_incoming_node = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=0)
-                    graph = self.add_node_to_graph(graph=graph, node_name=line_incoming_node, node_data={"node_id": node.id})
-                    graph = self.add_edge(graph, line_incoming_node, station_sink_node, edge_data={"line": "station_line_sink"})
+                    graph = self.add_node_to_graph(graph=graph, node_name=line_incoming_node,
+                                                   node_data={"node_id": node.id})
+                    graph = self.add_edge(graph, line_incoming_node, station_sink_node,
+                                          edge_data={"line": "station_line_sink"})
 
                     # outgoing
                     line_outgoing_node = self._create_subnode_id(node_id=node.id, line_id=line.id, direction=1)
-                    graph = self.add_node_to_graph(graph=graph, node_name=line_outgoing_node, node_data={"node_id": node.id})
-                    graph = self.add_edge(graph, station_source_node, line_outgoing_node,  edge_data={"line": "station_line_source"})
+                    graph = self.add_node_to_graph(graph=graph, node_name=line_outgoing_node,
+                                                   node_data={"node_id": node.id})
+                    graph = self.add_edge(graph, station_source_node, line_outgoing_node,
+                                          edge_data={"line": "station_line_source"})
 
         return graph
 
@@ -352,7 +364,7 @@ class RailGraph(GraphBasic):
                 except KeyError:
                     logging.info("node " + str(n) + " has no <node_id>")
 
-            # graph_nodes = [n for n, v in graph.nodes(data=True) if v["node_id"] in node_ids]
+            # graph_nodes = [n for n, v in manipulate_geodata_and_db.nodes(data=True) if v["node_id"] in node_ids]
             graph_station = graph.subgraph(graph_nodes)
 
             for node in nodes:
@@ -386,7 +398,6 @@ class RailGraph(GraphBasic):
 
         return graph
 
-
     def _create_turner(self, G, node, connect_same_route=False, allow_turn_on_same_line=False):
         """
         in some nodes not all combination of edges are allowed. This function creates a sub-node where only that combination are allowed that are possibly to use.
@@ -396,10 +407,11 @@ class RailGraph(GraphBasic):
         """
         if node.point:
             if node.point[0].type == 'Bf':
-                allow_turn_on_same_line=True
+                allow_turn_on_same_line = True
 
         G = self.__build_directed_graph_with_subnodes(G=G, node=node)
-        G = self.__find_and_connect_allowed_connections(G=G, node=node, connect_same_route=connect_same_route, allow_turn_on_same_line=allow_turn_on_same_line)
+        G = self.__find_and_connect_allowed_connections(G=G, node=node, connect_same_route=connect_same_route,
+                                                        allow_turn_on_same_line=allow_turn_on_same_line)
 
         return G
 
@@ -410,7 +422,7 @@ class RailGraph(GraphBasic):
         """
         nodes = models.RailwayRoute.get_nodes_whose_endpoints_on_input_route(input_route=route)
         for node in nodes:
-            if len(node.routes_number)>0:
+            if len(node.routes_number) > 0:
                 old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(coordinate=node.coordinate,
                                                                                        route_number=route.number)
                 models.RailwayLine.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
@@ -418,7 +430,7 @@ class RailGraph(GraphBasic):
     def _remove_line_from_graph(self, G, line):
         """
 
-        :param G: graph networkx
+        :param G: manipulate_geodata_and_db networkx
         :param line: a line (from model RailwayLine)
         :return:
         """
@@ -434,7 +446,7 @@ class RailGraph(GraphBasic):
 
     def _add_line_to_graph(self, graph, line):
         """
-        adds a line to an existing graph
+        adds a line to an existing manipulate_geodata_and_db
         :param G:
         :param line:
         :return:
@@ -515,7 +527,9 @@ class RailGraph(GraphBasic):
             for out_line in lines:
                 if in_line.id == out_line.id:
                     if allow_turn_on_same_line:
-                        G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line, line2=out_line, allowed_connections=allowed_connections)
+                        G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,
+                                                                             line2=out_line,
+                                                                             allowed_connections=allowed_connections)
                     # allow_turn_on_same_line
                     # TODO: Implement logic with a weight
                     continue
@@ -581,7 +595,8 @@ class RailGraph(GraphBasic):
         first_line = lines[0]
 
         # add two edges (each direction)
-        G = self.__add_edges_both_directions(graph=G, node1=first_line.start_node, node2=first_line.end_node, line=first_line)
+        G = self.__add_edges_both_directions(graph=G, node1=first_line.start_node, node2=first_line.end_node,
+                                             line=first_line)
         # G.add_edge(first_line.start_node, first_line.end_node, line=first_line.id)
         # G.add_edge(first_line.end_node, first_line.start_node, line=first_line.id)
 
@@ -589,7 +604,7 @@ class RailGraph(GraphBasic):
         open_nodes.add(first_line.end_node)
         added_lines.add(first_line.id)
 
-        # create the graph
+        # create the manipulate_geodata_and_db
         if len(lines.all()) > 1:
             while open_nodes:
                 node = list(open_nodes).pop()
@@ -603,7 +618,8 @@ class RailGraph(GraphBasic):
                     for next_line in next_lines:
                         # G.add_edge(next_line.start_node, next_line.end_node, line=next_line.id)
                         # G.add_edge(next_line.end_node, next_line.start_node, line=next_line.id)
-                        G = self.__add_edges_both_directions(graph=G, node1=next_line.start_node, node2=next_line.end_node, line=next_line)
+                        G = self.__add_edges_both_directions(graph=G, node1=next_line.start_node,
+                                                             node2=next_line.end_node, line=next_line)
                         open_nodes.add(next_line.start_node)
                         open_nodes.add(next_line.end_node)
                         added_lines.add(next_line.id)
@@ -611,7 +627,7 @@ class RailGraph(GraphBasic):
                 else:  # no other line of that route exists at this point
                     end_nodes.add(node)
                 open_nodes.remove(node)
-        else:  # in this case, the whole graph only exists of one line. There for the start and end node of the line
+        else:  # in this case, the whole manipulate_geodata_and_db only exists of one line. There for the start and end node of the line
             # are the end-nodes of the graphs
             end_nodes = lines.one().nodes
 
@@ -649,17 +665,17 @@ class RailGraph(GraphBasic):
                 logging.warning(
                     "For " + str(node_id) + " on route " + str(route.number) + " is not the start or end point.")
 
-        # TODO add the stations to the graph
-        # self._add_stations_to_route_graph(graph=G, route=route)
+        # TODO add the stations to the manipulate_geodata_and_db
+        # self._add_stations_to_route_graph(manipulate_geodata_and_db=G, route=route)
 
         self._check_existing_connection_route(end_nodes=end_nodes, route=route, graph=G)
 
         return G, remaining_lines
 
-    # def _add_stations_to_route_graph(self, graph, route):
+    # def _add_stations_to_route_graph(self, manipulate_geodata_and_db, route):
     #     """
-    #     ad the stations of a route to the graph of that route
-    #     :param graph:
+    #     ad the stations of a route to the manipulate_geodata_and_db of that route
+    #     :param manipulate_geodata_and_db:
     #     :return:
     #     """
     #     # TODO: Maybe not used anymore
@@ -673,14 +689,14 @@ class RailGraph(GraphBasic):
     #             node = Nodes.add_node(point.coordinates)
     #             old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
     #             newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
-    #             self._remove_line_from_graph(G=graph, line=old_line)
-    #             self._add_line_to_graph(G=graph, line=newline_1)
-    #             self._add_line_to_graph(G=graph, line=newline_2)
+    #             self._remove_line_from_graph(G=manipulate_geodata_and_db, line=old_line)
+    #             self._add_line_to_graph(G=manipulate_geodata_and_db, line=newline_1)
+    #             self._add_line_to_graph(G=manipulate_geodata_and_db, line=newline_2)
     #
     #         point.node_id = node.id
     #         node = None
     #
-    #     return graph
+    #     return manipulate_geodata_and_db
 
     def _check_all_stations_have_nodes(self, route):
         """
@@ -704,7 +720,7 @@ class RailGraph(GraphBasic):
 
     def _check_existing_connection_route(self, end_nodes, route, graph):
         """
-        controls if a graph is able to route between any combination of end_nodes
+        controls if a manipulate_geodata_and_db is able to route between any combination of end_nodes
         :param end_nodes:
         :return:
         """
@@ -828,7 +844,7 @@ class RailGraph(GraphBasic):
 
     def add_edge(self, graph, node1, node2, edge_data):
         """
-        adds a edge to an graph.
+        adds a edge to an manipulate_geodata_and_db.
         :param graph:
         :param node1:
         :param nod2:
@@ -836,14 +852,14 @@ class RailGraph(GraphBasic):
         :return:
         """
 
-        # have in mind: directed graph!
+        # have in mind: directed manipulate_geodata_and_db!
         graph.add_edge(node1, node2, **edge_data)
 
         return graph
 
     def add_node_to_graph(self, graph, node_name, node_data):
         """
-        checks if node is in graph, if not, it creates the node
+        checks if node is in manipulate_geodata_and_db, if not, it creates the node
         :param graph:
         :param node:
         :param node_data: dict of node_data
@@ -852,7 +868,7 @@ class RailGraph(GraphBasic):
 
         if "node_id" not in node_data:
             raise SubnodeHasNoNodeID(
-                "For graph " + str(graph) + " for node " + node_name + " there is no node_id"
+                "For manipulate_geodata_and_db " + str(graph) + " for node " + node_name + " there is no node_id"
             )
 
         if not node_name in graph:
@@ -894,9 +910,11 @@ class RailGraph(GraphBasic):
 
         return degree
 
-    def path_between_stations(self, graph, station_from, station_to):
+    def shortest_path_between_stations(self, graph, station_from, station_to, save=True, stations_via=[]):
         """
         find a path between stations. Returns list of nodes
+        :param stations_via:
+        :param save:
         :param graph:
         :param station_from: kuerzel of station
         :param station_to: kuerzel of station
@@ -905,8 +923,78 @@ class RailGraph(GraphBasic):
         station_source = str(station_from) + "_out"
         station_sink = str(station_to) + "_in"
 
-        path = super().shortest_path(graph=graph, source=station_source, target=station_sink)
-        return path
+        if len(stations_via) > 0:
+            pathes = []
+            first_target = str(stations_via[0]) + "_in"
+            first_path = super().shortest_path(graph=graph, source=station_source, target=first_target)
+            pathes.extend(first_path)
+            for index, station in enumerate(stations_via[:-1]):
+                source_from = str(station) + "_out"
+                target_to = str(stations_via[index + 1]) + "_in"
+                path = super().shortest_path(graph=graph, source=source_from, target=target_to)
+                pathes.extend(path)
+
+            last_source = stations_via[-1] + "_out"
+            last_path = super().shortest_path(graph=graph, source=last_source, target=station_sink)
+            pathes.extend(last_path)
+            # TODO: Iterate through passess and create one list for nodes and edges
+            path = pathes
+            lines = []
+
+
+        else:
+            path = super().shortest_path(graph=graph, source=station_source, target=station_sink)
+            lines = self.get_lines_of_path(graph, path)
+
+        lines = self.get_lines_of_path(graph, path)
+        station_from_long = models.RailwayStation.query.filter(
+            models.RailwayStation.db_kuerzel == station_from).scalar()
+        station_to_long = models.RailwayStation.query.filter(models.RailwayStation.db_kuerzel == station_to).scalar()
+
+        path_dict = {
+            "source": station_from,
+            "source_id": station_from_long.id,
+            "source_name_long": station_from_long.name,
+            "sink": station_to,
+            "sink_id": station_to_long.id,
+            "sink_name_long": station_to_long.name,
+            "nodes": path,
+            "edges": lines
+        }
+
+        if save:
+            self._save_path(path_dict)
+
+        return path_dict
+
+    def get_lines_of_path(self, graph, path):
+        """
+        returns the lines that are used for the path
+        :return:
+        """
+        lines = []
+        for index, element in enumerate(path[:-1]):
+            if str(element)[-2:] == "in" and str(path[index + 1])[-3:] == 'out':  # because there are no paths from station_in to station_out if station_in is first element it continues with next combination
+                continue
+            path_element = (element, path[index + 1])
+            edge = graph.edges[path_element]
+            if isinstance(edge["line"], int):
+                line = edge["line"]
+                lines.append(line)
+
+            # this is last possible combination
+
+        return lines
+
+    def _save_path(self, path_dict):
+        """
+
+        :return:
+        """
+        filepath_save = self.filepath_save_path.format(path_dict["source"], path_dict["sink"])
+        path_json = json.dumps(path_dict)
+        with open(filepath_save, "w") as f:
+            f.write(path_json)
 
     def draw_map(self, graph):
         """
@@ -914,7 +1002,7 @@ class RailGraph(GraphBasic):
         :return:
         """
 
-        #TODO: Calculation of positions in separate function
+        # TODO: Calculation of positions in separate function
         nodes_pos = dict()
         for subnode in graph.nodes:
             if isinstance(subnode, int):
@@ -947,8 +1035,8 @@ class RailGraph(GraphBasic):
         path_exists = False
         try:
             networkx.shortest_path(graph, from_node, to_node)
-            path_exists=True
+            path_exists = True
         except networkx.NetworkXNoPath:
-            path_exists=False
+            path_exists = False
 
         return path_exists

@@ -42,11 +42,12 @@ projectcontent_to_line = db.Table('projectcontent_to_lines',
                            db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
                            )
 
-# project to railway points
-project_to_railway_points = db.Table('projects_to_points',
-                                     db.Column('project_id', db.Integer, db.ForeignKey('projects.id')),
-                                     db.Column('railway_point_id', db.Integer, db.ForeignKey('railway_points.id')),
-                                     )
+
+projectcontent_to_railwaystations = db.Table('projectcontent_to_railwaystations',
+                                       db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                       db.Column('railway_station_id', db.Integer, db.ForeignKey('railway_stations.id'))
+
+                                       )
 
 texts_to_project_content = db.Table('texts_to_projects',
                                     db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id')),
@@ -104,7 +105,7 @@ class RailwayLine(db.Model):
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
     railway_infrastructure_company = db.Column(db.Integer, db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
 
-    # graph
+    # manipulate_geodata_and_db
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
 
@@ -156,7 +157,7 @@ class RailwayLine(db.Model):
         :return:
         """
         # have in mind, that all attribute are copied, also the kilometer distance from DB. This is because it is not always the length of the line.
-
+        # TODO: Transfer also project_content
         if isinstance(coordinates, str):
             coordinates = coordinates.split(",")[1][:-1]
             coordinates_wkb = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates))).one()[0]
@@ -167,7 +168,6 @@ class RailwayLine(db.Model):
             coordinates=coordinates_wkb,
             route_number=line_old.route_number,
             direction=line_old.direction,
-            length=line_old.length,
             from_km=line_old.from_km,
             to_km=line_old.to_km,
             electrified=line_old.electrified,
@@ -178,8 +178,10 @@ class RailwayLine(db.Model):
             strecke_kuerzel=line_old.strecke_kuerzel,
             active_until=line_old.active_until,
             active_since=line_old.active_since,
-            railway_infrastructure_company=line_old.railway_infrastructure_company
+            railway_infrastructure_company=line_old.railway_infrastructure_company,
         )
+
+        railline.project_content = line_old.project_content
 
         railline_start_coordinate = \
         db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
@@ -500,7 +502,7 @@ class RailwayStation(db.Model):
 
 class RailwayNodes(db.Model):
     """
-    keeps all nodes for the railway network to create a network graph
+    keeps all nodes for the railway network to create a network manipulate_geodata_and_db
     """
     __tablename__='railway_nodes'
     id = db.Column(db.Integer, primary_key=True)
@@ -945,6 +947,7 @@ class ProjectContent(db.Model):
     level_free_platform_entrance = db.Column(db.Boolean, nullable=False, default=False)
     etcs = db.Column(db.Boolean, nullable=False, default=False)
     etcs_level = db.Column(db.Integer)
+    station_railroad_switches = db.Column(db.Boolean, default=False)
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -1008,7 +1011,7 @@ class ProjectContent(db.Model):
     bvwp_valuation_relevant_cost_pricelevel_2012 = db.Column(db.Float)
 
     bvwp_valuation_relevant_cost_pricelevel_2012_planning_cost = db.Column(db.Float)
-    bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cost = db.Column(db.Float)
+    bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cos = db.Column(db.Float)
     bvwp_valuation_relevant_cost_pricelevel_2012_present_value = db.Column(db.Float)
 
     # spatial significance
@@ -1073,6 +1076,8 @@ class ProjectContent(db.Model):
                                             backref=db.backref('projects_content', lazy=True))
     projectcontent_railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
                                                    backref=db.backref('project_content', lazy=True))
+    railway_stations = db.relationship('RailwayStation', secondary=projectcontent_to_railwaystations,
+                                       backref=db.backref('project_content', lazy=True))
     states = db.relationship("States", secondary=project_contents_to_states,
                                             backref=db.backref('states', lazy=True))
     counties = db.relationship("Counties", secondary=project_contents_to_counties,
@@ -1081,12 +1086,36 @@ class ProjectContent(db.Model):
     constituencies = db.relationship("Constituencies", secondary=project_contents_to_constituencies,
                                      backref = db.backref('constituencies', lazy=True))
 
+    @classmethod
+    def add_lines_to_pc(self, pc_id, lines):
+        """
+        adds list of lines to pc
+        :param pc_id:
+        :param lines:
+        :return:
+        """
+        pc = ProjectContent.query.get(pc_id)
+        for line_id in lines:
+            line = RailwayLine.query.get(line_id)
+            pc.projectcontent_railway_lines.append(line)
+
+        db.session.add(pc)
+        db.session.commit()
+
 
 class ProjectGroup(db.Model):
     __tablename__ = 'project_groups'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
+
+
+# class Vehicles(db.Model):
+#     """
+#     vehicles
+#     """
+#     __tablename__ = 'vehicles'
+#     id = db.Column
 
 
 class Budget(db.Model):

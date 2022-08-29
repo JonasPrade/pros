@@ -14,3 +14,20 @@ WARNING:root:Breaked a search between elements because of an None-element (maybe
 INFO:root:finished import to db for project: K-006-V01
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): bvwp-projekte.de:443
 DEBUG:urllib3.connectionpool:https://bvwp-projekte.de:443 "GET /schiene_2018/L02/L02.html HTTP/1.1" 404 3589
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): bvwp-projekte.de:443
+DEBUG:urllib3.connectionpool:https://bvwp-projekte.de:443 "GET /schiene_2018/2-053-V01/2-053-V01.html HTTP/1.1" 404 3589
+INFO:root:Starting with project: 2-054-V02
+WARNING:root:Could not find table Auswirkungen Personenverkehr in Prins
+WARNING:root:Could not find table Nutzen Personenverkehr in Prins
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+WARNING:root:Could not find table Umweltbetroffenheit in Prins
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+INFO:root:there is an missing info, look to 1.10 in Prins of this project
+WARNING:root:Could not find table Umweltbeitrag nicht monetarisiert in Prins
+WARNING:root:Could not find any elements after:Weitere Sachverhalte Umwelt
+WARNING:root:No spatial significance found
+WARNING:root:Breaked a search between elements because of an None-element (maybe ending div) Ergänzende Betrachtungen

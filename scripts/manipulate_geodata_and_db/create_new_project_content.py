@@ -3,7 +3,7 @@ from prosd.models import ProjectContent, Project
 import csv
 
 # import project_content.csv als Datenquelle
-filename = '../example_data/project_content_import/project_content.csv'
+filename = '../../example_data/project_content_import/project_content.csv'
 
 with open(filename, mode='r') as inp:
     reader = csv.reader(inp)
@@ -48,7 +48,9 @@ pc = ProjectContent(
     new_vmax=int(pd["new_vmax"]),
     level_free_platform_entrance=bool(int(pd["level_free_platform_entrance"])),
     etcs=bool(int(pd["etcs"])),
-    etcs_level=int(pd["etcs_level"])
+    etcs_level=int(pd["etcs_level"]),
+    station_railroad_switches=bool(int(pd["station_railroad_switches"])),
+    planned_total_cost=int(pd["planned_total_cost"])
 )
 db.session.add(pc)
 db.session.commit()

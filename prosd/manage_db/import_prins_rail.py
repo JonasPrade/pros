@@ -9,7 +9,7 @@ logging.basicConfig(filename='../log/log_import_prins_rail.log', encoding='utf-8
 ProjectContent = models.ProjectContent
 
 #project_list = ProjectContent.query.all()
-project_list = ['L02']
+project_list = ['2-054-V02']
 
 Pc_to_state = models.project_contents_to_states
 States = models.States

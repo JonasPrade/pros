@@ -1,18 +1,18 @@
-project_number,DTakt-Gruppierung-1
-project_name,Deutschlandtakt Hanau – Aschaffenburg – Würzburg
-pc_name,Deutschlandtaktprojekte Hanau – Aschaffenburg – Hanau
-pc_description,neue gruppierte Projekte des Deutschlandtakts Hanau – Würzburg in Bullay DB am Ausweichgleis in Richtung Trier
-pc_reason,"Mischverkehrsstrecke, Harmonisierung Konzepte SPFV/SPNV aufgrund planmäßiger Überholung zur Einbindung in den Knoten Koblenz"
-effect_long_rail,1
+project_number,""
+project_name,Deutschlandtakt Bahnhof Cölbe
+pc_name,Bahnhof Cölbe
+pc_description,"je eine neue Weichenverbindung im nördlichen und südlichen Bahnhofskopf von Cölbe zw. Gleis 4,3 und 2 sowie der Strecke 2870, Verschwenkung des Durchfahrtsgleises Nord-Süd nach Gleis 2"
+pc_reason,"Mischverkehrsstrecke, Kreuzen des Regionalverkehrs im Nordkopf von Cölbe aufgrund neuer Fahrlage des SPFV"
+effect_long_rail,0
 effect_local_rail,1
-effect_cargo,1
+effect_cargo,0
 nbs,0
-abs,1
+abs,0
 elektrification,0
 batterie,0
 second_track,0
-third_track,1
-fourth_track,1
+third_track,0
+fourth_track,0
 curve,0
 platform,0
 junction_station,0
@@ -21,11 +21,13 @@ overtaking_station,0
 number_overtaking_station,0
 double_occupancy,0
 block_increase,0
-flying_junction,1
+flying_junction,0
 tunnel_structural_gauge,0
-increase_speed,1
-new_vmax,230
+increase_speed,0
+new_vmax,0
 level_free_platform_entrance,0
 etcs,0
 etcs_level,0
 cost,planned_total_cost
+planned_total_cost,16
+station_railroad_switches,1

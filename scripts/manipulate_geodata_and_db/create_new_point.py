@@ -1,15 +1,15 @@
 from prosd import db
 from prosd.models import RailwayPoint, RailwayNodes, RailwayStation
 
-node_id = 79205
+node_id = 79257
 
 node = RailwayNodes.query.get(node_id)
 
 point_dict = {
-    "route_number": 10011,
-    "name": "Bad Hersfeld",
+    "route_number": 9122,
+    "name": "Norderstedt Mitte",
     "type": "Bf",
-    "db_kuerzel": "FBHF",
+    "db_kuerzel": "ANDM",
     "coordinates": node.coordinate,
     "node_id": node.id
 }
