@@ -75,6 +75,11 @@ railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
                            db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
                            )
 
+formations_to_vehicles = db.Table('formations_to_vehicles',
+                                  db.Column('formation_id', db.String(100), db.ForeignKey('formations.id')),
+                                  db.Column('vehicle_id', db.String(100), db.ForeignKey('vehicles.id'))
+                                  )
+
 # classes/Tables
 
 
@@ -459,7 +464,6 @@ class RailwayStation(db.Model):
 
     railway_points = db.relationship("RailwayPoint", lazy="dynamic")
     railway_nodes = db.relationship("RailwayNodes", secondary="join(RailwayPoint, RailwayNodes, RailwayPoint.node_id == RailwayNodes.id)", viewonly=True)
-
 
     @hybrid_property
     def railway_lines(self):
@@ -1110,12 +1114,142 @@ class ProjectGroup(db.Model):
     description = db.Column(db.Text)
 
 
-# class Vehicles(db.Model):
-#     """
-#     vehicles
-#     """
-#     __tablename__ = 'vehicles'
-#     id = db.Column
+class Vehicle(db.Model):
+    """
+    vehicles
+    """
+    __tablename__ = 'vehicles'
+    id = db.Column(db.String(100), primary_key=True)
+    code = db.Column(db.String(100))
+    name = db.Column(db.String(100))
+    length = db.Column(db.Float)
+    speed = db.Column(db.Integer)
+    brutto_weight = db.Column(db.Float)
+    engine = db.Column(db.Boolean)
+    wagon = db.Column(db.Boolean)
+
+
+class Formation(db.Model):
+    """
+    Formations of vehicles
+    """
+    __tablename__ = 'formations'
+    id = db.Column(db.String(100), primary_key=True)
+    description = db.Column(db.String(100))
+    length = db.Column(db.Float)
+    speed = db.Column(db.Integer)
+    weight = db.Column(db.Float)
+
+    vehicles = db.relationship("Vehicle", secondary=formations_to_vehicles)
+
+
+class TimetablePeriod(db.Model):
+    """
+    Periods of timetable that is loaded to the db
+    """
+    __tablename__ = 'timetable_period'
+    id = db.Column(db.String(15), primary_key=True)
+    name = db.Column(db.String(255))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+
+
+class TimetableOperatingPeriod(db.Model):
+    __tablename__ = 'timetable_operating_period'
+    id = db.Column(db.String(31), primary_key=True)
+    code = db.Column(db.String(255))
+    timetablePeriodRef = db.Column(db.String(15), db.ForeignKey('timetable_period.id', ondelete='SET NULL'))
+    startDate = db.Column(db.Date)
+    endDate = db.Column(db.Date)
+
+
+class TimetableCategorie(db.Model):
+    __tablename__ = 'timetable_categories'
+    id = db.Column(db.String(15), primary_key=True)
+    code = db.Column(db.String(255))
+    description = db.Column(db.String(255))
+
+
+class TimetableTrainGroup(db.Model):
+    __tablename__ = 'timetable_train_groups'
+    id = db.Column(db.String(255), primary_key=True)
+    code = db.Column(db.String(255))
+    train_number = db.Column(db.Integer)
+
+    trains = db.relationship("TimetableTrain", lazy=True)
+    # TODO: Add method to import railml
+
+
+class TimetableTrain(db.Model):
+    __tablename__ = 'timetable_train'
+    id = db.Column(db.String(510), primary_key=True)
+    description = db.Column(db.Text)
+    type = db.Column(db.String(255))
+    train_number = db.Column(db.String(255))
+    train_group_id = db.Column(db.String(255), db.ForeignKey('timetable_train_groups.id'))
+    train_group_sequence = db.Column(db.String(255))
+    line_number = db.Column(db.String(255))
+    train_validity_name = db.Column(db.String(255))
+    train_part_id = db.Column(db.String(510), db.ForeignKey('timetable_train_parts.id'))
+    speed_profile_ref = db.Column(db.String(255))
+    brake_type = db.Column(db.String(255))
+    air_brake_application_position = db.Column(db.String(255))
+    regular_brake_percentage = db.Column(db.Integer)
+
+
+class TimetableTrainPart(db.Model):
+    __tablename__ = 'timetable_train_parts'
+    id = db.Column(db.String(510), primary_key=True)
+    category_id = db.Column(db.String(15), db.ForeignKey('timetable_categories.id'))
+    formation_id = db.Column(db.String(100), db.ForeignKey('formations.id'))
+    operating_period_id = db.Column(db.String(31), db.ForeignKey('timetable_operating_period.id'))
+
+    timetable_ocps = db.relationship("TimetableOcp", lazy=True)
+
+
+class TimetableOcp(db.Model):
+    __tablename__ = 'timetable_ocps'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    train_part = db.Column(db.String(510), db.ForeignKey('timetable_train_parts.id'))
+    sequence = db.Column(db.Integer)
+    ocp_id = db.Column(db.String(255), db.ForeignKey('railml_ocps.id'))
+    ocp_type = db.Column(db.String(255))
+    stop_description = db.Column(db.String(255))
+    train_reverse = db.Column(db.Boolean)
+
+    times = db.relationship("TimetableTime", lazy=True)
+    section = db.relationship("TimetableSection", lazy=True)
+
+
+class TimetableTime(db.Model):
+    __tablename__ = 'timetable_times'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id'))
+    scope = db.Column(db.String(255))
+    arrival = db.Column(db.Time)
+    departure = db.Column(db.Time)
+    arrival_day = db.Column(db.Integer)
+    departure_day = db.Column(db.Integer)
+
+
+class TimetableSection(db.Model):
+    __tablename__ = 'timetable_sections'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id'))
+    section = db.Column(db.String(255))
+    line = db.Column(db.String(255))
+    track_id = db.Column(db.String(510))  # TODO: Could be a foreign key if necessary
+    direction = db.Column(db.String(15))
+    minimal_run_time = db.Column(db.Time)
+
+
+class RailMlOcp(db.Model):
+    __tablename__ = 'railml_ocps'
+    id = db.Column(db.String(255), primary_key=True)
+    name = db.Column(db.String(255))
+    code = db.Column(db.String(255))
+    station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id'))
+    operational_type = db.Column(db.String(31))
 
 
 class Budget(db.Model):

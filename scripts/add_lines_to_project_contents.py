@@ -11,11 +11,11 @@ def add_lines_to_project_content(project_content_id, graph, from_station, to_sta
 
 
 rg = RailGraph()
-from_station = "AST"
-to_station = "ACV"
+from_station = "HWOB"
+to_station = "LNG"
 via = []
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-project_content_id =
+project_content_id = 35
 
 
 add_lines_to_project_content(project_content_id, graph, from_station, to_station, via=via)

@@ -9,6 +9,8 @@ import geoalchemy2
 # logging.basicConfig(filename='/prosd/log/log_creating_railgraph.log', encoding='utf-8', level=logging.WARNING)
 
 rg = RailGraph()
+rg.create_graph()
+
 # rg.combine_nodes(225008, 70970)
 # rg.create_nodes_new_railwaylines()
 
@@ -38,10 +40,10 @@ rg = RailGraph()
 #         nodes_missing_nodes_id.append(n)
 
 
-# # # # test create manipulate_geodata_and_db route for one route
-route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 9122).scalar()
-graph = rg.create_graph_one_route(route=route)
-print(graph)
+# # test create manipulate_geodata_and_db route for one route
+# route = models.RailwayRoute.query.filter(models.RailwayRoute.number == 6107).scalar()
+# graph = rg.create_graph_one_route(route=route)
+# print(graph)
 
 # line = models.RailwayLine.query.get(47878)
 # manipulate_geodata_and_db = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
