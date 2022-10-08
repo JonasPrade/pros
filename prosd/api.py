@@ -83,6 +83,19 @@ def get_first_projectgroup(**kwargs):
     return response
 
 
+@app.route("/traingroup/<id>", methods=['GET'])
+@cross_origin()
+def get_traingroup(**kwargs):
+    traingroup_id = kwargs.pop('id')
+    traingroup = models.TimetableTrainGroup.query.get(traingroup_id)
+
+
+    project = models.Project.query.get(project_id)
+    project_schema = views.ProjectSchema()
+    output = project_schema.dump(project)
+    response = make_response({'project': output})
+    return response
+
 """
 @app.route("/project/<id>", methods=['POST'])
 @cross_origin()

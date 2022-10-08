@@ -10,7 +10,10 @@ FILEPATH = '../../example_data/import/shp_railway_lines/'
 shp = geopandas.read_file(FILEPATH)
 
 number_tracks = 'zweigleisig'
-electrification = "Oberleitung"
+catenary=True,
+conductor_rail=False,
+voltage=15,
+dc_ac='dc',
 route_number = 20019
 vmax = None
 type_of_transport = "Pz/Gz-Bahn"
@@ -29,7 +32,10 @@ for index, row in shp.iterrows():
     railway_line_input = RailwayLine(
         coordinates=row.geometry,
         number_tracks=number_tracks,
-        electrified=electrification,
+        catenary=catenary,
+        conductor_rail=conductor_rail,
+        voltage=voltage,
+        dc_ac=dc_ac,
         route_number=route_number,
         vmax=vmax,
         type_of_transport=type_of_transport,

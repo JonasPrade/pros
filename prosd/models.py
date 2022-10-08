@@ -109,6 +109,10 @@ class RailwayLine(db.Model):
     from_km = db.Column(db.Integer)
     to_km = db.Column(db.Integer)
     electrified = db.Column(db.String(20))  # Add allowed values: Oberleitung, nicht elektrifiziert, Stromschiene
+    catenary = db.Column(db.Boolean, default=False)
+    conductor_rail = db.Column(db.Boolean, default=False)
+    voltage = db.Column(db.Float, default=None)
+    dc_ac = db.Column(db.String(3), default=None)
     number_tracks = db.Column(db.String(100))  # eingleisig, zweigleisig
     vmax = db.Column(db.String(20))
     type_of_transport = db.Column(db.String(20))  # Pz-Bahn, Gz- Bahn, Pz/Gz-Bahn, S-Bahn, Hafenbahn, Seilzugbahn
@@ -126,6 +130,7 @@ class RailwayLine(db.Model):
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
 
     def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None, electrified=None,
+                 catenary = False, conductor_rail = False, voltage = None, dc_ac = None,
                  number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
                  strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None, gauge=1435, abs_nbs='ks'):
         self.route_number = route_number
@@ -134,6 +139,10 @@ class RailwayLine(db.Model):
         self.from_km = from_km
         self.to_km = to_km
         self.electrified = electrified
+        self.catenary = catenary
+        self.conductor_rail = conductor_rail
+        self.voltage = voltage
+        self.dc_ac = dc_ac
         self.number_tracks = number_tracks
         self.vmax = vmax
         self.type_of_transport = type_of_transport
@@ -189,6 +198,10 @@ class RailwayLine(db.Model):
             from_km=line_old.from_km,
             to_km=line_old.to_km,
             electrified=line_old.electrified,
+            catenary=line_old.catenary,
+            conductor_rail=line_old.conductor_rail,
+            voltage=line_old.voltage,
+            dc_ac=line_old.dc_ac,
             number_tracks=line_old.number_tracks,
             vmax=line_old.vmax,
             type_of_transport=line_old.type_of_transport,
@@ -1388,6 +1401,16 @@ class TimetableTrainGroup(db.Model):
         return running_km_day_nbs
 
     @hybrid_property
+    def running_km_day_no_catenary(self):
+        running_km_day_no_catenary = 0
+        for line in self.lines:
+            if line.catenary == False:
+                running_km_day_no_catenary += line.length/1000
+
+        running_km_day_no_catenary = running_km_day_no_catenary * len(self.trains)
+        return running_km_day_no_catenary
+
+    @hybrid_property
     def running_km_year(self):
         running_km_year = self.running_km_day * 365 / 1000
         return running_km_year
@@ -1401,6 +1424,11 @@ class TimetableTrainGroup(db.Model):
     def running_km_year_nbs(self):
         running_km_year_nbs = self.running_km_day_nbs * 365 / 1000
         return running_km_year_nbs
+
+    @hybrid_property
+    def running_km_year_no_catenary(self):
+        running_km_year_no_catenary = self.running_km_day_no_catenary * 365 / 1000
+        return running_km_year_no_catenary
 
     @hybrid_property
     def minimal_run_time(self):
