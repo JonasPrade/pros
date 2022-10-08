@@ -212,7 +212,7 @@ class BvwpRail(Bvwp):
             tbl_nm = None
             tbl_nr = None
 
-        # prio bvwp
+        # prio calculation_methods
         tbl_nm = ('Dringlichkeit BVWP', 'Dringlichkeitseinstufung')
         try:
             tbl_nr = self._get_table_nr(tbl_nm[1])
@@ -928,7 +928,7 @@ class BvwpRail(Bvwp):
 
             add_dict = {
                 "bvwp_valuation_relevant_cost_pricelevel_2012_planning_cost": self.valuation_relevant_cost_pricelevel_2012_planning_cost,
-                "bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cost": self.valuation_relevant_cost_pricelevel_2012_infrastructure_cost,
+                "bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cos": self.valuation_relevant_cost_pricelevel_2012_infrastructure_cost,
                 "bvwp_valuation_relevant_cost_pricelevel_2012_present_value": self.valuation_relevant_cost_pricelevel_2012_present_value,
             }
             self.dict_project_content.update(add_dict)
@@ -1228,7 +1228,7 @@ class BvwpRail(Bvwp):
             "bvwp_valuation_relevant_cost": self.valuation_relevant_cost,
             "bvwp_valuation_relevant_cost_pricelevel_2012": self.valuation_relevant_cost_pricelevel_2012,
             "bvwp_valuation_relevant_cost_pricelevel_2012_planning_cost": self.valuation_relevant_cost_pricelevel_2012_planning_cost,
-            "bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cost": self.valuation_relevant_cost_pricelevel_2012_infrastructure_cost,
+            "bvwp_valuation_relevant_cost_pricelevel_2012_infrastructure_cos": self.valuation_relevant_cost_pricelevel_2012_infrastructure_cost,
             "bvwp_valuation_relevant_cost_pricelevel_2012_present_value": self.valuation_relevant_cost_pricelevel_2012_present_value,
             "nkv": self.nkv,
 

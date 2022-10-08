@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import datetime
 import logging
 
-from prosd.models import Vehicle, Formation, TimetableCategorie, RailMlOcp, RailwayStation, TimetableTrainPart, \
+from prosd.models import Vehicle, Formation, TimetableCategory, RailMlOcp, RailwayStation, TimetableTrainPart, \
     TimetableOcp, TimetableTime, TimetableSection, TimetableTrain, TimetableTrainGroup
 from prosd import db
 
@@ -85,6 +85,19 @@ def create_formation(formation_railml):
     return formation
 
 
+def formation_to_vehicle(railstock):
+    formations = railstock.find('{http://www.railml.org/schemas/2013}formations')
+    for formation_ml in formations:
+        formation = Formation.query.get(formation_ml.attrib["id"])
+        vehicle = []
+        vehicles_ml = formation_ml.find('{http://www.railml.org/schemas/2013}trainOrder')
+        for vehicle_ml in vehicles_ml:
+            vehicle.append(Vehicle.query.get(vehicle_ml.attrib["vehicleRef"]))
+        formation.vehicles = vehicle
+        db.session.add(formation)
+        db.session.commit()
+
+
 def add_formations(railstock):
     formations = railstock.find('{http://www.railml.org/schemas/2013}formations')
     objects = []
@@ -98,7 +111,7 @@ def add_formations(railstock):
 
 def create_category(category_railml):
     category_dict = category_railml.attrib
-    category = TimetableCategorie(**category_dict)
+    category = TimetableCategory(**category_dict)
 
     return category
 
@@ -250,7 +263,11 @@ def create_section(section_rml):
     return section
 
 
-def add_train_parts(timetable):
+def add_train_parts(timetable, delete_old=False):
+    if delete_old:
+        db.session.query(TimetableTrainPart).delete()
+        db.session.commit()
+
     timetable_train_parts = timetable.find('{http://www.railml.org/schemas/2013}trainParts')
 
     objects = []
@@ -261,6 +278,27 @@ def add_train_parts(timetable):
     db.session.bulk_save_objects(objects)
     db.session.commit()
 
+
+def add_ocp(timetable, overwrite=False):
+    if overwrite:
+        db.session.query(TimetableOcp).delete()
+        db.session.commit()
+
+    timetable_train_parts = timetable.find('{http://www.railml.org/schemas/2013}trainParts')
+
+    for tp_rml in timetable_train_parts:
+        tp_id = tp_rml.attrib["id"]
+        tp = TimetableTrainPart.query.get(tp_id)
+        ocps_railml = tp_rml.find('{http://www.railml.org/schemas/2013}ocpsTT')
+        if ocps_railml is not None:
+            for ocp in ocps_railml:
+                tt_ocp = create_tt_ocp(tt_ocp_rml=ocp)
+                tt_ocp.train_part = tp_id
+                db.session.add(tt_ocp)
+        else:
+            logging.warning("no ocps for " + str(tp))
+
+    db.session.commit()
 
 def add_trains(timetable):
     timetable_trains = timetable.find('{http://www.railml.org/schemas/2013}trains')
@@ -377,12 +415,14 @@ if __name__ == "__main__":
     # railstock
     railstock = root.find('{http://www.railml.org/schemas/2013}rollingstock')
     # add_vehicles(railstock)
+    formation_to_vehicle(railstock)
     # add_formations(railstock)
 
     # timetable
     timetable = root.find('{http://www.railml.org/schemas/2013}timetable')
     # add_categories(timetable)
-    # add_train_parts(timetable)
+    # add_train_parts(timetable, delete_old=True)
+    # add_ocp(timetable, overwrite=True)
     # add_trains(timetable)
     # add_train_groups(timetable)
-    train_to_train_groups(timetable)
+    # train_to_train_groups(timetable)

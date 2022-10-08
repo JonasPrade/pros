@@ -98,7 +98,7 @@ def project_create():
 
 @app.route("/projects")
 def projects_short():
-    projects = models.Project.query.filter(models.Project.superior_project_id == None).all()
+    projects = models.Project.query.filter(models.Project.superior_project_content_id == None).all()
     projects_schema = views.ProjectShortSchema(many=True)
     output = projects_schema.dump(projects)
     response = make_response({'projects': output})
@@ -112,7 +112,8 @@ def projects_short():
 def get_projects_by_projectgroup(**kwargs):
     project_group_id = kwargs.pop('id')
     # get all projects that have a project_content that is part of the project_group_id
-    projects = models.Project.query.join(models.ProjectContent.query.join(models.ProjectContent.projectcontent_groups).filter(models.ProjectGroup.id == project_group_id)).all()
+    project_group = models.ProjectGroup.query.get(project_group_id)
+    projects = project_group.superior_projects
     project_schema = views.ProjectShortSchema(many=True)
     output = project_schema.dump(projects)
     response = make_response({"projects": output})

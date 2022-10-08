@@ -55,7 +55,7 @@ class RailGraph(GraphBasic):
         self.filepath_save_with_station_and_parallel_connections = os.path.realpath(os.path.join(dirname,
                                                                                                  '../../example_data/railgraph/railgraph_with_station_and_parallel_connections.pickle'))
         self.filepath_save_path = os.path.realpath(
-            os.path.join(dirname, '../../example_data/railgraph/paths/{}_to_{}.json'))
+            os.path.join(dirname, '../../example_data/railgraph/paths/{}.json'))
 
         self.angle_allowed_min = 60
         self.angle_allowed_max = 360 - self.angle_allowed_min
@@ -115,6 +115,11 @@ class RailGraph(GraphBasic):
         """
         G = networkx.read_gpickle(path=filepath)
         return G
+
+    def delete_graph_route(self, route_number):
+        filepath = self.filepath_save_graph_route.format(str(route_number))
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
     def create_nodes_new_railwaylines(self):
         """
@@ -269,7 +274,7 @@ class RailGraph(GraphBasic):
             self._check_all_stations_have_nodes(route=route)
             db.session.refresh(route)
 
-            self._check_end_nodes_other_lines(route=route)
+            self._check_end_nodes_other_lines(route=route)  # TODO: This function does not recognize all endpoints!
             db.session.refresh(route)
 
             G, remaining_lines = self._build_graph_railway_line(lines, route)
@@ -910,7 +915,7 @@ class RailGraph(GraphBasic):
 
         return degree
 
-    def shortest_path_between_stations(self, graph, station_from, station_to, save=True, stations_via=[]):
+    def shortest_path_between_stations(self, graph, station_from, station_to, save=True, stations_via=[], filename=None):
         """
         find a path between stations. Returns list of nodes
         :param stations_via:
@@ -939,12 +944,11 @@ class RailGraph(GraphBasic):
             pathes.extend(last_path)
             # TODO: Iterate through passess and create one list for nodes and edges
             path = pathes
-            lines = []
-
+            # lines = []
 
         else:
             path = super().shortest_path(graph=graph, source=station_source, target=station_sink)
-            lines = self.get_lines_of_path(graph, path)
+            # lines = self.get_lines_of_path(graph, path)
 
         lines = self.get_lines_of_path(graph, path)
         station_from_long = models.RailwayStation.query.filter(
@@ -963,7 +967,7 @@ class RailGraph(GraphBasic):
         }
 
         if save:
-            self._save_path(path_dict)
+            self._save_path(path_dict, filename=filename)
 
         return path_dict
 
@@ -986,12 +990,16 @@ class RailGraph(GraphBasic):
 
         return lines
 
-    def _save_path(self, path_dict):
+    def _save_path(self, path_dict, filename = None):
         """
 
         :return:
         """
-        filepath_save = self.filepath_save_path.format(path_dict["source"], path_dict["sink"])
+        if filename is None:
+            filepath_save = self.filepath_save_path.format(str(path_dict["source"]) + "to" + str(path_dict["sink"]))
+        else:
+            filepath_save = self.filepath_save_path.format(str(filename))
+
         path_json = json.dumps(path_dict)
         with open(filepath_save, "w") as f:
             f.write(path_json)

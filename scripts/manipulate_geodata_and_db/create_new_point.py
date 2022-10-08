@@ -1,15 +1,16 @@
 from prosd import db
-from prosd.models import RailwayPoint, RailwayNodes, RailwayStation
+from prosd.models import RailwayPoint, RailwayNodes, RailwayStation, RailMlOcp
+from prosd.graph import railgraph
 
-node_id = 79257
+node_id = 79645
 
 node = RailwayNodes.query.get(node_id)
 
 point_dict = {
-    "route_number": 9122,
-    "name": "Norderstedt Mitte",
+    "route_number": 20026,
+    "name": "Innsbruck",
     "type": "Bf",
-    "db_kuerzel": "ANDM",
+    "db_kuerzel": "XAI",
     "coordinates": node.coordinate,
     "node_id": node.id
 }
@@ -38,4 +39,14 @@ point = RailwayPoint(
 
 db.session.add(point)
 db.session.commit()
+
+# check if a RailMlOcp is also that new station
+ocp = RailMlOcp.query.filter(RailMlOcp.code==point_dict["db_kuerzel"]).scalar()
+if ocp is not None:
+    ocp.station_id = station.id
+    db.session.add(ocp)
+    db.session.commit()
+
+railgraph = railgraph.RailGraph()
+railgraph.delete_graph_route(route_number=point_dict["route_number"])
 

@@ -30,7 +30,7 @@ routes = RailwayRoute.query.all()
 #         else:
 #             lines_update.add(element)
 
-lines_update = RailwayLine.query.filter(RailwayLine.length == None).all()
+lines_update = RailwayLine.query.filter(RailwayLine.length is None).all()
 
 updated_lines = []
 for line in lines_update:

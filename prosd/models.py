@@ -32,8 +32,8 @@ class NoSplitPossibleError(Exception):
 # project to group
 # TODO: Change that to projectcontent
 projectcontent_to_group = db.Table('projectcontent_to_group',
-                            db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                            db.Column('projectgroup_id', db.Integer, db.ForeignKey('project_groups.id'))
+                            db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE', ondelete='CASCADE')),
+                            db.Column('projectgroup_id', db.Integer, db.ForeignKey('project_groups.id', onupdate='CASCADE', ondelete='CASCADE'))
                             )
 
 # project to railway Lines
@@ -71,7 +71,7 @@ project_contents_to_constituencies = db.Table('projectcontent_to_constituencies'
                                               )
 
 railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
-                           db.Column('node_id', db.Integer, db.ForeignKey('railway_nodes.id')),
+                           db.Column('node_id', db.Integer, db.ForeignKey('railway_nodes.id', ondelete='CASCADE')),
                            db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
                            )
 
@@ -80,6 +80,15 @@ formations_to_vehicles = db.Table('formations_to_vehicles',
                                   db.Column('vehicle_id', db.String(100), db.ForeignKey('vehicles.id'))
                                   )
 
+traingroup_to_railwaylines = db.Table('traingroup_to_railwaylines',
+                                      db.Column('traingroup_id', db.String(255), db.ForeignKey('timetable_train_groups.id')),
+                                      db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                      )
+
+finve_to_projectcontent = db.Table('finve_to_projectcontent',
+                                    db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
+                                    db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id'))
+                                    )
 # classes/Tables
 
 
@@ -109,6 +118,8 @@ class RailwayLine(db.Model):
     active_since = db.Column(db.Integer)
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
     railway_infrastructure_company = db.Column(db.Integer, db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
+    abs_nbs = db.Column(db.String(5), default='KS')
+    gauge = db.Column(db.Integer, default=1435)
 
     # manipulate_geodata_and_db
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
@@ -116,7 +127,7 @@ class RailwayLine(db.Model):
 
     def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None, electrified=None,
                  number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
-                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None):
+                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None, gauge=1435, abs_nbs='ks'):
         self.route_number = route_number
         self.direction = direction
         self.length = length
@@ -132,6 +143,8 @@ class RailwayLine(db.Model):
         self.active_since = active_since
         self.coordinates = coordinates
         self.railway_infrastructure_company = railway_infrastructure_company
+        self.abs_nbs = abs_nbs
+        self.gauge = gauge
 
     @hybrid_property
     def nodes(self):
@@ -416,7 +429,7 @@ class RailwayPoint(db.Model):
     km_l = db.Column(db.String(255))
     name = db.Column(db.String(255))
     type = db.Column(db.String(255))  # db.Enum(allowed_values_type_of_station)
-    db_kuerzel = db.Column(db.String(5))
+    db_kuerzel = db.Column(db.String(6))
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
     node_id = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', onupdate='CASCADE', ondelete='SET NULL'))
 
@@ -459,7 +472,7 @@ class RailwayStation(db.Model):
     __tablename__ = 'railway_stations'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    db_kuerzel = db.Column(db.String(5), unique=True)
+    db_kuerzel = db.Column(db.String(6), unique=True)
     type = db.Column(db.String(10))
 
     railway_points = db.relationship("RailwayPoint", lazy="dynamic")
@@ -633,8 +646,8 @@ class RailwayNodes(db.Model):
         """
         gets all lines for an route that are connected to a node
         (for example all lines that are connected with an end-node of that line)
-        :param node:
-        :param route:
+        :param node_id:
+        :param route_number:
         :return:
         """
         lines = RailwayLine.query.filter(
@@ -760,13 +773,11 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    # id_point_start_id = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
-    # id_point_end_id = db.Column(db.Integer, db.ForeignKey('railway_points.id'))
-    superior_project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))  # TODO: Change that to project_content
+    superior_project_content_id = db.Column(db.Integer, db.ForeignKey('projects_contents.id'))  # TODO: Change that to project_content
 
     # references
-    project_contents = db.relationship('ProjectContent', backref='project', lazy=True)
-    superior_project = db.relationship("Project", backref='sub_project', remote_side=id)
+    project_contents = db.relationship('ProjectContent', backref='project', lazy=True, foreign_keys="ProjectContent.project_id")
+    superior_project = db.relationship("ProjectContent", backref='sub_project', foreign_keys=[superior_project_content_id])
 
     def __init__(self, name, description='', superior_project_id=None):
         self.name = name
@@ -780,7 +791,7 @@ class ProjectContent(db.Model):
     # Basic informations
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
-    project_number = db.Column(db.String(50))  # string because bvwp uses strings vor numbering projects, don't ask
+    project_number = db.Column(db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, default=None)
     reason_project = db.Column(db.Text, default=None)
@@ -952,6 +963,8 @@ class ProjectContent(db.Model):
     etcs = db.Column(db.Boolean, nullable=False, default=False)
     etcs_level = db.Column(db.Integer)
     station_railroad_switches = db.Column(db.Boolean, default=False)
+    new_station = db.Column(db.Boolean, default=False)
+    depot = db.Column(db.Boolean, default=False)
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -1072,8 +1085,23 @@ class ProjectContent(db.Model):
     # additional informations
     bvwp_additional_informations = db.Column(db.Text)
 
+    # calculation of operating cost
+    # #  spfv
+    use_capital_service_spfv = db.Column(db.Float)
+    use_maintenance_cost_spfv = db.Column(db.Float)
+    use_energy_cost_spfv = db.Column(db.Float)
+    # # spnv
+    use_capital_service_spnv = db.Column(db.Float)
+    use_maintenance_cost_spnv = db.Column(db.Float)
+    use_energy_cost_spnv = db.Column(db.Float)
+    # # sgv
+    use_capital_service_loco_sgv = db.Column(db.Float)
+    use_maintenance_cost_loco_sgv = db.Column(db.Float)
+    use_energy_cost_sgv = db.Column(db.Float)
+    use_change_traction_sgv = db.Column(db.Float)
+
     # references
-    budgets = db.relationship('Budget', backref='project_content', lazy=True)
+    # project = db.relationship("Project", backref='project_contents', lazy=True, foreign_keys=[project_id])
     texts = db.relationship('Text', secondary=texts_to_project_content,
                             backref=db.backref('project_content', lazy=True))
     projectcontent_groups = db.relationship('ProjectGroup', secondary=projectcontent_to_group,
@@ -1086,7 +1114,6 @@ class ProjectContent(db.Model):
                                             backref=db.backref('states', lazy=True))
     counties = db.relationship("Counties", secondary=project_contents_to_counties,
                                backref=db.backref('counties', lazy=True))
-
     constituencies = db.relationship("Constituencies", secondary=project_contents_to_constituencies,
                                      backref = db.backref('constituencies', lazy=True))
 
@@ -1113,6 +1140,24 @@ class ProjectGroup(db.Model):
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
+    @hybrid_property
+    def projects(self):
+        projects_id = set()
+        for pc in self.projects_content:
+            projects_id.add(pc.project)
+
+        return projects_id
+
+    @hybrid_property
+    def superior_projects(self):
+        # all projects that do not have an superior Project
+        projects_id = set()
+        for pc in self.projects_content:
+            if pc.project.superior_project_content_id is None:
+                projects_id.add(pc.project)
+
+        return projects_id
+
 
 class Vehicle(db.Model):
     """
@@ -1128,6 +1173,75 @@ class Vehicle(db.Model):
     engine = db.Column(db.Boolean)
     wagon = db.Column(db.Boolean)
 
+    vehicle_pattern_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+
+    vehicle_pattern = db.relationship("VehiclePattern")
+
+    @classmethod
+    def get_vehicle_use(self, vehicle):
+        formations = vehicle.formations
+        train_information = []
+        for formation in formations:
+            train_part = formation.train_part[0]
+            info = dict()
+            info["category"] = train_part.category.description
+            info["timetable_group"] = train_part.train[0].train_group.code
+            info["start"] = train_part.first_ocp.ocp.name
+            info["end"] = train_part.last_ocp.ocp.name
+            info["length"] = train_part.train[0].train_group.length_line
+
+        return train_information
+
+
+class VehiclePattern(db.Model):
+    """
+    patterns for vehicles that have more informations about energy usage etc.
+    """
+    __tablename__ = 'vehicles_pattern'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    type_of_traction = db.Column(db.String(255), nullable=False)
+    wagons_of_trainset = db.Column(db.Integer)
+    seats = db.Column(db.Integer)
+    weight = db.Column(db.Integer)
+    traction = db.Column(db.Integer)
+    speed_max = db.Column(db.Integer)
+    tilting = db.Column(db.Boolean, default=False)
+    couple_allowed = db.Column(db.Boolean, default=True)
+    length = db.Column(db.Integer)
+    investment_cost = db.Column(db.Float)
+    investment_cost_standi = db.Column(db.Float)
+    debt_service = db.Column(db.Float)
+    vehicle_cost_km = db.Column(db.Float)
+    maintenance_cost_km = db.Column(db.Float, comment="per vehicle-km")
+    maintenance_cost_year = db.Column(db.Float, comment="maintenance cost calculated by duration")
+    maintenance_cost_length_t = db.Column(db.Float, comment="€/1000tkm")
+    maintenance_cost_duration_t = db.Column(db.Float, comment="€/(t*year)")
+    train_driver_cost = db.Column(db.Float, comment="per vehicle-hour")
+    head_of_train_cost = db.Column(db.Float, comment="per vehicle-hour")
+    energy_per_km = db.Column(db.Float, comment="kWh/vehicle-km")
+    energy_per_tkm = db.Column(db.Float, comment="energy_unit/1000tkm")
+    energy_abs_per_km = db.Column(db.Float)
+    energy_nbs_per_km = db.Column(db.Float)
+    energy_cost_per_km = db.Column(db.Float)
+    energy_cost_stop = db.Column(db.Float)
+    fuel_consumption_diesel_km = db.Column(db.Float)
+    fuel_consumption_h2_km = db.Column(db.Float)
+    energy_consumption_hour = db.Column(db.Float)
+    fuel_consumption_diesel_hour = db.Column(db.Float)
+    fuel_consumption_h2_hour = db.Column(db.Float)
+    energy_stop_a = db.Column(db.Float)
+    energy_stop_b = db.Column(db.Float)
+    emission_production_vehicle = db.Column(db.Float, comment="kg CO2/Leermasse * Jahr")
+    emission_production_vehicle_calc = db.Column(db.Float, comment="t CO2/(Fahrzeug * Jahr)")
+    additional_energy_without_overhead = db.Column(db.Float)
+    additional_maintenance_cost_withou_overhead = db.Column(db.Float)
+    co2_km = db.Column(db.Float, comment="g/km")
+    co2_stop = db.Column(db.Float, comment="g/stop")
+    emission_km = db.Column(db.Float, comment="€/km")
+    emission_stop = db.Column(db.Float, comment="€/stop")
+    project_group = db.Column(db.Integer, db.ForeignKey('project_groups.id'))
+
 
 class Formation(db.Model):
     """
@@ -1140,7 +1254,60 @@ class Formation(db.Model):
     speed = db.Column(db.Integer)
     weight = db.Column(db.Float)
 
-    vehicles = db.relationship("Vehicle", secondary=formations_to_vehicles)
+    vehicles = db.relationship("Vehicle", secondary=formations_to_vehicles, backref="formations")
+
+    @hybrid_property
+    def maintenance_cost_km(self):
+        maintenance_cost_km = 0
+        for vehicle in self.vehicles:
+            maintenance_cost_km += vehicle.vehicle_pattern.maintenance_cost_km
+        return maintenance_cost_km
+
+    @hybrid_property
+    def weight(self):
+        weight = 0
+        for vehicle in self.vehicles:
+            weight += vehicle.vehicle_pattern.weight
+        return weight
+
+    @hybrid_property
+    def type_of_traction(self):
+        type_of_traction = self.vehicles[0].vehicle_pattern.type_of_traction
+        return type_of_traction
+
+    @hybrid_property
+    def energy_stop_a(self):
+        energy_stop_a = self.vehicles[0].vehicle_pattern.energy_stop_a
+        return energy_stop_a
+
+    @hybrid_property
+    def energy_stop_b(self):
+        energy_stop_b = self.vehicles[0].vehicle_pattern.energy_stop_b
+        return energy_stop_b
+
+    @hybrid_property
+    def additional_energy_without_overhead(self):
+        additional_energy_without_overhead = self.vehicles[0].vehicle_pattern.additional_energy_without_overhead
+        return additional_energy_without_overhead
+
+    @hybrid_property
+    def additional_maintenance_cost_without_overhead(self):
+        additional_maintenance_cost_without_overhead = self.vehicles[0].vehicle_pattern.additional_maintenance_cost_withou_overhead
+        return additional_maintenance_cost_without_overhead
+
+    @hybrid_property
+    def energy_per_km(self):
+        energy_per_km = 0
+        for vehicle in self.vehicles:
+            energy_per_km += vehicle.vehicle_pattern.energy_per_km
+        return energy_per_km
+
+    @hybrid_property
+    def seats(self):
+        seats = 0
+        for vehicle in self.vehicles:
+            seats += vehicle.vehicle_pattern.seats
+        return seats
 
 
 class TimetablePeriod(db.Model):
@@ -1163,21 +1330,149 @@ class TimetableOperatingPeriod(db.Model):
     endDate = db.Column(db.Date)
 
 
-class TimetableCategorie(db.Model):
+class TimetableCategory(db.Model):
     __tablename__ = 'timetable_categories'
     id = db.Column(db.String(15), primary_key=True)
     code = db.Column(db.String(255))
     description = db.Column(db.String(255))
+    transport_mode = db.Column(db.String(5))
+
+    train_part = db.relationship("TimetableTrainPart", lazy=True, backref="category")
 
 
 class TimetableTrainGroup(db.Model):
     __tablename__ = 'timetable_train_groups'
+
+    def __repr__(self):
+        return f"TrainGroup {self.code} {self.description}"
+
     id = db.Column(db.String(255), primary_key=True)
     code = db.Column(db.String(255))
     train_number = db.Column(db.Integer)
 
-    trains = db.relationship("TimetableTrain", lazy=True)
-    # TODO: Add method to import railml
+    trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
+    lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
+
+    @hybrid_property
+    def length_line(self):
+        km = 0
+        for line in self.lines:
+            km += line.length/1000
+
+        return km
+
+    @hybrid_property
+    def running_km_day(self):
+        running_km_day = self.length_line * len(self.trains)
+
+        return running_km_day
+
+    @hybrid_property
+    def running_km_day_abs(self):
+        running_km_day_abs = 0
+        for line in self.lines:
+            if line.abs_nbs == "ABS":
+                running_km_day_abs += line.length/1000
+
+        running_km_day_abs = running_km_day_abs * len(self.trains)
+        return running_km_day_abs
+
+    @hybrid_property
+    def running_km_day_nbs(self):
+        running_km_day_nbs = 0
+        for line in self.lines:
+            if line.abs_nbs == "NBS":
+                running_km_day_nbs += line.length/1000
+
+        running_km_day_nbs = running_km_day_nbs * len(self.trains)
+        return running_km_day_nbs
+
+    @hybrid_property
+    def running_km_year(self):
+        running_km_year = self.running_km_day * 365 / 1000
+        return running_km_year
+
+    @hybrid_property
+    def running_km_year_abs(self):
+        running_km_year_abs = self.running_km_day_abs * 365 / 1000
+        return running_km_year_abs
+
+    @hybrid_property
+    def running_km_year_nbs(self):
+        running_km_year_nbs = self.running_km_day_nbs * 365 / 1000
+        return running_km_year_nbs
+
+    @hybrid_property
+    def minimal_run_time(self):
+        #TODO: There are sections with no run time. Check whats the problem
+        train = self.trains[0]
+        ocps = train.train_part.timetable_ocps
+        minimal_run_time = datetime.timedelta(seconds=0)
+
+        for ocp in ocps:
+            sections = ocp.section
+            for section in sections:
+                section_time = section.minimal_run_time
+                if section_time:
+                    timedelta = datetime.timedelta(hours=section_time.hour, minutes=section_time.minute, seconds = section_time.second)
+                    minimal_run_time += timedelta
+        return minimal_run_time
+
+    @hybrid_property
+    def travel_time(self):
+        train = self.trains[0]
+        departure_first_time = train.train_part.first_ocp.times.filter(TimetableTime.scope == "scheduled").one().departure
+        arrival_last_time = train.train_part.last_ocp.times.filter(TimetableTime.scope == "scheduled").one().arrival
+        departure_first = datetime.datetime.combine(datetime.date.today(), departure_first_time)
+        arrival_last = datetime.datetime.combine(datetime.date.today(), arrival_last_time)
+
+        travel_time = arrival_last - departure_first
+
+        return travel_time
+
+    @hybrid_property
+    def running_time_day(self):
+        running_time_day = self.travel_time * len(self.trains)
+
+        return running_time_day
+
+    @hybrid_property
+    def running_time_year(self):
+        """
+        Tsd. Zug/std per year
+        :return:
+        """
+        running_time_year = self.running_time_day * 365
+        running_time_year = (running_time_year.days*24 + running_time_year.seconds/3600)/1000
+        # running_time_year = running_time_year.seconds/3600
+        return running_time_year
+
+    @hybrid_property
+    def vehicles(self):
+        train = self.trains[0]  # all trains have same formation (checked)
+        vehicles = train.train_part.formation.vehicles
+
+        return vehicles
+
+    @hybrid_property
+    def description(self):
+        description = self.trains[0].description
+        return description
+
+    @hybrid_property
+    def first_ocp(self):
+        first_ocp = self.trains[0].train_part.first_ocp
+        return first_ocp
+
+    @hybrid_property
+    def last_ocp(self):
+        last_ocp = self.trains[0].train_part.last_ocp
+        return last_ocp
+
+    @hybrid_property
+    def category(self):
+        category = self.trains[0].train_part.category
+        return category
 
 
 class TimetableTrain(db.Model):
@@ -1196,6 +1491,8 @@ class TimetableTrain(db.Model):
     air_brake_application_position = db.Column(db.String(255))
     regular_brake_percentage = db.Column(db.Integer)
 
+    train_part = db.relationship("TimetableTrainPart", backref="train", lazy=True)
+
 
 class TimetableTrainPart(db.Model):
     __tablename__ = 'timetable_train_parts'
@@ -1204,7 +1501,18 @@ class TimetableTrainPart(db.Model):
     formation_id = db.Column(db.String(100), db.ForeignKey('formations.id'))
     operating_period_id = db.Column(db.String(31), db.ForeignKey('timetable_operating_period.id'))
 
-    timetable_ocps = db.relationship("TimetableOcp", lazy=True)
+    timetable_ocps = db.relationship("TimetableOcp", lazy=True, order_by="asc(TimetableOcp.sequence)")
+    formation = db.relationship("Formation", lazy=True, backref="train_part")
+
+    @hybrid_property
+    def first_ocp(self):
+        first_ocp = self.timetable_ocps[0]
+        return first_ocp
+
+    @hybrid_property
+    def last_ocp(self):
+        last_ocp = self.timetable_ocps[-1]
+        return last_ocp
 
 
 class TimetableOcp(db.Model):
@@ -1217,14 +1525,17 @@ class TimetableOcp(db.Model):
     stop_description = db.Column(db.String(255))
     train_reverse = db.Column(db.Boolean)
 
-    times = db.relationship("TimetableTime", lazy=True)
+    times = db.relationship("TimetableTime", lazy="dynamic")
     section = db.relationship("TimetableSection", lazy=True)
+    ocp = db.relationship("RailMlOcp", lazy=True)
+
+    # scheduled_time = times.query.filter(TimetableTime.scope == "scheduled")
 
 
 class TimetableTime(db.Model):
     __tablename__ = 'timetable_times'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id'))
+    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id', ondelete='CASCADE', onupdate='CASCADE'))
     scope = db.Column(db.String(255))
     arrival = db.Column(db.Time)
     departure = db.Column(db.Time)
@@ -1235,7 +1546,7 @@ class TimetableTime(db.Model):
 class TimetableSection(db.Model):
     __tablename__ = 'timetable_sections'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id'))
+    timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id', ondelete='CASCADE', onupdate='CASCADE'))
     section = db.Column(db.String(255))
     line = db.Column(db.String(255))
     track_id = db.Column(db.String(510))  # TODO: Could be a foreign key if necessary
@@ -1251,20 +1562,94 @@ class RailMlOcp(db.Model):
     station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id'))
     operational_type = db.Column(db.String(31))
 
+    station = db.relationship("RailwayStation", lazy=True)
+
 
 class Budget(db.Model):
     __tablename__ = 'budgets'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    budget_year = db.Column(db.Integer, nullable=False)
+    lfd_nr = db.Column(db.String(100))
+    fin_ve = db.Column(db.Integer, db.ForeignKey('finve.id'))
+    bedarfsplan_number = db.Column(db.String(100))
+
+    starting_year = db.Column(db.Integer)
+    cost_estimate_original = db.Column(db.Integer)
+    cost_estimate_last_year = db.Column(db.Integer)
+    cost_estimate_actual = db.Column(db.Integer)
+    cost_estimate_actual_third_parties = db.Column(db.Integer)
+    cost_estimate_actual_equity = db.Column(db.Integer)  # Eigenanteil EIU
+    cost_estimate_actual_891_01 = db.Column(db.Integer)
+    cost_estimate_actual_891_02 = db.Column(db.Integer)
+    cost_estimate_actual_891_03 = db.Column(db.Integer)
+    cost_estimate_actual_891_04 = db.Column(db.Integer)
+    cost_estimate_actual_891_91 = db.Column(db.Integer)
+
+    delta_previous_year = db.Column(db.Integer)
+    delta_previous_year_relativ = db.Column(db.Float)
+    delta_previous_year_reasons = db.Column(db.Text)
+
+    spent_two_years_previous = db.Column(db.Integer)
+    spent_two_years_previous_third_parties = db.Column(db.Integer)
+    spent_two_years_previous_equity = db.Column(db.Integer)
+    spent_two_years_previous_891_01 = db.Column(db.Integer)
+    spent_two_years_previous_891_02 = db.Column(db.Integer)
+    spent_two_years_previous_891_03 = db.Column(db.Integer)
+    spent_two_years_previous_891_04 = db.Column(db.Integer)
+    spent_two_years_previous_891_91 = db.Column(db.Integer)
+
+    allowed_previous_year = db.Column(db.Integer)
+    allowed_previous_year_third_parties = db.Column(db.Integer)
+    allowed_previous_year_equity = db.Column(db.Integer)
+    allowed_previous_year_891_01 = db.Column(db.Integer)
+    allowed_previous_year_891_02 = db.Column(db.Integer)
+    allowed_previous_year_891_03 = db.Column(db.Integer)
+    allowed_previous_year_891_04 = db.Column(db.Integer)
+    allowed_previous_year_891_91 = db.Column(db.Integer)
+
+    spending_residues = db.Column(db.Integer)
+    spending_residues_891_01 = db.Column(db.Integer)
+    spending_residues_891_02 = db.Column(db.Integer)
+    spending_residues_891_03 = db.Column(db.Integer)
+    spending_residues_891_04 = db.Column(db.Integer)
+    spending_residues_891_91 = db.Column(db.Integer)
+
+    year_planned = db.Column(db.Integer)
+    year_planned_third_parties = db.Column(db.Integer)
+    year_planned_equity = db.Column(db.Integer)
+    year_planned_891_01 = db.Column(db.Integer)
+    year_planned_891_02 = db.Column(db.Integer)
+    year_planned_891_03 = db.Column(db.Integer)
+    year_planned_891_04 = db.Column(db.Integer)
+    year_planned_891_91 = db.Column(db.Integer)
+
+    next_years = db.Column(db.Integer)
+    next_years_third_parties = db.Column(db.Integer)
+    next_years_equity = db.Column(db.Integer)
+    next_years_891_01 = db.Column(db.Integer)
+    next_years_891_02 = db.Column(db.Integer)
+    next_years_891_03 = db.Column(db.Integer)
+    next_years_891_04 = db.Column(db.Integer)
+    next_years_891_91 = db.Column(db.Integer)
+
+    finve = db.relationship("FinVe", backref=db.backref("budgets"))
+
+
+class FinVe(db.Model):
+    """
+    FinVe = Finanzierungsvereinbarung
+    a agreement between the state of germany and the infrastructure company to finance infrastructure. It's a little complicated
+    """
+    __tablename__ = 'finve'
+
     id = db.Column(db.Integer, primary_key=True)
-    project_content_id = db.Column(db.Integer, db.ForeignKey('projects_contents.id'))
-    name = db.Column(db.String(100))
-    type = db.Column(db.String(100))  # TODO: ENUM: FinVe, Bedarfsplan, etc.
-    year = db.Column(db.Integer)
-    spent_cost_two_years_before = db.Column(db.Integer)
-    allowed_year_before = db.Column(db.Integer)
-    delegated_costs = db.Column(db.Integer)
-    planned_cost_this_year = db.Column(db.Integer)
-    planned_cost_next_year = db.Column(db.Integer)
-    planned_cost_following_years = db.Column(db.Integer)
+    name = db.Column(db.String(1000))
+    starting_year = db.Column(db.Integer)
+    cost_estimate_original = db.Column(db.Integer)
+
+    project_contents = db.relationship('ProjectContent', secondary=finve_to_projectcontent,
+                                       backref=db.backref('finve', lazy=True))
 
 
 class Text(db.Model):

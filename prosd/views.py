@@ -204,7 +204,7 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):
     project_contents = ma.Nested(ProjectContentSchema, many=True)
-    superior_project = ma.Nested(lambda: ProjectSchema)
+    # superior_project = ma.Nested(lambda: ProjectSchema)
 
     class Meta:
         model = models.Project
@@ -233,7 +233,7 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
 
 class ProjectShortSchema(ma.SQLAlchemyAutoSchema):
     project_contents = ma.Nested(ProjectContentShortSchema, many=True)
-    superior_project = ma.Nested(lambda: ProjectSchema)
+    # superior_project = ma.Nested(lambda: ProjectSchema)
 
     class Meta:
         model = models.Project

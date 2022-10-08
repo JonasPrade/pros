@@ -1,0 +1,33 @@
+project_number,D-13
+project_name,Deutschlandtakt Ausbau Hamm – Bielefeld
+pc_name,ABS Hamm – Bielefeld
+pc_description,"Ausbau Fernbahn Hamm - Bielefeld für bis zu 300 km/h; Ertüchtigung der Güterbahn Hamm - Herforder (Gz-Gleise) für den Personenverkehr (160 km/h); neue Schweichelner Kruve, Anpassung div. Bahnhofstopologien, Bahnsteige an der Strecke 2990, Bau von Überholgleisen für den Personenverkehr (Nutzlänge 215m) in Ahlen und Oelde"
+pc_reason,"Engpassauflösung wegen Mehrverkehr SPFV und SPNV und bessere Knoteneinbindung (Anschlussherstellung) in Hamm und Hannover (Zielfahrzeit Hamm - Hannover 54 Minuten inkl 2' Haltezeit in Bielefeld), zudem Beitrag zur Fahrzeitverkürzung Berlin - Hannover - NRW auf 3:35h, Erreichung Zielfahrzeit Hamm - Bielefeld: 21 Minuten; zudem Maßnahmenliste Halbstundentakt DB Netz AG 2026: Minimierung Verspätungsübertragungsrisiko, ""Robustes Netz NRW"" bis zur IBN NBS/ABS Hamm - Seelze (Etappierungsmaßnahme)"
+effect_long_rail,1
+effect_local_rail,1
+effect_cargo,1
+nbs,0
+abs,1
+elektrification,0
+batterie,0
+second_track,0
+third_track,0
+fourth_track,0
+curve,1
+platform,0
+junction_station,0
+number_junction_station,0
+overtaking_station,1
+number_overtaking_station,2
+double_occupancy,0
+block_increase,0
+flying_junction,1
+tunnel_structural_gauge,0
+increase_speed,1
+new_vmax,300
+level_free_platform_entrance,0
+etcs,0
+etcs_level,0
+cost,planned_total_cost
+planned_total_cost,392.1
+station_railroad_switches,1

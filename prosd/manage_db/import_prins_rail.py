@@ -8,8 +8,8 @@ logging.basicConfig(filename='../log/log_import_prins_rail.log', encoding='utf-8
 
 ProjectContent = models.ProjectContent
 
-#project_list = ProjectContent.query.all()
-project_list = ['2-054-V02']
+#project_list = ProjectContent.query.filter(ProjectContent.project_group
+project_list = ['2-014-V01']
 
 Pc_to_state = models.project_contents_to_states
 States = models.States
