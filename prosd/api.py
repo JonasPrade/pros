@@ -88,13 +88,11 @@ def get_first_projectgroup(**kwargs):
 def get_traingroup(**kwargs):
     traingroup_id = kwargs.pop('id')
     traingroup = models.TimetableTrainGroup.query.get(traingroup_id)
-
-
-    project = models.Project.query.get(project_id)
-    project_schema = views.ProjectSchema()
-    output = project_schema.dump(project)
-    response = make_response({'project': output})
+    traingroup_schema = views.TrainGroupSchema()
+    output = traingroup_schema.dump(traingroup)
+    response = make_response({'traingroup': output})
     return response
+
 
 """
 @app.route("/project/<id>", methods=['POST'])

@@ -250,3 +250,34 @@ class ProjectShortSchema(ma.SQLAlchemyAutoSchema):
         # first_project_content = obj.project_contents[0]
         return first_project_content
 
+
+class FormationSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.Formation
+        include_fk = True
+
+
+class TimetableTrainPartSchema(ma.SQLAlchemyAutoSchema):
+    formation = ma.Nested(FormationSchema)
+
+    class Meta:
+        model = models.TimetableTrainPart
+        include_fk = True
+
+
+class TimetableTrainSchema(ma.SQLAlchemyAutoSchema):
+    train_part = ma.Nested(TimetableTrainPartSchema)
+
+    class Meta:
+        model = models.TimetableTrain
+        include_fk = True
+
+
+class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
+    lines = ma.Nested(RailwayLinesSchema, many=True)
+    trains = ma.Nested(TimetableTrainSchema, many=True)
+
+    class Meta:
+        model = models.TimetableTrainGroup
+        include_fk = True
+

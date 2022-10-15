@@ -1188,7 +1188,7 @@ class Vehicle(db.Model):
 
     vehicle_pattern_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
 
-    vehicle_pattern = db.relationship("VehiclePattern")
+    vehicle_pattern = db.relationship("VehiclePattern", backref="vehicles")
 
     @classmethod
     def get_vehicle_use(self, vehicle):
@@ -1453,7 +1453,7 @@ class TimetableTrainGroup(db.Model):
         arrival_last_time = train.train_part.last_ocp.times.filter(TimetableTime.scope == "scheduled").one().arrival
         departure_first = datetime.datetime.combine(datetime.date.today(), departure_first_time)
         arrival_last = datetime.datetime.combine(datetime.date.today(), arrival_last_time)
-
+        #TODO: Check for arrival after midnight
         travel_time = arrival_last - departure_first
 
         return travel_time
@@ -1474,6 +1474,76 @@ class TimetableTrainGroup(db.Model):
         running_time_year = (running_time_year.days*24 + running_time_year.seconds/3600)/1000
         # running_time_year = running_time_year.seconds/3600
         return running_time_year
+
+    @hybrid_property
+    def stops_count(self):
+        """
+        count of stops (with passenger exchange for passenger trains)
+        :return:
+        """
+        count_stops = 0
+        train = self.trains[0]
+        ocps = train.train_part.timetable_ocps
+
+        for ocp in ocps:
+            if ocp.ocp_type == 'stop':
+                count_stops += 1
+
+        return count_stops
+
+    @hybrid_property
+    def stops_count_year(self):
+        """
+        count of stops in a year
+        :return:
+        """
+        count_stops_year = self.stops_count * len(self.trains) * 365
+        return count_stops_year
+
+    @hybrid_property
+    def stops(self):
+        """
+        list of stops
+        :return:
+        """
+        stops = []
+        train = self.trains[0]
+        ocps = train.train_part.timetable_ocps
+
+        for ocp in ocps:
+            if ocp.ocp_type == 'stop':
+                stops.append(ocp.ocp)
+
+        return stops
+
+    @hybrid_property
+    def stops_duration(self):
+        """
+        summed duration of all stops in one direction
+        :return:
+        """
+        stops_duration = datetime.timedelta(seconds=0)
+        train = self.trains[0]
+        ocps = train.train_part.timetable_ocps
+
+        for ocp in ocps:
+            if ocp.ocp_type == 'stop':
+                for time in ocp.times.all():
+                    if time.scope == 'scheduled' and (time.arrival is not None and time.departure is not None):
+                        stop_duration = datetime.datetime.combine(datetime.date.min, time.departure) - datetime.datetime.combine(datetime.date.min, time.arrival)
+                        stops_duration += stop_duration
+
+        return stops_duration
+
+    @hybrid_property
+    def stops_duration_average(self):
+        """
+        average of the duration of a stop (first and last stop is ignored)
+        :return:
+        """
+        stops_duration_average = (self.stops_duration/(self.stops_count-2))
+        return stops_duration_average
+
 
     @hybrid_property
     def vehicles(self):
@@ -1584,6 +1654,10 @@ class TimetableSection(db.Model):
 
 class RailMlOcp(db.Model):
     __tablename__ = 'railml_ocps'
+
+    def __repr__(self):
+        return f"RailMlCop {self.id} {self.code} {self.name}"
+
     id = db.Column(db.String(255), primary_key=True)
     name = db.Column(db.String(255))
     code = db.Column(db.String(255))
