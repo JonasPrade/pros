@@ -21,7 +21,6 @@ def string_to_time(time_string):
 
 
 def string_to_duration(duration_string):
-
     try:
         t = datetime.datetime.strptime(duration_string, "PT%MM%SS")
     except ValueError:
@@ -415,7 +414,7 @@ if __name__ == "__main__":
     # railstock
     railstock = root.find('{http://www.railml.org/schemas/2013}rollingstock')
     # add_vehicles(railstock)
-    formation_to_vehicle(railstock)
+    # formation_to_vehicle(railstock)
     # add_formations(railstock)
 
     # timetable
@@ -426,3 +425,4 @@ if __name__ == "__main__":
     # add_trains(timetable)
     # add_train_groups(timetable)
     # train_to_train_groups(timetable)
+    print(timetable)

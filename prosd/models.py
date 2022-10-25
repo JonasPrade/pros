@@ -11,6 +11,7 @@ import logging
 
 from prosd import db, app, bcrypt
 
+START_DATE = datetime.datetime(2030, 1, 1)
 
 class PointOfLineNotAtEndError(Exception):
     def __init__(self, message):
@@ -1362,8 +1363,10 @@ class TimetableTrainGroup(db.Model):
     id = db.Column(db.String(255), primary_key=True)
     code = db.Column(db.String(255))
     train_number = db.Column(db.Integer)
+    traingroup_line = db.Column(db.String(255), db.ForeignKey('timetable_lines.code', ondelete='SET NULL', onupdate='CASCADE'))
 
     trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
+    traingroup_lines = db.relationship("TimetableLine", lazy=True, backref="train_groups")
     lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
 
     @hybrid_property
@@ -1574,6 +1577,10 @@ class TimetableTrainGroup(db.Model):
 
 
 class TimetableTrain(db.Model):
+
+    def __repr__(self):
+        return f"TimetableTrain {self.id} {self.train_part}"
+
     __tablename__ = 'timetable_train'
     id = db.Column(db.String(510), primary_key=True)
     description = db.Column(db.Text)
@@ -1594,6 +1601,10 @@ class TimetableTrain(db.Model):
 
 class TimetableTrainPart(db.Model):
     __tablename__ = 'timetable_train_parts'
+
+    def __repr__(self):
+        return f"TimetableTrain {self.id} {self.first_ocp.ocp.code} {self.first_ocp_departure} {self.last_ocp.ocp.code} {self.last_ocp_arrival}"
+
     id = db.Column(db.String(510), primary_key=True)
     category_id = db.Column(db.String(15), db.ForeignKey('timetable_categories.id'))
     formation_id = db.Column(db.String(100), db.ForeignKey('formations.id'))
@@ -1607,14 +1618,56 @@ class TimetableTrainPart(db.Model):
         first_ocp = self.timetable_ocps[0]
         return first_ocp
 
+    @first_ocp.expression
+    def first_ocp(cls):
+        statement = sqlalchemy.select(TimetableOcp)
+        statement = statement.where(TimetableOcp.train_part == cls.id)
+        statement = statement.order_by(TimetableOcp.sequence)
+        statement = statement.limit(1)
+        # sqlalchemy.select([TimetableTrainPart.timetable_ocps]).where(TimetableOcp.train_part == cls.id).order_by(TimetableOcp.sequence).limit(1)
+        return statement
+
     @hybrid_property
     def last_ocp(self):
         last_ocp = self.timetable_ocps[-1]
         return last_ocp
 
+    @last_ocp.expression
+    def last_ocp(cls):
+        statement = sqlalchemy.select(TimetableOcp)
+        statement = statement.where(TimetableOcp.train_part == cls.id)
+        statement = statement.order_by(sqlalchemy.desc(TimetableOcp.sequence))
+        statement = statement.limit(1)
+        #sqlalchemy.select([TimetableTrainPart.timetable_ocps]).where(TimetableOcp.train_part == cls.id).order_by(TimetableOcp.sequence).limit(1)
+        return statement
+
+    @hybrid_property
+    def first_ocp_departure(self):
+        first_ocp_departure = None
+        for time in self.first_ocp.times.all():
+            if time.scope == 'scheduled':
+                first_ocp_departure = time.departure_with_day
+                break
+
+        return first_ocp_departure
+
+    @property
+    def last_ocp_arrival(self):
+        last_ocp_arrival = None
+        for time in self.last_ocp.times.all():
+            if time.scope == 'scheduled':
+                last_ocp_arrival = time.arrival_with_day
+                break
+
+        return last_ocp_arrival
+
 
 class TimetableOcp(db.Model):
     __tablename__ = 'timetable_ocps'
+
+    def __repr__(self):
+        return f"TimetableOcp {self.ocp.code} {self.ocp_type} {self.scheduled_time} {self.section}"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     train_part = db.Column(db.String(510), db.ForeignKey('timetable_train_parts.id'))
     sequence = db.Column(db.Integer)
@@ -1627,11 +1680,17 @@ class TimetableOcp(db.Model):
     section = db.relationship("TimetableSection", lazy=True)
     ocp = db.relationship("RailMlOcp", lazy=True)
 
-    # scheduled_time = times.query.filter(TimetableTime.scope == "scheduled")
+    @hybrid_property
+    def scheduled_time(self):
+        return self.times.filter(TimetableTime.scope == "scheduled").scalar()
 
 
 class TimetableTime(db.Model):
     __tablename__ = 'timetable_times'
+
+    def __repr__(self):
+        return f"TimetableTime {self.id} {self.scope} – arrival: {self.arrival}, departure: {self.departure}"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id', ondelete='CASCADE', onupdate='CASCADE'))
     scope = db.Column(db.String(255))
@@ -1640,9 +1699,35 @@ class TimetableTime(db.Model):
     arrival_day = db.Column(db.Integer)
     departure_day = db.Column(db.Integer)
 
+    @property
+    def arrival_with_day(self):
+        arrival_with_day = self._time_with_day(time=self.arrival, day_addition=self.arrival_day)
+        return arrival_with_day
+
+    @property
+    def departure_with_day(self):
+        departure_with_day = self._time_with_day(time=self.departure, day_addition=self.departure_day)
+        return departure_with_day
+
+    def _time_with_day(self, time, day_addition):
+        if time is not None:
+            if day_addition is None:
+                day_addition = 0
+
+            day = START_DATE + datetime.timedelta(days=day_addition)
+            time_with_day = datetime.datetime.combine(day, time)
+
+        else:
+            time_with_day = None
+        return time_with_day
+
 
 class TimetableSection(db.Model):
     __tablename__ = 'timetable_sections'
+
+    def __repr__(self):
+        return f"Section {self.section} {self.minimal_run_time}"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id', ondelete='CASCADE', onupdate='CASCADE'))
     section = db.Column(db.String(255))
@@ -1650,6 +1735,16 @@ class TimetableSection(db.Model):
     track_id = db.Column(db.String(510))  # TODO: Could be a foreign key if necessary
     direction = db.Column(db.String(15))
     minimal_run_time = db.Column(db.Time)
+
+
+class TimetableLine(db.Model):
+    __tablename__ = "timetable_lines"
+
+    def __repr__(self):
+        return f"TimetableLine {self.id} {self.code}"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    code = db.Column(db.String(255), unique=True, nullable=False)
 
 
 class RailMlOcp(db.Model):

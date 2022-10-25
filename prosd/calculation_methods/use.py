@@ -102,7 +102,6 @@ class BvwpSpfv(BvwpUse):
 
 class BvwpSpnv(BvwpUse):
     def __init__(self, tg_id, vehicles=None):
-        self.ENERGY_COST_ELECTRO = 0.156
         super().__init__(traingroup_id=tg_id, vehicles=vehicles)
 
         self.use = super().calc_use(vehicles_list=self.vehicles)
@@ -118,7 +117,6 @@ class BvwpSpnv(BvwpUse):
 
 class StandiSpnv(BvwpUse):
     def __init__(self, tg_id, vehicles=None):
-        self.ENERGY_COST_ELECTRO = 0.156
         super().__init__(traingroup_id=tg_id, vehicles=vehicles)
 
         self.use = super().calc_use(vehicles_list=self.vehicles)

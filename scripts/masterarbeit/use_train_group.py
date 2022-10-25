@@ -1,6 +1,6 @@
 from prosd import models
 from prosd.models import TimetableTrainGroup
-from prosd.calculation_methods.bvwp import BvwpSgv, BvwpSpfv, BvwpSpnv
+from prosd.calculation_methods.use import BvwpSgv, BvwpSpfv, BvwpSpnv
 
 # train_group_code = "SA3_X 3001 E 3"
 # train_group = TimetableTrainGroup.query.filter(TimetableTrainGroup.code == train_group_code).one()
