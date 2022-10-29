@@ -121,6 +121,14 @@ class StandiSpnv(BvwpUse):
 
         self.use = super().calc_use(vehicles_list=self.vehicles)
 
+        # TODO: These: Das hier muss komplett anders angegangen werden.
+
+    def calc_use(self):
+        pass
+
+    def debt_service(self):
+        pass
+
     def energy(self, vehicle):
         additional_battery = vehicle.vehicle_pattern.additional_energy_without_overhead * self.tg.running_km_year_no_catenary
         energy_per_km = vehicle.vehicle_pattern.energy_per_km

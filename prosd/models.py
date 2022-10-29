@@ -4,7 +4,7 @@ import geojson
 import geoalchemy2
 import shapely
 import sqlalchemy
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.ext.associationproxy import association_proxy
 import math
 import logging
@@ -1745,6 +1745,85 @@ class TimetableLine(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String(255), unique=True, nullable=False)
+
+    @property
+    def all_trains(self):
+        list_all_trains = []
+        for tg in self.train_groups:
+            for train in tg.trains:
+                list_all_trains.append(train)
+        return list_all_trains
+
+    # TODO: Hier train cycle einfügen
+    @hybrid_method
+    def get_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
+        list_all_trains = self.all_trains
+        train_cycles_all = []
+
+        while len(list_all_trains) > 0:
+
+            first_train = self._get_earliest_departure(list_all_trains)
+            list_all_trains.remove(first_train)
+            train_cycle = [first_train]
+            turning_information = []
+
+            previous_train = first_train
+            while True:
+                next_train, time_information = self._get_next_train(previous_train=previous_train,
+                                                              list_all_trains=list_all_trains, wait_time=wait_time)
+                if next_train is None:
+                    train_cycles_all.append(train_cycle)
+                    break
+                else:
+                    list_all_trains.remove(next_train)
+                    train_cycle.append(next_train)
+                    turning_information.append([previous_train.train_part.last_ocp.ocp, previous_train,
+                                                previous_train.train_part.last_ocp_arrival, time_information,
+                                                next_train.train_part.first_ocp_departure, next_train])
+                    previous_train = next_train
+
+        return train_cycles_all
+
+    def _get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
+        # TODO: Add minimum wait time
+        next_train = None
+        time_information = None
+
+        # get the ocp where the trains end
+        ocp = previous_train.train_part.last_ocp.ocp
+        arrival = previous_train.train_part.last_ocp_arrival
+
+        # search all trains that starts here
+        possible_trains = dict()
+        for train in list_all_trains:
+            if train.train_part.first_ocp.ocp == ocp:
+                train_departure = train.train_part.first_ocp_departure
+                delta_time = train_departure - arrival
+                if delta_time > datetime.timedelta(0):
+                    possible_trains[delta_time] = train
+
+        if possible_trains:
+            next_train_time_delta = min(possible_trains)
+            next_train = possible_trains[next_train_time_delta]
+            time_information = next_train_time_delta
+
+        return next_train, time_information
+
+
+    def _get_earliest_departure(self, list_all_trains):
+        """
+        searches for the train with the earliest departure at their first stop
+        :param list_all_trains:
+        :return:
+        """
+        trains = dict()
+        for train in list_all_trains:
+            trains[train.train_part.first_ocp_departure] = train
+
+        earliest_time = min(trains)
+        earliest_train = trains[earliest_time]
+
+        return earliest_train
 
 
 class RailMlOcp(db.Model):
