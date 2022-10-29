@@ -2,7 +2,7 @@ import logging
 import math
 import os
 
-from prosd.models import TimetableTrainGroup, Vehicle
+from prosd.models import TimetableTrainGroup, Vehicle, TimetableLine
 from prosd.calculation_methods.base import BaseCalculation
 
 
@@ -116,31 +116,99 @@ class BvwpSpnv(BvwpUse):
 
 
 class StandiSpnv(BvwpUse):
-    def __init__(self, tg_id, vehicles=None):
-        super().__init__(traingroup_id=tg_id, vehicles=vehicles)
+    def __init__(self, trainline_id, vehicles=None):
+        self.ENERGY_COST_ELECTRO = 0.1536
+        self.ENERGY_COST_DIESEL = 0.74
 
-        self.use = super().calc_use(vehicles_list=self.vehicles)
+        if vehicles is None:
+            self.vehicles = []
+        else:
+            self.vehicles = vehicles
 
-        # TODO: These: Das hier muss komplett anders angegangen werden.
+        self.trainline = TimetableLine.query.get(trainline_id)
+        self.traingroups = self.trainline.train_groups
+        if not self.vehicles:
+            self.vehicles = self.traingroups[0].trains[0].train_part.formation.vehicles
+
+        self.train_cycles = self.trainline.get_train_cycle()
+
+        self.use = self.calc_use()
 
     def calc_use(self):
-        pass
+        use = 0
+
+        debt_service = self.debt_service()
+        maintenance_cost_time = self.maintenance_cost_time()
+
+        energy_cost_sum = 0
+        maintenance_cost_running_sum = 0
+        for tg in self.traingroups:
+            vehicles = tg.trains[0].train_part.formation.vehicles
+            for vehicle in vehicles:
+                energy_cost = self.energy_cost(vehicle=vehicle, traingroup=tg)
+                maintenance_cost_running = self.maintenance_cost_running(vehicle=vehicle, traingroup=tg)
+
+                energy_cost_sum += energy_cost
+                maintenance_cost_running_sum += maintenance_cost_running
+
+        use += debt_service
+        use += maintenance_cost_time
+        use += energy_cost_sum
+        use += maintenance_cost_running_sum
+        return use
 
     def debt_service(self):
-        pass
+        debt_service_vehicles = 0
+        for vehicle in self.vehicles:
+            debt_service_vehicles += vehicle.vehicle_pattern.debt_service
 
-    def energy(self, vehicle):
-        additional_battery = vehicle.vehicle_pattern.additional_energy_without_overhead * self.tg.running_km_year_no_catenary
+        count_formations = len(self.train_cycles)
+
+        debt_service = count_formations * debt_service_vehicles
+
+        return debt_service
+
+    def maintenance_cost_running(self, vehicle, traingroup):
+        additional_maintenance_battery = traingroup.running_km_year_no_catenary * vehicle.vehicle_pattern.additional_maintenance_cost_withou_overhead
+        maintenance_cost = (1 + additional_maintenance_battery) * vehicle.vehicle_pattern.maintenance_cost_km * traingroup.running_km_year
+
+        return maintenance_cost
+
+    def maintenance_cost_time(self):
+        maintenance_cost_time_vehicles = 0
+        for vehicle in self.vehicles:
+            maintenance_cost_time_vehicles += vehicle.vehicle_pattern.maintenance_cost_duration_t * vehicle.vehicle_pattern.weight
+
+        count_formations = len(self.train_cycles)
+
+        maintenance_cost_time = count_formations * maintenance_cost_time_vehicles / 1000
+
+        return maintenance_cost_time
+
+    def energy_cost(self, vehicle, traingroup):
+        if vehicle.vehicle_pattern.type_of_traction == "Elektro":
+            energy = self.energy(vehicle=vehicle, traingroup=traingroup)
+            energy_cost = self.ENERGY_COST_ELECTRO * energy
+        elif vehicle.vehicle_pattern.type_of_traction == "Diesel":
+            energy = self.energy(vehicle=vehicle, traingroup=traingroup)
+            energy_cost = self.ENERGY_COST_DIESEL * energy
+        else:
+            energy_cost = 0
+            logging.error("No fitting traction found")
+        return energy_cost
+
+    def energy(self, vehicle, traingroup):
+        additional_battery = vehicle.vehicle_pattern.additional_energy_without_overhead * traingroup.running_km_year_no_catenary
         energy_per_km = vehicle.vehicle_pattern.energy_per_km
 
-        energy_running = (1 + additional_battery) * energy_per_km * self.tg.running_km_year
+        energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year
 
         # calculate energy usage through stops
-        intermediate_1 = 55.6 * (self.tg.travel_time.total_seconds()/60 - self.tg.stops_duration.total_seconds()/60)
-        segments = self.tg.stops_count - 1
-        reference_speed = 3.6/(vehicle.vehicle_pattern.energy_stop_a * segments) * (intermediate_1 - math.sqrt(intermediate_1**2 - 2*vehicle.vehicle_pattern.energy_stop_a * segments * (self.tg.length_line*1000)))
+        intermediate_1 = 55.6 * (traingroup.travel_time.total_seconds()/60 - traingroup.stops_duration.total_seconds()/60)
+        segments = traingroup.stops_count - 1
+        reference_speed = 3.6/(vehicle.vehicle_pattern.energy_stop_a * segments) * (intermediate_1 - math.sqrt(intermediate_1**2 - 2*vehicle.vehicle_pattern.energy_stop_a * segments * (traingroup.length_line*1000)))
         energy_per_stop = vehicle.vehicle_pattern.energy_stop_b * (reference_speed ** 2) * vehicle.vehicle_pattern.weight * (10**(-6))
-        energy_stops = energy_per_stop * (self.tg.stops_count_year/1000)
+        energy_stops = energy_per_stop * (traingroup.stops_count_year/1000)
         energy = energy_running + energy_stops
 
         return energy
@@ -156,12 +224,18 @@ if __name__ == "__main__":
     # print(spfv.use)
 
     tg_id = "tg_NW19.1_N_x0020_19102_186"
+    trainline_id = 1381
+
     vehicles = [Vehicle.query.get("ve_1049")]
     spnv = BvwpSpnv(tg_id, vehicles=vehicles)
     print(spnv.use)
 
     tg_id = "tg_NW19.1_N_x0020_19102_186"
-    spnv = StandiSpnv(tg_id)
+    vehicles = [Vehicle.query.get("ve_1049")]
+    spnv = BvwpSpnv(tg_id, vehicles=vehicles)
+    print(spnv.use)
+
+    spnv = StandiSpnv(trainline_id)
     print(spnv.use)
 
 

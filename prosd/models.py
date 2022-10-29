@@ -1747,6 +1747,22 @@ class TimetableLine(db.Model):
     code = db.Column(db.String(255), unique=True, nullable=False)
 
     @property
+    def running_km_year(self):
+        running_km_year = 0
+        for tg in self.train_groups:
+            running_km_year += tg.running_km_year
+
+        return running_km_year
+
+    @property
+    def running_km_year_no_catenary(self):
+        running_km_year_no_catenary = 0
+        for tg in self.train_groups:
+            running_km_year_no_catenary += tg.running_km_year_no_catenary
+
+        return running_km_year_no_catenary
+
+    @property
     def all_trains(self):
         list_all_trains = []
         for tg in self.train_groups:
