@@ -2,6 +2,7 @@ import datetime
 import jwt
 import geojson
 import geoalchemy2
+import pandas
 import shapely
 import sqlalchemy
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
@@ -13,6 +14,7 @@ from prosd import db, app, bcrypt
 
 START_DATE = datetime.datetime(2030, 1, 1)
 
+
 class PointOfLineNotAtEndError(Exception):
     def __init__(self, message):
         super().__init__(message)
@@ -21,6 +23,7 @@ class PointOfLineNotAtEndError(Exception):
 class NoSplitPossibleError(Exception):
     def __init__(self, message):
         super().__init__(message)
+
 
 # TODO: Table railway_line to projects
 
@@ -33,48 +36,56 @@ class NoSplitPossibleError(Exception):
 # project to group
 # TODO: Change that to projectcontent
 projectcontent_to_group = db.Table('projectcontent_to_group',
-                            db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE', ondelete='CASCADE')),
-                            db.Column('projectgroup_id', db.Integer, db.ForeignKey('project_groups.id', onupdate='CASCADE', ondelete='CASCADE'))
-                            )
+                                   db.Column('projectcontent_id', db.Integer,
+                                             db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                   db.Column('projectgroup_id', db.Integer,
+                                             db.ForeignKey('project_groups.id', onupdate='CASCADE', ondelete='CASCADE'))
+                                   )
 
 # project to railway Lines
 projectcontent_to_line = db.Table('projectcontent_to_lines',
-                           db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                           db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
-                           )
-
+                                  db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                  )
 
 projectcontent_to_railwaystations = db.Table('projectcontent_to_railwaystations',
-                                       db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                                       db.Column('railway_station_id', db.Integer, db.ForeignKey('railway_stations.id'))
+                                             db.Column('projectcontent_id', db.Integer,
+                                                       db.ForeignKey('projects_contents.id')),
+                                             db.Column('railway_station_id', db.Integer,
+                                                       db.ForeignKey('railway_stations.id'))
 
-                                       )
+                                             )
 
 texts_to_project_content = db.Table('texts_to_projects',
                                     db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id')),
                                     db.Column('text_id', db.Integer, db.ForeignKey('texts.id'))
                                     )
 
-
 project_contents_to_states = db.Table('projectcontent_to_states',
-                                      db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                      db.Column('project_content_id', db.Integer,
+                                                db.ForeignKey('projects_contents.id')),
                                       db.Column('states_id', db.Integer, db.ForeignKey('states.id'))
-                                    )
+                                      )
 
 project_contents_to_counties = db.Table('projectcontent_to_counties',
-                                        db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                        db.Column('project_content_id', db.Integer,
+                                                  db.ForeignKey('projects_contents.id')),
                                         db.Column('counties_id', db.Integer, db.ForeignKey('counties.id'))
                                         )
 
 project_contents_to_constituencies = db.Table('projectcontent_to_constituencies',
-                                              db.Column('project_content_id',db.Integer, db.ForeignKey('projects_contents.id')),
-                                              db.Column('constituencies_id', db.Integer, db.ForeignKey('constituencies.id'))
+                                              db.Column('project_content_id', db.Integer,
+                                                        db.ForeignKey('projects_contents.id')),
+                                              db.Column('constituencies_id', db.Integer,
+                                                        db.ForeignKey('constituencies.id'))
                                               )
 
 railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
-                           db.Column('node_id', db.Integer, db.ForeignKey('railway_nodes.id', ondelete='CASCADE')),
-                           db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
-                           )
+                                           db.Column('node_id', db.Integer,
+                                                     db.ForeignKey('railway_nodes.id', ondelete='CASCADE')),
+                                           db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
+                                           )
 
 formations_to_vehicles = db.Table('formations_to_vehicles',
                                   db.Column('formation_id', db.String(100), db.ForeignKey('formations.id')),
@@ -82,14 +93,17 @@ formations_to_vehicles = db.Table('formations_to_vehicles',
                                   )
 
 traingroup_to_railwaylines = db.Table('traingroup_to_railwaylines',
-                                      db.Column('traingroup_id', db.String(255), db.ForeignKey('timetable_train_groups.id')),
+                                      db.Column('traingroup_id', db.String(255),
+                                                db.ForeignKey('timetable_train_groups.id')),
                                       db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
                                       )
 
 finve_to_projectcontent = db.Table('finve_to_projectcontent',
-                                    db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
-                                    db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id'))
-                                    )
+                                   db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
+                                   db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id'))
+                                   )
+
+
 # classes/Tables
 
 
@@ -122,7 +136,8 @@ class RailwayLine(db.Model):
     active_until = db.Column(db.Integer)
     active_since = db.Column(db.Integer)
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
-    railway_infrastructure_company = db.Column(db.Integer, db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
+    railway_infrastructure_company = db.Column(db.Integer,
+                                               db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
     abs_nbs = db.Column(db.String(5), default='KS')
     gauge = db.Column(db.Integer, default=1435)
 
@@ -130,10 +145,12 @@ class RailwayLine(db.Model):
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
 
-    def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None, electrified=None,
-                 catenary = False, conductor_rail = False, voltage = None, dc_ac = None,
+    def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None,
+                 electrified=None,
+                 catenary=False, conductor_rail=False, voltage=None, dc_ac=None,
                  number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
-                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None, gauge=1435, abs_nbs='ks'):
+                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None,
+                 gauge=1435, abs_nbs='ks'):
         self.route_number = route_number
         self.direction = direction
         self.length = length
@@ -216,10 +233,10 @@ class RailwayLine(db.Model):
         railline.project_content = line_old.project_content
 
         railline_start_coordinate = \
-        db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
+            db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
         railline.start_node = RailwayNodes.add_node_if_not_exists(railline_start_coordinate).id
         railline_end_coordinates = \
-        db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_EndPoint(coordinates_wkb))).one()[0]
+            db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_EndPoint(coordinates_wkb))).one()[0]
         railline.end_node = RailwayNodes.add_node_if_not_exists(railline_end_coordinates).id
 
         db.session.add(railline)
@@ -302,7 +319,7 @@ class RailwayLine(db.Model):
                 sqlalchemy.select(
                     geoalchemy2.func.ST_Buffer(
                         blade_point,
-                        1/80000000
+                        1 / 80000000
                     )
                 )
             ).scalar()
@@ -319,16 +336,19 @@ class RailwayLine(db.Model):
 
             # TODO: add coordinate 1 und 2 to one coordinate
 
-        if len(coordinates) < 2 or len(coordinates) >3:
+        if len(coordinates) < 2 or len(coordinates) > 3:
             raise NoSplitPossibleError(
-                "For line " + str(old_line.id) + " at point " + str(shapely.wkb.loads(blade_point.desc, hex=True)) + " not possible"
+                "For line " + str(old_line.id) + " at point " + str(
+                    shapely.wkb.loads(blade_point.desc, hex=True)) + " not possible"
             )
         elif len(coordinates) == 2:
             coordinates_newline_1 = coordinates[0][0]
             coordinates_newline_2 = coordinates[1][0]
         elif len(coordinates) == 3:
-            coordinates_1 = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[0][0].split(",")[1][:-1]))).scalar()
-            coordinates_2 = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[1][0].split(",")[1][:-1]))).scalar()
+            coordinates_1 = db.session.execute(
+                sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[0][0].split(",")[1][:-1]))).scalar()
+            coordinates_2 = db.session.execute(
+                sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates[1][0].split(",")[1][:-1]))).scalar()
 
             coordinates_newline_1 = db.session.execute(
                 db.select(
@@ -381,7 +401,7 @@ class RailwayLine(db.Model):
         return node_2
 
     @classmethod
-    def get_next_point_of_line(self, line, point, allowed_distance = 1/222000):
+    def get_next_point_of_line(self, line, point, allowed_distance=1 / 222000):
         """
         Gets the next point of an line.
         :param line:
@@ -420,7 +440,7 @@ class RailwayLine(db.Model):
         line2_point = RailwayLine.get_next_point_of_line(line=line2, point=node.coordinate)
         angle_rad = db.session.execute(sqlalchemy.select(
             geoalchemy2.func.ST_Angle(node.coordinate, line1_point, node.coordinate,
-                                                                       line2_point))).one()[
+                                      line2_point))).one()[
             0]  # 2 times node.coordinate so it is node - line1 to node - line2
 
         if angle_rad is not None:
@@ -428,7 +448,8 @@ class RailwayLine(db.Model):
             if angle_allowed_min < angle < angle_allowed_max:
                 angle_check = True
         else:
-            logging.warning("Could not calculate angle(radian) for " + str(line1.id) + " and " + str(line2.id) + " angle rad is " + str(angle_rad))
+            logging.warning("Could not calculate angle(radian) for " + str(line1.id) + " and " + str(
+                line2.id) + " angle rad is " + str(angle_rad))
         return angle_check
 
 
@@ -438,7 +459,7 @@ class RailwayPoint(db.Model):
     mifcode = db.Column(db.String(255))
     station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id', ondelete='SET NULL'))
     route_number = db.Column(db.Integer, db.ForeignKey('railway_route.number', onupdate='CASCADE', ondelete='SET NULL'))
-    richtung=db.Column(db.Integer)
+    richtung = db.Column(db.Integer)
     km_i = db.Column(db.Integer)
     km_l = db.Column(db.String(255))
     name = db.Column(db.String(255))
@@ -456,7 +477,7 @@ class RailwayPoint(db.Model):
     @classmethod
     # TODO: Write test
     # TODO: Move that to an class that inherits point, node and station
-    def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1/2220000):
+    def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1 / 2220000):
         """
 
         :param coordinate:
@@ -470,7 +491,7 @@ class RailwayPoint(db.Model):
                 RailwayLine.route_number == route_number
             ).one()
         except sqlalchemy.exc.NoResultFound:
-            allowed_distance_in_node = allowed_distance_in_node*10
+            allowed_distance_in_node = allowed_distance_in_node * 10
             line = RailwayLine.query.filter(
                 geoalchemy2.func.ST_DWithin(RailwayLine.coordinates, coordinate, allowed_distance_in_node),
                 RailwayLine.route_number == route_number
@@ -490,7 +511,9 @@ class RailwayStation(db.Model):
     type = db.Column(db.String(10))
 
     railway_points = db.relationship("RailwayPoint", lazy="dynamic")
-    railway_nodes = db.relationship("RailwayNodes", secondary="join(RailwayPoint, RailwayNodes, RailwayPoint.node_id == RailwayNodes.id)", viewonly=True)
+    railway_nodes = db.relationship("RailwayNodes",
+                                    secondary="join(RailwayPoint, RailwayNodes, RailwayPoint.node_id == RailwayNodes.id)",
+                                    viewonly=True)
 
     @hybrid_property
     def railway_lines(self):
@@ -521,13 +544,13 @@ class RailwayStation(db.Model):
                 geoalchemy2.func.ST_Union(coord_list)
             )
         ).scalar()
-        
+
         coordinate_centroid = db.session.execute(
             db.select(
                 geoalchemy2.func.ST_Centroid(coordinates)
             )
         ).scalar()
-        
+
         return coordinate_centroid
 
 
@@ -535,7 +558,7 @@ class RailwayNodes(db.Model):
     """
     keeps all nodes for the railway network to create a network manipulate_geodata_and_db
     """
-    __tablename__='railway_nodes'
+    __tablename__ = 'railway_nodes'
     id = db.Column(db.Integer, primary_key=True)
     coordinate = db.Column(geoalchemy2.Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
 
@@ -564,7 +587,7 @@ class RailwayNodes(db.Model):
         return routes_number
 
     @classmethod
-    def add_node_if_not_exists(self, coordinate, allowed_distance_in_node=1/222000):
+    def add_node_if_not_exists(self, coordinate, allowed_distance_in_node=1 / 222000):
         """
         checks if for the given coordinate a nodes exists (tolerance included). If not, a new node gets created.
         :param coordinate: wkb element coordinate
@@ -598,7 +621,7 @@ class RailwayNodes(db.Model):
         return coordinate
 
     @classmethod
-    def check_if_nodes_exists_for_coordinate(self, coordinate, allowed_distance_in_node = 1/222000):
+    def check_if_nodes_exists_for_coordinate(self, coordinate, allowed_distance_in_node=1 / 222000):
         """
 
         :param coordinate:
@@ -607,9 +630,9 @@ class RailwayNodes(db.Model):
         """
         try:
             node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
-                                                              allowed_distance_in_node)).scalar()
+                                                                         allowed_distance_in_node)).scalar()
         except sqlalchemy.exc.MultipleResultsFound:
-            allowed_distance_in_node = allowed_distance_in_node*(1/100)
+            allowed_distance_in_node = allowed_distance_in_node * (1 / 100)
             node = RailwayNodes.query.filter(geoalchemy2.func.ST_DWithin(RailwayNodes.coordinate, coordinate,
                                                                          allowed_distance_in_node)).scalar()
 
@@ -725,7 +748,7 @@ class RailwayRoute(db.Model):
     railway_lines = db.relationship("RailwayLine", backref="railway_routes", lazy="dynamic")
 
     boundary_nodes = db.relationship("RailwayNodes", secondary=railway_nodes_to_railway_routes,
-                               backref=db.backref('railway_route_ending', lazy=True))
+                                     backref=db.backref('railway_route_ending', lazy=True))
 
     railway_points = db.relationship("RailwayPoint", lazy=True)
 
@@ -767,6 +790,7 @@ class RailwayRoute(db.Model):
 
         return nodes
 
+
 class RailwayInfrastructureCompany(db.Model):
     """
 
@@ -787,11 +811,14 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    superior_project_content_id = db.Column(db.Integer, db.ForeignKey('projects_contents.id'))  # TODO: Change that to project_content
+    superior_project_content_id = db.Column(db.Integer, db.ForeignKey(
+        'projects_contents.id'))  # TODO: Change that to project_content
 
     # references
-    project_contents = db.relationship('ProjectContent', backref='project', lazy=True, foreign_keys="ProjectContent.project_id")
-    superior_project = db.relationship("ProjectContent", backref='sub_project', foreign_keys=[superior_project_content_id])
+    project_contents = db.relationship('ProjectContent', backref='project', lazy=True,
+                                       foreign_keys="ProjectContent.project_id")
+    superior_project = db.relationship("ProjectContent", backref='sub_project',
+                                       foreign_keys=[superior_project_content_id])
 
     def __init__(self, name, description='', superior_project_id=None):
         self.name = name
@@ -805,7 +832,8 @@ class ProjectContent(db.Model):
     # Basic informations
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
-    project_number = db.Column(db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
+    project_number = db.Column(
+        db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, default=None)
     reason_project = db.Column(db.Text, default=None)
@@ -814,7 +842,7 @@ class ProjectContent(db.Model):
     effects_passenger_local_rail = db.Column(db.Boolean, default=False)
     effects_cargo_rail = db.Column(db.Boolean, default=False)
 
-    #economical data
+    # economical data
     nkv = db.Column(db.Float)
     length = db.Column(db.Float)
     priority = db.Column(db.String(100))
@@ -852,7 +880,7 @@ class ProjectContent(db.Model):
     delta_rail_cargo_time_rail = db.Column(db.Float)
     delta_rail_cargo_time_lkw_to_rail = db.Column(db.Float)
     delta_rail_cargo_time_ship_to_rail = db.Column(db.Float)
-    
+
     # use calculation
     # # passenger
     use_change_operation_cost_car_yearly = db.Column(db.Float)
@@ -1000,8 +1028,8 @@ class ProjectContent(db.Model):
     area_nature_high_importance_per_km = db.Column(db.Float)
     area_nature_high_importance_rating = db.Column(db.String(255))
     natura2000_rating = db.Column(db.String(255))
-    natura2000_not_excluded =  db.Column(db.Float)
-    natura2000_probably =  db.Column(db.Float)
+    natura2000_not_excluded = db.Column(db.Float)
+    natura2000_probably = db.Column(db.Float)
     ufr_250 = db.Column(db.Float)
     ufr_250_per_km = db.Column(db.Float)
     ufra_250_rating = db.Column(db.String(255))
@@ -1125,11 +1153,11 @@ class ProjectContent(db.Model):
     railway_stations = db.relationship('RailwayStation', secondary=projectcontent_to_railwaystations,
                                        backref=db.backref('project_content', lazy=True))
     states = db.relationship("States", secondary=project_contents_to_states,
-                                            backref=db.backref('states', lazy=True))
+                             backref=db.backref('states', lazy=True))
     counties = db.relationship("Counties", secondary=project_contents_to_counties,
                                backref=db.backref('counties', lazy=True))
     constituencies = db.relationship("Constituencies", secondary=project_contents_to_constituencies,
-                                     backref = db.backref('constituencies', lazy=True))
+                                     backref=db.backref('constituencies', lazy=True))
 
     @classmethod
     def add_lines_to_pc(self, pc_id, lines):
@@ -1187,9 +1215,13 @@ class Vehicle(db.Model):
     engine = db.Column(db.Boolean)
     wagon = db.Column(db.Boolean)
 
+    vehicle_pattern_spnv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_spfv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_sgv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+
     vehicle_pattern_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
 
-    vehicle_pattern = db.relationship("VehiclePattern", backref="vehicles")
+    vehicle_pattern = db.relationship("VehiclePattern", foreign_keys=[vehicle_pattern_id], backref="vehicles")
 
     @classmethod
     def get_vehicle_use(self, vehicle):
@@ -1256,6 +1288,12 @@ class VehiclePattern(db.Model):
     emission_stop = db.Column(db.Float, comment="€/stop")
     project_group = db.Column(db.Integer, db.ForeignKey('project_groups.id'))
 
+    vehicle_pattern_id_electrical = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_id_h2 = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_id_battery = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_id_efuel = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_id_diesel = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+
 
 class Formation(db.Model):
     """
@@ -1306,7 +1344,8 @@ class Formation(db.Model):
 
     @hybrid_property
     def additional_maintenance_cost_without_overhead(self):
-        additional_maintenance_cost_without_overhead = self.vehicles[0].vehicle_pattern.additional_maintenance_cost_withou_overhead
+        additional_maintenance_cost_without_overhead = self.vehicles[
+            0].vehicle_pattern.additional_maintenance_cost_withou_overhead
         return additional_maintenance_cost_without_overhead
 
     @hybrid_property
@@ -1363,7 +1402,8 @@ class TimetableTrainGroup(db.Model):
     id = db.Column(db.String(255), primary_key=True)
     code = db.Column(db.String(255))
     train_number = db.Column(db.Integer)
-    traingroup_line = db.Column(db.String(255), db.ForeignKey('timetable_lines.code', ondelete='SET NULL', onupdate='CASCADE'))
+    traingroup_line = db.Column(db.String(255),
+                                db.ForeignKey('timetable_lines.code', ondelete='SET NULL', onupdate='CASCADE'))
 
     trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
     traingroup_lines = db.relationship("TimetableLine", lazy=True, backref="train_groups")
@@ -1373,7 +1413,7 @@ class TimetableTrainGroup(db.Model):
     def length_line(self):
         km = 0
         for line in self.lines:
-            km += line.length/1000
+            km += line.length / 1000
 
         return km
 
@@ -1388,7 +1428,7 @@ class TimetableTrainGroup(db.Model):
         running_km_day_abs = 0
         for line in self.lines:
             if line.abs_nbs == "ABS":
-                running_km_day_abs += line.length/1000
+                running_km_day_abs += line.length / 1000
 
         running_km_day_abs = running_km_day_abs * len(self.trains)
         return running_km_day_abs
@@ -1398,7 +1438,7 @@ class TimetableTrainGroup(db.Model):
         running_km_day_nbs = 0
         for line in self.lines:
             if line.abs_nbs == "NBS":
-                running_km_day_nbs += line.length/1000
+                running_km_day_nbs += line.length / 1000
 
         running_km_day_nbs = running_km_day_nbs * len(self.trains)
         return running_km_day_nbs
@@ -1408,7 +1448,7 @@ class TimetableTrainGroup(db.Model):
         running_km_day_no_catenary = 0
         for line in self.lines:
             if line.catenary == False:
-                running_km_day_no_catenary += line.length/1000
+                running_km_day_no_catenary += line.length / 1000
 
         running_km_day_no_catenary = running_km_day_no_catenary * len(self.trains)
         return running_km_day_no_catenary
@@ -1435,7 +1475,7 @@ class TimetableTrainGroup(db.Model):
 
     @hybrid_property
     def minimal_run_time(self):
-        #TODO: There are sections with no run time. Check whats the problem
+        # TODO: There are sections with no run time. Check whats the problem
         train = self.trains[0]
         ocps = train.train_part.timetable_ocps
         minimal_run_time = datetime.timedelta(seconds=0)
@@ -1445,18 +1485,20 @@ class TimetableTrainGroup(db.Model):
             for section in sections:
                 section_time = section.minimal_run_time
                 if section_time:
-                    timedelta = datetime.timedelta(hours=section_time.hour, minutes=section_time.minute, seconds = section_time.second)
+                    timedelta = datetime.timedelta(hours=section_time.hour, minutes=section_time.minute,
+                                                   seconds=section_time.second)
                     minimal_run_time += timedelta
         return minimal_run_time
 
     @hybrid_property
     def travel_time(self):
         train = self.trains[0]
-        departure_first_time = train.train_part.first_ocp.times.filter(TimetableTime.scope == "scheduled").one().departure
+        departure_first_time = train.train_part.first_ocp.times.filter(
+            TimetableTime.scope == "scheduled").one().departure
         arrival_last_time = train.train_part.last_ocp.times.filter(TimetableTime.scope == "scheduled").one().arrival
         departure_first = datetime.datetime.combine(datetime.date.today(), departure_first_time)
         arrival_last = datetime.datetime.combine(datetime.date.today(), arrival_last_time)
-        #TODO: Check for arrival after midnight
+        # TODO: Check for arrival after midnight
         travel_time = arrival_last - departure_first
 
         return travel_time
@@ -1474,7 +1516,7 @@ class TimetableTrainGroup(db.Model):
         :return:
         """
         running_time_year = self.running_time_day * 365
-        running_time_year = (running_time_year.days*24 + running_time_year.seconds/3600)/1000
+        running_time_year = (running_time_year.days * 24 + running_time_year.seconds / 3600) / 1000
         # running_time_year = running_time_year.seconds/3600
         return running_time_year
 
@@ -1533,7 +1575,9 @@ class TimetableTrainGroup(db.Model):
             if ocp.ocp_type == 'stop':
                 for time in ocp.times.all():
                     if time.scope == 'scheduled' and (time.arrival is not None and time.departure is not None):
-                        stop_duration = datetime.datetime.combine(datetime.date.min, time.departure) - datetime.datetime.combine(datetime.date.min, time.arrival)
+                        stop_duration = datetime.datetime.combine(datetime.date.min,
+                                                                  time.departure) - datetime.datetime.combine(
+                            datetime.date.min, time.arrival)
                         stops_duration += stop_duration
 
         return stops_duration
@@ -1544,9 +1588,8 @@ class TimetableTrainGroup(db.Model):
         average of the duration of a stop (first and last stop is ignored)
         :return:
         """
-        stops_duration_average = (self.stops_duration/(self.stops_count-2))
+        stops_duration_average = (self.stops_duration / (self.stops_count - 2))
         return stops_duration_average
-
 
     @hybrid_property
     def vehicles(self):
@@ -1603,7 +1646,7 @@ class TimetableTrainPart(db.Model):
     __tablename__ = 'timetable_train_parts'
 
     def __repr__(self):
-        return f"TimetableTrain {self.id} {self.first_ocp.ocp.code} {self.first_ocp_departure} {self.last_ocp.ocp.code} {self.last_ocp_arrival}"
+        return f"TTTrainPart {self.id} {self.first_ocp.ocp.code} {self.first_ocp_departure} {self.last_ocp.ocp.code} {self.last_ocp_arrival}"
 
     id = db.Column(db.String(510), primary_key=True)
     category_id = db.Column(db.String(15), db.ForeignKey('timetable_categories.id'))
@@ -1638,7 +1681,7 @@ class TimetableTrainPart(db.Model):
         statement = statement.where(TimetableOcp.train_part == cls.id)
         statement = statement.order_by(sqlalchemy.desc(TimetableOcp.sequence))
         statement = statement.limit(1)
-        #sqlalchemy.select([TimetableTrainPart.timetable_ocps]).where(TimetableOcp.train_part == cls.id).order_by(TimetableOcp.sequence).limit(1)
+        # sqlalchemy.select([TimetableTrainPart.timetable_ocps]).where(TimetableOcp.train_part == cls.id).order_by(TimetableOcp.sequence).limit(1)
         return statement
 
     @hybrid_property
@@ -1764,10 +1807,14 @@ class TimetableLine(db.Model):
 
     @property
     def all_trains(self):
-        list_all_trains = []
+        columns = ['traingroup', 'departure', 'first_ocp']
+        list_all_trains = pandas.DataFrame(columns=columns)
         for tg in self.train_groups:
             for train in tg.trains:
-                list_all_trains.append(train)
+                train_entry = pandas.DataFrame(
+                    [[train, train.train_part.first_ocp_departure, train.train_part.first_ocp.ocp]], columns=columns)
+                list_all_trains = pandas.concat([list_all_trains, train_entry])
+        list_all_trains = list_all_trains.sort_values('departure')
         return list_all_trains
 
     # TODO: Hier train cycle einfügen
@@ -1777,54 +1824,60 @@ class TimetableLine(db.Model):
         train_cycles_all = []
 
         while len(list_all_trains) > 0:
-
             first_train = self._get_earliest_departure(list_all_trains)
-            list_all_trains.remove(first_train)
+            list_all_trains = list_all_trains[list_all_trains.traingroup != first_train]
             train_cycle = [first_train]
             turning_information = []
 
             previous_train = first_train
             while True:
-                next_train, time_information = self._get_next_train(previous_train=previous_train,
-                                                              list_all_trains=list_all_trains, wait_time=wait_time)
+                next_train = self._get_next_train(previous_train=previous_train,
+                                                                    list_all_trains=list_all_trains,
+                                                                    wait_time=wait_time)
                 if next_train is None:
                     train_cycles_all.append(train_cycle)
                     break
                 else:
-                    list_all_trains.remove(next_train)
+                    list_all_trains = list_all_trains[list_all_trains.traingroup != next_train]
                     train_cycle.append(next_train)
-                    turning_information.append([previous_train.train_part.last_ocp.ocp, previous_train,
-                                                previous_train.train_part.last_ocp_arrival, time_information,
-                                                next_train.train_part.first_ocp_departure, next_train])
+                    # turning_information.append([previous_train.train_part.last_ocp.ocp, previous_train,
+                    #                             previous_train.train_part.last_ocp_arrival, time_information,
+                    #                             next_train.train_part.first_ocp_departure, next_train])
                     previous_train = next_train
 
         return train_cycles_all
 
     def _get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
         # TODO: Add minimum wait time
-        next_train = None
-        time_information = None
 
         # get the ocp where the trains end
         ocp = previous_train.train_part.last_ocp.ocp
         arrival = previous_train.train_part.last_ocp_arrival
 
         # search all trains that starts here
-        possible_trains = dict()
-        for train in list_all_trains:
-            if train.train_part.first_ocp.ocp == ocp:
-                train_departure = train.train_part.first_ocp_departure
-                delta_time = train_departure - arrival
-                if delta_time > datetime.timedelta(0):
-                    possible_trains[delta_time] = train
+        list_all_trains_filtered = list_all_trains[list_all_trains.first_ocp == ocp]
+        list_all_trains_filtered = list_all_trains_filtered[list_all_trains_filtered.departure > arrival]
+        try:
+            next_train = list_all_trains_filtered.iloc[0][0]
+            # time_information = next_train.train_part.first_ocp_departure - arrival
+        except IndexError:
+            next_train = None
 
-        if possible_trains:
-            next_train_time_delta = min(possible_trains)
-            next_train = possible_trains[next_train_time_delta]
-            time_information = next_train_time_delta
+        # for index, row in list_all_trains_filtered.iterrows():
+        #     train = row["traingroup"]
+        #     train_departure = row["departure"]
+        #     delta_time = train_departure - arrival
+        #     if delta_time > datetime.timedelta(0):
+        #         possible_trains[delta_time] = train
+        #         break  # because they are sorted after departure, the first is the fitting
+        #
+        #
+        # if possible_trains:
+        #     next_train_time_delta = min(possible_trains)
+        #     next_train = possible_trains[next_train_time_delta]
+        #     time_information = next_train_time_delta
 
-        return next_train, time_information
-
+        return next_train
 
     def _get_earliest_departure(self, list_all_trains):
         """
@@ -1832,12 +1885,9 @@ class TimetableLine(db.Model):
         :param list_all_trains:
         :return:
         """
-        trains = dict()
-        for train in list_all_trains:
-            trains[train.train_part.first_ocp_departure] = train
+        list_all_trains = list_all_trains.sort_values('departure')
 
-        earliest_time = min(trains)
-        earliest_train = trains[earliest_time]
+        earliest_train = list_all_trains.iloc[0][0]
 
         return earliest_train
 
@@ -1975,7 +2025,7 @@ class Counties(db.Model):
     """
     Counties (Kreis)
     """
-    __tablenmae__= 'counties'
+    __tablenmae__ = 'counties'
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(255), nullable=False)
@@ -1989,7 +2039,7 @@ class Constituencies(db.Model):
     """
     Constituencies
     """
-    __tablename__= 'constituencies'
+    __tablename__ = 'constituencies'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     polygon = db.Column(geoalchemy2.Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)

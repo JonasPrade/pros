@@ -49,7 +49,7 @@ class BvwpCost(BaseCalculation):
 class BvwpCostElectrification(BvwpCost):
     # maybe something with length of the line. Electrification could be quite linear
     # TODO: Think of cost of substation, maybe there is a more specific calculation possible
-    def __init__(self, start_year_planning, length, abs_nbs='abs'):
+    def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.MAINTENANCE_FACTOR = 0.014  # factor from standardisierte Bewertung Tabelle B-19
         self.COST_OVERHEAD = 1000000  # TODO: Find correct value
         # TODO: Nagl meinte, dass das man das eigentlich niedriger setzen muss aus irgendwelchen Gründen.
@@ -65,7 +65,7 @@ class BvwpCostElectrification(BvwpCost):
 
 class BvwpCostH2(BvwpCost):
     # TODO: Algorithm for caluclating cost of h2 infrastructure
-    def __init__(self, start_year_planning, abs_nbs='abs'):
+    def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.MAINTENANCE_FACTOR_H2 = 0.03
         self.investment_cost = 1000000000  # TODO: find a algorithm to calculate necessary infrastructure
         # wasserstofftankstelle wohl 1.000.000 (1 Mio. €)
@@ -76,7 +76,7 @@ class BvwpCostH2(BvwpCost):
 
 class BvwpProjectBattery(BvwpCost):
     # TODO: Algorithm for calculating cost of battery infrastructure
-    def __init__(self, start_year_planning, abs_nbs='abs'):
+    def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.MAINTENANCE_FACTOR_POWER = 0.014
         self.investment_cost = 1000000000  # TODO: find an algorithm to calculate necessary infrastructure
         self.maintenace_cost = self.investment_cost * self.MAINTENANCE_FACTOR_POWER

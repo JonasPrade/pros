@@ -6,10 +6,11 @@ from prosd.models import RailwayLine, TimetableTrainGroup, TimetableCategory
 from prosd.graph import railgraph
 
 from prosd.calculation_methods import use
+from prosd.calculation_methods.cost import BvwpCost, BvwpCostElectrification, BvwpCostH2, BvwpProjectBattery, BvwpProjectEFuel
 
 
 class Project:
-    def __init__(self, railway_lines):
+    def __init__(self, railway_lines, traction_type, start_year_planning):
         """
 
         :param railway_lines: list of railway_lines that are part of the Project
@@ -20,48 +21,84 @@ class Project:
         # battery
         # h2
         # eFuel
-        # Bezugsfall
         # TODO: Think of an mixed variant electrification and battery
+        self.use_sum, self.uses_dataframe = self.use_calculation(railway_lines=railway_lines, traction_type=traction_type)
 
+        self.infrastructure_cost_sum = self.infrastructure_cost(traction_type=traction_type,
+                                                                start_year_planning=start_year_planning,
+                                                                railway_lines=railway_lines)
+
+        self.cost = self.use_sum + self.infrastructure_cost_sum
+
+    def use_calculation(self, railway_lines, traction_type):
         # get all TrainGroups that are running on this line
         train_groups = db.session.query(TimetableTrainGroup).join(RailwayLine.train_groups).filter(
             RailwayLine.id.in_(railway_lines)).all()
 
         # create dataframe for the results
-        columns = ["traingroup", "reference_case", "electrification", "battery", "h2", "efuel"]
-        traingroups_use = pandas.DataFrame(columns=columns)
+        columns = ["traingroup/line", "use_sum", "capital_service", "maintenance_cost", "energy_cost"]
+        uses_dataframe = pandas.DataFrame(columns=columns)
 
         # calculate the use for each train_group
+        use_sum = 0
+        black_list_train_group = []  # black list for spnv train_groups, because they get calculated as TimetableLine
         for train_group in train_groups:
-            transport_mode = train_group.category.transport_mode
-            tg_use = None
-            try:
-                match transport_mode:
-                    case "sgv":
-                        tg_use = use.BvwpSgv(tg_id=train_group.id)
-                    case "spfv":
-                        tg_use = use.BvwpSpfv(tg_id=train_group.id)
-                    case "spnv":
-                        tg_use = use.BvwpSpnv(tg_id=train_group.id)
-            except TypeError as e:
-                logging.error("For " + str(train_group) + " error at use calculation " + str(e))
+            if train_group in black_list_train_group:
+                continue
+            else:
+                transport_mode = train_group.category.transport_mode
+                tg_use = None
+                id = None
+                try:
+                    # TODO: Implement, that the traction_type gets used
+                    match transport_mode:
+                        case "sgv":
+                            tg_use = use.BvwpSgv(tg_id=train_group.id, traction=traction_type)
+                            id = train_group.id
+                        case "spfv":
+                            tg_use = use.BvwpSpfv(tg_id=train_group.id, traction=traction_type)
+                            id = train_group.id
+                        case "spnv":
+                            tt_line = train_group.traingroup_lines
+                            for tg in tt_line.train_groups:
+                                black_list_train_group.append(tg)
+                            tg_use = use.StandiSpnv(trainline_id=tt_line.id, traction=traction_type)
+                            id = tt_line.id
+                except TypeError as e:
+                    logging.error("For " + str(train_group) + " error at use calculation " + str(e))
 
-            if tg_use:
-                use_reference_case = tg_use.use  # TODO: use the "diesel_use" case here
-                # cases for electrification etc.
-                use_electrification = 0
-                use_battery = 0
-                use_h2 = 0
-                use_efuel = 0
+                if tg_use:
+                    use_sum +=tg_use.use
 
-                use_series = pandas.DataFrame(
-                    [[train_group.id, use_reference_case, use_electrification, use_battery, use_h2, use_efuel]],
-                    columns=columns
-                )
-                traingroups_use = pandas.concat([traingroups_use, use_series])
+                    df = pandas.DataFrame(
+                        [[id, tg_use.use, tg_use.debt_service_sum, tg_use.maintenance_cost_sum, tg_use.energy_cost_sum]],
+                        columns=columns
+                    )
+                else:
+                    df = pandas.DataFrame(
+                        [[id, 'ERROR', 'ERROR', 'ERROR', 'ERROR']]
+                    )
 
-        # for the infrastructure cost create project_content and calculate the costs
-        # TODO: Create class or function that can calculate the cost of electrification, battery, h2 (eFuel no new infrastructure cost?)
+                uses_dataframe = pandas.concat([uses_dataframe, df])
+
+        return use_sum, uses_dataframe
+
+    def infrastructure_cost(self, traction_type, start_year_planning, railway_lines):
+        match traction_type:
+            case 'electrification':
+                infrastructure = BvwpCostElectrification(start_year_planning=start_year_planning, railway_lines=railway_lines)
+            case 'h2':
+                infrastructure = BvwpCostH2(start_year_planning=start_year_planning, railway_lines=railway_lines)
+            case 'battery':
+                infrastructure = BvwpProjectBattery(start_year_planning=start_year_planning, railway_lines=railway_lines)
+            case 'efuel':
+                infrastructure = BvwpProjectEFuel(start_year_planning=start_year_planning)
+            case _:
+                logging.error('traction_type not recognized')
+
+        infrastructure_cost = infrastructure.cost_2015
+
+        return infrastructure_cost
 
 
 if __name__ == "__main__":
@@ -71,4 +108,5 @@ if __name__ == "__main__":
     graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
     path = rg.shortest_path_between_stations(graph=graph, station_from=start, station_to=end)
     railway_lines = path["edges"]
-    BvwpProject(railway_lines=railway_lines)
+    project = Project(railway_lines=railway_lines, traction_type='electrification', start_year_planning=2025)
+    print(project.use_sum)
