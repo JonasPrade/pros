@@ -16,8 +16,9 @@ class NoTransportmodeFoundError(Exception):
         super().__init__(message)
 
 
-class BvwpUse:
+class BvwpUse(BaseCalculation):
     def __init__(self, traingroup_id, traction, transport_mode, vehicles=None):
+        super().__init__()
         self.transport_mode = transport_mode
 
         if vehicles is None:
@@ -80,6 +81,25 @@ class BvwpUse:
 
         return use, debt_service_sum, maintenance_cost_sum, energy_cost_sum
 
+    def calc_barwert(self, use, debt_service_sum, maintenance_cost_sum, energy_cost_sum, start_year, duration):
+        """
+
+        :param duration:
+        :param start_year:
+        :param use:
+        :param debt_service_sum:
+        :param maintenance_cost_sum:
+        :param energy_cost_sum:
+        :return:
+        """
+        use_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=use, cost_is_sum=False)
+        debt_service_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=debt_service_sum, cost_is_sum=False)
+        maintenance_cost_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=maintenance_cost_sum, cost_is_sum=False)
+        energy_cost_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=energy_cost_sum)
+
+        return use_base_year, debt_service_base_year, maintenance_cost_base_year, energy_cost_base_year
+
+
     def _vehicle_pattern_by_traction(self, vehicle):
         """
 
@@ -126,13 +146,21 @@ class BvwpUse:
 
 
 class BvwpSgv(BvwpUse):
-    def __init__(self, tg_id, traction, vehicles=None):
+    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'sgv'
         super().__init__(traingroup_id=tg_id, vehicles=vehicles, traction=traction, transport_mode='sgv')
         self.loko = self.vehicles[0]
         self.waggon = self.vehicles[1]
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum = super().calc_use(vehicles_list=[self.loko])
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year = super().calc_barwert(
+            start_year=start_year_operation,
+            duration=duration_operation,
+            use=self.use,
+            debt_service_sum=self.debt_service_sum,
+            maintenance_cost_sum=self.maintenance_cost_sum,
+            energy_cost_sum=self.energy_cost_sum
+        )
 
     def energy_electro(self, vehicle_pattern):
         energy = 1.08 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year
@@ -144,11 +172,19 @@ class BvwpSgv(BvwpUse):
 
 
 class BvwpSpfv(BvwpUse):
-    def __init__(self, tg_id, traction, vehicles=None):
+    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'spfv'
         super().__init__(traingroup_id=tg_id, vehicles=vehicles, traction=traction, transport_mode='spfv')
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum = super().calc_use(vehicles_list=self.vehicles)
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year = super().calc_barwert(
+            start_year=start_year_operation,
+            duration=duration_operation,
+            use=self.use,
+            debt_service_sum=self.debt_service_sum,
+            maintenance_cost_sum=self.maintenance_cost_sum,
+            energy_cost_sum=self.energy_cost_sum
+        )
 
     def energy_electro(self, vehicle_pattern):
         energy_electro = self.energy(vehicle_pattern=vehicle_pattern)
@@ -168,11 +204,19 @@ class BvwpSpfv(BvwpUse):
 
 
 class BvwpSpnv(BvwpUse):
-    def __init__(self, tg_id, traction, vehicles=None):
+    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'spnv'
         super().__init__(traingroup_id=tg_id, vehicles=vehicles, traction=traction, transport_mode='spnv')
 
-        self.use = super().calc_use(vehicles_list=self.vehicles)
+        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum = super().calc_use(vehicles_list=self.vehicles)
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year = super().calc_barwert(
+            start_year=start_year_operation,
+            duration=duration_operation,
+            use=self.use,
+            debt_service_sum=self.debt_service_sum,
+            maintenance_cost_sum=self.maintenance_cost_sum,
+            energy_cost_sum=self.energy_cost_sum
+        )
 
     def energy_electro(self, vehicle_pattern):
         energy_km = self.tg.running_km_year * vehicle_pattern.energy_per_km
@@ -184,13 +228,15 @@ class BvwpSpnv(BvwpUse):
 
 
 class StandiSpnv(BvwpUse):
-    def __init__(self, trainline_id, traction, vehicles=None):
+    def __init__(self, trainline_id, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'spnv'
         self.ENERGY_COST_ELECTRO = 0.1536
         self.ENERGY_COST_DIESEL = 0.74
         self.traction = traction
+        self.BASE_YEAR = 2015
+        self.p = 0.017
 
-        # TODO: Make that compatible to different vehicle_patterns
+        # TODO: Make that more compatible to BvwpUse
 
         if vehicles is None:
             self.vehicles = []
@@ -206,6 +252,14 @@ class StandiSpnv(BvwpUse):
         self.train_cycles = self.trainline.get_train_cycle()
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum = self.calc_use()
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year = super().calc_barwert(
+            start_year=start_year_operation,
+            duration=duration_operation,
+            use=self.use,
+            debt_service_sum=self.debt_service_sum,
+            maintenance_cost_sum=self.maintenance_cost_sum,
+            energy_cost_sum=self.energy_cost_sum
+        )
 
     def calc_use(self):
         use = 0
@@ -296,9 +350,9 @@ class StandiSpnv(BvwpUse):
 
 
 if __name__ == "__main__":
-    # tg_id = "tg_718_x0020_G_x0020_2503_120827"
-    # sgv = BvwpSgv(tg_id, traction='electrification')
-    # print(sgv.use)
+    tg_id = "tg_718_x0020_G_x0020_2503_120827"
+    sgv = BvwpSgv(tg_id, start_year_operation=2030, duration_operation=30, traction='electrification')
+    print(sgv.use)
 
     # tg_id = "tg_FV34.a_x0020_B_x0020_34001_128185"
     # spfv = BvwpSpfv(tg_id, traction='electrification')
@@ -316,7 +370,7 @@ if __name__ == "__main__":
     # spnv = BvwpSpnv(tg_id, vehicles=vehicles)
     # print(spnv.use)
 
-    spnv = StandiSpnv(trainline_id, traction='electrification')
-    print(spnv.use)
+    # spnv = StandiSpnv(trainline_id, traction='electrification')
+    # print(spnv.use)
 
 

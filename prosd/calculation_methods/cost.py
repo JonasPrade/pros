@@ -12,19 +12,23 @@ class BvwpCost(BaseCalculation):
         self.FACTOR_PLANNING = 0.18
         self.DURATION_PLANNING = 7
         self.DURATION_OPERATION = 20  # because this is only used for electrification
+        self.ANUALITY_FACTOR = 0.0428
         # TODO: Check if electrification is really only lasting 20 years
 
+        self.duration_build = self.duration_building(abs_nbs=abs_nbs)
         self.start_year_planning = start_year_planning
+        self.start_year_building = self.start_year_planning + self.DURATION_PLANNING
+        self.start_year_operation = self.start_year_building + self.duration_build
+        self.end_year_operation = self.start_year_operation + self.DURATION_OPERATION
 
         self.investment_cost = investment_cost
         self.planning_cost = self.investment_cost * self.FACTOR_PLANNING
         self.maintenace_cost = maintenance_cost
 
-        self.duration_build = self.duration_building(abs_nbs=abs_nbs)
-
         self.planning_cost_2015 = self.cost_base_year(start_year=start_year_planning, duration=self.DURATION_PLANNING, cost=self.planning_cost)
-        self.investment_cost_2015 = self.cost_base_year(start_year=start_year_planning + self.DURATION_PLANNING, duration=self.duration_build, cost=self.investment_cost)
-        self.maintenance_cost_2015 = self.cost_base_year(start_year=start_year_planning + self.DURATION_PLANNING + self.duration_build, duration=self.DURATION_OPERATION, cost=self.maintenace_cost, cost_is_sum=False)
+        self.investment_cost_2015 = self.cost_base_year(start_year=self.start_year_building, duration=self.duration_build, cost=self.investment_cost)
+        self.maintenance_cost_2015 = self.cost_base_year(start_year=self.start_year_operation, duration=self.DURATION_OPERATION, cost=self.maintenace_cost, cost_is_sum=False)
+        self.capital_service_cost_2015 = self.calc_capital_service_infrastructure(investment_cost_2015=self.investment_cost_2015)
 
         self.cost_2015 = self.planning_cost_2015 + self.investment_cost_2015 + self.maintenance_cost_2015
 
@@ -38,6 +42,17 @@ class BvwpCost(BaseCalculation):
 
         return duration_building
 
+    def calc_capital_service_infrastructure(self, investment_cost_2015):
+        """
+
+        :param investment_cost_2015:
+        :return:
+        """
+        # TODO: Calculate capital service infrastructure
+        capital_service_infrastructure = investment_cost_2015 * self.ANUALITY_FACTOR
+
+        return capital_service_infrastructure
+
     def _duration_year(self, cost_list):
         for index, cost in cost_list.items():
             if self.investment_cost < cost:
@@ -47,20 +62,33 @@ class BvwpCost(BaseCalculation):
 
 
 class BvwpCostElectrification(BvwpCost):
-    # maybe something with length of the line. Electrification could be quite linear
     # TODO: Think of cost of substation, maybe there is a more specific calculation possible
     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
+        self.railway_lines = railway_lines
         self.MAINTENANCE_FACTOR = 0.014  # factor from standardisierte Bewertung Tabelle B-19
-        self.COST_OVERHEAD = 1000000  # TODO: Find correct value
+        self.COST_OVERHEAD = 1000  # in thousand Euro TODO: Find correct value
         # TODO: Nagl meinte, dass das man das eigentlich niedriger setzen muss aus irgendwelchen Gründen.
 
-        # TODO: Calculate length out of railway_lines
-        self.cost_overhead = length * self.COST_OVERHEAD
+        self.length_no_catenary = self.calc_unelectrified_railway_lines()
+        self.cost_overhead = self.length_no_catenary * self.COST_OVERHEAD
         self.cost_substation = 0  # TODO: Find algorithm to calculate the needed substation (or upgrades)
 
         self.investment_cost = self.cost_overhead + self.cost_substation
         self.maintenace_cost = self.investment_cost * self.MAINTENANCE_FACTOR
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost, start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+
+    def calc_unelectrified_railway_lines(self):
+        """
+
+        :param railway_lines:
+        :return:
+        """
+        length_no_catenary = 0
+        for line in self.railway_lines:
+            if line.catenary == False:
+                length_no_catenary += line.length / 1000
+
+        return length_no_catenary
 
 
 class BvwpCostH2(BvwpCost):
