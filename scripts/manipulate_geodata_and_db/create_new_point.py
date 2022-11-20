@@ -15,6 +15,8 @@ point_dict = {
     "node_id": node.id
 }
 
+# TODO: Calculate height and add that also
+
 station = RailwayStation.query.filter(RailwayStation.db_kuerzel == point_dict["db_kuerzel"]).first()
 if not station:
     station = RailwayStation(

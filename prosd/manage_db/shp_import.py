@@ -157,22 +157,46 @@ class DBManager:
 
         logging.info('finished import shp_to_counties')
 
-    def projectdata_to_postgres(self):
-        """
-        takes some projectdata in .csv .xlsx or somewhat and takes at to the postgres DB
-        :return:
-        """
-        pass
+
+    def shp_to_tunnel(self, filepath_shp, model, overwrite=False):
+        if overwrite:
+            db.session.query(model).delete()
+            db.session.commit()
+
+        shp_data = geopandas.read_file(filepath_shp)
+
+        shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
+        shp_data.drop('geometry', 1, inplace=True)
+
+        # TODO: finish dict
+        objects = []
+        for index, row in shp_data.iterrows():
+            railway_point = model(
+                route_number_id = row.streckennu,
+                richtung = row.richtung,
+                von_km_i = row.von_km_i,
+                bis_km_i = row.bis_km_i,
+                von_km_l = row.von_km_l,
+                bis_km_l = row.bis_km_l,
+                length = row.laenge,
+                name = row.bezeichnun,
+                geometry = row.geo
+            )
+            objects.append(railway_point)
+
+        db.session.add_all(objects)
+        db.session.commit()
+
+        logging.info('finished import shp_to_railwaylines')
 
 
 
 if __name__ == '__main__':
-    Counties = prosd.models.Counties
-    filepath_shp = '/Users/jonas/PycharmProjects/pros/example_data/counties/georef-germany-kreis-millesime.shp'
-    column_names = {}
+    RailwayTunnel = prosd.models.RailwayTunnel
+    filepath_shp = '/Users/jonas/PycharmProjects/pros/example_data/tunnel_data/tunnel_polyline.shp'
 
     DbInput = DBManager()
 
-    DbInput.shp_to_counties(filepath_shp=filepath_shp, column_names=column_names, overwrite=True, model=Counties)
+    DbInput.shp_to_tunnel(filepath_shp=filepath_shp, overwrite=True, model=RailwayTunnel)
 
 

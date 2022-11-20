@@ -7,7 +7,7 @@ class GraphBasic:
     provides basic methods for a routable manipulate_geodata_and_db for transportion cases
     """
 
-    def shortest_path(self, graph, source, target):
+    def shortest_path(self, graph, source=None, target=None):
         route = networkx.shortest_path(G=graph, source=source, target=target)
         return route
 
@@ -18,5 +18,6 @@ class GraphBasic:
         :param path:
         :return:
         """
+        # TODO: Remove that, is not used
         networkx.draw_networkx(G=graph, pos=nodes_pos)
         plt.show()

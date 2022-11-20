@@ -103,10 +103,12 @@ finve_to_projectcontent = db.Table('finve_to_projectcontent',
                                    db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id'))
                                    )
 
+tunnel_to_railwaylines = db.Table('rltunnel_to_rllines',
+                                  db.Column('railway_tunnels_id', db.Integer, db.ForeignKey('railway_tunnels.id')),
+                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                  )
 
 # classes/Tables
-
-
 class RailwayLine(db.Model):
     """
     defines a RailwayLine, which is part of a railway network and has geolocated attributes (Multiline oder Line).
@@ -140,6 +142,8 @@ class RailwayLine(db.Model):
                                                db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
     abs_nbs = db.Column(db.String(5), default='KS')
     gauge = db.Column(db.Integer, default=1435)
+    tunnel_id = db.Column(db.Integer, db.ForeignKey('railway_tunnels.id', ondelete='SET NULL'))
+
 
     # manipulate_geodata_and_db
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
@@ -467,8 +471,7 @@ class RailwayPoint(db.Model):
     db_kuerzel = db.Column(db.String(6))
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='POINTZ', srid=4326), nullable=False)
     node_id = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', onupdate='CASCADE', ondelete='SET NULL'))
-
-    # TODO: Connect that to DB Station Names, have in mind that we also have some Non-DB-stations
+    height_ors = db.Column(db.Float)  # height calculated by openrouteservice.org
 
     # References
     # projects_start = db.relationship('Project', backref='project_starts', lazy=True)
@@ -498,6 +501,20 @@ class RailwayPoint(db.Model):
             ).one()
 
         return line
+
+    @property
+    def geojson(self):
+        """
+        returns a geojson for that point
+        :return:
+        """
+        coordinate = geoalchemy2.shape.to_shape(self.coordinates)
+        xy = coordinate.xy
+        x = xy[0][0]
+        y = xy[1][0]
+        coordinate_geojson = geojson.Point((x, y))
+        return coordinate_geojson
+
 
 
 class RailwayStation(db.Model):
@@ -801,6 +818,60 @@ class RailwayInfrastructureCompany(db.Model):
     name = db.Column(db.String(255), nullable=False)
 
     # TODO: Set all to DB Netz that are not to some company else.
+
+
+class RailwayElectricityStation(db.Model):
+    """
+
+    """
+    __tablename__ = 'railway_electricity_stations'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    location = db.Column(db.String(255))
+    code = db.Column(db.String(20))
+    switching_station_id = db.Column(db.Integer, db.ForeignKey('railway_electricity_switching_stations.id'))
+    electricity_station_type_id = db.Column(db.Integer, db.ForeignKey('railway_electricity_station_types.id'))
+    equipment_15kv_year = db.Column(db.Integer)
+    equipment_110kv_year = db.Column(db.Integer)
+    equipment_station_year = db.Column(db.Integer)
+    number = db.Column(db.Integer)
+    station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id'))
+
+
+class RailwayElectricitySwitchingStation(db.Model):
+    __tablename__ = 'railway_electricity_switching_stations'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    location = db.Column(db.String(255))
+    code = db.Column(db.String(20))
+    station_id = db.Column(db.Integer, db.ForeignKey('railway_stations.id'))
+
+
+class RailwayElectricityStationType(db.Model):
+    """
+
+    """
+    __tablename__ = 'railway_electricity_station_types'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    decentral = db.Column(db.Boolean)
+
+
+class RailwayTunnel(db.Model):
+    """
+    RailwayTunnels from db open data portal
+    """
+    __tablename__ = 'railway_tunnels'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    route_number_id = db.Column(db.Integer, db.ForeignKey('railway_route.number'))
+    richtung = db.Column(db.Integer)
+    von_km_i = db.Column(db.BigInteger)
+    bis_km_i = db.Column(db.BigInteger)
+    von_km_l = db.Column(db.String(100))
+    bis_km_l = db.Column(db.String(100))
+    length = db.Column(db.Float)
+    name = db.Column(db.String(255))
+    geometry = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRINGZ', srid=4326), nullable=False)
 
 
 class Project(db.Model):
@@ -1788,6 +1859,7 @@ class TimetableLine(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String(255), unique=True, nullable=False)
+    count_formations = db.Column(db.Integer, default=0)
 
     @property
     def running_km_year(self):
@@ -1862,20 +1934,6 @@ class TimetableLine(db.Model):
             # time_information = next_train.train_part.first_ocp_departure - arrival
         except IndexError:
             next_train = None
-
-        # for index, row in list_all_trains_filtered.iterrows():
-        #     train = row["traingroup"]
-        #     train_departure = row["departure"]
-        #     delta_time = train_departure - arrival
-        #     if delta_time > datetime.timedelta(0):
-        #         possible_trains[delta_time] = train
-        #         break  # because they are sorted after departure, the first is the fitting
-        #
-        #
-        # if possible_trains:
-        #     next_train_time_delta = min(possible_trains)
-        #     next_train = possible_trains[next_train_time_delta]
-        #     time_information = next_train_time_delta
 
         return next_train
 

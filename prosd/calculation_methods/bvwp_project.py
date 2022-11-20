@@ -10,7 +10,7 @@ from prosd.calculation_methods.cost import BvwpCost, BvwpCostElectrification, Bv
 
 
 class Project:
-    def __init__(self, railway_lines_id, traction_type, start_year_planning):
+    def __init__(self, railway_lines_df, traction_type, start_year_planning):
         """
 
         :param railway_lines: list of railway_lines that are part of the Project
@@ -22,12 +22,14 @@ class Project:
         # h2
         # eFuel
         # TODO: Think of an mixed variant electrification and battery
-        self.railway_lines = RailwayLine.query.filter(RailwayLine.id.in_(railway_lines_id)).all()
+        self.railway_lines = railway_lines_df["railway_line_model"].to_list()
+
+        # TODO: Change that railway_lines is an dataframe -> so we can manipulat the railway_lines before!
         self.infrastructure_cost_base_year, self.start_year_operation, self.duration_operation = self.infrastructure_cost(
             traction_type=traction_type,
             start_year_planning=start_year_planning,
             railway_lines=self.railway_lines)
-        self.use_sum, self.uses_dataframe = self.use_calculation(railway_lines_id=railway_lines_id, traction_type=traction_type)
+        self.use_sum, self.uses_dataframe = self.use_calculation(railway_lines_id=railway_lines_df["railway_line_id"].to_list(), traction_type=traction_type)
 
         self.cost = self.use_sum + self.infrastructure_cost_base_year
 
