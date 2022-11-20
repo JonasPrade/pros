@@ -6,17 +6,16 @@ from prosd.models import RailwayLine, RailwayTunnel
 
 tunnels = RailwayTunnel.query.all()
 
-line_objects = []
+tunnel_objects = []
 for tunnel in tunnels:
     lines = RailwayLine.query.filter(
                 geoalchemy2.func.ST_Intersects(RailwayLine.coordinates, tunnel.geometry)
             ).all()
 
-    for line in lines:
-        line.tunnel_id = tunnel.id
-        line_objects.append(line)
+    tunnel.rw_lines = lines
+    tunnel_objects.append(tunnel)
 
-db.session.add_all(line_objects)
+db.session.add_all(tunnel_objects)
 db.session.commit()
 
 

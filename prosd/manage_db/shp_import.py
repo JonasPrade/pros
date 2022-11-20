@@ -104,7 +104,7 @@ class DBManager:
         # preparing coordinate
         shp_data['coord'] = shp_data['coordinates'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
         shp_data.drop('coordinates', 1, inplace=True)
-        shp_data = shp_data.rename(columns={"coord":"coordinates"})
+        shp_data = shp_data.rename(columns={"coord": "coordinates"})
 
         for index, row in shp_data.iterrows():
             railway_line_input = prosd.models.RailwayLine(
@@ -157,7 +157,6 @@ class DBManager:
 
         logging.info('finished import shp_to_counties')
 
-
     def shp_to_tunnel(self, filepath_shp, model, overwrite=False):
         if overwrite:
             db.session.query(model).delete()
@@ -172,15 +171,51 @@ class DBManager:
         objects = []
         for index, row in shp_data.iterrows():
             railway_point = model(
-                route_number_id = row.streckennu,
-                richtung = row.richtung,
-                von_km_i = row.von_km_i,
-                bis_km_i = row.bis_km_i,
-                von_km_l = row.von_km_l,
-                bis_km_l = row.bis_km_l,
-                length = row.laenge,
-                name = row.bezeichnun,
-                geometry = row.geo
+                route_number_id=row.streckennu,
+                richtung=row.richtung,
+                von_km_i=row.von_km_i,
+                bis_km_i=row.bis_km_i,
+                von_km_l=row.von_km_l,
+                bis_km_l=row.bis_km_l,
+                length=row.laenge,
+                name=row.bezeichnun,
+                geometry=row.geo
+            )
+            objects.append(railway_point)
+
+        db.session.add_all(objects)
+        db.session.commit()
+
+        logging.info('finished import shp_to_railwaylines')
+
+    def shp_to_bridges(self, filepath_shp, overwrite=False):
+        """
+        import a shp-file to the Tabel Bridges
+        :return:
+        """
+        model = prosd.models.RailwayBridge
+
+        if overwrite:
+            db.session.query(model).delete()
+            db.session.commit()
+
+        shp_data = geopandas.read_file(filepath_shp)
+
+        shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
+        shp_data.drop('geometry', 1, inplace=True)
+
+        # TODO: finish dict
+        objects = []
+        for index, row in shp_data.iterrows():
+            railway_point = model(
+                route_number_id=row.streckennu,
+                direction=row.richtung,
+                von_km_i=row.von_km_i,
+                bis_km_i=row.bis_km_i,
+                von_km_l=row.von_km_l,
+                bis_km_l=row.bis_km_l,
+                length=row.laenge,
+                geometry=row.geo
             )
             objects.append(railway_point)
 
@@ -190,13 +225,10 @@ class DBManager:
         logging.info('finished import shp_to_railwaylines')
 
 
-
 if __name__ == '__main__':
     RailwayTunnel = prosd.models.RailwayTunnel
-    filepath_shp = '/Users/jonas/PycharmProjects/pros/example_data/tunnel_data/tunnel_polyline.shp'
+    filepath_shp = '/Users/jonas/PycharmProjects/pros/example_data/bridges_data/2019/bruecken_gross_polyline.shp'
 
     DbInput = DBManager()
 
-    DbInput.shp_to_tunnel(filepath_shp=filepath_shp, overwrite=True, model=RailwayTunnel)
-
-
+    DbInput.shp_to_bridges(filepath_shp=filepath_shp, overwrite=True)

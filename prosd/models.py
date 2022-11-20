@@ -108,7 +108,14 @@ tunnel_to_railwaylines = db.Table('rltunnel_to_rllines',
                                   db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
                                   )
 
+bridges_to_railwaylines = db.Table('rwbridges_to_rwlines',
+                                   db.Column('rw_bridges_id', db.Integer, db.ForeignKey('railway_bridges.id')),
+                                   db.Column('rw_lines.id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                   )
+
 # classes/Tables
+
+
 class RailwayLine(db.Model):
     """
     defines a RailwayLine, which is part of a railway network and has geolocated attributes (Multiline oder Line).
@@ -142,7 +149,6 @@ class RailwayLine(db.Model):
                                                db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
     abs_nbs = db.Column(db.String(5), default='KS')
     gauge = db.Column(db.Integer, default=1435)
-    tunnel_id = db.Column(db.Integer, db.ForeignKey('railway_tunnels.id', ondelete='SET NULL'))
 
 
     # manipulate_geodata_and_db
@@ -872,6 +878,28 @@ class RailwayTunnel(db.Model):
     length = db.Column(db.Float)
     name = db.Column(db.String(255))
     geometry = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRINGZ', srid=4326), nullable=False)
+
+    rw_lines = db.relationship('RailwayLine', secondary=tunnel_to_railwaylines,
+                               backref=db.backref('rw_tunnels', lazy=True))
+
+
+class RailwayBridge(db.Model):
+    """
+
+    """
+    __tablename__ = 'railway_bridges'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    route_number_id = (db.Column, db.Integer, db.ForeignKey('railway_route.number'))
+    direction = db.Column(db.Integer)
+    von_km_i = db.Column(db.BigInteger)
+    bis_km_i = db.Column(db.BigInteger)
+    von_km_l = db.Column(db.String(100))
+    bis_km_l = db.Column(db.String(100))
+    length = db.Column(db.Float)
+    geometry = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRINGZ', srid=4326), nullable=False)
+
+    rw_lines = db.relationship('RailwayLine', secondary=bridges_to_railwaylines,
+                               backref=db.backref('rw_bridges', lazy=True))
 
 
 class Project(db.Model):
