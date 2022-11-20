@@ -33,6 +33,11 @@ class BvwpCost(BaseCalculation):
         self.cost_2015 = self.planning_cost_2015 + self.investment_cost_2015 + self.maintenance_cost_2015
 
     def duration_building(self, abs_nbs):
+        """
+        calculates the duration of building, based on the calculations of the bvwp
+        :param abs_nbs:
+        :return:
+        """
         dirname = os.path.dirname(__file__)
         self.FILEPATH_DURATION_BVWP = os.path.realpath(
             os.path.join(dirname, "settings/duration_build_rail_bvwp.csv"))
@@ -66,12 +71,11 @@ class BvwpCostElectrification(BvwpCost):
     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.railway_lines = railway_lines
         self.MAINTENANCE_FACTOR = 0.014  # factor from standardisierte Bewertung Tabelle B-19
-        self.COST_OVERHEAD = 1000  # in thousand Euro TODO: Find correct value
-        # TODO: Nagl meinte, dass das man das eigentlich niedriger setzen muss aus irgendwelchen Gründen.
+        self.COST_OVERHEAD = 588.271   # in thousand Euro
 
         self.length_no_catenary = self.calc_unelectrified_railway_lines()
         self.cost_overhead = self.length_no_catenary * self.COST_OVERHEAD
-        self.cost_substation = 0  # TODO: Find algorithm to calculate the needed substation (or upgrades)
+        self.cost_substation = 0
 
         self.investment_cost = self.cost_overhead + self.cost_substation
         self.maintenace_cost = self.investment_cost * self.MAINTENANCE_FACTOR
@@ -79,14 +83,17 @@ class BvwpCostElectrification(BvwpCost):
 
     def calc_unelectrified_railway_lines(self):
         """
-
+        calculates the length of not electrified lines and returns them. if the line has two tracks, it will multiple the length
         :param railway_lines:
         :return:
         """
         length_no_catenary = 0
         for line in self.railway_lines:
+            factor_length = 1
             if line.catenary == False:
-                length_no_catenary += line.length / 1000
+                if line.number_tracks == 'zweigleisig':
+                    factor_length = 2
+                length_no_catenary += line.length * factor_length / 1000
 
         return length_no_catenary
 
