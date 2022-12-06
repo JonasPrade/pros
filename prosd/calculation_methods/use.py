@@ -329,7 +329,7 @@ class StandiSpnv(BvwpUse):
         return energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
-        additional_battery = vehicle_pattern.additional_energy_without_overhead * traingroup.running_km_year_no_catenary
+        additional_battery = vehicle_pattern.additional_energy_without_overhead * traingroup.running_km_year_no_catenary  # TODO: This seems to be wrong!!! running_km_year is doppelt in this calculation
         energy_per_km = vehicle_pattern.energy_per_km
 
         energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year

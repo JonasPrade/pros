@@ -1,6 +1,6 @@
 import networkx.exception
 
-from prosd.models import TimetableTrain, TimetableTrainPart, TimetableOcp, TimetableTrainGroup, RailwayLine
+from prosd.models import TimetableTrainGroup, RailwayLine, RouteTraingroup
 import logging
 from prosd import db
 from prosd.graph import railgraph
@@ -16,7 +16,7 @@ missing_stations = set()
 
 for tg in tgs:
 
-    if len(tg.lines) == 0:
+    if len(tg.railway_lines) == 0:
         train = tg.trains[0]
 
         # find first ocp
@@ -52,10 +52,15 @@ for tg in tgs:
             logging.warning("No path found for traingroup " + str(tg.id) + " from " + str(first_ocp) + " to " + str(last_ocp))
             continue
 
-        lines = RailwayLine.query.filter(RailwayLine.id.in_(path["edges"])).all()
-        tg.lines = lines
+        ## add to Route Traingroups
+        for index, line_id in enumerate(path["edges"]):
+            rtg = RouteTraingroup(
+                traingroup_id = tg.id,
+                railway_line_id = line_id,
+                section = index
+            )
+            objects.append(rtg)
 
-        objects.append(tg)
 
 db.session.bulk_save_objects(objects)
 db.session.commit()

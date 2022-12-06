@@ -92,11 +92,6 @@ formations_to_vehicles = db.Table('formations_to_vehicles',
                                   db.Column('vehicle_id', db.String(100), db.ForeignKey('vehicles.id'))
                                   )
 
-traingroup_to_railwaylines = db.Table('traingroup_to_railwaylines',
-                                      db.Column('traingroup_id', db.String(255),
-                                                db.ForeignKey('timetable_train_groups.id')),
-                                      db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
-                                      )
 
 finve_to_projectcontent = db.Table('finve_to_projectcontent',
                                    db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
@@ -150,10 +145,12 @@ class RailwayLine(db.Model):
     abs_nbs = db.Column(db.String(5), default='KS')
     gauge = db.Column(db.Integer, default=1435)
 
-
     # manipulate_geodata_and_db
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
+
+    # traingroup = db.relationship("RouteTraingroup", back_populates="railway_lines")
+    traingroups = db.relationship("RouteTraingroup", back_populates="railway_line")
 
     def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None,
                  electrified=None,
@@ -190,6 +187,29 @@ class RailwayLine(db.Model):
         nodes.append(self.end_node)
         return nodes
 
+    @property
+    def stations(self):
+        """
+        the models of nodes
+        :return:
+        """
+        stations = []
+        start_node = RailwayNodes.query.get(self.start_node)
+        try:
+            start_station = start_node.point[0].station
+            stations.append(start_station)
+        except IndexError:
+            pass
+
+        end_node = RailwayNodes.query.get(self.end_node)
+        try:
+            end_station = end_node.point[0].station
+            stations.append(end_station)
+        except IndexError:
+            pass
+
+        return stations
+
     @classmethod
     def geojson(self, obj):
         coords = geoalchemy2.shape.to_shape(obj.coordinates)
@@ -219,6 +239,7 @@ class RailwayLine(db.Model):
         else:
             coordinates_wkb = coordinates
 
+        # TODO: Change that method and the init method. That is not actual!!!!
         railline = RailwayLine(
             coordinates=coordinates_wkb,
             route_number=line_old.route_number,
@@ -522,7 +543,6 @@ class RailwayPoint(db.Model):
         return coordinate_geojson
 
 
-
 class RailwayStation(db.Model):
     """
     a railway point is always connected with one route. The station collects all railway_points of the same station
@@ -532,8 +552,9 @@ class RailwayStation(db.Model):
     name = db.Column(db.String(255))
     db_kuerzel = db.Column(db.String(6), unique=True)
     type = db.Column(db.String(10))
+    charging_station = db.Column(db.Boolean, default=False)
 
-    railway_points = db.relationship("RailwayPoint", lazy="dynamic")
+    railway_points = db.relationship("RailwayPoint", lazy="dynamic", backref="station")
     railway_nodes = db.relationship("RailwayNodes",
                                     secondary="join(RailwayPoint, RailwayNodes, RailwayPoint.node_id == RailwayNodes.id)",
                                     viewonly=True)
@@ -911,7 +932,7 @@ class Project(db.Model):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     superior_project_content_id = db.Column(db.Integer, db.ForeignKey(
-        'projects_contents.id'))  # TODO: Change that to project_content
+        'projects_contents.id', onupdate='SET NULL', ondelete='SET NULL'))  # TODO: Change that to project_content
 
     # references
     project_contents = db.relationship('ProjectContent', backref='project', lazy=True,
@@ -930,7 +951,7 @@ class ProjectContent(db.Model):
 
     # Basic informations
     id = db.Column(db.Integer, primary_key=True)
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', onupdate='SET NULL', ondelete='SET NULL', name='projects_contents_project_id_fkey'))
     project_number = db.Column(
         db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
     name = db.Column(db.String(255), nullable=False)
@@ -1084,7 +1105,7 @@ class ProjectContent(db.Model):
     nbs = db.Column(db.Boolean, nullable=False, default=False)
     abs = db.Column(db.Boolean, nullable=False, default=False)
     elektrification = db.Column(db.Boolean, nullable=False, default=False)
-    batterie = db.Column(db.Boolean, nullable=False, default=False)
+    charging_station = db.Column(db.Boolean, default=False)
     second_track = db.Column(db.Boolean, nullable=False, default=False)
     third_track = db.Column(db.Boolean, nullable=False, default=False)
     fourth_track = db.Column(db.Boolean, nullable=False, default=False)
@@ -1386,6 +1407,7 @@ class VehiclePattern(db.Model):
     emission_km = db.Column(db.Float, comment="€/km")
     emission_stop = db.Column(db.Float, comment="€/stop")
     project_group = db.Column(db.Integer, db.ForeignKey('project_groups.id'))
+    battery_capacity = db.Column(db.Float, default = None)  # TODO: Ask Patrick for the correct values
 
     vehicle_pattern_id_electrical = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
     vehicle_pattern_id_h2 = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
@@ -1506,12 +1528,16 @@ class TimetableTrainGroup(db.Model):
 
     trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
     traingroup_lines = db.relationship("TimetableLine", lazy=True, backref="train_groups")
-    lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
+    # lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
+
+    railway_lines = db.relationship("RouteTraingroup", back_populates='traingroup')
+
 
     @hybrid_property
     def length_line(self):
         km = 0
-        for line in self.lines:
+        for route_traingroup in self.railway_lines:
+            line = route_traingroup.railway_line
             km += line.length / 1000
 
         return km
@@ -1574,7 +1600,6 @@ class TimetableTrainGroup(db.Model):
 
     @hybrid_property
     def minimal_run_time(self):
-        # TODO: There are sections with no run time. Check whats the problem
         train = self.trains[0]
         ocps = train.train_part.timetable_ocps
         minimal_run_time = datetime.timedelta(seconds=0)
@@ -1591,6 +1616,10 @@ class TimetableTrainGroup(db.Model):
 
     @hybrid_property
     def travel_time(self):
+        """
+        includes stop_times (departure first to arrivel last)
+        :return:
+        """
         train = self.trains[0]
         departure_first_time = train.train_part.first_ocp.times.filter(
             TimetableTime.scope == "scheduled").one().departure
@@ -1625,6 +1654,7 @@ class TimetableTrainGroup(db.Model):
         count of stops (with passenger exchange for passenger trains)
         :return:
         """
+        # TODO: make that just the length of def stops()
         count_stops = 0
         train = self.trains[0]
         ocps = train.train_part.timetable_ocps
@@ -1716,6 +1746,15 @@ class TimetableTrainGroup(db.Model):
     def category(self):
         category = self.trains[0].train_part.category
         return category
+
+    @property
+    def travel_speed_average(self):
+        """
+        The speed of the line including all stops
+        :return:
+        """
+        travel_speed = self.length_line/(self.travel_time.seconds/3600)
+        return travel_speed
 
 
 class TimetableTrain(db.Model):
@@ -1879,6 +1918,17 @@ class TimetableSection(db.Model):
     minimal_run_time = db.Column(db.Time)
 
 
+class RouteTraingroup(db.Model):
+    __tablename__ = 'route_traingroups'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    traingroup_id = db.Column(db.String(255), db.ForeignKey("timetable_train_groups.id"))
+    railway_line_id = db.Column(db.Integer, db.ForeignKey("railway_lines.id"))
+    section = db.Column(db.Integer)
+
+    traingroup = db.relationship(TimetableTrainGroup, back_populates='railway_lines')
+    railway_line = db.relationship(RailwayLine, back_populates='traingroups')
+
+
 class TimetableLine(db.Model):
     __tablename__ = "timetable_lines"
 
@@ -1946,6 +1996,19 @@ class TimetableLine(db.Model):
                     previous_train = next_train
 
         return train_cycles_all
+
+    def get_one_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
+        """
+        calculates one train cycle (not all)
+        :return:
+        """
+        list_all_trains = self.all_trains
+        first_train = self._get_earliest_departure(list_all_trains)
+        next_train = self._get_next_train(previous_train=first_train,
+                                          list_all_trains=list_all_trains,
+                                          wait_time=wait_time)
+        trains = [first_train, next_train]
+        return trains
 
     def _get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
         # TODO: Add minimum wait time

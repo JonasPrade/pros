@@ -160,7 +160,7 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     priority = auto_field()
     nbs = auto_field()
     abs = auto_field()
-    batterie = auto_field()
+    charging_station = auto_field()
     etcs = auto_field()
     etcs_level = auto_field()
     elektrification = auto_field()

@@ -4,12 +4,14 @@ from prosd.models import RailwayLine, RailwayStation, ProjectContent
 from prosd.calculation_methods.bvwp_project import Project
 from prosd.graph import railgraph
 
+
 def create_railway_lines_df():
     columns = ['railway_line_id', 'railway_line_model']
     railway_lines = RailwayLine.query.with_entities(RailwayLine.id, RailwayLine).order_by(RailwayLine.id).all()
     railway_lines_df = pandas.DataFrame(railway_lines, columns=columns)
 
     return railway_lines_df
+
 
 def change_electrification(project_content, railway_line):
     if project_content.elektrification:
