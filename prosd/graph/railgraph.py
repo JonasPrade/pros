@@ -63,7 +63,7 @@ class RailGraph(GraphBasic):
         self.ALLOWED_DISTANCE_IN_NODE = self.__meter_to_degree(
             1)  # allowed distance between that are assumed to be on node [m]
 
-    def create_graph(self, new_nodes=False, use_saved=True):
+    def create_graph(self, new_nodes=False, use_saved_route=True):
         """
         Imports the RailwayLines of the db and creates a manipulate_geodata_and_db out of the data
         :return:
@@ -79,7 +79,7 @@ class RailGraph(GraphBasic):
             self.create_nodes_new_railwaylines()
 
         # create graphes of each route
-        graph_list = self._create_graphes_routes(use_saved=use_saved)
+        graph_list = self._create_graphes_routes(use_saved=use_saved_route)
 
         # connect graphes to one manipulate_geodata_and_db
         for graph in graph_list:
@@ -133,7 +133,7 @@ class RailGraph(GraphBasic):
         RailwayLine = models.RailwayLine
 
         new_lines = db.session.query(RailwayLine).filter(
-            sqlalchemy.or_(RailwayLine.start_node == None, RailwayLine.end_node == None)
+            sqlalchemy.or_(RailwayLine.start_node is None, RailwayLine.end_node is None)
         ).all()
 
         for line in new_lines:
@@ -304,6 +304,7 @@ class RailGraph(GraphBasic):
         stations = models.RailwayStation.query.all()
 
         for station in stations:
+            time_start = time.time()
             # get the station db_kuerzel
             station_sink_node = str(station.db_kuerzel) + "_in"
             station_source_node = str(station.db_kuerzel) + "_out"
@@ -334,6 +335,8 @@ class RailGraph(GraphBasic):
                     graph = self.add_edge(graph, station_source_node, line_outgoing_node,
                                           edge_data={"line": "station_line_source"})
 
+            time_end = time.time()
+            logging.info(f"Needed time for {station}: {time_end-time_start}")
         return graph
 
     def create_connection_parallel_lines(self, graph):

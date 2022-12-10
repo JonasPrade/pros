@@ -152,33 +152,33 @@ class RailwayLine(db.Model):
     # traingroup = db.relationship("RouteTraingroup", back_populates="railway_lines")
     traingroups = db.relationship("RouteTraingroup", back_populates="railway_line")
 
-    def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None,
-                 electrified=None,
-                 catenary=False, conductor_rail=False, voltage=None, dc_ac=None,
-                 number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
-                 strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None,
-                 gauge=1435, abs_nbs='ks'):
-        self.route_number = route_number
-        self.direction = direction
-        self.length = length
-        self.from_km = from_km
-        self.to_km = to_km
-        self.electrified = electrified
-        self.catenary = catenary
-        self.conductor_rail = conductor_rail
-        self.voltage = voltage
-        self.dc_ac = dc_ac
-        self.number_tracks = number_tracks
-        self.vmax = vmax
-        self.type_of_transport = type_of_transport
-        self.strecke_kuerzel = strecke_kuerzel
-        self.bahnart = bahnart
-        self.active_until = active_until
-        self.active_since = active_since
-        self.coordinates = coordinates
-        self.railway_infrastructure_company = railway_infrastructure_company
-        self.abs_nbs = abs_nbs
-        self.gauge = gauge
+    # def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None,
+    #              electrified=None,
+    #              catenary=False, conductor_rail=False, voltage=None, dc_ac=None,
+    #              number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
+    #              strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None,
+    #              gauge=1435, abs_nbs='ks'):
+    #     self.route_number = route_number
+    #     self.direction = direction
+    #     self.length = length
+    #     self.from_km = from_km
+    #     self.to_km = to_km
+    #     self.electrified = electrified
+    #     self.catenary = catenary
+    #     self.conductor_rail = conductor_rail
+    #     self.voltage = voltage
+    #     self.dc_ac = dc_ac
+    #     self.number_tracks = number_tracks
+    #     self.vmax = vmax
+    #     self.type_of_transport = type_of_transport
+    #     self.strecke_kuerzel = strecke_kuerzel
+    #     self.bahnart = bahnart
+    #     self.active_until = active_until
+    #     self.active_since = active_since
+    #     self.coordinates = coordinates
+    #     self.railway_infrastructure_company = railway_infrastructure_company
+    #     self.abs_nbs = abs_nbs
+    #     self.gauge = gauge
 
     @hybrid_property
     def nodes(self):
@@ -232,36 +232,40 @@ class RailwayLine(db.Model):
         :return:
         """
         # have in mind, that all attribute are copied, also the kilometer distance from DB. This is because it is not always the length of the line.
-        # TODO: Transfer also project_content
         if isinstance(coordinates, str):
             coordinates = coordinates.split(",")[1][:-1]
             coordinates_wkb = db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_Force2D(coordinates))).one()[0]
         else:
             coordinates_wkb = coordinates
 
-        # TODO: Change that method and the init method. That is not actual!!!!
-        railline = RailwayLine(
-            coordinates=coordinates_wkb,
-            route_number=line_old.route_number,
-            direction=line_old.direction,
-            from_km=line_old.from_km,
-            to_km=line_old.to_km,
-            electrified=line_old.electrified,
-            catenary=line_old.catenary,
-            conductor_rail=line_old.conductor_rail,
-            voltage=line_old.voltage,
-            dc_ac=line_old.dc_ac,
-            number_tracks=line_old.number_tracks,
-            vmax=line_old.vmax,
-            type_of_transport=line_old.type_of_transport,
-            bahnart=line_old.bahnart,
-            strecke_kuerzel=line_old.strecke_kuerzel,
-            active_until=line_old.active_until,
-            active_since=line_old.active_since,
-            railway_infrastructure_company=line_old.railway_infrastructure_company,
-        )
+        railline = line_old
+        db.session.expunge(railline)
+        db.make_transient(railline)
+        railline.id = None
+        railline.coordinates = coordinates_wkb
 
-        railline.project_content = line_old.project_content
+        # railline = RailwayLine(
+        #     coordinates=coordinates_wkb,
+        #     route_number=line_old.route_number,
+        #     direction=line_old.direction,
+        #     from_km=line_old.from_km,
+        #     to_km=line_old.to_km,
+        #     electrified=line_old.electrified,
+        #     catenary=line_old.catenary,
+        #     conductor_rail=line_old.conductor_rail,
+        #     voltage=line_old.voltage,
+        #     dc_ac=line_old.dc_ac,
+        #     number_tracks=line_old.number_tracks,
+        #     vmax=line_old.vmax,
+        #     type_of_transport=line_old.type_of_transport,
+        #     bahnart=line_old.bahnart,
+        #     strecke_kuerzel=line_old.strecke_kuerzel,
+        #     active_until=line_old.active_until,
+        #     active_since=line_old.active_since,
+        #     railway_infrastructure_company=line_old.railway_infrastructure_company,
+        # )
+        #
+        # railline.project_content = line_old.project_content
 
         railline_start_coordinate = \
             db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
@@ -398,6 +402,7 @@ class RailwayLine(db.Model):
         newline_1 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_1)
         newline_2 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_2)
 
+        old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
         db.session.delete(old_line)
         db.session.commit()
 

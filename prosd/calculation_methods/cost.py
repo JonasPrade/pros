@@ -8,7 +8,7 @@ import datetime
 
 from prosd import db
 from prosd.models import RailwayLine, RouteTraingroup, VehiclePattern, TimetableOcp, TimetableTime, RailwayStation, \
-    RailwayPoint, RailwayNodes, RailMlOcp
+    RailwayPoint, RailwayNodes, RailMlOcp, ProjectContent, ProjectGroup
 from prosd.calculation_methods.base import BaseCalculation
 
 
@@ -114,9 +114,11 @@ class BvwpCostElectrification(BvwpCost):
 
 class BvwpProjectBattery(BvwpCost):
     # TODO: Algorithm for calculating cost of battery infrastructure
-    def __init__(self, start_year_planning, rl_id_scope, infra_df, train_groups, abs_nbs='abs'):
-        self.infra_df = infra_df
-        self.rl_complete_df = infra_df["railway_lines"]
+    def __init__(self, start_year_planning, rl_id_scope, infra_version, train_groups, abs_nbs='abs'):
+        self.infra_version = infra_version
+        self.infra_df = infra_version.infra
+        self.rl_complete_df = self.infra_df["railway_lines"]
+
         black_list_train_group = []
         for group in train_groups:
             if group in black_list_train_group:
@@ -151,11 +153,16 @@ class BvwpProjectBattery(BvwpCost):
         cycle_lines_grouped, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
             self._calculate_energy_delta(cycle_lines_grouped=cycle_rw_line_grouped, trains=trains)
 
+        project_contents_temp = []
         while one_cycle_problem is True or multi_cycle_problem is True:
-            self._create_infrastructure(cycle_lines_grouped, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta, tt_line=tt_line)
+            db.session.autoflush = False  # needed because otherwise the temporary project_contents get flushed, which fucks up everything
+            new_project_content = self._create_infrastructure(cycle_lines_grouped, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta, tt_line=tt_line)
+            project_contents_temp = project_contents_temp + new_project_content
 
             # TODO: following is doubled!
+            cycle_rw_line_grouped = []
             for train in trains:
+
                 rw_lines_grouped, rw_lines = self._group_railway_lines(train)
                 count_stations_to_groups = self._add_count_stations_to_group(line_groups=rw_lines_grouped,
                                                                              rw_lines=rw_lines, train=train)
@@ -166,7 +173,12 @@ class BvwpProjectBattery(BvwpCost):
             cycle_lines_grouped, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
                 self._calculate_energy_delta(cycle_lines_grouped=cycle_rw_line_grouped, trains=trains)
 
-            # TODO: Write function that evalutes the line and creates projects of infrastructure if necessary
+            print(one_cycle_problem)
+
+        if project_contents_temp:
+            self.infra_version.add_projectcontents_to_version(pc_list=project_contents_temp, update_infra=False)
+
+        db.session.autoflush = True
 
     def _group_railway_lines(self, train):
         """
@@ -255,11 +267,14 @@ class BvwpProjectBattery(BvwpCost):
 
             group, group_to_lines = add_line_to_group(line, group, group_to_lines)
 
-        # Add the latest group the rw_lines_grouped
+        # Add the latest group to the rw_lines_grouped
+        station = train.train_group.last_ocp.ocp.station
         station_information = {
             "station_id": station.id,
             "stop_duration": None,
-            "station_charging_point": station_charging_point
+            "station_charging_point": self.infra_df["railway_stations"][
+            self.infra_df["railway_stations"].railway_station_id == station.id].railway_station_model.iloc[
+            0].charging_station
         }
         rw_lines_grouped = add_group_to_rw_lines_grouped(group=group, rw_lines_grouped=rw_lines_grouped, last_station=station_information)
 
@@ -439,7 +454,7 @@ class BvwpProjectBattery(BvwpCost):
         :param train:
         :return:
         """
-        CHARGE = 10  # TODO: Find value of added kW (or kWh).
+        CHARGE = 1200  # TODO: Find value of added kW.
 
         vehicles = trains[0].train_part.formation.vehicles
         battery_capacity = 0
@@ -465,7 +480,8 @@ class BvwpProjectBattery(BvwpCost):
 
                     # add energy to battery if there is a charging station
                     if line_group["last_station"]:
-                        if line_group["last_station"]["station_charging_point"] is True:
+                        if line_group["last_station"]["station_charging_point"] is True and index_line_group != len(segment) - 1:
+                            # the last segment has to be calculated the duration of standing first before there can be added a charge
                             charge = CHARGE * (line_group["last_station"]["stop_duration"].seconds/3600) + battery_status
                             battery_status = min(battery_status, charge)
                     
@@ -495,10 +511,13 @@ class BvwpProjectBattery(BvwpCost):
         # checks if the battery runs empty over multiple cycles. If yes, it sets the multi_cycle_problem variable to
         # True
         battery_delta = battery_capacity - battery_status
-        possible_cycles = battery_capacity / battery_delta
-        needed_cycles = len(trains[0].train_group.trains) / trains[0].train_group.traingroup_lines.count_formations
-        if possible_cycles < needed_cycles:
-            multi_cycle_problem = True
+        if battery_delta != 0:
+            possible_cycles = battery_capacity / battery_delta
+            needed_cycles = len(trains[0].train_group.trains) / trains[0].train_group.traingroup_lines.count_formations
+            if possible_cycles < needed_cycles:
+                multi_cycle_problem = True
+            else:
+                multi_cycle_problem = False
         else:
             multi_cycle_problem = False
 
@@ -516,7 +535,9 @@ class BvwpProjectBattery(BvwpCost):
         :return:
         """
         energy_one_way_problem = False
-        energy_circle_problem = False
+        energy_cycle_problem = False
+        new_project_contents = list()
+        PROJECT_GROUP = ProjectGroup.query.get(4)
 
         # TODO: Check if both ocp (first and last) can charge (or is electrified)
         if cycle_lines_grouped[0][0]["catenary"] or tt_line.train_groups[0].first_ocp.ocp.station.charging_station:
@@ -527,7 +548,7 @@ class BvwpProjectBattery(BvwpCost):
         if cycle_lines_grouped[-1][0]["catenary"] or tt_line.train_groups[0].last_ocp.ocp.station.charging_station:
             last_ocp_electrified = True
         else:
-            first_ocp_electrified = False
+            last_ocp_electrified = False
 
         if first_ocp_electrified is True and last_ocp_electrified is True:
             both_ocp_electrified = True
@@ -542,32 +563,71 @@ class BvwpProjectBattery(BvwpCost):
                 if record[0] == 1:
                     energy_cycle_problem = True
 
-
         # if the energy is empty in the first segment -> some charging or electrification at the line
         if energy_one_way_problem:
+            logging.error(f"There is an energy_one_way_problem for {tt_line}, but there are no solutions for that yet")
             #TODO: Check if there is a longer stop to charge
             #TODO: if not -> electrify a railway sector
             pass
 
-        # if the energy gets empty at the second segment -> try recharging at the turning station
-        if energy_cycle_problem:
+        # if the energy gets empty at the second segment -> try recharging at the turning stations
+        elif energy_cycle_problem:
             if both_ocp_electrified is False:
                 if last_ocp_electrified is False:
-                    # TODO: Create project_content for charging station last_ocp
-                    pass
+                    pc_charge_last_ocp_temp = self.create_charging_project_content(
+                        station=tt_line.train_groups[0].last_ocp.ocp.station,
+                        project_group=[PROJECT_GROUP]
+                    )
+                    new_project_contents.append(pc_charge_last_ocp_temp)
+                    logging.info(f"Added {pc_charge_last_ocp_temp} at station {pc_charge_last_ocp_temp.railway_stations}")
                 elif first_ocp_electrified is False:
-                    # TODO: Create project_content for charging station first_ocp
-                    pass
+                    pc_charge_first_ocp_temp = self.create_charging_project_content(
+                        station=tt_line.train_groups[0].first_ocp.ocp.station,
+                        project_group=[PROJECT_GROUP]
+                    )
+                    new_project_contents.append(pc_charge_first_ocp_temp)
+                    logging.info(
+                        f"Added {pc_charge_first_ocp_temp} at station {pc_charge_first_ocp_temp.railway_stations}")
             else:
-                # TODO: Try to add a charging station at end point
+                # TODO: Try to add a charging station at other point
                 pass
 
             # TODO: if not -> electrify a railway_sector
             pass
 
-        # TODO: Add multi_cycle_problem
+        elif multi_cycle_problem:
+            # TODO: Add multi_cycle_problem
+            pass
 
+        # add the new created (but not commited) project_contents
+        for pc in new_project_contents:
+            self.infra_version.load_single_project_to_version(pc)
 
+        return new_project_contents
+
+    def create_charging_project_content(self, station, project_group):
+        """
+        Create a project_content with a charging point at a specific station
+        :return:
+        """
+        # TODO: Have in mind to ggf. create project to create hierarchy
+        name = f"Ladestation {station.name}"
+        description=f"Erstelle Ladestation in {station.name}"
+
+        pc = ProjectContent(
+            name=name,
+            description=description,
+            charging_station=True,
+            projectcontent_groups=project_group,
+            effects_passenger_local_rail=True,
+            railway_stations=[station]
+        )
+
+        # TODO: Add Cost calculation!
+
+        # the pc is not added to the database yet, because it use case has still to be proven.
+
+        return pc
 
 # class BvwpCostH2(BvwpCost):
 #     # TODO: Algorithm for caluclating cost of h2 infrastructure

@@ -6,7 +6,7 @@ import shapely
 from prosd import db
 import geoalchemy2
 
-# logging.basicConfig(filename='/prosd/log/log_creating_railgraph.log', encoding='utf-8', level=logging.WARNING)
+logging.basicConfig(filename='/prosd/log/log_creating_railgraph.log', encoding='utf-8', level=logging.INFO)
 
 rg = RailGraph()
 rg.create_graph()

@@ -19,10 +19,10 @@ def calculate_battery(source, sink):
     dirname = os.path.dirname(__file__)
     filepath_changes = os.path.join(dirname, '../../example_data/versions/version_test.csv')
     version_test = Version(filepath_changes=filepath_changes)
-    infra_df = version_test.infra
+    version_test.load_changes()
 
     """code to test"""
-    battery = BvwpProjectBattery(start_year_planning=2022, rl_id_scope = railway_lines_scope, infra_df=infra_df, train_groups=train_groups)
+    battery = BvwpProjectBattery(start_year_planning=2022, rl_id_scope = railway_lines_scope, infra_version=version_test, train_groups=train_groups)
 
 
 class TestCostBattery(BaseTestCase):
