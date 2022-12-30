@@ -2,15 +2,15 @@ from prosd import db
 from prosd.models import RailwayPoint, RailwayNodes, RailwayStation, RailMlOcp
 from prosd.graph import railgraph
 
-node_id = 79645
+node_id = 80222
 
 node = RailwayNodes.query.get(node_id)
 
 point_dict = {
-    "route_number": 20026,
-    "name": "Innsbruck",
+    "route_number": 20048,
+    "name": "Bologna Centrale",
     "type": "Bf",
-    "db_kuerzel": "XAI",
+    "db_kuerzel": "XIBC",
     "coordinates": node.coordinate,
     "node_id": node.id
 }
@@ -28,6 +28,7 @@ if not station:
     db.session.add(station)
     db.session.commit()
     db.session.refresh(station)
+
 
 point = RailwayPoint(
     route_number=point_dict["route_number"],

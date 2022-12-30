@@ -1,7 +1,7 @@
 from prosd.graph.railgraph import RailGraph
 
-station_from = "NMXH"
-station_to = "NBF"
+station_from = "HIHG"
+station_to = "HLTA"
 
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)

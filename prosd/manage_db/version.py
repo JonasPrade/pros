@@ -9,6 +9,7 @@ import sqlalchemy
 from prosd.models import ProjectContent, RailwayLine, RailwayStation
 from prosd import db
 
+
 def _change_electrification(project_content, railway_line):
     if project_content.elektrification:
         railway_line.electrified = True
@@ -28,9 +29,11 @@ def _change_charging_station(project_content, railway_station):
 
 class Version:
     def __init__(self, filepath_changes):
-
         self._columns = ["project_content"]
-        self._filepath_changes = os.path.join(filepath_changes)
+        if filepath_changes is not None:
+            self._filepath_changes = os.path.join(filepath_changes)
+        else:
+            self._filepath_changes = None
         self.project_contents = self._load_changes_csv()
         self.infra = self._create_railway_df()
 
@@ -38,8 +41,11 @@ class Version:
         self._load_projects_to_version()
 
     def _load_changes_csv(self):
-        csv = pandas.read_csv(self._filepath_changes, header=None)
-        csv.columns = self._columns
+        if self._filepath_changes is not None:
+            csv = pandas.read_csv(self._filepath_changes, header=None)
+            csv.columns = self._columns
+        else:
+            csv = None
         return csv
 
     def save_changes(self):
@@ -138,5 +144,4 @@ class Version:
 
             rs_df = pandas.DataFrame([[station.id, rs_changed]], columns=['railway_station_id', 'railway_station_model'])
             self.infra["railway_stations"] = pandas.concat([self.infra["railway_stations"], rs_df])
-
 

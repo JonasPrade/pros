@@ -41,3 +41,11 @@ class TestCostBattery(BaseTestCase):
         :return:
         """
         calculate_battery(source='KBRN', sink='KST')
+
+    def test_cost_battery_testcase3(self):
+        """
+
+        :return:
+        """
+        calculate_battery(source='AWE', sink='ADB')
+

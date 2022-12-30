@@ -5,28 +5,27 @@ from prosd import db
 from prosd.models import RailwayLine
 from prosd.graph.railgraph import RailGraph
 
-route_number = 6768
+route_number = 10023
 FILEPATH = '../../example_data/import/shp_railway_lines/{route_number}.shp'.format(route_number=route_number)
 
 shp = geopandas.read_file(FILEPATH)
 
 number_tracks = 'eingleisig'
-catenary = False
+catenary = True
 conductor_rail = False
-voltage = None
-dc_ac = None
+voltage = 15
+dc_ac = 'ac'
 vmax = None
 type_of_transport = "Pz/Gz-Bahn"
 gauge = 1435
-abs_nbs = "ks"
-railway_infrastructure_company = 38
+abs_nbs = "nbs"
+railway_infrastructure_company = 1
 
 # preparing coordinate
 shp['coord'] = shp['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
 shp.drop('geometry', 1, inplace=True)
 shp = shp.rename(columns={"coord": "geometry"})
 
-# TODO: Update to new columns electrification
 objects = []
 for index, row in shp.iterrows():
     railway_line_input = RailwayLine(

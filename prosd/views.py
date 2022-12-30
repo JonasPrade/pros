@@ -99,6 +99,12 @@ class RailwayLinesShortSchema(ma.SQLAlchemySchema):
         return geo
 
 
+class RailwayStationSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.RailwayStation
+        include_fk = True
+
+
 class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.RailwayPoint
@@ -251,14 +257,46 @@ class ProjectShortSchema(ma.SQLAlchemyAutoSchema):
         return first_project_content
 
 
+class VehicleSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.Vehicle
+        include_fk = True
+
+
 class FormationSchema(ma.SQLAlchemyAutoSchema):
+    vehicles = ma.Nested(VehicleSchema, many=True)
+
     class Meta:
         model = models.Formation
         include_fk = True
 
 
+class RailMlOcpSchema(ma.SQLAlchemyAutoSchema):
+    station = ma.Nested(RailwayStationSchema)
+
+    class Meta:
+        model = models.RailMlOcp
+        include_fk = True
+
+
+class TimetableTimeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.TimetableTime
+        include_fk = True
+
+
+class TimetableOcpSchema(ma.SQLAlchemyAutoSchema):
+    ocp = ma.Nested(RailMlOcpSchema)
+    # times = ma.Nested(TimetableTimeSchema, many=True)
+
+    class Meta:
+        model = models.TimetableOcp
+        include_fk = True
+
+
 class TimetableTrainPartSchema(ma.SQLAlchemyAutoSchema):
     formation = ma.Nested(FormationSchema)
+    timetable_ocps = ma.Nested(TimetableOcpSchema, many=True)
 
     class Meta:
         model = models.TimetableTrainPart
@@ -273,8 +311,16 @@ class TimetableTrainSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class RouteTraingroupSchema(ma.SQLAlchemyAutoSchema):
+    railway_line = ma.Nested(RailwayLinesSchema)
+
+    class Meta:
+        model = models.RouteTraingroup
+        include_fk = True
+
+
 class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
-    lines = ma.Nested(RailwayLinesSchema, many=True)
+    railway_lines = ma.Nested(RouteTraingroupSchema, many=True)
     trains = ma.Nested(TimetableTrainSchema, many=True)
 
     class Meta:

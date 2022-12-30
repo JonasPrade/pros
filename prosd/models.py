@@ -11,6 +11,7 @@ import math
 import logging
 
 from prosd import db, app, bcrypt
+from prosd.postgisbasics import PostgisBasics
 
 START_DATE = datetime.datetime(2030, 1, 1)
 
@@ -274,6 +275,10 @@ class RailwayLine(db.Model):
             db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_EndPoint(coordinates_wkb))).one()[0]
         railline.end_node = RailwayNodes.add_node_if_not_exists(railline_end_coordinates).id
 
+        pgis_basics = PostgisBasics(geometry=railline.coordinates, srid=4326)
+        length = round(pgis_basics.length_in_meter())
+        railline.length = length
+
         db.session.add(railline)
         db.session.commit()
 
@@ -400,6 +405,7 @@ class RailwayLine(db.Model):
         # TODO: Throw error if there is a third linestring in the geometry collection
 
         newline_1 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_1)
+        old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
         newline_2 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_2)
 
         old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
@@ -1556,7 +1562,8 @@ class TimetableTrainGroup(db.Model):
     @hybrid_property
     def running_km_day_abs(self):
         running_km_day_abs = 0
-        for line in self.lines:
+        for route_traingroup in self.railway_lines:
+            line = route_traingroup.railway_line
             if line.abs_nbs == "ABS":
                 running_km_day_abs += line.length / 1000
 
@@ -1566,7 +1573,8 @@ class TimetableTrainGroup(db.Model):
     @hybrid_property
     def running_km_day_nbs(self):
         running_km_day_nbs = 0
-        for line in self.lines:
+        for route_traingroup in self.railway_lines:
+            line = route_traingroup.railway_line
             if line.abs_nbs == "NBS":
                 running_km_day_nbs += line.length / 1000
 
@@ -1576,8 +1584,9 @@ class TimetableTrainGroup(db.Model):
     @hybrid_property
     def running_km_day_no_catenary(self):
         running_km_day_no_catenary = 0
-        for line in self.lines:
-            if line.catenary == False:
+        for route_traingroup in self.railway_lines:
+            line = route_traingroup.railway_line
+            if line.catenary is False:
                 running_km_day_no_catenary += line.length / 1000
 
         running_km_day_no_catenary = running_km_day_no_catenary * len(self.trains)

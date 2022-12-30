@@ -173,8 +173,6 @@ class BvwpProjectBattery(BvwpCost):
             cycle_lines_grouped, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
                 self._calculate_energy_delta(cycle_lines_grouped=cycle_rw_line_grouped, trains=trains)
 
-            print(one_cycle_problem)
-
         if project_contents_temp:
             self.infra_version.add_projectcontents_to_version(pc_list=project_contents_temp, update_infra=False)
 
@@ -624,6 +622,7 @@ class BvwpProjectBattery(BvwpCost):
         )
 
         # TODO: Add Cost calculation!
+        # TODO: ProjectContent Number
 
         # the pc is not added to the database yet, because it use case has still to be proven.
 

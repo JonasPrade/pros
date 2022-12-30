@@ -1,4 +1,4 @@
 from prosd.graph import railgraph
 
 rg = railgraph.RailGraph()
-rg.create_graph(use_saved=True)
+rg.create_graph(use_saved_route=True)

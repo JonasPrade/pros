@@ -1,11 +1,17 @@
 NAME_LAYER = 'railway_lines'
 
-from prosd.models import TimetableTrainGroup
+import json
+import os
+# TODO: Add the relevant stadions
 
-traingroup_id = "tg_NW20.1_N_x0020_20101_3607"
-traingroup = TimetableTrainGroup.query.get(traingroup_id)
+traingroup_id = 'tg_FV42.a2_x0020_D_x0020_42121_55056'
+filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths_traingroups/{traingroup_id}.json")
+print(filepath)
 
-lines_of_path = traingroup.lines
+with open(filepath, 'r') as f:
+    path_dict = json.load(f)
+
+lines_of_path = path_dict["edges"]
 
 layers = QgsProject.instance().mapLayersByName(NAME_LAYER)
 layer = layers[0]

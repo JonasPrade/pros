@@ -133,7 +133,7 @@ class RailGraph(GraphBasic):
         RailwayLine = models.RailwayLine
 
         new_lines = db.session.query(RailwayLine).filter(
-            sqlalchemy.or_(RailwayLine.start_node is None, RailwayLine.end_node is None)
+            sqlalchemy.or_(RailwayLine.start_node == None, RailwayLine.end_node == None)
         ).all()
 
         for line in new_lines:
