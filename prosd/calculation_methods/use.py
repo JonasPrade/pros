@@ -417,7 +417,7 @@ class StandiSpnv(BvwpUse):
         return debt_service
 
     def maintenance_cost_running(self, vehicle_pattern, traingroup):
-        additional_maintenance_battery = traingroup.running_km_year_no_catenary * vehicle_pattern.additional_maintenance_cost_withou_overhead
+        additional_maintenance_battery = vehicle_pattern.additional_maintenance_cost_withou_overhead * (traingroup.running_km_year_no_catenary/traingroup.running_km_year)
         maintenance_cost = (1 + additional_maintenance_battery) * vehicle_pattern.maintenance_cost_km * traingroup.running_km_year
 
         return maintenance_cost
@@ -435,7 +435,8 @@ class StandiSpnv(BvwpUse):
         return maintenance_cost_time
 
     def energy_cost(self, vehicle_pattern, traingroup):
-        if vehicle_pattern.type_of_traction == "Elektro":
+
+        if vehicle_pattern.type_of_traction == "Elektro" or vehicle_pattern.type_of_traction == "Batterie":
             energy = self.energy(vehicle_pattern=vehicle_pattern, traingroup=traingroup)
             energy_cost = self.ENERGY_COST_ELECTRO_RENEWABLE * energy
             co2_energy_cost = energy * self.ENERGY_CO2_ELECTRO_RENEWABLE * self.CO2_COST * 10 ** (-6)
@@ -468,16 +469,13 @@ class StandiSpnv(BvwpUse):
                 -3)
 
         else:
-            energy_cost = 0
-            co2_energy_cost = 0
-            pollutants_cost = 0
-            primary_energy_cost = 0
-            logging.error("No fitting traction found")
+            raise NoTractionFoundError(
+            message=f"No Traction found for {self.trainline} and traction {self.traction}")
 
         return energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
-        additional_battery = vehicle_pattern.additional_energy_without_overhead * traingroup.running_km_year_no_catenary  # TODO: This seems to be wrong!!! running_km_year is doppelt in this calculation
+        additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.running_km_year_no_catenary/traingroup.running_km_year)
         energy_per_km = vehicle_pattern.energy_per_km
 
         energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year

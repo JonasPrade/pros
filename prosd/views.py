@@ -78,7 +78,6 @@ class RailwayLinesSchema(ma.SQLAlchemyAutoSchema):
 class RailwayLinesShortSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.RailwayLine
-        # exclude = (['coordinates'])
         include_fk = True
 
     id = auto_field()
@@ -99,16 +98,36 @@ class RailwayLinesShortSchema(ma.SQLAlchemySchema):
         return geo
 
 
-class RailwayStationSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = models.RailwayStation
-        include_fk = True
-
-
 class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
+    station = ma.Nested("RailwayStationSchema")
+
     class Meta:
         model = models.RailwayPoint
         model_converter = GeoConverter
+        include_fk = True
+
+    coordinates = fields.Method('geom_to_geojson')
+
+    def geom_to_geojson(self, obj):
+        # TODO: No dopple use of this function
+        coords = geoalchemy2.shape.to_shape(obj.coordinates)
+        xy = coords.xy
+        x_array = xy[0]
+        y_array = xy[1]
+        coords_geojson = []
+
+        for x, y in zip(x_array, y_array):
+            coords_geojson.append((x, y))
+
+        geo = geojson.Point(coords_geojson)
+        return geo
+
+
+class RailwayStationSchema(ma.SQLAlchemyAutoSchema):
+    railway_points = ma.Nested(lambda: RailwayPointsSchema(exclude=["station",]), many=True)
+
+    class Meta:
+        model = models.RailwayStation
         include_fk = True
 
 

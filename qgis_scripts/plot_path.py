@@ -4,7 +4,7 @@ import json
 import os
 # TODO: Add the relevant stadions
 
-filepath = os.path.abspath("/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths/MUFHtoMAHI.json")
+filepath = os.path.abspath("/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths/HIHGtoHLTA.json")
 print(filepath)
 
 with open(filepath, 'r') as f:

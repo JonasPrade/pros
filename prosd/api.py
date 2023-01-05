@@ -10,8 +10,6 @@ from prosd.auth import views as auth
 
 allowed_ip = 'http://localhost:3000'
 
-# TODO Change auth.views to remove this stupid blueprints
-
 
 # Have in mind that the user login and authorization process is in /auth/views.py
 
@@ -91,6 +89,28 @@ def get_traingroup(**kwargs):
     traingroup_schema = views.TrainGroupSchema()
     output = traingroup_schema.dump(traingroup)
     response = make_response({'traingroup': output})
+    return response
+
+
+@app.route("/station/<id>", methods=['GET'])
+@cross_origin()
+def get_station(**kwargs):
+    station_id = kwargs.pop('id')
+    station = models.RailwayStation.query.get(station_id)
+    station_schema = views.RailwayStationSchema()
+    output = station_schema.dump(station)
+    response = make_response({'station': output})
+    return response
+
+
+@app.route("/railwaypoint/<id>", methods=['GET'])
+@cross_origin()
+def get_railway_point(**kwargs):
+    rw_point_id = kwargs.pop('id')
+    rw_point = models.RailwayPoint.query.get(rw_point_id)
+    point_schema = views.RailwayPointsSchema()
+    output = point_schema.dump(rw_point)
+    response = make_response({'point': output})
     return response
 
 

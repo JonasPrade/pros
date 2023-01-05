@@ -109,6 +109,21 @@ bridges_to_railwaylines = db.Table('rwbridges_to_rwlines',
                                    db.Column('rw_lines.id', db.Integer, db.ForeignKey('railway_lines.id'))
                                    )
 
+traingroups_to_masterareas = db.Table('tg_to_masterareas',
+                                       db.Column('traingroup_id', db.String(255), db.ForeignKey('timetable_train_groups.id')),
+                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                       )
+
+railwaylines_to_masterareas = db.Table('rwl_to_masterareas',
+                                       db.Column('railwayline_id', db.Integer, db.ForeignKey('railway_lines.id')),
+                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                       )
+
+projectcontents_to_masterareas = db.Table('pc_to_masterareas',
+                                          db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                          db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                          )
+
 # classes/Tables
 
 
@@ -1537,6 +1552,13 @@ class TimetableTrainGroup(db.Model):
     traingroup_line = db.Column(db.String(255),
                                 db.ForeignKey('timetable_lines.code', ondelete='SET NULL', onupdate='CASCADE'))
 
+    cost_electro_renew = db.Column(db.Integer)
+    cost_electro_conv = db.Column(db.Integer)
+    cost_battery = db.Column(db.Integer)
+    cost_h2 = db.Column(db.Integer)
+    cost_diesel = db.Column(db.Integer)
+    cost_efuel = db.Column(db.Integer)
+
     trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
     traingroup_lines = db.relationship("TimetableLine", lazy=True, backref="train_groups")
     # lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
@@ -2207,6 +2229,42 @@ class Constituencies(db.Model):
     name = db.Column(db.String(255), nullable=False)
     polygon = db.Column(geoalchemy2.Geometry(geometry_type='GEOMETRY', srid=4326), nullable=True)
     state_id = db.Column(db.Integer, db.ForeignKey('states.id'))
+
+
+class MasterScenario(db.Model):
+    """
+    Manages the scenarios for the master thesis
+    """
+    __tablename__ = 'master_scenarios'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    start_year = db.Column(db.Integer, default=2030)
+    operation_duration = db.Column(db.Integer, default=30)
+
+
+class MasterArea(db.Model):
+    """
+    the areas in which the scenario is divided
+    """
+    __tablename__ = 'master_areas'
+    id = db.Column(db.Integer, primary_key=True)
+    scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id'))
+
+    traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
+    railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
+    project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas)
+
+    # TODO: electrification cost infrastructure -> calculate it from project_contents
+    # TODO: electrification complete cost -> calculate it from cost infrastructure + train_cost
+    # TODO: Same for efuel and ggf. h2
+
+    @property
+    def categories(self):
+        categories = set()
+        for tg in self.traingroups:
+            categories.add(tg.category)
+        categories = list(categories)
+        return categories
 
 
 class User(db.Model):
