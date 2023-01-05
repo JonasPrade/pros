@@ -114,6 +114,17 @@ def get_railway_point(**kwargs):
     return response
 
 
+@app.route("/masterarea/<id>", methods=['GET'])
+@cross_origin()
+def get_master_areas(**kwargs):
+    master_area_id = kwargs.pop('id')
+    master_area = models.MasterArea.query.get(master_area_id)
+    area_schema = views.MasterAreaSchema()
+    output = area_schema.dump(master_area)
+    response = make_response({'master_area': output})
+    return response
+
+
 """
 @app.route("/project/<id>", methods=['POST'])
 @cross_origin()

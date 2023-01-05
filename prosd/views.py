@@ -346,3 +346,27 @@ class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
         model = models.TimetableTrainGroup
         include_fk = True
 
+
+class TrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.TimetableTrainGroup
+        include_fk = True
+
+
+class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
+    railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+    project_contents = ma.Nested(ProjectContentShortSchema, many=True)
+    traingroups = ma.Nested(TrainGroupShortSchema, many=True)
+    scenario = ma.Nested(lambda: MasterScenarioSchema)
+
+    class Meta:
+        model = models.MasterArea
+        include_fk = True
+
+
+class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.MasterScenario
+        include_fk = True
+
+

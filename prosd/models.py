@@ -2253,6 +2253,7 @@ class MasterArea(db.Model):
     traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
     railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas)
+    scenario = db.relationship("MasterScenario", backref=db.backref('master_areas'))
 
     # TODO: electrification cost infrastructure -> calculate it from project_contents
     # TODO: electrification complete cost -> calculate it from cost infrastructure + train_cost
