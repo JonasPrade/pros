@@ -1,9 +1,8 @@
 import logging
 import math
 
-from prosd.models import TimetableTrainGroup, VehiclePattern, TimetableLine
 from prosd.calculation_methods.base import BaseCalculation
-
+from prosd import parameter
 
 class NoTractionFoundError(Exception):
     def __init__(self, message):
@@ -21,7 +20,7 @@ class NoVehiclePatternExistsError(Exception):
 
 
 class BvwpUse(BaseCalculation):
-    def __init__(self, id, traction, transport_mode, tg_or_tl='tg', vehicles=None):
+    def __init__(self, model, traction, transport_mode, tg_or_tl='tg', vehicles=None):
         """
 
         :param id:
@@ -41,45 +40,45 @@ class BvwpUse(BaseCalculation):
         self.traction = traction
 
         if tg_or_tl == 'tg':
-            self.tg = TimetableTrainGroup.query.get(id)
+            self.tg = model
             if not self.vehicles:
                 self.vehicles = self.tg.trains[0].train_part.formation.vehicles
         elif tg_or_tl == 'tl':
-            self.trainline = TimetableLine.query.get(id)
+            self.trainline = model
             self.traingroups = self.trainline.train_groups
 
             if not self.vehicles:
                 self.vehicles = self.traingroups[0].trains[0].train_part.formation.vehicles
 
+        # TODO: Check if a vehicle has waggons
 
+        self.ENERGY_COST_ELECTRO_CASUAL = parameter.ENERGY_COST_ELECTRO_CASUAL
+        self.ENERGY_COST_ELECTRO_RENEWABLE = parameter.ENERGY_COST_ELECTRO_RENEWABLE
+        self.ENERGY_COST_DIESEL = parameter.ENERGY_COST_DIESEL
+        self.ENERGY_COST_EFUEL = parameter.ENERGY_COST_EFUEL
+        self.ENERGY_COST_H2 = parameter.ENERGY_COST_H2
 
-        self.ENERGY_COST_ELECTRO_CASUAL = 0.12
-        self.ENERGY_COST_ELECTRO_RENEWABLE = 0.14
-        self.ENERGY_COST_DIESEL = 0.75
-        self.ENERGY_COST_EFUEL = 2.5
-        self.ENERGY_COST_H2 = 5
+        self.ENERGY_CO2_ELECTRO_CASUAL = parameter.ENERGY_CO2_ELECTRO_CASUAL
+        self.ENERGY_CO2_ELECTRO_RENEWABLE = parameter.ENERGY_CO2_ELECTRO_RENEWABLE
+        self.ENERGY_CO2_DIESEl = parameter.ENERGY_CO2_DIESEL
+        self.ENERGY_CO2_EFUEL = parameter.ENERGY_CO2_EFUEL
+        self.ENERGY_CO2_H2 = parameter.ENERGY_CO2_H2
 
-        self.ENERGY_CO2_ELECTRO_CASUAL = 414
-        self.ENERGY_CO2_ELECTRO_RENEWABLE = 21
-        self.ENERGY_CO2_DIESEl = 2774
-        self.ENERGY_CO2_EFUEL = 370
-        self.ENERGY_CO2_H2 = 938
+        self.ENERGY_POLLUTANTS_ELECTRO_CASUAL = parameter.ENERGY_POLLUTANTS_ELECTRO_CASUAL
+        self.ENERGY_POLLUTANTS_ELECTRO_RENEWABLE = parameter.ENERGY_POLLUTANTS_ELECTRO_RENEWABLE
+        self.ENERGY_POLLUTANTS_DIESEL = parameter.ENERGY_POLLUTANTS_DIESEL
+        self.ENERGY_POLLUTANTS_EFUEL = parameter.ENERGY_POLLUTANTS_EFUEL
+        self.ENERGY_POLLUTANTS_H2 = parameter.ENERGY_POLLUTANTS_H2
 
-        self.ENERGY_POLLUTANTS_ELECTRO_CASUAL = 0.96
-        self.ENERGY_POLLUTANTS_ELECTRO_RENEWABLE = 0.05
-        self.ENERGY_POLLUTANTS_DIESEL = 6.57
-        self.ENERGY_POLLUTANTS_EFUEL = 6.57
-        self.ENERGY_POLLUTANTS_H2 = 2.18
+        self.ENERGY_PRIMARYENERGY_ELECTRO_CASUAL = parameter.ENERGY_PRIMARYENERGY_ELECTRO_CASUAL
+        self.ENERGY_PRIMARYENERGY_ELECTRO_RENEWABLE = parameter.ENERGY_PRIMARYENERGY_ELECTRO_RENEWABLE
+        self.ENERGY_PRIMARYENERGY_DIESEL = parameter.ENERGY_PRIMARYENERGY_DIESEL
+        self.ENERGY_PRIMARYENERGY_EFUEL = parameter.ENERGY_PRIMARYENERGY_EFUEL
+        self.ENERGY_PRIMARYENERGY_H2 = parameter.ENERGY_PRIMARYENERGY_H2
 
-        self.ENERGY_PRIMARYENERGY_ELECTRO_CASUAL = 6
-        self.ENERGY_PRIMARYENERGY_ELECTRO_RENEWABLE = 4.5
-        self.ENERGY_PRIMARYENERGY_DIESEL = 38.9
-        self.ENERGY_PRIMARYENERGY_EFUEL = 78.2
-        self.ENERGY_PRIMARYENERGY_H2 = 198.7
-
-        self.CO2_COST = 670
-        self.UTILITY_POINT_PRIMARY_ENERGY = 0.9
-        self.UTILITY_TO_MONEY = 15.5
+        self.CO2_COST = parameter.CO2_COST
+        self.UTILITY_POINT_PRIMARY_ENERGY = parameter.UTILITY_POINT_PRIMARY_ENERGY
+        self.UTILITY_TO_MONEY = parameter.UTILITY_TO_MONEY
 
     def debt_service(self, vehicle_pattern):
         debt_service = vehicle_pattern.debt_service * self.tg.running_time_year
@@ -201,19 +200,17 @@ class BvwpUse(BaseCalculation):
 
         match self.traction:
             case "electrification":
-                vehicle_pattern_id = vehicle_pattern_transportmode.vehicle_pattern_id_electrical
+                vehicle_pattern = vehicle_pattern_transportmode.vehicle_pattern_electrical
             case "h2":
-                vehicle_pattern_id = vehicle_pattern_transportmode.vehicle_pattern_id_h2
+                vehicle_pattern = vehicle_pattern_transportmode.vehicle_pattern_h2
             case "battery":
-                vehicle_pattern_id = vehicle_pattern_transportmode.vehicle_pattern_id_battery
+                vehicle_pattern = vehicle_pattern_transportmode.vehicle_pattern_battery
             case "efuel":
-                vehicle_pattern_id = vehicle_pattern_transportmode.vehicle_pattern_id_efuel
+                vehicle_pattern = vehicle_pattern_transportmode.vehicle_pattern_efuel
             case "diesel":
-                vehicle_pattern_id = vehicle_pattern_transportmode.vehicle_pattern_id_diesel
+                vehicle_pattern = vehicle_pattern_transportmode.vehicle_pattern_diesel
             case _:
                 raise NoTractionFoundError(message=f"Traction {self.traction} is not a valid case")
-
-        vehicle_pattern = VehiclePattern.query.get(vehicle_pattern_id)
 
         if vehicle_pattern is None:
             if hasattr(self, 'tg'):
@@ -231,28 +228,28 @@ class BvwpUse(BaseCalculation):
         :param vehicle:
         :return:
         """
+        # TODO: Change that so no querry is needed
         match self.transport_mode:
             case 'spfv':
-                vehicle_pattern_id_transportmode = vehicle.vehicle_pattern_spfv
+                vehicle_pattern_transportmode = vehicle.vehicle_pattern_spfv
             case 'spnv':
-                vehicle_pattern_id_transportmode = vehicle.vehicle_pattern_spnv
+                vehicle_pattern_transportmode = vehicle.vehicle_pattern_spnv
             case 'sgv':
-                vehicle_pattern_id_transportmode = vehicle.vehicle_pattern_sgv
+                vehicle_pattern_transportmode = vehicle.vehicle_pattern_sgv
             case _:
                 raise NoTransportmodeFoundError(message=f"There is no transportmode called {self.transport_mode}")
 
-        vehicle_pattern_transportmode = VehiclePattern.query.get(vehicle_pattern_id_transportmode)
+        # vehicle_pattern_transportmode = VehiclePattern.query.get(vehicle_pattern_id_transportmode)
 
         return vehicle_pattern_transportmode
 
 
 class BvwpSgv(BvwpUse):
-    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'sgv'
-        super().__init__(id=tg_id, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='sgv')
+        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='sgv')
         self.loko = self.vehicles[0]
         self.waggon = self.vehicles[1]
-        # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
             vehicles_list=[self.loko])
@@ -281,9 +278,9 @@ class BvwpSgv(BvwpUse):
 
 
 class BvwpSpfv(BvwpUse):
-    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'spfv'
-        super().__init__(id=tg_id, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spfv')
+        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spfv')
 
         # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
@@ -318,11 +315,10 @@ class BvwpSpfv(BvwpUse):
 
 
 class BvwpSpnv(BvwpUse):
-    def __init__(self, tg_id, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
         self.transport_mode = 'spnv'
-        super().__init__(id=tg_id, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spnv')
+        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spnv')
 
-        # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
             vehicles_list=self.vehicles)
         self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
@@ -347,8 +343,8 @@ class BvwpSpnv(BvwpUse):
 
 
 class StandiSpnv(BvwpUse):
-    def __init__(self, trainline_id, traction, start_year_operation, duration_operation, vehicles=None, recalculate_count_formations=False):
-        super().__init__(id=trainline_id, tg_or_tl='tl', vehicles=vehicles, traction=traction, transport_mode='spnv')
+    def __init__(self, trainline, traction, start_year_operation, duration_operation, vehicles=None, recalculate_count_formations=False):
+        super().__init__(model=trainline, tg_or_tl='tl', vehicles=vehicles, traction=traction, transport_mode='spnv')
         if recalculate_count_formations is True:
             self.train_cycles = len(self.trainline.get_train_cycle())
         else:

@@ -5,23 +5,25 @@ import collections
 import sqlalchemy
 import math
 import datetime
+from configparser import ConfigParser
 
 from prosd import db
 from prosd.models import RailwayLine, RouteTraingroup, VehiclePattern, TimetableOcp, TimetableTime, RailwayStation, \
     RailwayPoint, RailwayNodes, RailMlOcp, ProjectContent, ProjectGroup
 from prosd.calculation_methods.base import BaseCalculation
+from prosd import parameter
 
 
 class BvwpCost(BaseCalculation):
     def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs"):
         # TODO: Change the calculation of that in sepeart funcitons, that is no __init__
         super().__init__()
-        self.BASE_YEAR = 2015
-        self.p = 0.017
-        self.FACTOR_PLANNING = 0.18
-        self.DURATION_PLANNING = 7
-        self.DURATION_OPERATION = 20  # because this is only used for electrification
-        self.ANUALITY_FACTOR = 0.0428
+        self.BASE_YEAR = parameter.BASE_YEAR
+        self.p = parameter.RATE
+        self.FACTOR_PLANNING = parameter.FACTOR_PLANNING
+        self.DURATION_PLANNING = parameter.DURATION_PLANNING
+        self.DURATION_OPERATION = parameter.DURATION_OPERATION # because this is only used for electrification
+        self.ANUALITY_FACTOR = parameter.ANUALITY_FACTOR
 
         self.duration_build = self.duration_building(abs_nbs=abs_nbs)
         self.start_year_planning = start_year_planning
@@ -83,8 +85,10 @@ class BvwpCostElectrification(BvwpCost):
     # TODO: Think of cost of substation, maybe there is a more specific calculation possible
     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.railway_lines = railway_lines
-        self.MAINTENANCE_FACTOR = 0.014  # factor from standardisierte Bewertung Tabelle B-19
-        self.COST_OVERHEAD = 588.271  # in thousand Euro
+        self.MAINTENANCE_FACTOR = parameter.MAINTENANCE_FACTOR  # factor from standardisierte Bewertung Tabelle B-19
+        self.COST_OVERHEAD = parameter.COST_OVERHEAD_ONE_TRACK  # in thousand Euro
+        # TODO: Add Costs for two tracks
+        # TODO: Add costs for engineering buildungs (tunnels)
 
         self.length_no_catenary = self.calc_unelectrified_railway_lines()
         self.cost_overhead = self.length_no_catenary * self.COST_OVERHEAD

@@ -10,11 +10,32 @@ from sqlalchemy.ext.associationproxy import association_proxy
 import math
 import logging
 
-from prosd import db, app, bcrypt
+from prosd import db, app, bcrypt, parameter
 from prosd.postgisbasics import PostgisBasics
+from prosd.calculation_methods.use import BvwpSgv, BvwpSpfv, BvwpSpnv, StandiSpnv
 
+# TODO: Change that!
 START_DATE = datetime.datetime(2030, 1, 1)
 
+
+def get_calculation_method(traingroup, traction):
+    match traingroup.category.transport_mode:
+        case "sgv":
+            calculation_method = 'bvwp'
+        case "spfv":
+            if traction == 'efuel':
+                calculation_method = 'standi'
+            elif traction == 'h2' or traction == 'battery':
+                logging.warning(f"{traingroup} - for spfv and {traction} no calculation possible")
+                return None
+            else:
+                calculation_method = 'bvwp'
+        case "spnv":
+            calculation_method = 'standi'
+        case other:
+            calculation_method = None
+
+    return calculation_method
 
 class PointOfLineNotAtEndError(Exception):
     def __init__(self, message):
@@ -1361,13 +1382,16 @@ class Vehicle(db.Model):
     engine = db.Column(db.Boolean)
     wagon = db.Column(db.Boolean)
 
-    vehicle_pattern_spnv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
-    vehicle_pattern_spfv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
-    vehicle_pattern_sgv = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_spnv_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_spfv_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
+    vehicle_pattern_sgv_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
 
     vehicle_pattern_id = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
 
     vehicle_pattern = db.relationship("VehiclePattern", foreign_keys=[vehicle_pattern_id], backref="vehicles")
+    vehicle_pattern_spnv = db.relationship("VehiclePattern", foreign_keys=[vehicle_pattern_spnv_id])
+    vehicle_pattern_spfv = db.relationship("VehiclePattern", foreign_keys=[vehicle_pattern_spfv_id])
+    vehicle_pattern_sgv = db.relationship("VehiclePattern", foreign_keys=[vehicle_pattern_sgv_id])
 
     @classmethod
     def get_vehicle_use(self, vehicle):
@@ -1441,6 +1465,12 @@ class VehiclePattern(db.Model):
     vehicle_pattern_id_efuel = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
     vehicle_pattern_id_diesel = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
 
+    vehicle_pattern_electrical = db.relationship('VehiclePattern', foreign_keys="VehiclePattern.vehicle_pattern_id_electrical", remote_side=[id])
+    vehicle_pattern_h2 = db.relationship('VehiclePattern', foreign_keys="VehiclePattern.vehicle_pattern_id_h2", remote_side=[id])
+    vehicle_pattern_battery = db.relationship('VehiclePattern', foreign_keys="VehiclePattern.vehicle_pattern_id_battery", remote_side=[id])
+    vehicle_pattern_efuel = db.relationship('VehiclePattern', foreign_keys="VehiclePattern.vehicle_pattern_id_efuel", remote_side=[id])
+    vehicle_pattern_diesel = db.relationship('VehiclePattern', foreign_keys="VehiclePattern.vehicle_pattern_id_diesel", remote_side=[id])
+
 
 class Formation(db.Model):
     """
@@ -1510,6 +1540,111 @@ class Formation(db.Model):
         return seats
 
 
+class TimetableTrainCost(db.Model):
+    """
+
+    """
+    __tablename__ = 'timetable_train_cost'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    traingroup_id = db.Column(db.String(255), db.ForeignKey('timetable_train_groups.id'))
+    calculation_method = db.Column(db.String(10))  # bvwp or standi
+    master_scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id'))
+    traction = db.Column(db.String(255))  # electrification, efuel, h2, battery, diesel
+
+    cost = db.Column(db.Integer, comment="sum of cost in T EUR per year")
+    debt_service = db.Column(db.Integer)
+    maintenance_cost = db.Column(db.Integer)
+    energy_cost = db.Column(db.Integer)
+    co2_cost = db.Column(db.Integer)
+    pollutants_cost = db.Column(db.Integer)
+    primary_energy_cost = db.Column(db.Integer)
+
+    traingroup = db.relationship('TimetableTrainGroup', backref='train_costs')
+
+    sqlalchemy.UniqueConstraint(traingroup_id, calculation_method, master_scenario_id, traction, name='unique_calculation')
+
+    @classmethod
+    def create(cls, traingroup, master_scenario_id, traction, calculation_method = None):
+        # def get_calculation_method(traingroup, traction):
+        #     match traingroup.category.transport_mode:
+        #         case "sgv":
+        #             calculation_method = 'bvwp'
+        #         case "spfv":
+        #             if traction == 'efuel':
+        #                 calculation_method = 'standi'
+        #             elif traction == 'h2' or traction == 'battery':
+        #                 logging.warning(f"{traingroup} - for spfv and {traction} no calculation possible")
+        #                 return None
+        #             else:
+        #                 calculation_method = 'bvwp'
+        #         case "spnv":
+        #             calculation_method = 'standi'
+        #         case other:
+        #             calculation_method = None
+        #
+        #     return calculation_method
+
+        obj_attributes = dict()
+        obj_attributes["traingroup_id"] = traingroup.id
+        obj_attributes["master_scenario_id"] = master_scenario_id
+        obj_attributes["traction"] = traction
+        start_year_operation = parameter.START_YEAR
+        duration_operation = parameter.DURATION_OPERATION
+
+        if calculation_method is None:
+            calculation_method = get_calculation_method(traingroup, traction)
+            obj_attributes["calculation_method"] = calculation_method
+
+        if calculation_method == 'bvwp':
+            match traingroup.category.transport_mode:
+                case "sgv":
+                    utility = BvwpSgv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                case "spfv":
+                    utility = BvwpSpfv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                case "spnv":
+                    utility = BvwpSpnv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+
+            obj_attributes["cost"] = utility.use
+            obj_attributes["debt_service"] = utility.debt_service_sum
+            obj_attributes["maintenance_cost"] = utility.maintenance_cost_sum
+            obj_attributes["energy_cost"] = utility.energy_cost_sum
+            obj_attributes["co2_cost"] = utility.co2_energy_cost_sum
+            obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum
+            obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum
+
+        elif calculation_method == 'standi':
+            trainline = traingroup.traingroup_lines
+            match traingroup.category.transport_mode:
+                case "sgv":
+                    logging.error("For SGV calculation method standi is not possible")
+                    return None
+                case "spfv":
+                    utility = StandiSpnv(trainline=trainline, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                case "spnv":
+                    utility = StandiSpnv(trainline=trainline, traction=traction,
+                                 start_year_operation=start_year_operation, duration_operation=duration_operation)
+
+            obj_attributes["cost"] = utility.use/len(trainline.train_groups)
+            obj_attributes["debt_service"] = utility.debt_service_sum/len(trainline.train_groups)
+            obj_attributes["maintenance_cost"] = utility.maintenance_cost_sum/len(trainline.train_groups)
+            obj_attributes["energy_cost"] = utility.energy_cost_sum/len(trainline.train_groups)
+            obj_attributes["co2_cost"] = utility.co2_energy_cost_sum/len(trainline.train_groups)
+            obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum/len(trainline.train_groups)
+            obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum/len(trainline.train_groups)
+
+        obj = cls(
+            **obj_attributes
+        )
+        try:
+            db.session.add(obj)
+            db.session.commit()
+            return obj
+        except sqlalchemy.exc.IntegrityError:
+            db.session.rollback()
+            logging.warning(f"Cost for {traingroup} for traction {traction} for scenario {master_scenario_id} with calculation_method {calculation_method}")
+            return None
+
+
 class TimetablePeriod(db.Model):
     """
     Periods of timetable that is loaded to the db
@@ -1552,19 +1687,27 @@ class TimetableTrainGroup(db.Model):
     traingroup_line = db.Column(db.String(255),
                                 db.ForeignKey('timetable_lines.code', ondelete='SET NULL', onupdate='CASCADE'))
 
-    cost_electro_renew = db.Column(db.Integer)
-    cost_electro_conv = db.Column(db.Integer)
-    cost_battery = db.Column(db.Integer)
-    cost_h2 = db.Column(db.Integer)
-    cost_diesel = db.Column(db.Integer)
-    cost_efuel = db.Column(db.Integer)
-
     trains = db.relationship("TimetableTrain", lazy=True, backref="train_group")
     traingroup_lines = db.relationship("TimetableLine", lazy=True, backref="train_groups")
     # lines = db.relationship("RailwayLine", secondary=traingroup_to_railwaylines, backref="train_groups")
 
     railway_lines = db.relationship("RouteTraingroup", back_populates='traingroup')
 
+    @classmethod
+    def get_cost_by_traction(self, obj, traction):
+        match traction:
+            case "electrification":
+                cost = obj.cost_electro_renew
+            case "efuel":
+                cost = obj.cost_efuel
+            case "battery":
+                cost = obj.cost_battery
+            case "h2":
+                cost = obj.cost_h2
+            case "diesel":
+                cost = obj.diesel
+
+        return cost
 
     @hybrid_property
     def length_line(self):
@@ -2266,6 +2409,22 @@ class MasterArea(db.Model):
             categories.add(tg.category)
         categories = list(categories)
         return categories
+
+    @hybrid_method
+    def train_cost(self, traction, scenario_id):
+        train_cost = 0
+        for tg in self.traingroups:
+            calculation_method = get_calculation_method(traingroup=tg, traction=traction)
+            ttc = TimetableTrainCost.query.filter(
+                TimetableTrainCost.traingroup_id == tg.id,
+                TimetableTrainCost.calculation_method == calculation_method,
+                TimetableTrainCost.master_scenario_id == scenario_id,
+                TimetableTrainCost.traction == traction
+            ).scalar()
+
+            train_cost += ttc.cost
+
+        return train_cost
 
 
 class User(db.Model):
