@@ -109,7 +109,8 @@ railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
                                            db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
                                            )
 
-formations_to_vehicles = db.Table('formations_to_vehicles',
+formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
+                                  db.Column('id', db.Integer, primary_key=True, autoincrement=True),
                                   db.Column('formation_id', db.String(100), db.ForeignKey('formations.id')),
                                   db.Column('vehicle_id', db.String(100), db.ForeignKey('vehicles.id'))
                                   )
@@ -1174,6 +1175,10 @@ class ProjectContent(db.Model):
     station_railroad_switches = db.Column(db.Boolean, default=False)
     new_station = db.Column(db.Boolean, default=False)
     depot = db.Column(db.Boolean, default=False)
+    battery = db.Column(db.Boolean, default=False)
+    h2 = db.Column(db.Boolean, default=False)
+    efuel = db.Column(db.Boolean, default=False)
+    closure = db.Column(db.Boolean, default=False)  # close of rail
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -1227,6 +1232,10 @@ class ProjectContent(db.Model):
     bedarfsplan_nr = db.Column(db.Integer)
     planned_total_cost = db.Column(db.Float)
     actual_cost = db.Column(db.Integer)
+    maintenance_cost = db.Column(db.Float)
+    investment_cost = db.Column(db.Float)
+    planning_cost = db.Column(db.Float)
+    capital_service_cost = db.Column(db.Float)
     bvwp_planned_cost = db.Column(db.Float)
     bvwp_planned_maintenance_cost = db.Column(db.Float)
     bvwp_planned_planning_cost = db.Column(db.Float)
@@ -1482,8 +1491,23 @@ class Formation(db.Model):
     length = db.Column(db.Float)
     speed = db.Column(db.Integer)
     weight = db.Column(db.Float)
+    formation_id_calculation_bvwp = db.Column(db.String(100), db.ForeignKey('formations.id'))
+    formation_id_calculation_standi = db.Column(db.String(100), db.ForeignKey('formations.id'))
 
     vehicles = db.relationship("Vehicle", secondary=formations_to_vehicles, backref="formations")
+    formation_calculation_bvwp = db.relationship("Formation", foreign_keys="Formation.formation_id_calculation_bvwp", remote_side=[id])
+    formation_calculation_standi = db.relationship("Formation", foreign_keys="Formation.formation_id_calculation_standi", remote_side=[id])
+
+    @property
+    def vehicles_composition(self):
+        # vehicles can be associated multiple times to one formation. the relationship does not recognise that
+
+        entry = db.session.query(Vehicle, formations_to_vehicles.c.id).join(formations_to_vehicles).join(Formation).filter(Formation.id == self.id).all()
+        vehicles = []
+        for row in entry:
+            vehicles.append(row[0])
+        # vehicles = Vehicle.query.join(formations_to_vehicles).join(Formation).filter(Formation.id == self.id).all()
+        return vehicles
 
     @hybrid_property
     def maintenance_cost_km(self):
@@ -1565,25 +1589,6 @@ class TimetableTrainCost(db.Model):
 
     @classmethod
     def create(cls, traingroup, master_scenario_id, traction, calculation_method = None):
-        # def get_calculation_method(traingroup, traction):
-        #     match traingroup.category.transport_mode:
-        #         case "sgv":
-        #             calculation_method = 'bvwp'
-        #         case "spfv":
-        #             if traction == 'efuel':
-        #                 calculation_method = 'standi'
-        #             elif traction == 'h2' or traction == 'battery':
-        #                 logging.warning(f"{traingroup} - for spfv and {traction} no calculation possible")
-        #                 return None
-        #             else:
-        #                 calculation_method = 'bvwp'
-        #         case "spnv":
-        #             calculation_method = 'standi'
-        #         case other:
-        #             calculation_method = None
-        #
-        #     return calculation_method
-
         obj_attributes = dict()
         obj_attributes["traingroup_id"] = traingroup.id
         obj_attributes["master_scenario_id"] = master_scenario_id
@@ -1715,6 +1720,16 @@ class TimetableTrainGroup(db.Model):
         for route_traingroup in self.railway_lines:
             line = route_traingroup.railway_line
             km += line.length / 1000
+
+        return km
+
+    @property
+    def length_line_no_catenary(self):
+        km = 0
+        for route_traingroup in self.railway_lines:
+            line = route_traingroup.railway_line
+            if line.catenary is False:
+                km += line.length / 1000
 
         return km
 
@@ -2395,36 +2410,91 @@ class MasterArea(db.Model):
 
     traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
     railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
-    project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas)
+    project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas, backref=db.backref('master_areas'))
     scenario = db.relationship("MasterScenario", backref=db.backref('master_areas'))
 
-    # TODO: electrification cost infrastructure -> calculate it from project_contents
-    # TODO: electrification complete cost -> calculate it from cost infrastructure + train_cost
-    # TODO: Same for efuel and ggf. h2
+    # TODO: cost infrastructure -> calculate it from project_contents
+    # TODO: complete cost -> calculate it from cost infrastructure + train_cost
 
     @property
     def categories(self):
         categories = set()
         for tg in self.traingroups:
-            categories.add(tg.category)
+            categories.add(tg.category.transport_mode)
         categories = list(categories)
         return categories
 
     @hybrid_method
-    def train_cost(self, traction, scenario_id):
+    def train_cost(self, traction):
         train_cost = 0
         for tg in self.traingroups:
             calculation_method = get_calculation_method(traingroup=tg, traction=traction)
             ttc = TimetableTrainCost.query.filter(
                 TimetableTrainCost.traingroup_id == tg.id,
                 TimetableTrainCost.calculation_method == calculation_method,
-                TimetableTrainCost.master_scenario_id == scenario_id,
+                TimetableTrainCost.master_scenario_id == self.scenario_id,
                 TimetableTrainCost.traction == traction
             ).scalar()
 
             train_cost += ttc.cost
 
         return train_cost
+
+    @property
+    def infrastructure(self):
+        """
+        returns a dictionary that contents the project_contents for each traction
+        :return:
+        """
+        pc_by_traction = dict()
+        cost_by_traction = dict()
+
+        for pc in self.project_contents:
+            if pc.elektrification is True:
+                pc_by_traction["electrification"] = pc
+                cost_by_traction["electrification"] = pc.planned_total_cost
+            # elif pc.battery is True:
+            #     pc_by_traction["battery"] = pc
+            #     cost_by_traction["battery"] = pc.planned_total_cost
+            # elif pc.h2 is True:
+            #     pc_by_traction["h2"] = pc
+            #     cost_by_traction["h2"] = pc.planned_total_cost
+            # elif pc.efuel is True:
+            #     pc_by_traction["efuel"] = [pc, pc.planned_total_cost]
+
+            # commented -> not ready for calculation
+
+        pc_by_traction["efuel"] = None
+        cost_by_traction["efuel"] = 0
+        pc_by_traction["diesel"] = None
+        cost_by_traction["diesel"] = 0
+
+        traction = dict()
+        traction["project_content"] = pc_by_traction
+        traction["cost"] = cost_by_traction
+        return traction
+
+    @property
+    def cost_traction(self):
+        cost_tractions = dict()
+        infrastructure_cost = self.infrastructure["cost"]
+
+        cost_tractions["electrification"] = infrastructure_cost["electrification"] + self.train_cost("electrification")
+        # cost_tractions["battery"] = infrastructure_cost["battery"] + self.train_cost("battery")
+        # cost_tractions["h2"] = infrastructure_cost["h2"] + self.train_cost("h2")
+        cost_tractions["efuel"] = infrastructure_cost["efuel"] + self.train_cost("efuel")
+        # cost_tractions["diesel"] = infrastructure_cost["diesel"] + self.train_cost("diesel")
+
+        # commented -> not ready to calculate
+
+        return cost_tractions
+
+    @property
+    def cost_effective_traction(self):
+        cost_traction = self.cost_traction
+        traction = min(cost_traction, key=cost_traction.get)
+
+        return traction
 
 
 class User(db.Model):

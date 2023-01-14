@@ -538,15 +538,12 @@ class RailGraph(GraphBasic):
                         G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,
                                                                              line2=out_line,
                                                                              allowed_connections=allowed_connections)
-                    # allow_turn_on_same_line
-                    # TODO: Implement logic with a weight
                     continue
                 elif in_line.route_number == out_line.route_number and connect_same_route:
                     G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,
                                                                          line2=out_line,
                                                                          allowed_connections=allowed_connections)
                 else:
-
                     angle_check = models.RailwayLine.get_angle_two_lines(line1=in_line, line2=out_line, node=node)
                     if angle_check:
                         G, allowed_connections = self.__connect_lines_turner(G=G, node=node, line1=in_line,

@@ -2,7 +2,7 @@ import logging
 import sqlalchemy
 
 from prosd import db, parameter
-from prosd.models import TimetableTrainGroup, TimetableTrain, RailwayLine, RouteTraingroup, TimetableCategory, TimetableTrainPart, MasterScenario, MasterArea, TimetableTrainCost
+from prosd.models import ProjectContent, MasterArea, TimetableTrainCost
 from prosd.calculation_methods import use, cost, base
 
 scenario_id = 1
@@ -30,46 +30,82 @@ def calc_train_cost(traction, area):
             ).scalar()
 
         if ttc is None:
-            ttc = TimetableTrainCost.create(
-                traingroup=tg,
-                master_scenario_id=1,
-                traction=traction
-            )
+            try:
+                ttc = TimetableTrainCost.create(
+                    traingroup=tg,
+                    master_scenario_id=1,
+                    traction=traction
+                )
+            except use.NoVehiclePatternExistsError as e:
+                logging.error(e)
+                continue
 
         trains_cost[tg.id] = base.cost_base_year(start_year=start_year, duration=duration_operation, cost=ttc.cost)
 
-
-        # try:
-        #     match tg.category.transport_mode:
-        #         case "sgv":
-        #             train_cost = tg.get_cost_by_traction(obj=tg, traction=traction)
-        #             if train_cost is None:
-        #                 train_cost = use.BvwpSgv(tg_id=tg.id, start_year_operation=start_year, duration_operation=duration_operation, traction=traction).use
-        #         case "spfv":
-        #             if traction == "efuel":
-        #                 # in this case, bvwp does not provide any vehicles
-        #                 trainline = tg.traingroup_lines
-        #                 whitelist_traingroup += trainline.train_groups
-        #                 train_cost = tg.get_cost_by_traction(obj=tg, traction=traction)
-        #                 if train_cost is None:
-        #                     train_cost = use.StandiSpnv(trainline_id=trainline.id, start_year_operation=start_year, duration_operation=duration_operation, traction=traction).use
-        #             else:
-        #                 train_cost = tg.get_cost_by_traction(obj=tg, traction=traction)
-        #                 if train_cost is None:
-        #                     train_cost = use.BvwpSpfv(tg_id=tg.id, start_year_operation=start_year, duration_operation=duration_operation, traction=traction).use
-        #         case "spnv":
-        #             # get the trainline and add all train_groups of that line to the whitelist
-        #             trainline = tg.traingroup_lines
-        #             whitelist_traingroup += trainline.train_groups
-        #             train_cost = tg.get_cost_by_traction(obj=tg, traction=traction)
-        #             if train_cost is None:
-        #                 train_cost = use.StandiSpnv(trainline_id=trainline.id, start_year_operation=start_year, duration_operation=duration_operation, traction=traction).use
-        # except use.NoVehiclePatternExistsError as e:
-        #     logging.error(f"For {tg} no train cost calculation possible {e}")
-        #
-        # train_cost_electrification[tg.id] = base.cost_base_year(start_year=start_year, duration=duration_operation, cost=train_cost)
-
     return trains_cost
+
+
+def infrastructure_cost(area, name, traction, overwrite=True):
+    """
+    Creates a project_content object and adds it to the db.
+    :return:
+    """
+    pc = ProjectContent.query.filter(ProjectContent.name == name).scalar()
+    if pc and overwrite is False:
+        return pc
+    elif pc and overwrite is True:
+        db.session.delete(pc)
+        db.session.commit()  # and calculate a new project_content
+
+    if traction == "electrification":
+        infrastructure_cost = cost.BvwpCostElectrification(
+            start_year_planning=start_year_planning,
+            railway_lines=area.railway_lines,
+            abs_nbs='abs'
+        )
+    else:
+        logging.error(f"no fitting traction found for {traction}")
+        return None
+
+    pc_data = dict()
+
+    pc_data["name"] = name
+    pc_data["master_areas"] = [area]
+    #TODO Add description
+
+    if 'spfv' in area.categories:
+        pc_data["effects_passenger_long_rail"] = True
+    else:
+        pc_data["effects_passenger_long_rail"] = False
+
+    if 'spnv' in area.categories:
+        pc_data["effects_passenger_local_rail"] = True
+    else:
+        pc_data["effects_passenger_local_rail"] = False
+
+    if 'sgv' in area.categories:
+        pc_data["effects_cargo_rail"] = True
+    else:
+        pc_data["effects_cargo_rail"] = False
+
+    pc_data["length"] = infrastructure_cost.length
+
+    if traction == 'electrification':
+        pc_data["elektrification"] = True
+        # TODO: Add battery project_contents
+
+    pc_data["planned_total_cost"] = infrastructure_cost.cost_2015
+    pc_data["maintenance_cost"] = infrastructure_cost.maintenance_cost_2015
+    pc_data["planning_cost"] = infrastructure_cost.planning_cost_2015
+    pc_data["investment_cost"] = infrastructure_cost.investment_cost_2015
+    pc_data["capital_service_cost"] = infrastructure_cost.capital_service_cost_2015
+
+    pc = ProjectContent(**pc_data)
+
+    db.session.add(pc)
+    db.session.commit()
+
+    return pc
 
 
 for cluster_id, area in enumerate(areas):
@@ -80,17 +116,13 @@ for cluster_id, area in enumerate(areas):
     # electrification
     traction = 'electrification'
     train_cost_electrification = calc_train_cost(traction=traction, area=area)
-    infrastructure_cost_electrification = cost.BvwpCostElectrification(
-        start_year_planning=start_year_planning,
-        railway_lines=area.railway_lines,
-        abs_nbs='abs'
-    )
+    infrastructure_cost(traction=traction, area=area, name=f"Complete electrification s{scenario_id}-a{area.id}", overwrite=True)
     logging.info(f"finished calculation electrification {cluster_id}")
 
     # efuel
     traction = 'efuel'
     train_cost_efuel = calc_train_cost(traction=traction, area=area)
-    infrastructure_cost_efuel = 0  # for efuel there are no infrastructure costs
+    # at the moment there are no infrastructure cost for efuel
     logging.info(f"finished calculation efuel {cluster_id}")
 
     # h2

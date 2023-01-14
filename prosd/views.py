@@ -338,9 +338,16 @@ class RouteTraingroupSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class TimetableTrainCostSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.TimetableTrainCost
+        include_fk = True
+
+
 class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RouteTraingroupSchema, many=True)
     trains = ma.Nested(TimetableTrainSchema, many=True)
+    train_costs = ma.Nested(TimetableTrainCostSchema, many=True)
 
     class Meta:
         model = models.TimetableTrainGroup

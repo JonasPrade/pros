@@ -1,8 +1,9 @@
 import logging
 
 from prosd import db
-from prosd.models import TimetableTrainGroup, RouteTraingroup, RailwayLine, TimetableTrainCost
+from prosd.models import TimetableTrainGroup, RouteTraingroup, RailwayLine, TimetableTrainCost, TimetableLine
 from prosd import parameter
+from prosd.calculation_methods import use
 
 # train_group_code = "SA3_X 3001 E 3"
 # train_group = TimetableTrainGroup.query.filter(TimetableTrainGroup.code == train_group_code).one()
@@ -10,21 +11,13 @@ from prosd import parameter
 start_year = parameter.START_YEAR
 duration_operation = parameter.DURATION_OPERATION
 
-if __name__ == "__main__":
-    traingroups = TimetableTrainGroup.query.join(RouteTraingroup).join(RailwayLine).filter(RailwayLine.catenary==False).all()
-    tractions = ["electrification", "efuel", "battery", "h2", "diesel"]
-    for tg in traingroups:
-        cost = dict()
-        for traction in tractions:
-            if tg.category == 'spfv' and (traction == 'h2' or 'battery'):
-                continue
-            tt_cost = TimetableTrainCost.query.filter(
-                TimetableTrainCost.traingroup_id == tg.id,
-                TimetableTrainCost.master_scenario_id == 1,
-                TimetableTrainCost.traction == traction
-            )
-            timetable_train_cost = TimetableTrainCost.create(
-                traingroup=tg,
-                master_scenario_id=1,
-                traction=traction
-            )
+trainline_id = 1279
+trainline = TimetableLine.query.get(trainline_id)
+
+cost = use.StandiSpnv(
+    trainline=trainline,
+    traction='electrification',
+    start_year_operation=2030,
+    duration_operation=30
+)
+print(cost)

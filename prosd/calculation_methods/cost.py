@@ -15,7 +15,7 @@ from prosd import parameter
 
 
 class BvwpCost(BaseCalculation):
-    def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs"):
+    def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs", create_project = False):
         # TODO: Change the calculation of that in sepeart funcitons, that is no __init__
         super().__init__()
         self.BASE_YEAR = parameter.BASE_YEAR
@@ -25,7 +25,9 @@ class BvwpCost(BaseCalculation):
         self.DURATION_OPERATION = parameter.DURATION_OPERATION # because this is only used for electrification
         self.ANUALITY_FACTOR = parameter.ANUALITY_FACTOR
 
-        self.duration_build = self.duration_building(abs_nbs=abs_nbs)
+        self.infrastructure_type = None
+
+        self.duration_build = self.duration_building(abs_nbs=abs_nbs)  # TODO That can be rethought
         self.start_year_planning = start_year_planning
         self.start_year_building = self.start_year_planning + self.DURATION_PLANNING
         self.start_year_operation = self.start_year_building + self.duration_build
@@ -46,6 +48,7 @@ class BvwpCost(BaseCalculation):
             investment_cost_2015=self.investment_cost_2015)
 
         self.cost_2015 = self.planning_cost_2015 + self.investment_cost_2015 + self.maintenance_cost_2015
+
 
     def duration_building(self, abs_nbs):
         """
@@ -73,6 +76,7 @@ class BvwpCost(BaseCalculation):
 
         return capital_service_infrastructure
 
+
     def _duration_year(self, cost_list):
         for index, cost in cost_list.items():
             if self.investment_cost < cost:
@@ -86,12 +90,12 @@ class BvwpCostElectrification(BvwpCost):
     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
         self.railway_lines = railway_lines
         self.MAINTENANCE_FACTOR = parameter.MAINTENANCE_FACTOR  # factor from standardisierte Bewertung Tabelle B-19
-        self.COST_OVERHEAD = parameter.COST_OVERHEAD_ONE_TRACK  # in thousand Euro
-        # TODO: Add Costs for two tracks
+        self.COST_OVERHEAD_SINGLE_TRACK = parameter.COST_OVERHEAD_ONE_TRACK  # in thousand Euro
+        self.COST_OVERHEAD_DOUBLE_TRACK = parameter.COST_OVERHEAD_TWO_TRACKS
+        self.infrastructure_type = 'electrification'
         # TODO: Add costs for engineering buildungs (tunnels)
 
-        self.length_no_catenary = self.calc_unelectrified_railway_lines()
-        self.cost_overhead = self.length_no_catenary * self.COST_OVERHEAD
+        self.cost_overhead, self.length = self.calc_cost_unelectrified_railway_lines()
         self.cost_substation = 0
 
         self.investment_cost = self.cost_overhead + self.cost_substation
@@ -99,21 +103,25 @@ class BvwpCostElectrification(BvwpCost):
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost,
                          start_year_planning=start_year_planning, abs_nbs=abs_nbs)
 
-    def calc_unelectrified_railway_lines(self):
+    def calc_cost_unelectrified_railway_lines(self):
         """
         calculates the length of not electrified lines and returns them. if the line has two tracks, it will multiple the length
         :param railway_lines:
         :return:
         """
+        cost = 0
         length_no_catenary = 0
         for line in self.railway_lines:
+            cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
             factor_length = 1
             if line.catenary == False:
                 if line.number_tracks == 'zweigleisig':
+                    cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
                     factor_length = 2
+                cost += line.length * cost_factor / 1000
                 length_no_catenary += line.length * factor_length / 1000
 
-        return length_no_catenary
+        return cost, length_no_catenary
 
 
 class BvwpProjectBattery(BvwpCost):
@@ -122,6 +130,7 @@ class BvwpProjectBattery(BvwpCost):
         self.infra_version = infra_version
         self.infra_df = infra_version.infra
         self.rl_complete_df = self.infra_df["railway_lines"]
+        self.infrastructure_type = 'battery'
 
         black_list_train_group = []
         for group in train_groups:

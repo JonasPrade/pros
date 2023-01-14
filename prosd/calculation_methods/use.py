@@ -4,6 +4,7 @@ import math
 from prosd.calculation_methods.base import BaseCalculation
 from prosd import parameter
 
+
 class NoTractionFoundError(Exception):
     def __init__(self, message):
         super().__init__(message)
@@ -19,8 +20,26 @@ class NoVehiclePatternExistsError(Exception):
         super().__init__(message)
 
 
+def get_formation_calculation_bvwp(formation):
+    if formation.formation_id_calculation_bvwp is None:
+        formation_calculation = formation
+    else:
+        formation_calculation = formation.formation_calculation_bvwp
+
+    return formation_calculation
+
+
+def get_formation_calculation_standi(formation):
+    if formation.formation_id_calculation_standi is None:
+        formation_calculation = formation
+    else:
+        formation_calculation = formation.formation_calculation_standi
+
+    return formation_calculation
+
+
 class BvwpUse(BaseCalculation):
-    def __init__(self, model, traction, transport_mode, tg_or_tl='tg', vehicles=None):
+    def __init__(self, model, traction, transport_mode, formation, tg_or_tl='tg'):
         """
 
         :param id:
@@ -32,23 +51,16 @@ class BvwpUse(BaseCalculation):
         super().__init__()
         self.transport_mode = transport_mode
 
-        if vehicles is None:
-            self.vehicles = []
-        else:
-            self.vehicles = vehicles
-
         self.traction = traction
 
         if tg_or_tl == 'tg':
             self.tg = model
-            if not self.vehicles:
-                self.vehicles = self.tg.trains[0].train_part.formation.vehicles
+
         elif tg_or_tl == 'tl':
             self.trainline = model
             self.traingroups = self.trainline.train_groups
 
-            if not self.vehicles:
-                self.vehicles = self.traingroups[0].trains[0].train_part.formation.vehicles
+        self.vehicles = formation.vehicles_composition
 
         # TODO: Check if a vehicle has waggons
 
@@ -168,7 +180,6 @@ class BvwpUse(BaseCalculation):
         :param energy_cost_sum:
         :return:
         """
-        # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         use_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=use, cost_is_sum=False)
         debt_service_base_year = super().cost_base_year(start_year=start_year, duration=duration, cost=debt_service_sum,
                                                         cost_is_sum=False)
@@ -245,9 +256,10 @@ class BvwpUse(BaseCalculation):
 
 
 class BvwpSgv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation):
         self.transport_mode = 'sgv'
-        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='sgv')
+        formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='sgv')
         self.loko = self.vehicles[0]
         self.waggon = self.vehicles[1]
 
@@ -278,9 +290,10 @@ class BvwpSgv(BvwpUse):
 
 
 class BvwpSpfv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation):
         self.transport_mode = 'spfv'
-        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spfv')
+        formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spfv')
 
         # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
@@ -315,9 +328,10 @@ class BvwpSpfv(BvwpUse):
 
 
 class BvwpSpnv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation, vehicles=None):
+    def __init__(self, tg, traction, start_year_operation, duration_operation):
         self.transport_mode = 'spnv'
-        super().__init__(model=tg, tg_or_tl='tg', vehicles=vehicles, traction=traction, transport_mode='spnv')
+        formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spnv')
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
             vehicles_list=self.vehicles)
@@ -343,13 +357,13 @@ class BvwpSpnv(BvwpUse):
 
 
 class StandiSpnv(BvwpUse):
-    def __init__(self, trainline, traction, start_year_operation, duration_operation, vehicles=None, recalculate_count_formations=False):
-        super().__init__(model=trainline, tg_or_tl='tl', vehicles=vehicles, traction=traction, transport_mode='spnv')
+    def __init__(self, trainline, traction, start_year_operation, duration_operation, recalculate_count_formations=False):
+        formation = get_formation_calculation_standi(trainline.train_groups[0].trains[0].train_part.formation)
+        super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv')
         if recalculate_count_formations is True:
             self.train_cycles = len(self.trainline.get_train_cycle())
         else:
             self.train_cycles = self.trainline.count_formations
-
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = self.calc_use()
         self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
@@ -377,7 +391,8 @@ class StandiSpnv(BvwpUse):
         maintenance_cost_running_sum = 0
 
         for tg in self.traingroups:
-            vehicles = tg.trains[0].train_part.formation.vehicles
+            formation = get_formation_calculation_standi(tg.trains[0].train_part.formation)
+            vehicles = formation.vehicles_composition
             for vehicle in vehicles:
                 vehicle_pattern = super()._vehicle_pattern_by_traction(vehicle=vehicle)
                 energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost = self.energy_cost(vehicle_pattern=vehicle_pattern, traingroup=tg)
@@ -471,7 +486,7 @@ class StandiSpnv(BvwpUse):
         return energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
-        additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.running_km_year_no_catenary/traingroup.running_km_year)
+        additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.length_line_no_catenary/traingroup.length_line)
         energy_per_km = vehicle_pattern.energy_per_km
 
         energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year
