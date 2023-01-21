@@ -35,6 +35,7 @@ def _change_charging_station(project_content, railway_station):
 
 class Version:
     def __init__(self, scenario):
+        self.scenario = scenario
         self.project_contents = scenario.project_contents
         self.infra = self._create_railway_df()
         self.load_changes()

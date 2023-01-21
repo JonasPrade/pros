@@ -1,19 +1,44 @@
 import sqlalchemy
+import networkx
+import logging
 
 from prosd import db
 from prosd.manage_db.version import Version
 from prosd.models import MasterScenario, MasterArea, TimetableTrainGroup, TimetableTrain, TimetableTrainPart, RouteTraingroup, TimetableCategory, RailwayLine
+from prosd.graph import railgraph, routing#
+
+logging.basicConfig(filename='../../example_data/railgraph/create_areas.log', encoding='utf-8', level=logging.WARNING, filemode='w')
 
 # calculate the areas
-scenario_id = 2
+scenario_id = 1
 scenario = MasterScenario.query.get(scenario_id)
 scenario_infra = Version(scenario=scenario)
-railwayline_no_catenary = scenario_infra.get_railwayline_no_catenary()
 
+rg = railgraph.RailGraph()
+graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
+route = routing.GraphRoute(graph=graph, infra_version=scenario_infra)
+
+traingroups_route = db.session.query(TimetableTrainGroup).filter(
+    ~sqlalchemy.exists().where(
+        sqlalchemy.and_(
+            RouteTraingroup.traingroup_id == TimetableTrainGroup.id,
+            RouteTraingroup.master_scenario_id == scenario_id
+        )
+    )
+).all()
+
+for tg in traingroups_route:
+    try:
+        route.line(traingroup=tg, force_recalculation=False)
+    except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
+        logging.error(f"{e.args} {tg}")
+
+railwayline_no_catenary = scenario_infra.get_railwayline_no_catenary()
 sgv_lines = db.session.query(TimetableTrainGroup).join(TimetableTrain).join(TimetableTrainPart).join(RouteTraingroup).join(TimetableCategory).join(RailwayLine).filter(
     sqlalchemy.and_(
     RailwayLine.id.in_(railwayline_no_catenary),
-    TimetableCategory.transport_mode == 'sgv'
+    TimetableCategory.transport_mode == 'sgv',
+    RouteTraingroup.master_scenario_id == scenario_id,
 )).all()
 
 # TODO: Need system to remove all used traingroups
@@ -29,9 +54,6 @@ while sgv_lines:
     sgv_line = sgv_lines.pop(0)
     traingroups.append(sgv_line)
 
-    # if sgv_line.id in whitelist:
-    #     continue
-
     length_rl_lines = sum(int(r.length) for r in rw_lines)
 
     # search for all lines that share a unelectrified railway_line witht the sgv_line
@@ -41,7 +63,8 @@ while sgv_lines:
             sqlalchemy.and_(
                 RailwayLine.id.in_(railwayline_no_catenary),
                 TimetableTrainGroup.id.in_([t.id for t in traingroups]),
-                RailwayLine.id.notin_([r.id for r in rw_lines])
+                RailwayLine.id.notin_([r.id for r in rw_lines]),
+                RouteTraingroup.master_scenario_id == scenario_id
             )).all()
 
         if rl_lines_additional:
@@ -51,7 +74,8 @@ while sgv_lines:
         sqlalchemy.and_(
             RailwayLine.id.in_(railwayline_no_catenary),
             RailwayLine.id.in_([r.id for r in rw_lines]),
-            TimetableTrainGroup.id.notin_([t.id for t in traingroups])
+            TimetableTrainGroup.id.notin_([t.id for t in traingroups]),
+            RouteTraingroup.master_scenario_id == scenario_id
     )).all()
 
         if traingroups_additional:

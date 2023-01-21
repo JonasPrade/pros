@@ -2,6 +2,7 @@ import networkx
 import logging
 import json
 import os
+import sqlalchemy
 
 from prosd import db
 from prosd.models import RailwayLine, RouteTraingroup, RailwayStation
@@ -27,7 +28,7 @@ class GraphRoute:
         :return:
         """
         if force_recalculation:
-            old_routes = RouteTraingroup.query.filter(RouteTraingroup.traingroup_id == traingroup.id)
+            old_routes = RouteTraingroup.query.filter(sqlalchemy.and_(RouteTraingroup.traingroup_id == traingroup.id, RouteTraingroup.master_scenario_id == self.infra_version.scenario.id)).all()
             for route in old_routes:
                 db.session.delete(route)
             db.session.commit()
@@ -79,7 +80,8 @@ class GraphRoute:
             rtg = RouteTraingroup(
                 traingroup_id=traingroup.id,
                 railway_line_id=line_id,
-                section=index
+                section=index,
+                master_scenario_id=self.infra_version.scenario.id
             )
             route_traingroups.append(rtg)
 

@@ -39,7 +39,7 @@ def get_formation_calculation_standi(formation):
 
 
 class BvwpUse(BaseCalculation):
-    def __init__(self, model, traction, transport_mode, formation, tg_or_tl='tg'):
+    def __init__(self, model, traction, transport_mode, formation, infra_version, tg_or_tl='tg'):
         """
 
         :param id:
@@ -49,6 +49,7 @@ class BvwpUse(BaseCalculation):
         :param vehicles:
         """
         super().__init__()
+        self.infra_version = infra_version
         self.transport_mode = transport_mode
 
         self.traction = traction
@@ -97,7 +98,7 @@ class BvwpUse(BaseCalculation):
         return debt_service
 
     def maintenance_cost(self, vehicle_pattern):
-        maintenance_cost = vehicle_pattern.maintenance_cost_km * self.tg.running_km_year
+        maintenance_cost = vehicle_pattern.maintenance_cost_km * self.tg.running_km_year(infra_version=self.infra_version)
         return maintenance_cost
 
     def energy_cost(self, vehicle_pattern):
@@ -256,10 +257,10 @@ class BvwpUse(BaseCalculation):
 
 
 class BvwpSgv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, infra_version):
         self.transport_mode = 'sgv'
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
-        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='sgv')
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='sgv', infra_version=infra_version)
         if self.vehicles[0].engine is True:
             self.loko = self.vehicles[0]
             self.waggon = self.vehicles[1]
@@ -284,20 +285,20 @@ class BvwpSgv(BvwpUse):
 
     def energy_electro(self, vehicle_pattern):
         # factor 1000 to get the value in [l]
-        energy = 1.08 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year * 1000
+        energy = 1.08 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year(infra_version=self.infra_version) * 1000
         return energy
 
     def energy_diesel(self, vehicle_pattern):
         # factor 1000 to get the value in [l]
-        energy = 0.277 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year * 1000
+        energy = 0.277 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year(infra_version=self.infra_version) * 1000
         return energy
 
 
 class BvwpSpfv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, infra_version):
         self.transport_mode = 'spfv'
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
-        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spfv')
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spfv', infra_version=infra_version)
 
         # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
@@ -319,10 +320,10 @@ class BvwpSpfv(BvwpUse):
         return energy_electro
 
     def energy(self, vehicle_pattern):
-        running_km_year_ks = self.tg.running_km_year - self.tg.running_km_year_abs - self.tg.running_km_year_nbs
+        running_km_year_ks = self.tg.running_km_year(self.infra_version) - self.tg.running_km_year_abs(self.infra_version) - self.tg.running_km_year_nbs(self.infra_version)
         energy_km_ks = running_km_year_ks * vehicle_pattern.energy_per_km
-        energy_km_abs = self.tg.running_km_year_abs * vehicle_pattern.energy_abs_per_km
-        energy_km_nbs = self.tg.running_km_year_nbs * vehicle_pattern.energy_nbs_per_km
+        energy_km_abs = self.tg.running_km_year_abs(self.infra_version) * vehicle_pattern.energy_abs_per_km
+        energy_km_nbs = self.tg.running_km_year_nbs(self.infra_version) * vehicle_pattern.energy_nbs_per_km
         energy_km = energy_km_nbs + energy_km_abs + energy_km_ks
 
         energy_time = self.tg.running_time_year * vehicle_pattern.energy_consumption_hour
@@ -332,10 +333,10 @@ class BvwpSpfv(BvwpUse):
 
 
 class BvwpSpnv(BvwpUse):
-    def __init__(self, tg, traction, start_year_operation, duration_operation):
+    def __init__(self, tg, traction, start_year_operation, duration_operation, infra_version):
         self.transport_mode = 'spnv'
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
-        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spnv')
+        super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
             vehicles_list=self.vehicles)
@@ -361,9 +362,9 @@ class BvwpSpnv(BvwpUse):
 
 
 class StandiSpnv(BvwpUse):
-    def __init__(self, trainline, traction, start_year_operation, duration_operation, recalculate_count_formations=False):
+    def __init__(self, trainline, traction, start_year_operation, duration_operation, infra_version, recalculate_count_formations=False):
         formation = get_formation_calculation_standi(trainline.train_groups[0].trains[0].train_part.formation)
-        super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv')
+        super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
         if recalculate_count_formations is True:
             self.train_cycles = len(self.trainline.get_train_cycle())
         else:
@@ -432,8 +433,8 @@ class StandiSpnv(BvwpUse):
         return debt_service
 
     def maintenance_cost_running(self, vehicle_pattern, traingroup):
-        additional_maintenance_battery = vehicle_pattern.additional_maintenance_cost_withou_overhead * (traingroup.running_km_year_no_catenary/traingroup.running_km_year)
-        maintenance_cost = (1 + additional_maintenance_battery) * vehicle_pattern.maintenance_cost_km * traingroup.running_km_year
+        additional_maintenance_battery = vehicle_pattern.additional_maintenance_cost_withou_overhead * (traingroup.running_km_year_no_catenary(self.infra_version)/traingroup.running_km_year(self.infra_version))
+        maintenance_cost = (1 + additional_maintenance_battery) * vehicle_pattern.maintenance_cost_km * traingroup.running_km_year(self.infra_version)
 
         return maintenance_cost
 
@@ -490,10 +491,10 @@ class StandiSpnv(BvwpUse):
         return energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
-        additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.length_line_no_catenary/traingroup.length_line)
+        additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.length_line_no_catenary(self.infra_version)/traingroup.length_line(self.infra_version))
         energy_per_km = vehicle_pattern.energy_per_km
 
-        energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year
+        energy_running = (1 + additional_battery) * energy_per_km * traingroup.running_km_year(self.infra_version)
 
         # calculate energy usage through stops
         intermediate_1 = 55.6 * (
@@ -501,7 +502,7 @@ class StandiSpnv(BvwpUse):
         segments = traingroup.stops_count - 1
         try:
             reference_speed = 3.6 / (vehicle_pattern.energy_stop_a * segments) * (intermediate_1 - math.sqrt(
-                intermediate_1 ** 2 - 2 * vehicle_pattern.energy_stop_a * segments * (traingroup.length_line * 1000)))
+                intermediate_1 ** 2 - 2 * vehicle_pattern.energy_stop_a * segments * (traingroup.length_line(self.infra_version) * 1000)))
         except ValueError:
             logging.info(
                 f'Could not calculate reference speed for line {self.trainline}. More information on page 197 Verfahrensanleitung Standardisierte Bewertung')

@@ -19,6 +19,7 @@ from prosd.calculation_methods.base import BaseCalculation
 
 dirname = os.path.dirname(__file__)
 filepath_recalculate = os.path.realpath(os.path.join(dirname, '../example_data/railgraph/recalculate_traingroups.json'))
+
 # TODO: Change that! Load it from parameters
 START_DATE = datetime.datetime(2030, 1, 1)
 
@@ -1723,82 +1724,91 @@ class TimetableTrainGroup(db.Model):
 
         return cost
 
-    @hybrid_property
-    def length_line(self):
+    @hybrid_method
+    def railway_lines_scenario(self, infra_version):
+        rw_lines_id = db.session.query(RailwayLine.id).join(RouteTraingroup).filter(
+            RouteTraingroup.master_scenario_id == infra_version.scenario.id,
+            RouteTraingroup.traingroup_id == self.id
+        ).all()
+
+        rw_lines = list()
+
+        for id in rw_lines_id:
+            rw_lines.append(infra_version.get_railwayline_model(id))
+
+        return rw_lines
+
+    @hybrid_method
+    def length_line(self, infra_version):
         km = 0
-        for route_traingroup in self.railway_lines:
-            line = route_traingroup.railway_line
-            km += line.length / 1000
+        for rw_line in self.railway_lines_scenario(infra_version):
+            km += rw_line.length / 1000
 
         return km
 
-    @property
-    def length_line_no_catenary(self):
+    @hybrid_method
+    def length_line_no_catenary(self, infra_version):
         km = 0
-        for route_traingroup in self.railway_lines:
-            line = route_traingroup.railway_line
+        for line in self.railway_lines_scenario(infra_version):
             if line.catenary is False:
                 km += line.length / 1000
 
         return km
 
-    @hybrid_property
-    def running_km_day(self):
-        running_km_day = self.length_line * len(self.trains)
+    @hybrid_method
+    def running_km_day(self, infra_version):
+        running_km_day = self.length_line(infra_version) * len(self.trains)
 
         return running_km_day
 
-    @hybrid_property
-    def running_km_day_abs(self):
+    @hybrid_method
+    def running_km_day_abs(self, infra_version):
         running_km_day_abs = 0
-        for route_traingroup in self.railway_lines:
-            line = route_traingroup.railway_line
+        for line in self.railway_lines_scenario(infra_version):
             if line.abs_nbs == "ABS":
                 running_km_day_abs += line.length / 1000
 
         running_km_day_abs = running_km_day_abs * len(self.trains)
         return running_km_day_abs
 
-    @hybrid_property
-    def running_km_day_nbs(self):
+    @hybrid_method
+    def running_km_day_nbs(self, infra_version):
         running_km_day_nbs = 0
-        for route_traingroup in self.railway_lines:
-            line = route_traingroup.railway_line
+        for line in self.railway_lines_scenario(infra_version):
             if line.abs_nbs == "NBS":
                 running_km_day_nbs += line.length / 1000
 
         running_km_day_nbs = running_km_day_nbs * len(self.trains)
         return running_km_day_nbs
 
-    @hybrid_property
-    def running_km_day_no_catenary(self):
+    @hybrid_method
+    def running_km_day_no_catenary(self, infra_version):
         running_km_day_no_catenary = 0
-        for route_traingroup in self.railway_lines:
-            line = route_traingroup.railway_line
+        for line in self.railway_lines_scenario(infra_version):
             if line.catenary is False:
                 running_km_day_no_catenary += line.length / 1000
 
         running_km_day_no_catenary = running_km_day_no_catenary * len(self.trains)
         return running_km_day_no_catenary
 
-    @hybrid_property
-    def running_km_year(self):
-        running_km_year = self.running_km_day * 365 / 1000
+    @hybrid_method
+    def running_km_year(self, infra_version):
+        running_km_year = self.running_km_day(infra_version) * 365 / 1000
         return running_km_year
 
-    @hybrid_property
-    def running_km_year_abs(self):
-        running_km_year_abs = self.running_km_day_abs * 365 / 1000
+    @hybrid_method
+    def running_km_year_abs(self, infra_version):
+        running_km_year_abs = self.running_km_day_abs(infra_version) * 365 / 1000
         return running_km_year_abs
 
-    @hybrid_property
-    def running_km_year_nbs(self):
-        running_km_year_nbs = self.running_km_day_nbs * 365 / 1000
+    @hybrid_method
+    def running_km_year_nbs(self, infra_version):
+        running_km_year_nbs = self.running_km_day_nbs(infra_version) * 365 / 1000
         return running_km_year_nbs
 
-    @hybrid_property
-    def running_km_year_no_catenary(self):
-        running_km_year_no_catenary = self.running_km_day_no_catenary * 365 / 1000
+    @hybrid_method
+    def running_km_year_no_catenary(self, infra_version):
+        running_km_year_no_catenary = self.running_km_day_no_catenary(infra_version) * 365 / 1000
         return running_km_year_no_catenary
 
     @hybrid_property
@@ -1950,13 +1960,13 @@ class TimetableTrainGroup(db.Model):
         category = self.trains[0].train_part.category
         return category
 
-    @property
-    def travel_speed_average(self):
+    @hybrid_method
+    def travel_speed_average(self, infra_version):
         """
         The speed of the line including all stops
         :return:
         """
-        travel_speed = self.length_line/(self.travel_time.seconds/3600)
+        travel_speed = self.length_line(infra_version)/(self.travel_time.seconds/3600)
         return travel_speed
 
 
@@ -2127,6 +2137,7 @@ class RouteTraingroup(db.Model):
     traingroup_id = db.Column(db.String(255), db.ForeignKey("timetable_train_groups.id"))
     railway_line_id = db.Column(db.Integer, db.ForeignKey("railway_lines.id"))
     section = db.Column(db.Integer)
+    master_scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id', ondelete='CASCADE', onupdate='CASCADE'))
 
     traingroup = db.relationship(TimetableTrainGroup, back_populates='railway_lines')
     railway_line = db.relationship(RailwayLine, back_populates='traingroups')
@@ -2142,19 +2153,19 @@ class TimetableLine(db.Model):
     code = db.Column(db.String(255), unique=True, nullable=False)
     count_formations = db.Column(db.Integer, default=0)
 
-    @property
-    def running_km_year(self):
+    @hybrid_method
+    def running_km_year(self, infra_version):
         running_km_year = 0
         for tg in self.train_groups:
-            running_km_year += tg.running_km_year
+            running_km_year += tg.running_km_year(infra_version)
 
         return running_km_year
 
-    @property
-    def running_km_year_no_catenary(self):
+    @hybrid_method
+    def running_km_year_no_catenary(self, infra_version):
         running_km_year_no_catenary = 0
         for tg in self.train_groups:
-            running_km_year_no_catenary += tg.running_km_year_no_catenary
+            running_km_year_no_catenary += tg.running_km_year_no_catenary(infra_version)
 
         return running_km_year_no_catenary
 
@@ -2170,7 +2181,6 @@ class TimetableLine(db.Model):
         list_all_trains = list_all_trains.sort_values('departure')
         return list_all_trains
 
-    # TODO: Hier train cycle einfügen
     @hybrid_method
     def get_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
         list_all_trains = self.all_trains
