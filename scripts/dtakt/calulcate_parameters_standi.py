@@ -90,4 +90,4 @@ def emission_production():
     db.session.commit()
 
 
-emission_production()
+energy_per_km()

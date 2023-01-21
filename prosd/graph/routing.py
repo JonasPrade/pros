@@ -8,9 +8,9 @@ from prosd.models import RailwayLine, RouteTraingroup, RailwayStation
 
 
 class GraphRoute:
-    def __init__(self, graph, railway_lines_df):
+    def __init__(self, graph, infra_version):
         self.graph = graph
-        self.railway_line_df = railway_lines_df  # columns: id, length
+        self.infra_version = infra_version # columns: id, length
 
         dirname = os.path.dirname(__file__)
         self.filepath_save_path = os.path.realpath(
@@ -69,9 +69,9 @@ class GraphRoute:
             # path = rg.shortest_path_between_stations(graph=graph, station_from=first_ocp, station_to=last_ocp,
             #                                          stations_via=via)
             path = self.route_line(station_from=first_ocp, station_to=last_ocp, stations_via=via)
-        except networkx.exception.NetworkXNoPath:
+        except networkx.exception.NetworkXNoPath as e:
             logging.error(
-                "No path found for traingroup " + str(traingroup.id) + " from " + str(first_ocp) + " to " + str(last_ocp))
+                "No path found for traingroup " + str(traingroup.id) + " from " + str(first_ocp) + " to " + str(last_ocp) + " - " + str(e))
 
         # add to Route Traingroups
         route_traingroups = []
@@ -211,7 +211,8 @@ class GraphRoute:
         edge = d
         if type(edge["line"]) is int:
             line_id = edge["line"]
-            length = self.railway_line_df[self.railway_line_df.railway_line_id == line_id]["railway_line_model"].to_list()[0].length
+            length = self.infra_version.get_railwayline_model(line_id).length
+            # length = self.railway_line_df[self.railway_line_df.railway_line_id == line_id]["railway_line_model"].to_list()[0].length
             if isinstance(length, int):
                 if length > 0:
                     try:
@@ -242,7 +243,13 @@ class GraphRoute:
         edge = d
         if type(edge["line"]) is int:
             line_id = edge["line"]
-            length = self.railway_line_df[self.railway_line_df.railway_line_id == line_id]["railway_line_model"].to_list()[0].length
+            line = self.infra_version.get_railwayline_model(line_id)
+
+            # check if line is closed. If so -> this edge is closed for use.
+            if line.closed is True:
+                return None
+
+            length = line.length
             if isinstance(length, int):
                 if length > 0:
                     try:
@@ -258,9 +265,7 @@ class GraphRoute:
             else:
                 logging.info(f"{line_id} has no length ({length})")
 
-            catenary = \
-            self.railway_line_df[self.railway_line_df.railway_line_id == line_id]["railway_line_model"].to_list()[
-                0].catenary
+            catenary = line.catenary
 
             # TODO: Change that to Stromschiene if s-bahn berlin or hamburg!
             if catenary is True:

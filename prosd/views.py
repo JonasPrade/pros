@@ -1,5 +1,6 @@
 import geoalchemy2.shape
 import geojson
+import marshmallow
 import shapely
 import logging
 
@@ -7,7 +8,7 @@ from prosd import db
 from prosd import ma
 from prosd import models
 
-from marshmallow_sqlalchemy import ModelConverter, auto_field
+from marshmallow_sqlalchemy import ModelConverter, auto_field, property2field
 from marshmallow import fields
 from geoalchemy2.types import Geometry
 
@@ -145,7 +146,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 
     def create_one_geojson(self, obj):
         coord_list = list()
-        for line in obj.projectcontent_railway_lines:
+        for line in obj.railway_lines:
             coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
             coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
 
@@ -156,7 +157,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
     def get_centroid(self, obj):
         try:
             coord_list = list()
-            for line in obj.projectcontent_railway_lines:
+            for line in obj.railway_lines:
                 coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
                 coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
 
@@ -364,16 +365,28 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     project_contents = ma.Nested(ProjectContentShortSchema, many=True)
     traingroups = ma.Nested(TrainGroupShortSchema, many=True)
-    scenario = ma.Nested(lambda: MasterScenarioSchema)
+    scenario = ma.Nested(lambda: MasterScenarioSchema(exclude=["master_areas",]))
 
     class Meta:
         model = models.MasterArea
         include_fk = True
 
+    cost_traction = fields.Dict()
+    cost_effective_traction = fields.Str()
+    categories = fields.List(fields.Str())
+    infrastructure_cost = fields.Dict()
+    train_cost = fields.Dict()
+
 
 class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
+    master_areas = ma.Nested(MasterAreaSchema(exclude=["scenario",]), many=True)
+
     class Meta:
         model = models.MasterScenario
         include_fk = True
 
 
+class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.MasterScenario
+        include_fk = False

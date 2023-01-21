@@ -3,18 +3,9 @@ import math
 
 from prosd import db
 from prosd.models import ProjectContent, Project, ProjectGroup
-import csv
 
 
 def add_project_content(pd, project_group_id, update=False):
-    project = Project(
-        name=pd["project_name"],
-        # superior_project_content_id=pd["superior_project_content_id"],
-    )
-    db.session.add(project)
-    db.session.commit()
-    db.session.refresh(project)
-
     project_group = ProjectGroup.query.get(project_group_id)
 
     if math.isnan(pd["number_junction_station"]):
@@ -32,7 +23,6 @@ def add_project_content(pd, project_group_id, update=False):
         pd["etcs_level"] = float(pd["etcs_level"])
 
     pc = ProjectContent(
-        project=project,
         projectcontent_groups=[project_group],
         project_number=pd["project_number"],
         name=pd["pc_name"],
@@ -44,7 +34,7 @@ def add_project_content(pd, project_group_id, update=False):
         nbs=bool(pd["nbs"]),
         abs=bool(pd["abs"]),
         elektrification=bool(pd["elektrification"]),
-        batterie=bool(pd["batterie"]),
+        battery=bool(pd["battery"]),
         second_track=bool(pd["second_track"]),
         third_track=bool(pd["third_track"]),
         fourth_track=bool(pd["fourth_track"]),
@@ -66,7 +56,9 @@ def add_project_content(pd, project_group_id, update=False):
         new_station=bool(pd["new_station"]),
         depot=bool(pd["depot"]),
         station_railroad_switches=bool(pd["station_railroad_switches"]),
-        planned_total_cost=float(pd["planned_total_cost"])
+        closure=bool(pd["closure"]),
+        planned_total_cost=float(pd["planned_total_cost"]),
+        superior_project_content_id=int(pd["superior_project_content_id"])
     )
     db.session.add(pc)
     db.session.commit()
@@ -77,24 +69,10 @@ def add_project_content(pd, project_group_id, update=False):
     # TODO: states
 
 
-# # import project_content.csv als Datenquelle
-# filename = '../../example_data/import/project_content.csv'
-# with open(filename, mode='r') as inp:
-#     reader = csv.reader(inp)
-#     pd = {rows[0]: rows[1] for rows in reader}
-#
-# add_project_content(pd)
-
-# filename = '../../example_data/import/dtakt_import.csv'
-# df = pandas.read_csv(filename, sep=";")
-
-# with open(filename, 'r', encoding="utf-8") as f:
-#     df = pandas.read_csv(f)
-
-filename = '../../example_data/import/subproject_bvwp.xlsx'
+filename = '../../example_data/import/project_contents/fbq_sub_projects.xlsx'
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 2
+PROJECT_GROUP_ID = 1
 
 for index, pd in df.iterrows():
     add_project_content(pd, project_group_id=PROJECT_GROUP_ID)

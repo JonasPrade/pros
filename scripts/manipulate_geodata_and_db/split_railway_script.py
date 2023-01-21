@@ -8,8 +8,8 @@ def split_railway_line_by_station(railline_id, point_id):
     models.RailwayLine.split_railwayline(old_line_id=railline_id, blade_point=blade_point)
 
 
-railline_id = 46490
-point_id = 80191
+railline_id = 16621
+point_id = 80229
 split_railway_line_by_station(railline_id, point_id)
 
 

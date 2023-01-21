@@ -49,7 +49,6 @@ class BvwpCost(BaseCalculation):
 
         self.cost_2015 = self.planning_cost_2015 + self.investment_cost_2015 + self.maintenance_cost_2015
 
-
     def duration_building(self, abs_nbs):
         """
         calculates the duration of building, based on the calculations of the bvwp
@@ -76,7 +75,6 @@ class BvwpCost(BaseCalculation):
 
         return capital_service_infrastructure
 
-
     def _duration_year(self, cost_list):
         for index, cost in cost_list.items():
             if self.investment_cost < cost:
@@ -87,8 +85,17 @@ class BvwpCost(BaseCalculation):
 
 class BvwpCostElectrification(BvwpCost):
     # TODO: Think of cost of substation, maybe there is a more specific calculation possible
-    def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
-        self.railway_lines = railway_lines
+    def __init__(self, start_year_planning, railway_lines_scope, infra_version, abs_nbs='abs'):
+        """
+        calculates the cost of a building a catenary for all railway_lines_scope that has no catenary.
+        It uses the infra_version (and not the db) to look up what railway_lines have catenary and which do not have catenary.
+        :param start_year_planning:
+        :param railway_lines_scope:
+        :param infra_version:
+        :param abs_nbs:
+        """
+        self.railway_lines_scope = railway_lines_scope
+        self.infra_version = infra_version
         self.MAINTENANCE_FACTOR = parameter.MAINTENANCE_FACTOR  # factor from standardisierte Bewertung Tabelle B-19
         self.COST_OVERHEAD_SINGLE_TRACK = parameter.COST_OVERHEAD_ONE_TRACK  # in thousand Euro
         self.COST_OVERHEAD_DOUBLE_TRACK = parameter.COST_OVERHEAD_TWO_TRACKS
@@ -111,15 +118,18 @@ class BvwpCostElectrification(BvwpCost):
         """
         cost = 0
         length_no_catenary = 0
-        for line in self.railway_lines:
+        for line in self.railway_lines_scope:
+            line_id = line.id
             cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
             factor_length = 1
-            if line.catenary == False:
-                if line.number_tracks == 'zweigleisig':
+            line_infraversion = self.infra_version.get_railwayline_model(railwayline_id = line_id)
+
+            if line_infraversion.catenary == False:
+                if line_infraversion.number_tracks == 'zweigleisig':
                     cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
                     factor_length = 2
-                cost += line.length * cost_factor / 1000
-                length_no_catenary += line.length * factor_length / 1000
+                cost += line_infraversion.length * cost_factor / 1000
+                length_no_catenary += line_infraversion.length * factor_length / 1000
 
         return cost, length_no_catenary
 

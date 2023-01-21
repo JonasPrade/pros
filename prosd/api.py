@@ -125,6 +125,28 @@ def get_master_areas(**kwargs):
     return response
 
 
+@app.route("/masterscenario/<id>", methods=['GET'])
+@cross_origin()
+def get_master_scenario(**kwargs):
+    master_scenario_id = kwargs.pop('id')
+    master_scenario = models.MasterScenario.query.get(master_scenario_id)
+    scenario_schema = views.MasterScenarioSchema()
+    output = scenario_schema.dump(master_scenario)
+    response = make_response({'master_scenario': output})
+    return response
+
+
+@app.route("/masterscenarios", methods=['GET'])
+@cross_origin()
+def get_all_master_scenarios(**kwargs):
+    master_scenarios = models.MasterScenario.query.all()
+    scenario_schema = views.MasterScenarioSchemaShort(many=True)
+    output = scenario_schema.dump(master_scenarios)
+    response = make_response({'master_scenario': output})
+    return response
+
+
+
 """
 @app.route("/project/<id>", methods=['POST'])
 @cross_origin()

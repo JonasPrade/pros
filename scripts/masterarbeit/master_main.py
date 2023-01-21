@@ -1,13 +1,9 @@
 import logging
-import sqlalchemy
 
 from prosd import db, parameter
-from prosd.models import ProjectContent, MasterArea, TimetableTrainCost
+from prosd.models import ProjectContent, MasterArea, TimetableTrainCost, MasterScenario
 from prosd.calculation_methods import use, cost, base
-
-scenario_id = 1
-areas = MasterArea.query.filter(MasterArea.scenario_id==scenario_id).all()
-base = base.BaseCalculation()
+from prosd.manage_db.version import Version
 
 
 def calc_train_cost(traction, area):
@@ -17,7 +13,7 @@ def calc_train_cost(traction, area):
         ttc = TimetableTrainCost.query.filter(
             TimetableTrainCost.traingroup_id == tg.id,
             TimetableTrainCost.calculation_method == 'bvwp',
-            TimetableTrainCost.master_scenario_id == 1,
+            TimetableTrainCost.master_scenario_id == scenario_id,
             TimetableTrainCost.traction == traction
         ).scalar()
 
@@ -25,7 +21,7 @@ def calc_train_cost(traction, area):
             ttc = TimetableTrainCost.query.filter(
                 TimetableTrainCost.traingroup_id == tg.id,
                 TimetableTrainCost.calculation_method == 'standi',
-                TimetableTrainCost.master_scenario_id == 1,
+                TimetableTrainCost.master_scenario_id == scenario_id,
                 TimetableTrainCost.traction == traction
             ).scalar()
 
@@ -33,7 +29,7 @@ def calc_train_cost(traction, area):
             try:
                 ttc = TimetableTrainCost.create(
                     traingroup=tg,
-                    master_scenario_id=1,
+                    master_scenario_id=scenario_id,
                     traction=traction
                 )
             except use.NoVehiclePatternExistsError as e:
@@ -45,11 +41,12 @@ def calc_train_cost(traction, area):
     return trains_cost
 
 
-def infrastructure_cost(area, name, traction, overwrite=True):
+def infrastructure_cost(area, name, traction, infra_version, overwrite=True):
     """
     Creates a project_content object and adds it to the db.
     :return:
     """
+
     pc = ProjectContent.query.filter(ProjectContent.name == name).scalar()
     if pc and overwrite is False:
         return pc
@@ -60,9 +57,14 @@ def infrastructure_cost(area, name, traction, overwrite=True):
     if traction == "electrification":
         infrastructure_cost = cost.BvwpCostElectrification(
             start_year_planning=start_year_planning,
-            railway_lines=area.railway_lines,
-            abs_nbs='abs'
+            railway_lines_scope=area.railway_lines,
+            abs_nbs='abs',
+            infra_version=infra_version
         )
+    elif traction == 'efuel':
+        return None
+    elif traction == 'diesel':
+        return None
     else:
         logging.error(f"no fitting traction found for {traction}")
         return None
@@ -71,7 +73,7 @@ def infrastructure_cost(area, name, traction, overwrite=True):
 
     pc_data["name"] = name
     pc_data["master_areas"] = [area]
-    #TODO Add description
+    # TODO: Add description
 
     if 'spfv' in area.categories:
         pc_data["effects_passenger_long_rail"] = True
@@ -108,21 +110,23 @@ def infrastructure_cost(area, name, traction, overwrite=True):
     return pc
 
 
-for cluster_id, area in enumerate(areas):
-    start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
-    start_year = parameter.START_YEAR
-    duration_operation = parameter.DURATION_OPERATION
+if __name__ == '__main__':
+    OVERWRITE_INFRASTRUCTURE = True
+    tractions = ['electrification', 'efuel']
 
-    # electrification
-    traction = 'electrification'
-    train_cost_electrification = calc_train_cost(traction=traction, area=area)
-    infrastructure_cost(traction=traction, area=area, name=f"Complete electrification s{scenario_id}-a{area.id}", overwrite=True)
-    logging.info(f"finished calculation electrification {cluster_id}")
+    scenario_id = 2
+    scenario = MasterScenario.query.get(scenario_id)
+    scenario_infra = Version(scenario=scenario)
 
-    # efuel
-    traction = 'efuel'
-    train_cost_efuel = calc_train_cost(traction=traction, area=area)
-    # at the moment there are no infrastructure cost for efuel
-    logging.info(f"finished calculation efuel {cluster_id}")
+    areas = MasterArea.query.filter(MasterArea.scenario_id == scenario.id).all()
+    base = base.BaseCalculation()
 
-    # h2
+    for cluster_id, area in enumerate(areas):
+        start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
+        start_year = parameter.START_YEAR
+        duration_operation = parameter.DURATION_OPERATION
+
+        for traction in tractions:
+            train_cost_electrification = calc_train_cost(traction=traction, area=area)
+            infrastructure_cost(traction=traction, area=area, name=f"{traction} s{scenario_id}-a{area.id}", infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
+            logging.info(f"finished calculation {traction} {area.id}")

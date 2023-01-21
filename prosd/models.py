@@ -6,15 +6,20 @@ import pandas
 import shapely
 import sqlalchemy
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from sqlalchemy.ext.associationproxy import association_proxy
+import json
 import math
 import logging
+import os
 
 from prosd import db, app, bcrypt, parameter
 from prosd.postgisbasics import PostgisBasics
 from prosd.calculation_methods.use import BvwpSgv, BvwpSpfv, BvwpSpnv, StandiSpnv
+from prosd.calculation_methods.base import BaseCalculation
 
-# TODO: Change that!
+
+dirname = os.path.dirname(__file__)
+filepath_recalculate = os.path.realpath(os.path.join(dirname, '../example_data/railgraph/recalculate_traingroups.json'))
+# TODO: Change that! Load it from parameters
 START_DATE = datetime.datetime(2030, 1, 1)
 
 
@@ -36,6 +41,33 @@ def get_calculation_method(traingroup, traction):
             calculation_method = None
 
     return calculation_method
+
+
+def write_geojson_recalculate_traingroup(route, traingroups):
+    try:
+        with open(filepath_recalculate, 'r') as openfile:
+            geojson_data = json.load(openfile)
+    except json.decoder.JSONDecodeError:
+        geojson_data = dict()
+        geojson_data["traingroups"] = list()
+        geojson_data["routes"] = list()
+
+    # geojson_data = dict()
+    geojson_data["recalculate_complete_graph"] = True
+    for tg in traingroups:
+        geojson_data["traingroups"].append(tg)
+
+    if isinstance(geojson_data["routes"], int):
+        geojson_data["routes"] = [geojson_data["routes"]]
+        geojson_data["routes"].append(route)
+    elif isinstance(geojson_data["routes"], list):
+        geojson_data["routes"].append(route)
+    elif geojson_data["routes"] is None:
+        geojson_data["routes"] = [route]
+
+    with open(filepath_recalculate, "w") as outfile:
+        json.dump(geojson_data, outfile)
+
 
 class PointOfLineNotAtEndError(Exception):
     def __init__(self, message):
@@ -146,6 +178,11 @@ projectcontents_to_masterareas = db.Table('pc_to_masterareas',
                                           db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
                                           )
 
+projectcontents_to_masterscenario = db.Table('pc_to_masterscenario',
+                                             db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                             db.Column('masterscenario_id', db.Integer, db.ForeignKey('master_scenarios.id'))
+                                             )
+
 # classes/Tables
 
 
@@ -177,6 +214,7 @@ class RailwayLine(db.Model):
     bahnart = db.Column(db.String(100))
     active_until = db.Column(db.Integer)
     active_since = db.Column(db.Integer)
+    closed = db.Column(db.Boolean, default=False)
     coordinates = db.Column(geoalchemy2.Geometry(geometry_type='LINESTRING', srid=4326), nullable=False)
     railway_infrastructure_company = db.Column(db.Integer,
                                                db.ForeignKey('railway_infrastructure_company.id', ondelete='SET NULL'))
@@ -187,36 +225,7 @@ class RailwayLine(db.Model):
     start_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
     end_node = db.Column(db.Integer, db.ForeignKey('railway_nodes.id', ondelete='SET NULL'))
 
-    # traingroup = db.relationship("RouteTraingroup", back_populates="railway_lines")
     traingroups = db.relationship("RouteTraingroup", back_populates="railway_line")
-
-    # def __init__(self, coordinates, route_number=None, direction=0, length=None, from_km=None, to_km=None,
-    #              electrified=None,
-    #              catenary=False, conductor_rail=False, voltage=None, dc_ac=None,
-    #              number_tracks=None, vmax=None, type_of_transport=None, bahnart=None,
-    #              strecke_kuerzel=None, active_until=None, active_since=None, railway_infrastructure_company=None,
-    #              gauge=1435, abs_nbs='ks'):
-    #     self.route_number = route_number
-    #     self.direction = direction
-    #     self.length = length
-    #     self.from_km = from_km
-    #     self.to_km = to_km
-    #     self.electrified = electrified
-    #     self.catenary = catenary
-    #     self.conductor_rail = conductor_rail
-    #     self.voltage = voltage
-    #     self.dc_ac = dc_ac
-    #     self.number_tracks = number_tracks
-    #     self.vmax = vmax
-    #     self.type_of_transport = type_of_transport
-    #     self.strecke_kuerzel = strecke_kuerzel
-    #     self.bahnart = bahnart
-    #     self.active_until = active_until
-    #     self.active_since = active_since
-    #     self.coordinates = coordinates
-    #     self.railway_infrastructure_company = railway_infrastructure_company
-    #     self.abs_nbs = abs_nbs
-    #     self.gauge = gauge
 
     @hybrid_property
     def nodes(self):
@@ -281,29 +290,6 @@ class RailwayLine(db.Model):
         db.make_transient(railline)
         railline.id = None
         railline.coordinates = coordinates_wkb
-
-        # railline = RailwayLine(
-        #     coordinates=coordinates_wkb,
-        #     route_number=line_old.route_number,
-        #     direction=line_old.direction,
-        #     from_km=line_old.from_km,
-        #     to_km=line_old.to_km,
-        #     electrified=line_old.electrified,
-        #     catenary=line_old.catenary,
-        #     conductor_rail=line_old.conductor_rail,
-        #     voltage=line_old.voltage,
-        #     dc_ac=line_old.dc_ac,
-        #     number_tracks=line_old.number_tracks,
-        #     vmax=line_old.vmax,
-        #     type_of_transport=line_old.type_of_transport,
-        #     bahnart=line_old.bahnart,
-        #     strecke_kuerzel=line_old.strecke_kuerzel,
-        #     active_until=line_old.active_until,
-        #     active_since=line_old.active_since,
-        #     railway_infrastructure_company=line_old.railway_infrastructure_company,
-        # )
-        #
-        # railline.project_content = line_old.project_content
 
         railline_start_coordinate = \
             db.session.execute(sqlalchemy.select(geoalchemy2.func.ST_StartPoint(coordinates_wkb))).one()[0]
@@ -441,6 +427,15 @@ class RailwayLine(db.Model):
 
         # TODO: Throw error if there is a third linestring in the geometry collection
 
+        project_contents = old_line.project_content
+        traingroups_list = db.session.query(TimetableTrainGroup.id).join(RouteTraingroup).filter(RouteTraingroup.railway_line_id==old_line.id).all()
+        traingroups = []
+        for row in traingroups_list:
+            traingroups.append(row[0])
+        route = old_line.route_number
+
+        write_geojson_recalculate_traingroup(route=route, traingroups=traingroups)
+
         newline_1 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_1)
         old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
         newline_2 = self.create_railline_from_old(line_old=old_line, coordinates=coordinates_newline_2)
@@ -448,6 +443,17 @@ class RailwayLine(db.Model):
         old_line = RailwayLine.query.filter(RailwayLine.id == old_line_id).one()
         db.session.delete(old_line)
         db.session.commit()
+
+        # add project_contents to the new lines
+        objects = []
+        for pc in project_contents:
+            pc.railway_lines.append(newline_1)
+            pc.railway_lines.append(newline_2)
+            objects.append(pc)
+        db.session.add_all(objects)
+        db.session.commit()
+
+        # add routes and traingroups to a json so that can be recalculated
 
         return newline_1, newline_2
 
@@ -1002,6 +1008,7 @@ class ProjectContent(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id', onupdate='SET NULL', ondelete='SET NULL', name='projects_contents_project_id_fkey'))
     project_number = db.Column(
         db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
+    superior_project_content_id = db.Column(db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE', ondelete='CASCADE'))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, default=None)
     reason_project = db.Column(db.Text, default=None)
@@ -1324,8 +1331,9 @@ class ProjectContent(db.Model):
                             backref=db.backref('project_content', lazy=True))
     projectcontent_groups = db.relationship('ProjectGroup', secondary=projectcontent_to_group,
                                             backref=db.backref('projects_content', lazy=True))
-    projectcontent_railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
+    railway_lines = db.relationship('RailwayLine', secondary=projectcontent_to_line,
                                                    backref=db.backref('project_content', lazy=True))
+    superior_project_content = db.relationship('ProjectContent', remote_side=[id], backref=db.backref('sub_project_contents'))
     railway_stations = db.relationship('RailwayStation', secondary=projectcontent_to_railwaystations,
                                        backref=db.backref('project_content', lazy=True))
     states = db.relationship("States", secondary=project_contents_to_states,
@@ -1371,8 +1379,9 @@ class ProjectGroup(db.Model):
         # all projects that do not have an superior Project
         projects_id = set()
         for pc in self.projects_content:
-            if pc.project.superior_project_content_id is None:
-                projects_id.add(pc.project)
+            if pc.project is not None:
+                if pc.project.superior_project_content_id is None:
+                    projects_id.add(pc.project)
 
         return projects_id
 
@@ -2391,13 +2400,15 @@ class Constituencies(db.Model):
 
 class MasterScenario(db.Model):
     """
-    Manages the scenarios for the master thesis
+    Manages the scenarios for the master thesis.
     """
     __tablename__ = 'master_scenarios'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     start_year = db.Column(db.Integer, default=2030)
     operation_duration = db.Column(db.Integer, default=30)
+
+    project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
 
 
 class MasterArea(db.Model):
@@ -2406,15 +2417,12 @@ class MasterArea(db.Model):
     """
     __tablename__ = 'master_areas'
     id = db.Column(db.Integer, primary_key=True)
-    scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id'))
+    scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id', onupdate='CASCADE', ondelete='CASCADE'))
 
     traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
     railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas, backref=db.backref('master_areas'))
     scenario = db.relationship("MasterScenario", backref=db.backref('master_areas'))
-
-    # TODO: cost infrastructure -> calculate it from project_contents
-    # TODO: complete cost -> calculate it from cost infrastructure + train_cost
 
     @property
     def categories(self):
@@ -2425,7 +2433,7 @@ class MasterArea(db.Model):
         return categories
 
     @hybrid_method
-    def train_cost(self, traction):
+    def get_train_cost_for_traction(self, traction):
         train_cost = 0
         for tg in self.traingroups:
             calculation_method = get_calculation_method(traingroup=tg, traction=traction)
@@ -2438,52 +2446,77 @@ class MasterArea(db.Model):
 
             train_cost += ttc.cost
 
-        return train_cost
+        train_cost_base_year = BaseCalculation().cost_base_year(start_year=parameter.START_YEAR, duration=parameter.DURATION_OPERATION, cost=train_cost, cost_is_sum=False)
+
+        return train_cost_base_year
 
     @property
-    def infrastructure(self):
+    def train_cost(self):
+        tractions = ['electrification', 'efuel']
+        train_costs = dict()
+        for traction in tractions:
+            costs = self.get_train_cost_for_traction(traction)
+            train_costs[traction] = costs
+
+        return train_costs
+
+    @property
+    def infrastructure_cost(self):
         """
         returns a dictionary that contents the project_contents for each traction
         :return:
         """
-        pc_by_traction = dict()
         cost_by_traction = dict()
 
         for pc in self.project_contents:
             if pc.elektrification is True:
-                pc_by_traction["electrification"] = pc
                 cost_by_traction["electrification"] = pc.planned_total_cost
             # elif pc.battery is True:
-            #     pc_by_traction["battery"] = pc
             #     cost_by_traction["battery"] = pc.planned_total_cost
             # elif pc.h2 is True:
-            #     pc_by_traction["h2"] = pc
             #     cost_by_traction["h2"] = pc.planned_total_cost
+            # elif pc.efuel is True:
+            #     cost["efuel"] = pc.planned_total_cost
+
+            # commented -> not ready for calculation
+
+        cost_by_traction["efuel"] = 0
+        # cost_by_traction["diesel"] = 0
+
+        return cost_by_traction
+
+    @property
+    def project_content_by_traction(self):
+        pc_by_traction = dict()
+
+        for pc in self.project_contents:
+            if pc.elektrification is True:
+                pc_by_traction["electrification"] = pc
+
+            # elif pc.battery is True:
+            #     pc_by_traction["battery"] = pc
+            # elif pc.h2 is True:
+            #     pc_by_traction["h2"] = pc
             # elif pc.efuel is True:
             #     pc_by_traction["efuel"] = [pc, pc.planned_total_cost]
 
             # commented -> not ready for calculation
 
         pc_by_traction["efuel"] = None
-        cost_by_traction["efuel"] = 0
-        pc_by_traction["diesel"] = None
-        cost_by_traction["diesel"] = 0
+        # pc_by_traction["diesel"] = None
 
-        traction = dict()
-        traction["project_content"] = pc_by_traction
-        traction["cost"] = cost_by_traction
-        return traction
+        return pc_by_traction
 
     @property
     def cost_traction(self):
         cost_tractions = dict()
-        infrastructure_cost = self.infrastructure["cost"]
+        infrastructure_cost = self.infrastructure_cost
 
-        cost_tractions["electrification"] = infrastructure_cost["electrification"] + self.train_cost("electrification")
-        # cost_tractions["battery"] = infrastructure_cost["battery"] + self.train_cost("battery")
-        # cost_tractions["h2"] = infrastructure_cost["h2"] + self.train_cost("h2")
-        cost_tractions["efuel"] = infrastructure_cost["efuel"] + self.train_cost("efuel")
-        # cost_tractions["diesel"] = infrastructure_cost["diesel"] + self.train_cost("diesel")
+        cost_tractions["electrification"] = infrastructure_cost["electrification"] + self.train_cost["electrification"]
+        # cost_tractions["battery"] = infrastructure_cost["battery"] + self.train_cost["battery"]
+        # cost_tractions["h2"] = infrastructure_cost["h2"] + self.train_cost["h2"]
+        cost_tractions["efuel"] = infrastructure_cost["efuel"] + self.train_cost["efuel"]
+        # cost_tractions["diesel"] = infrastructure_cost["diesel"] + self.train_cost["diesel"]
 
         # commented -> not ready to calculate
 
@@ -2511,7 +2544,7 @@ class User(db.Model):
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
+            password, int(app.config.get('BCRYPT_LOG_ROUNDS'))
         ).decode()
         self.registered_on = datetime.datetime.now()
         self.admin = admin

@@ -1,4 +1,5 @@
 import networkx.exception
+import os
 import json
 
 from prosd.models import TimetableTrainGroup, MasterScenario, RailwayLine, RouteTraingroup, TimetableTrain, TimetableTrainPart, TimetableCategory
@@ -16,15 +17,12 @@ version = version.Version(scenario=scenario)
 
 route = routing.GraphRoute(graph=graph, infra_version=version)
 
+dirname = os.path.dirname(__file__)
+filepath_recalculate = os.path.realpath(os.path.join(dirname, '../../example_data/railgraph/recalculate_traingroups.json'))
 
-# tgs = TimetableTrainGroup.query.join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
-#     TimetableCategory.transport_mode=='spfv').all()
-
-tgs = TimetableTrainGroup.query.all()
-
-# tgs = TimetableTrainGroup.query.get('tg_141_x0020_G_x0020_2554_104157')
-
-# logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
+with open(filepath_recalculate, 'r') as openfile:
+    geojson_data = json.load(openfile)
+    tgs = TimetableTrainGroup.query.filter(TimetableTrainGroup.id.in_(geojson_data["traingroups"])).all()
 
 if isinstance(tgs, list):
     for tg in tgs:
@@ -38,3 +36,6 @@ else:
     route.line(traingroup=tgs, force_recalculation=FORCE_RECALCULATION)
     ocps = tgs.trains[0].train_part.timetable_ocps
 
+geojson_data["traingroups"] = []
+with open(filepath_recalculate, "w") as outfile:
+    json.dump(geojson_data, outfile)

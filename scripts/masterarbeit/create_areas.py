@@ -1,14 +1,18 @@
 import sqlalchemy
 
 from prosd import db
+from prosd.manage_db.version import Version
 from prosd.models import MasterScenario, MasterArea, TimetableTrainGroup, TimetableTrain, TimetableTrainPart, RouteTraingroup, TimetableCategory, RailwayLine
 
 # calculate the areas
-scenario = MasterScenario.query.get(1)
+scenario_id = 2
+scenario = MasterScenario.query.get(scenario_id)
+scenario_infra = Version(scenario=scenario)
+railwayline_no_catenary = scenario_infra.get_railwayline_no_catenary()
 
 sgv_lines = db.session.query(TimetableTrainGroup).join(TimetableTrain).join(TimetableTrainPart).join(RouteTraingroup).join(TimetableCategory).join(RailwayLine).filter(
     sqlalchemy.and_(
-    RailwayLine.catenary==False,
+    RailwayLine.id.in_(railwayline_no_catenary),
     TimetableCategory.transport_mode == 'sgv'
 )).all()
 
@@ -35,7 +39,7 @@ while sgv_lines:
     while delta_traingroups is True:
         rl_lines_additional = db.session.query(RailwayLine).join(RouteTraingroup).join(TimetableTrainGroup).filter(
             sqlalchemy.and_(
-                RailwayLine.catenary == False,
+                RailwayLine.id.in_(railwayline_no_catenary),
                 TimetableTrainGroup.id.in_([t.id for t in traingroups]),
                 RailwayLine.id.notin_([r.id for r in rw_lines])
             )).all()
@@ -45,7 +49,7 @@ while sgv_lines:
 
         traingroups_additional = db.session.query(TimetableTrainGroup).join(RouteTraingroup).join(RailwayLine).filter(
         sqlalchemy.and_(
-            RailwayLine.catenary==False,
+            RailwayLine.id.in_(railwayline_no_catenary),
             RailwayLine.id.in_([r.id for r in rw_lines]),
             TimetableTrainGroup.id.notin_([t.id for t in traingroups])
     )).all()
@@ -62,7 +66,7 @@ while sgv_lines:
 
     # add the traingroups as a collected group to the traingroup_cluster
     area = MasterArea()
-    area.scenario_id = 1
+    area.scenario_id = scenario_id
     area.traingroups = traingroups
     area.railway_lines = rw_lines
     area_objects.append(area)

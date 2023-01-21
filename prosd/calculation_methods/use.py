@@ -207,7 +207,7 @@ class BvwpUse(BaseCalculation):
             elif hasattr(self, 'trainline'):
                 id = self.trainline
             raise NoVehiclePatternExistsError(
-                message=f"No Vehicle pattern for {id} and traction {self.traction}")
+                message=f"No Vehicle pattern for {id.id} and traction {self.traction}")
 
         match self.traction:
             case "electrification":
@@ -260,8 +260,12 @@ class BvwpSgv(BvwpUse):
         self.transport_mode = 'sgv'
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
         super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='sgv')
-        self.loko = self.vehicles[0]
-        self.waggon = self.vehicles[1]
+        if self.vehicles[0].engine is True:
+            self.loko = self.vehicles[0]
+            self.waggon = self.vehicles[1]
+        elif self.vehicles[0].wagon is True:
+            self.loko = self.vehicles[1]
+            self.waggon = self.vehicles[0]
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = super().calc_use(
             vehicles_list=[self.loko])

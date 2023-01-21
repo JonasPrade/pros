@@ -20,6 +20,12 @@ def _change_electrification(project_content, railway_line):
     return railway_line
 
 
+def _change_closing(project_content, railway_line):
+    if project_content.closure:
+        railway_line.closed = True
+    return railway_line
+
+
 def _change_charging_station(project_content, railway_station):
     if project_content.charging_station:
         railway_station.charging_station = True
@@ -28,32 +34,17 @@ def _change_charging_station(project_content, railway_station):
 
 
 class Version:
-    def __init__(self, filepath_changes):
-        self._columns = ["project_content"]
-        if filepath_changes is not None:
-            self._filepath_changes = os.path.join(filepath_changes)
-        else:
-            self._filepath_changes = None
-        self.project_contents = self._load_changes_csv()
+    def __init__(self, scenario):
+        self.project_contents = scenario.project_contents
         self.infra = self._create_railway_df()
+        self.load_changes()
 
     def load_changes(self):
         self._load_projects_to_version()
 
-    def _load_changes_csv(self):
-        if self._filepath_changes is not None:
-            csv = pandas.read_csv(self._filepath_changes, header=None)
-            csv.columns = self._columns
-        else:
-            csv = None
-        return csv
-
-    def save_changes(self):
-        self.project_contents.to_csv(
-            path_or_buf=self._filepath_changes
-        )
-
     def add_projectcontents_to_version(self, pc_list, update_infra=False):
+        # TODO: Change that to update scenario!
+
         for pc in pc_list:
             pc = self._prepare_commit_project_content(pc)
             pc_df = pandas.DataFrame([pc.id], columns=self._columns)
@@ -87,13 +78,13 @@ class Version:
         project_content.railway_stations = old_stations
 
         # remove all changes to railway_lines that the project_content may bring with
-        lines = project_content.projectcontent_railway_lines
+        lines = project_content.railway_lines
         old_lines = []
         for line in lines:
             old_line = RailwayLine.query.get(line.id)
             old_lines.append(old_line)
 
-        project_content.projectcontent_railway_lines = old_lines
+        project_content.railway_lines = old_lines
 
         return project_content
 
@@ -113,35 +104,67 @@ class Version:
         return infra
 
     def _load_projects_to_version(self):
-        for index, pc_id in self.project_contents.iterrows():
-            pc = ProjectContent.query.get(int(pc_id["project_content"]))
-            self.load_single_project_to_version(pc)
+        for pc in self.project_contents:
+            self.load_single_project_to_version(pc, use_subprojects=True)
 
-    def load_single_project_to_version(self, pc):
-        for line in pc.projectcontent_railway_lines:
-            # get the correct railwayline and remove that from the dataFrame
-            rl_changed = self.infra["railway_lines"][self.infra["railway_lines"].railway_line_id == line.id][
-                "railway_line_model"].iloc[0]
-            self.infra["railway_lines"] = self.infra["railway_lines"][
-                self.infra["railway_lines"].railway_line_id != line.id]
+    def load_single_project_to_version(self, pc, use_subprojects=True):
+        if use_subprojects is True:
+            sub_projects = pc.sub_project_contents
+            if len(sub_projects) > 0:
+                pc_list = sub_projects
+            else:
+                pc_list = [pc]
+        else:
+            pc_list = [pc]
 
-            rl_changed = _change_electrification(project_content=pc, railway_line=rl_changed)
-            db.session.expunge(rl_changed)
-            # Here can be more changes added
+        for pc in pc_list:
+            for line in pc.railway_lines:
+                # get the correct railwayline and remove that from the dataFrame
+                rl_changed = self.infra["railway_lines"][self.infra["railway_lines"].railway_line_id == line.id][
+                    "railway_line_model"].iloc[0]
+                self.infra["railway_lines"] = self.infra["railway_lines"][
+                    self.infra["railway_lines"].railway_line_id != line.id]
 
-            rl_df = pandas.DataFrame([[line.id, rl_changed]], columns=['railway_line_id', 'railway_line_model'])
-            self.infra["railway_lines"] = pandas.concat([self.infra["railway_lines"], rl_df])
+                rl_changed = _change_electrification(project_content=pc, railway_line=rl_changed)
+                rl_changed = _change_closing(project_content=pc, railway_line=rl_changed)
+                db.session.expunge(rl_changed)
+                # Here can be more changes added
 
-        for station in pc.railway_stations:
-            rs_changed = self.infra["railway_stations"][self.infra["railway_stations"].railway_station_id == station.id][
-                "railway_station_model"].iloc[0]
-            self.infra["railway_stations"] = self.infra["railway_stations"][
-                self.infra["railway_stations"].railway_station_id != station.id]
+                rl_df = pandas.DataFrame([[line.id, rl_changed]], columns=['railway_line_id', 'railway_line_model'])
+                self.infra["railway_lines"] = pandas.concat([self.infra["railway_lines"], rl_df])
 
-            rs_changed = _change_charging_station(project_content=pc, railway_station=rs_changed)
-            db.session.expunge(rs_changed)
-            # Here can be added some more
+            for station in pc.railway_stations:
+                rs_changed = self.infra["railway_stations"][self.infra["railway_stations"].railway_station_id == station.id][
+                    "railway_station_model"].iloc[0]
+                self.infra["railway_stations"] = self.infra["railway_stations"][
+                    self.infra["railway_stations"].railway_station_id != station.id]
 
-            rs_df = pandas.DataFrame([[station.id, rs_changed]], columns=['railway_station_id', 'railway_station_model'])
-            self.infra["railway_stations"] = pandas.concat([self.infra["railway_stations"], rs_df])
+                rs_changed = _change_charging_station(project_content=pc, railway_station=rs_changed)
+                db.session.expunge(rs_changed)
+                # Here can be added some more
 
+                rs_df = pandas.DataFrame([[station.id, rs_changed]], columns=['railway_station_id', 'railway_station_model'])
+                self.infra["railway_stations"] = pandas.concat([self.infra["railway_stations"], rs_df])
+
+    def get_railwayline_model(self, railwayline_id):
+        """
+        returns the railwaymodel (which can be modified and so differ from the railwayline_model in the database
+        :param railwayline_id:
+        :return:
+        """
+        railway_line = self.infra["railway_lines"].railway_line_model[self.infra["railway_lines"].railway_line_id == railwayline_id].iloc[0]
+
+        return railway_line
+
+    def get_railwayline_no_catenary(self):
+        """
+        returns the railwayline and the ids for all lines with no catenary
+        :return:
+        """
+        railway_line_ids = []
+        for index, row in self.infra["railway_lines"].iterrows():
+            line = row.railway_line_model
+            if line.catenary==False:
+                railway_line_ids.append(line.id)
+
+        return railway_line_ids
