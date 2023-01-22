@@ -5,7 +5,7 @@ import os
 import sqlalchemy
 
 from prosd import db
-from prosd.models import RailwayLine, RouteTraingroup, RailwayStation
+from prosd.models import RouteTraingroup, RailwayStation
 
 
 class GraphRoute:

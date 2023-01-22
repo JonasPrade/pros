@@ -10,6 +10,7 @@ import json
 import math
 import logging
 import os
+import networkx
 
 from prosd import db, app, bcrypt, parameter
 from prosd.postgisbasics import PostgisBasics
@@ -21,7 +22,8 @@ dirname = os.path.dirname(__file__)
 filepath_recalculate = os.path.realpath(os.path.join(dirname, '../example_data/railgraph/recalculate_traingroups.json'))
 
 # TODO: Change that! Load it from parameters
-START_DATE = datetime.datetime(2030, 1, 1)
+START_DATE = datetime.datetime(parameter.START_YEAR, parameter.START_MONTH, parameter.START_DATE)
+tractions = parameter.TRACTIONS
 
 
 def get_calculation_method(traingroup, traction):
@@ -1598,7 +1600,7 @@ class TimetableTrainCost(db.Model):
     sqlalchemy.UniqueConstraint(traingroup_id, calculation_method, master_scenario_id, traction, name='unique_calculation')
 
     @classmethod
-    def create(cls, traingroup, master_scenario_id, traction, calculation_method = None):
+    def create(cls, traingroup, master_scenario_id, traction, infra_version, calculation_method = None):
         obj_attributes = dict()
         obj_attributes["traingroup_id"] = traingroup.id
         obj_attributes["master_scenario_id"] = master_scenario_id
@@ -1613,11 +1615,11 @@ class TimetableTrainCost(db.Model):
         if calculation_method == 'bvwp':
             match traingroup.category.transport_mode:
                 case "sgv":
-                    utility = BvwpSgv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                    utility = BvwpSgv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
                 case "spfv":
-                    utility = BvwpSpfv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                    utility = BvwpSpfv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
                 case "spnv":
-                    utility = BvwpSpnv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                    utility = BvwpSpnv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
 
             obj_attributes["cost"] = utility.use
             obj_attributes["debt_service"] = utility.debt_service_sum
@@ -1634,10 +1636,10 @@ class TimetableTrainCost(db.Model):
                     logging.error("For SGV calculation method standi is not possible")
                     return None
                 case "spfv":
-                    utility = StandiSpnv(trainline=trainline, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation)
+                    utility = StandiSpnv(trainline=trainline, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
                 case "spnv":
                     utility = StandiSpnv(trainline=trainline, traction=traction,
-                                 start_year_operation=start_year_operation, duration_operation=duration_operation)
+                                 start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
 
             obj_attributes["cost"] = utility.use/len(trainline.train_groups)
             obj_attributes["debt_service"] = utility.debt_service_sum/len(trainline.train_groups)
@@ -2194,9 +2196,9 @@ class TimetableLine(db.Model):
 
             previous_train = first_train
             while True:
-                next_train = self._get_next_train(previous_train=previous_train,
-                                                                    list_all_trains=list_all_trains,
-                                                                    wait_time=wait_time)
+                next_train = self.get_next_train(previous_train=previous_train,
+                                                 list_all_trains=list_all_trains,
+                                                 wait_time=wait_time)
                 if next_train is None:
                     train_cycles_all.append(train_cycle)
                     break
@@ -2217,14 +2219,13 @@ class TimetableLine(db.Model):
         """
         list_all_trains = self.all_trains
         first_train = self._get_earliest_departure(list_all_trains)
-        next_train = self._get_next_train(previous_train=first_train,
-                                          list_all_trains=list_all_trains,
-                                          wait_time=wait_time)
+        next_train = self.get_next_train(previous_train=first_train,
+                                         list_all_trains=list_all_trains,
+                                         wait_time=wait_time)
         trains = [first_train, next_train]
         return trains
 
-    def _get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
-        # TODO: Add minimum wait time
+    def get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
 
         # get the ocp where the trains end
         ocp = previous_train.train_part.last_ocp.ocp
@@ -2232,7 +2233,7 @@ class TimetableLine(db.Model):
 
         # search all trains that starts here
         list_all_trains_filtered = list_all_trains[list_all_trains.first_ocp == ocp]
-        list_all_trains_filtered = list_all_trains_filtered[list_all_trains_filtered.departure > arrival]
+        list_all_trains_filtered = list_all_trains_filtered[list_all_trains_filtered.departure > arrival + wait_time]
         try:
             next_train = list_all_trains_filtered.iloc[0][0]
             # time_information = next_train.train_part.first_ocp_departure - arrival
@@ -2420,6 +2421,93 @@ class MasterScenario(db.Model):
 
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
 
+    def create_areas(self, infra_version):
+        scenario_id = infra_version.scenario.id
+
+        # get the railwaylines that have no catenary (for that scenario)
+        railwayline_no_catenary = infra_version.get_railwayline_no_catenary()
+
+        # get all sgv_lines, that have no catenary (for that scenario)
+        traingroups_no_catenary = db.session.query(TimetableTrainGroup).join(TimetableTrain).join(TimetableTrainPart).join(
+            RouteTraingroup).join(TimetableCategory).join(RailwayLine).filter(
+            sqlalchemy.and_(
+                RailwayLine.id.in_(railwayline_no_catenary),
+                RouteTraingroup.master_scenario_id == scenario_id,
+            )).all()
+
+        # a list that contains the collected traingroups
+        area_objects = []
+
+        while traingroups_no_catenary:
+            # take the first traingroup of the list and remove it from the list. Get also the railway_lines of that traingroup
+            traingroups = list()
+            rw_lines = list()
+            sgv_line = traingroups_no_catenary.pop(0)
+            traingroups.append(sgv_line)
+
+            # search for all lines that share a unelectrified railway_line witht the sgv_line
+            delta_traingroups = True
+            while delta_traingroups is True:
+                rl_lines_additional = db.session.query(RailwayLine).join(RouteTraingroup).join(
+                    TimetableTrainGroup).filter(
+                    sqlalchemy.and_(
+                        RailwayLine.id.in_(railwayline_no_catenary),
+                        TimetableTrainGroup.id.in_([t.id for t in traingroups]),
+                        RailwayLine.id.notin_([r.id for r in rw_lines]),
+                        RouteTraingroup.master_scenario_id == scenario_id
+                    )).all()
+
+                if rl_lines_additional:
+                    rw_lines = rw_lines + rl_lines_additional
+
+                traingroups_additional = db.session.query(TimetableTrainGroup).join(RouteTraingroup).join(
+                    RailwayLine).filter(
+                    sqlalchemy.and_(
+                        RailwayLine.id.in_(railwayline_no_catenary),
+                        RailwayLine.id.in_([r.id for r in rw_lines]),
+                        TimetableTrainGroup.id.notin_([t.id for t in traingroups]),
+                        RouteTraingroup.master_scenario_id == scenario_id
+                    )).all()
+
+                if traingroups_additional:
+                    traingroups = traingroups + traingroups_additional
+                else:
+                    delta_traingroups = False
+
+            # Remove used traingroup from traingroups no catenary
+            for tg in traingroups:
+                if tg in traingroups_no_catenary:
+                    traingroups_no_catenary.remove(tg)
+
+            # add the traingroups as a collected group to the traingroup_cluster
+            area = MasterArea()
+            area.scenario_id = scenario_id
+            area.traingroups = traingroups
+            area.railway_lines = rw_lines
+            area_objects.append(area)
+
+        db.session.add_all(area_objects)
+        db.session.commit()
+
+        return area_objects
+
+    def delete_areas(self):
+        areas = MasterArea.query.filter(MasterArea.scenario_id == self.id).all()
+        pc_delete = []
+        for area in areas:
+            area.traingroups = []
+            area.railway_lines = []
+            pc_delete.extend(area.project_contents)
+            area.project_contents = []
+
+        for pc in pc_delete:
+            db.session.delete(pc)
+
+        for area in areas:
+            db.session.delete(area)
+
+        db.session.commit()
+
 
 class MasterArea(db.Model):
     """
@@ -2522,13 +2610,11 @@ class MasterArea(db.Model):
         cost_tractions = dict()
         infrastructure_cost = self.infrastructure_cost
 
-        cost_tractions["electrification"] = infrastructure_cost["electrification"] + self.train_cost["electrification"]
-        # cost_tractions["battery"] = infrastructure_cost["battery"] + self.train_cost["battery"]
-        # cost_tractions["h2"] = infrastructure_cost["h2"] + self.train_cost["h2"]
-        cost_tractions["efuel"] = infrastructure_cost["efuel"] + self.train_cost["efuel"]
-        # cost_tractions["diesel"] = infrastructure_cost["diesel"] + self.train_cost["diesel"]
-
-        # commented -> not ready to calculate
+        for traction in tractions:
+            try:
+                cost_tractions[traction] = infrastructure_cost[traction] + self.train_cost[traction]
+            except KeyError as e:
+                logging.warning(f"No infrastructure cost or train_cost for {self.id} {e}")
 
         return cost_tractions
 

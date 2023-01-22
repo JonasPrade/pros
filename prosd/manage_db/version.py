@@ -43,20 +43,10 @@ class Version:
     def load_changes(self):
         self._load_projects_to_version()
 
-    def add_projectcontents_to_version(self, pc_list, update_infra=False):
-        # TODO: Change that to update scenario!
-
-        for pc in pc_list:
-            pc = self._prepare_commit_project_content(pc)
-            pc_df = pandas.DataFrame([pc.id], columns=self._columns)
-            self.project_contents = pandas.concat([self.project_contents, pc_df])
-
-            if update_infra:  # if True, the project content changes are added to the self.infra dataframes
-                self.load_single_project_to_version(pc=pc)
-
-        db.session.add_all(pc_list)
-        db.session.commit()
-        self.save_changes()
+    def add_projectcontents_to_version_temporary(self, pc_list, update_infra=False):
+        if update_infra:  # if True, the project content changes are added to the self.infra dataframes
+           for pc in pc_list:
+            self.load_single_project_to_version(pc=pc, use_subprojects=False)
 
     def _prepare_commit_project_content(self, project_content):
         """

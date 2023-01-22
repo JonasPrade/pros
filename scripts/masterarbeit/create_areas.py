@@ -5,7 +5,7 @@ import logging
 from prosd import db
 from prosd.manage_db.version import Version
 from prosd.models import MasterScenario, MasterArea, TimetableTrainGroup, TimetableTrain, TimetableTrainPart, RouteTraingroup, TimetableCategory, RailwayLine
-from prosd.graph import railgraph, routing#
+from prosd.graph import railgraph, routing
 
 logging.basicConfig(filename='../../example_data/railgraph/create_areas.log', encoding='utf-8', level=logging.WARNING, filemode='w')
 
