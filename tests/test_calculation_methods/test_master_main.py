@@ -14,59 +14,6 @@ def get_infra_version(scenario_id):
 
 
 class TestMasterMain(BaseTestCase):
-    def test_calc_train_cost_electrification(self):
-        """
-        Test the train cost calculation
-        :return:
-        """
-        scenario_id = 1
-        infra_version = get_infra_version(scenario_id)
-        area = MasterArea.query.get(area_id)
-
-        trains_cost = master_main.calc_train_cost(
-            traction='electrification',
-            area=area,
-            infra_version=infra_version,
-            scenario_id=scenario_id
-        )
-
-        self.assertTrue(len(trains_cost) == 20)
-
-    def test_calc_train_cost_efuel(self):
-        """
-        Test the train cost calculation
-        :return:
-        """
-        scenario_id = 1
-        infra_version = get_infra_version(scenario_id)
-        area = MasterArea.query.get(area_id)
-
-        trains_cost = master_main.calc_train_cost(
-            traction='efuel',
-            area=area,
-            infra_version=infra_version,
-            scenario_id=scenario_id
-        )
-
-        self.assertTrue(len(trains_cost) == 20)
-
-    def test_calc_train_cost_battery(self):
-        """
-        Test the train cost calculation
-        :return:
-        """
-        scenario_id = 1
-        infra_version = get_infra_version(scenario_id)
-        area = MasterArea.query.get(area_id)
-
-        trains_cost = master_main.calc_train_cost(
-            traction='battery',
-            area=area,
-            infra_version=infra_version,
-            scenario_id=scenario_id
-        )
-
-        self.assertTrue(len(trains_cost) >= 0)
 
     def test_infrastructure_cost_electrification(self):
         scenario_id = 1

@@ -19,42 +19,6 @@ start_year = parameter.START_YEAR
 duration_operation = parameter.DURATION_OPERATION
 
 
-def calc_train_cost(traction, area, infra_version, scenario_id):
-    trains_cost = dict()
-
-    for tg in area.traingroups:
-        ttc = TimetableTrainCost.query.filter(
-            TimetableTrainCost.traingroup_id == tg.id,
-            TimetableTrainCost.calculation_method == 'bvwp',
-            TimetableTrainCost.master_scenario_id == scenario_id,
-            TimetableTrainCost.traction == traction
-        ).scalar()
-
-        if ttc is None:
-            ttc = TimetableTrainCost.query.filter(
-                TimetableTrainCost.traingroup_id == tg.id,
-                TimetableTrainCost.calculation_method == 'standi',
-                TimetableTrainCost.master_scenario_id == scenario_id,
-                TimetableTrainCost.traction == traction
-            ).scalar()
-
-        if ttc is None:
-            try:
-                ttc = TimetableTrainCost.create(
-                    traingroup=tg,
-                    master_scenario_id=scenario_id,
-                    traction=traction,
-                    infra_version=infra_version
-                )
-            except use.NoVehiclePatternExistsError as e:
-                logging.error(e)
-                continue
-
-        trains_cost[tg.id] = base.cost_base_year(start_year=start_year, duration=duration_operation, cost=ttc.cost)
-
-    return trains_cost
-
-
 def infrastructure_cost(area, name, traction, infra_version, overwrite=True):
     """
     Creates a project_content object and adds it to the db.
@@ -160,7 +124,7 @@ def calculate_cost_area(area, tractions, scenario_infra):
             if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
                 continue
             else:
-                calc_train_cost(traction=traction, area=area, infra_version=scenario_infra, scenario_id=scenario_infra.scenario.id)
+                area.calc_train_cost(traction=traction, infra_version=scenario_infra)
                 infrastructure_cost(traction=traction, area=area, name=f"{traction} s{scenario_infra.scenario.id}-a{area.id}",
                                     infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
                 logging.info(f"finished calculation {traction} {area.id}")

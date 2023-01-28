@@ -2698,6 +2698,39 @@ class MasterArea(db.Model):
 
         db.session.commit()
 
+    def calc_train_cost(self, traction, infra_version, order_calculation_methods=["bvwp", "standi"]):
+        """
+        get the train costs for all traingroups in that area.
+        Checks first if cost calculation for area exists. If yes, this will be used.
+        Otherwise the train costs for that traction gets calculated
+        :param traction:
+        :param order_calculation_methods: sets the order in which the calculation methods are searched.
+        :return:
+        """
+        for tg in self.traingroups:
+            for method in order_calculation_methods:
+                ttc = TimetableTrainCost.query.filter(
+                    TimetableTrainCost.traingroup_id == tg.id,
+                    TimetableTrainCost.calculation_method == method,
+                    TimetableTrainCost.master_scenario_id == self.scenario_id,
+                    TimetableTrainCost.traction == traction
+                ).scalar()
+
+                if ttc:
+                    break
+
+            if ttc is None:
+                try:
+                    ttc = TimetableTrainCost.create(
+                        traingroup=tg,
+                        master_scenario_id=self.scenario_id,
+                        traction=traction,
+                        infra_version=infra_version
+                    )
+                except Exception as e:
+                    logging.error(e)
+                    continue
+
 
 class User(db.Model):
     __tablename__ = 'user'

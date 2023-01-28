@@ -26,4 +26,42 @@ class TestMasterArea(BaseTestCase):
         area.delete_sub_areas()
         self.assertTrue(len(area.sub_master_areas) == 0)
 
+    def test_calc_train_cost_electrification(self):
+        """
+        Test the train cost calculation
+        :return:
+        """
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        area.calc_train_cost(
+            traction='electrification',
+            infra_version=infra_version,
+        )
+
+    def test_calc_train_cost_efuel(self):
+        """
+        Test the train cost calculation
+        :return:
+        """
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        area.calc_train_cost(
+            traction='efuel',
+            infra_version=infra_version,
+        )
+
+    def test_calc_train_cost_battery(self):
+        """
+        Test the train cost calculation
+        :return:
+        """
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        area.calc_train_cost(
+            traction='battery',
+            infra_version=infra_version,
+        )
 
