@@ -13,7 +13,7 @@ def get_infra_version():
     return scenario_infra
 
 
-class TestMasterArea(BaseTestCase):
+class TestMasterAreaSubAreas(BaseTestCase):
     def test_create_subareas(self):
         area = MasterArea.query.get(area_id)
         area.create_sub_areas()
@@ -26,6 +26,8 @@ class TestMasterArea(BaseTestCase):
         area.delete_sub_areas()
         self.assertTrue(len(area.sub_master_areas) == 0)
 
+
+class TestMasterAreaTrainCost(BaseTestCase):
     def test_calc_train_cost_electrification(self):
         """
         Test the train cost calculation
@@ -65,3 +67,43 @@ class TestMasterArea(BaseTestCase):
             infra_version=infra_version,
         )
 
+
+class TestMasterAreaInfrastructureCost(BaseTestCase):
+    def test_calculate_infrastructure_cost_electrification(self):
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+        traction = 'electrification'
+
+        infrastructure_cost = area.calculate_infrastructure_cost(
+            traction=traction,
+            infra_version=infra_version,
+            overwrite=True
+        )
+
+        self.assertTrue(round(infrastructure_cost.planned_total_cost) >= 0)
+
+    def test_calculate_infrastructure_cost_efuel(self):
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+        traction = 'efuel'
+
+        infrastructure_cost = area.calculate_infrastructure_cost(
+            traction=traction,
+            infra_version=infra_version,
+            overwrite=True
+        )
+
+        self.assertTrue(infrastructure_cost is None)
+
+    def test_calculate_infrastructure_cost_battery(self):
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+        traction = 'battery'
+
+        infrastructure_cost = area.calculate_infrastructure_cost(
+            traction=traction,
+            infra_version=infra_version,
+            overwrite=True
+        )
+
+        self.assertTrue(round(infrastructure_cost.planned_total_cost) >= 0)

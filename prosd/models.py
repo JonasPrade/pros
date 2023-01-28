@@ -2535,6 +2535,32 @@ class MasterScenario(db.Model):
 
         db.session.commit()
 
+    def route_traingroups(self, infra_version):
+        """
+        routes the traingroups for this scenario
+        :param infra_version:
+        :return:
+        """
+        from prosd.graph import railgraph, routing
+        rg = railgraph.RailGraph()
+        graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
+        route = routing.GraphRoute(graph=graph, infra_version=infra_version)
+
+        traingroups_route = db.session.query(TimetableTrainGroup).filter(
+            ~sqlalchemy.exists().where(
+                sqlalchemy.and_(
+                    RouteTraingroup.traingroup_id == TimetableTrainGroup.id,
+                    RouteTraingroup.master_scenario_id == infra_version.self.id
+                )
+            )
+        ).all()
+
+        for tg in traingroups_route:
+            try:
+                route.line(traingroup=tg, force_recalculation=False)
+            except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
+                logging.error(f"{e.args} {tg}")
+
 
 class MasterArea(db.Model):
     """
@@ -2682,6 +2708,10 @@ class MasterArea(db.Model):
         db.session.commit()
 
     def delete_sub_areas(self):
+        """
+        deletes the areas that are sub_areas for that area
+        :return:
+        """
         areas = MasterArea.query.filter(MasterArea.superior_master_id == self.id).all()
         pc_delete = []
         for area in areas:
@@ -2730,6 +2760,108 @@ class MasterArea(db.Model):
                 except Exception as e:
                     logging.error(e)
                     continue
+
+    def calculate_infrastructure_cost(self, traction, infra_version, overwrite):
+        """
+        Calculates the cost for the infrastructure
+        :param traction:
+        :param infra_version:
+        :param overwrite:
+        :return:
+        """
+        name = f"{traction} s{self.scenario_id}-a{self.id}"
+
+        """
+        Check if infrastructure cost exists for the traction.
+        If it exists and overwrite not active, it will return the project and returns
+        otherwise the project will be deleted and the new calculation will begin.
+        """
+        pc = ProjectContent.query.filter(ProjectContent.name == name).scalar()
+        if pc and overwrite is False:
+            return pc
+        elif pc and overwrite is True:
+            db.session.delete(pc)
+            db.session.commit()  # and calculate a new project_content
+
+        """
+        Calculate the infrastructure cost
+        """
+        from prosd.calculation_methods.cost import BvwpCostElectrification, BvwpProjectBattery
+        start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
+
+        pc_data = dict()
+        if traction == "electrification":
+            infrastructure_cost = BvwpCostElectrification(
+                start_year_planning=start_year_planning,
+                railway_lines_scope=self.railway_lines,
+                infra_version=infra_version
+            )
+            pc_data["elektrification"] = True
+            pc_data["length"] = infrastructure_cost.length
+
+        elif traction == "battery":
+            infrastructure_cost = BvwpProjectBattery(
+                start_year_planning=start_year_planning,
+                area=self,
+                infra_version=infra_version
+            )
+            pc_data["battery"] = True
+
+        elif traction == 'efuel':
+            return None
+
+        elif traction == 'diesel':
+            return None
+
+        elif traction == 'h2':
+            return None
+
+        else:
+            logging.error(f"no fitting traction found for {traction}")
+            return None
+
+        """
+        Create a project_content with the calculated costs
+        """
+        pc_data["name"] = name
+        pc_data["master_areas"] = [self]
+        # TODO: Add description
+
+        if 'spfv' in self.categories:
+            pc_data["effects_passenger_long_rail"] = True
+        else:
+            pc_data["effects_passenger_long_rail"] = False
+
+        if 'spnv' in self.categories:
+            pc_data["effects_passenger_local_rail"] = True
+        else:
+            pc_data["effects_passenger_local_rail"] = False
+
+        if 'sgv' in self.categories:
+            pc_data["effects_cargo_rail"] = True
+        else:
+            pc_data["effects_cargo_rail"] = False
+
+        pc_data["planned_total_cost"] = infrastructure_cost.cost_2015
+        pc_data["maintenance_cost"] = infrastructure_cost.maintenance_cost_2015
+        pc_data["planning_cost"] = infrastructure_cost.planning_cost_2015
+        pc_data["investment_cost"] = infrastructure_cost.investment_cost_2015
+        pc_data["capital_service_cost"] = infrastructure_cost.capital_service_cost_2015
+
+        pc = ProjectContent(**pc_data)
+
+        db.session.add(pc)
+        db.session.commit()
+
+        if traction == "battery":
+            subprojects = infrastructure_cost.project_contents
+            if subprojects:
+                for project in subprojects:
+                    project.superior_project_content_id = pc.id
+                db.session.add_all(subprojects)
+                db.session.commit()
+
+        return pc
 
 
 class User(db.Model):
