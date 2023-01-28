@@ -193,9 +193,10 @@ class BvwpProjectBattery(BvwpCost):
 
     def calculate_infrastructure(self, tt_line):
         trains = tt_line.get_one_train_cycle(wait_time=self.wait_time)
+        station_to_rlml_ocp = self._get_station_to_railml_ocp(trains=trains)
 
         # calculate the energy need and if there is a problem with the battery capacity
-        cycle_sections = self.calc_energy_demand(trains)
+        cycle_sections = self.calc_energy_demand(trains, station_to_rlml_ocp)
         cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
             self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
 
@@ -212,7 +213,7 @@ class BvwpProjectBattery(BvwpCost):
             project_contents_temp.extend(new_projects)
             if new_projects:
                 self.infra_version.add_projectcontents_to_version_temporary(pc_list=project_contents_temp, update_infra=True)
-            cycle_sections = self.calc_energy_demand(trains)
+            cycle_sections = self.calc_energy_demand(trains, station_to_rlml_ocp)
             cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
                 self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
 
@@ -225,11 +226,11 @@ class BvwpProjectBattery(BvwpCost):
         db.session.autoflush = True
         return project_contents_temp
 
-    def calc_energy_demand(self, trains):
+    def calc_energy_demand(self, trains, station_to_rlml_ocp):
         cycle_sections = []
 
         for train in trains:
-            sections, rw_lines = self._group_rw_lines(train)
+            sections, rw_lines = self._group_rw_lines(train, station_to_rlml_ocp)
             count_stations_to_sections = self._add_count_stations_to_sections(line_groups=sections,
                                                                             rw_lines=rw_lines, train=train)
             sections_with_energy = self._calculate_energy_sections(sections=sections, train=train,
@@ -238,7 +239,7 @@ class BvwpProjectBattery(BvwpCost):
 
         return cycle_sections
 
-    def _group_rw_lines(self, train):
+    def _group_rw_lines(self, train, station_to_rlml_ocp):
         """
         This function returns a DataFrame of railwaylines - in order of the use by the train - grouped by their attribute "catenary".
         :param train:
@@ -279,14 +280,6 @@ class BvwpProjectBattery(BvwpCost):
         catenary_value = rw_lines.iloc[0][1].catenary  # start value of catenary
         section = create_new_section(catenary_value=catenary_value)
 
-        train_stations = train.train_group.stops
-        train_stations.remove(train.train_group.first_ocp.ocp)
-        train_stations.remove(train.train_group.last_ocp.ocp)
-        station_to_rlml_ocp = dict()
-        for t_ocp in train_stations:
-            if t_ocp.station:
-                station_to_rlml_ocp[t_ocp.station] = t_ocp
-
         for index, row in rw_lines.iterrows():
             """
             Go through the railway lines (in order by section) and group them together as long as they have the same attribute value for catenary
@@ -323,8 +316,9 @@ class BvwpProjectBattery(BvwpCost):
 
             section, sections_to_lines = add_line_to_section(line, section, sections_to_lines)
 
-        # Add the latest section to the sections
+        # Add the latest section to the sections. The ocp is the last ocp of that traingroup
         # therefore the next trains departure at that station must be calculated
+        ocp = train.train_group.last_ocp.ocp
         next_train = train.train_group.traingroup_lines.get_next_train(
             previous_train=train,
             list_all_trains=train.train_group.traingroup_lines.all_trains,
@@ -360,6 +354,23 @@ class BvwpProjectBattery(BvwpCost):
                 seconds=segment["length"] / train.train_group.travel_speed_average(self.infra_version) * 3600)
 
         return sections, rw_lines
+
+    def _get_station_to_railml_ocp(self, trains):
+        """
+
+        :param traingroup:
+        :return:
+        """
+        traingroup = trains[0].train_group
+        train_stations = traingroup.stops
+        train_stations.remove(traingroup.first_ocp.ocp)
+        train_stations.remove(traingroup.last_ocp.ocp)
+        station_to_rlml_ocp = dict()
+        for t_ocp in train_stations:
+            if t_ocp.station:
+                station_to_rlml_ocp[t_ocp.station] = t_ocp
+        return station_to_rlml_ocp
+
 
     def _get_rwlines_for_train(self, train):
         """

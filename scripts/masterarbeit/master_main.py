@@ -8,8 +8,9 @@ from prosd.calculation_methods import use, cost, base
 from prosd.manage_db.version import Version
 from prosd.graph import railgraph, routing
 
+logging.basicConfig(encoding='utf-8', level=logging.INFO)
+
 base = base.BaseCalculation()
-OVERWRITE_INFRASTRUCTURE = True
 ROUTE_TRAINGROUP = False
 DELETE_AREAS = False
 CREATE_AREAS = False
@@ -67,18 +68,23 @@ def infrastructure_cost(area, name, traction, infra_version, overwrite=True):
         db.session.delete(pc)
         db.session.commit()  # and calculate a new project_content
 
+    pc_data = dict()
+
     if traction == "electrification":
         infrastructure_cost = cost.BvwpCostElectrification(
             start_year_planning=start_year_planning,
             railway_lines_scope=area.railway_lines,
             infra_version=infra_version
         )
+        pc_data["elektrification"] = True
+        pc_data["length"] = infrastructure_cost.length
     elif traction == "battery":
         infrastructure_cost = cost.BvwpProjectBattery(
             start_year_planning=start_year_planning,
             area=area,
             infra_version=infra_version
         )
+        pc_data["battery"] = True
     elif traction == 'efuel':
         return None
     elif traction == 'diesel':
@@ -86,8 +92,6 @@ def infrastructure_cost(area, name, traction, infra_version, overwrite=True):
     else:
         logging.error(f"no fitting traction found for {traction}")
         return None
-
-    pc_data = dict()
 
     pc_data["name"] = name
     pc_data["master_areas"] = [area]
@@ -107,11 +111,6 @@ def infrastructure_cost(area, name, traction, infra_version, overwrite=True):
         pc_data["effects_cargo_rail"] = True
     else:
         pc_data["effects_cargo_rail"] = False
-
-    if traction == 'electrification':
-        pc_data["length"] = infrastructure_cost.length
-        pc_data["elektrification"] = True
-        # TODO: Add battery project_contents
 
     pc_data["planned_total_cost"] = infrastructure_cost.cost_2015
     pc_data["maintenance_cost"] = infrastructure_cost.maintenance_cost_2015
@@ -183,10 +182,12 @@ def main(scenario_id):
     areas = MasterArea.query.filter(MasterArea.scenario_id == scenario.id).all()
 
     for cluster_id, area in enumerate(areas):
+        logging.info(f"calculation {area} is started")
         calculate_cost_area(area, tractions, scenario_infra)
+        logging.info(f"calculation {area} is finished")
 
 
 if __name__ == '__main__':
-
+    OVERWRITE_INFRASTRUCTURE = True
     scenario_id = 1
     main(scenario_id=scenario_id)

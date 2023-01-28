@@ -1,9 +1,10 @@
 from tests.base import BaseTestCase
 from prosd import parameter
 from prosd.manage_db.version import Version
-from prosd.models import MasterScenario, MasterArea
+from prosd.models import MasterScenario, MasterArea, TimetableLine
 from prosd.calculation_methods.cost import BvwpProjectBattery
 
+tt_id = 1720
 
 def calculate_battery():
     scenario_id = 1
@@ -74,5 +75,42 @@ class TestCostBattery(BaseTestCase):
 
         self.assertTrue(infrastructure_cost.cost_2015 == 0)
 
+    def test_cost_battery_testcase_area64(self):
+        area_id = 64
+        infra_version = calculate_battery()
+        area = MasterArea.query.get(area_id)
 
+        infrastructure_cost = BvwpProjectBattery(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+        self.assertTrue(round(infrastructure_cost.cost_2015) == 16296)
+
+    def test_cost_battery_testcase_area73(self):
+        area_id = 73
+        infra_version = calculate_battery()
+        area = MasterArea.query.get(area_id)
+
+        infrastructure_cost = BvwpProjectBattery(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+        self.assertTrue(round(infrastructure_cost.cost_2015) == 0)
+
+    def test_cost_battery_testcase_area74(self):
+        area_id = 74
+        infra_version = calculate_battery()
+        area = MasterArea.query.get(area_id)
+
+        infrastructure_cost = BvwpProjectBattery(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+        self.assertTrue(round(infrastructure_cost.cost_2015) == 48888)
 

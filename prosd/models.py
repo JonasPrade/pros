@@ -31,11 +31,8 @@ def get_calculation_method(traingroup, traction):
         case "sgv":
             calculation_method = 'bvwp'
         case "spfv":
-            if traction == 'efuel':
+            if traction == 'efuel' or traction == 'battery' or traction == 'h2':
                 calculation_method = 'standi'
-            elif traction == 'h2' or traction == 'battery':
-                logging.warning(f"{traingroup} - for spfv and {traction} no calculation possible")
-                return None
             else:
                 calculation_method = 'bvwp'
         case "spnv":
@@ -70,6 +67,22 @@ def write_geojson_recalculate_traingroup(route, traingroups):
 
     with open(filepath_recalculate, "w") as outfile:
         json.dump(geojson_data, outfile)
+
+
+def get_lines_with_same_traingroups(line, scenario_id, lines):
+    lines_id = [line.id for line in lines]
+
+    traingroups_line = line.get_traingroup_for_scenario(scenario_id=scenario_id)
+    traingroup_line_ids = [tg.id for tg in traingroups_line]
+    # query all railway_lines that have exactly the same traingroups
+    lines_same_traingroups = RailwayLine.query.join(RouteTraingroup).join(TimetableTrainGroup).filter(
+        TimetableTrainGroup.id.in_(traingroup_line_ids),
+        RailwayLine.id.in_(lines_id),
+        RouteTraingroup.master_scenario_id == scenario_id
+    ).group_by(RailwayLine).having(
+        sqlalchemy.func.count(sqlalchemy.distinct(TimetableTrainGroup.id)) == len(traingroup_line_ids)
+    ).all()
+    return lines_same_traingroups
 
 
 class PointOfLineNotAtEndError(Exception):
@@ -460,6 +473,7 @@ class RailwayLine(db.Model):
 
         return newline_1, newline_2
 
+
     @classmethod
     def get_line_that_intersects_point_excluding_line(self, coordinate, from_line):
         """
@@ -539,6 +553,14 @@ class RailwayLine(db.Model):
             logging.warning("Could not calculate angle(radian) for " + str(line1.id) + " and " + str(
                 line2.id) + " angle rad is " + str(angle_rad))
         return angle_check
+
+    def get_traingroup_for_scenario(self, scenario_id):
+        traingroups = TimetableTrainGroup.query.join(RouteTraingroup).filter(
+            sqlalchemy.and_(
+                RouteTraingroup.master_scenario_id == scenario_id,
+                RouteTraingroup.railway_line_id == self.id)
+        ).all()
+        return traingroups
 
 
 class RailwayPoint(db.Model):
@@ -1429,7 +1451,6 @@ class Vehicle(db.Model):
 
         return train_information
 
-
 class VehiclePattern(db.Model):
     """
     patterns for vehicles that have more informations about energy usage etc.
@@ -2174,14 +2195,13 @@ class TimetableLine(db.Model):
     @property
     def all_trains(self):
         columns = ['traingroup', 'departure', 'first_ocp']
-        list_all_trains = pandas.DataFrame(columns=columns)
+        list_all_trains = list()
         for tg in self.train_groups:
             for train in tg.trains:
-                train_entry = pandas.DataFrame(
-                    [[train, train.train_part.first_ocp_departure, train.train_part.first_ocp.ocp]], columns=columns)
-                list_all_trains = pandas.concat([list_all_trains, train_entry])
-        list_all_trains = list_all_trains.sort_values('departure')
-        return list_all_trains
+                list_all_trains.append([train, train.train_part.first_ocp_departure, train.train_part.first_ocp.ocp])
+        df_all_trains = pandas.DataFrame(list_all_trains, columns=columns)
+        df_all_trains = df_all_trains.sort_values('departure')
+        return df_all_trains
 
     @hybrid_method
     def get_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
@@ -2422,6 +2442,12 @@ class MasterScenario(db.Model):
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
 
     def create_areas(self, infra_version):
+        """
+        Create the areas for one scenario. One Area consists of all lines in an scope, that drive on infrastructure
+        having no catenary
+        :param infra_version:
+        :return:
+        """
         scenario_id = infra_version.scenario.id
 
         # get the railwaylines that have no catenary (for that scenario)
@@ -2439,6 +2465,7 @@ class MasterScenario(db.Model):
         area_objects = []
 
         while traingroups_no_catenary:
+            # TODO: Get that in an separate function
             # take the first traingroup of the list and remove it from the list. Get also the railway_lines of that traingroup
             traingroups = list()
             rw_lines = list()
@@ -2516,11 +2543,13 @@ class MasterArea(db.Model):
     __tablename__ = 'master_areas'
     id = db.Column(db.Integer, primary_key=True)
     scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id', onupdate='CASCADE', ondelete='CASCADE'))
+    superior_master_id = db.Column(db.Integer, db.ForeignKey('master_areas.id', onupdate='CASCADE', ondelete='CASCADE'))
 
     traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
     railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas, backref=db.backref('master_areas'))
     scenario = db.relationship("MasterScenario", backref=db.backref('master_areas'))
+    superior_master_area = db.relationship('MasterArea', remote_side=[id], backref=db.backref('sub_master_areas'))
 
     @property
     def categories(self):
@@ -2550,9 +2579,11 @@ class MasterArea(db.Model):
 
     @property
     def train_cost(self):
-        tractions = ['electrification', 'efuel']
+        tractions = parameter.TRACTIONS
         train_costs = dict()
         for traction in tractions:
+            if 'sgv' in self.categories and (traction == "battery" or traction == "h2"):
+                continue
             costs = self.get_train_cost_for_traction(traction)
             train_costs[traction] = costs
 
@@ -2569,8 +2600,8 @@ class MasterArea(db.Model):
         for pc in self.project_contents:
             if pc.elektrification is True:
                 cost_by_traction["electrification"] = pc.planned_total_cost
-            # elif pc.battery is True:
-            #     cost_by_traction["battery"] = pc.planned_total_cost
+            elif pc.battery is True:
+                cost_by_traction["battery"] = pc.planned_total_cost
             # elif pc.h2 is True:
             #     cost_by_traction["h2"] = pc.planned_total_cost
             # elif pc.efuel is True:
@@ -2591,8 +2622,8 @@ class MasterArea(db.Model):
             if pc.elektrification is True:
                 pc_by_traction["electrification"] = pc
 
-            # elif pc.battery is True:
-            #     pc_by_traction["battery"] = pc
+            elif pc.battery is True:
+                pc_by_traction["battery"] = pc
             # elif pc.h2 is True:
             #     pc_by_traction["h2"] = pc
             # elif pc.efuel is True:
@@ -2624,6 +2655,48 @@ class MasterArea(db.Model):
         traction = min(cost_traction, key=cost_traction.get)
 
         return traction
+
+    def create_sub_areas(self):
+        """
+        clusters the infrastructure of one area in sub_areas, that have exactly the same traingroups
+        :param infra_version:
+        :return:
+        """
+        lines = self.railway_lines.copy()
+        sub_areas = list()
+
+        while lines:
+            line = lines[0]
+            lines_same_traingroups = get_lines_with_same_traingroups(line=line, scenario_id=self.scenario_id, lines=lines)
+            area = MasterArea(
+                scenario_id=self.scenario_id,
+                superior_master_id=self.id,
+                traingroups=line.get_traingroup_for_scenario(self.scenario_id),
+                railway_lines=lines_same_traingroups
+            )
+            sub_areas.append(area)
+            # remove the now used railway_lines from the while loop
+            lines = [line for line in lines if line not in lines_same_traingroups]
+
+        db.session.add_all(sub_areas)
+        db.session.commit()
+
+    def delete_sub_areas(self):
+        areas = MasterArea.query.filter(MasterArea.superior_master_id == self.id).all()
+        pc_delete = []
+        for area in areas:
+            area.traingroups = []
+            area.railway_lines = []
+            pc_delete.extend(area.project_contents)
+            area.project_contents = []
+
+        for pc in pc_delete:
+            db.session.delete(pc)
+
+        for area in areas:
+            db.session.delete(area)
+
+        db.session.commit()
 
 
 class User(db.Model):

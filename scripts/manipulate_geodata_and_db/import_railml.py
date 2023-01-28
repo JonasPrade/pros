@@ -299,6 +299,7 @@ def add_ocp(timetable, overwrite=False):
 
     db.session.commit()
 
+
 def add_trains(timetable):
     timetable_trains = timetable.find('{http://www.railml.org/schemas/2013}trains')
 
