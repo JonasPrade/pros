@@ -24,9 +24,9 @@ def calculate_cost_area(area, tractions, scenario_infra):
             if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
                 continue
             else:
-                area.calc_train_cost(traction=traction, infra_version=scenario_infra)
                 area.infrastructure_cost(traction=traction, area=area, name=f"{traction} s{scenario_infra.scenario.id}-a{area.id}",
                                     infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
+                area.calc_train_cost(traction=traction, infra_version=scenario_infra)
                 logging.info(f"finished calculation {traction} {area.id}")
 
 

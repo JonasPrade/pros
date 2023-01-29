@@ -782,6 +782,10 @@ class BvwpProjectBattery(BvwpCost):
 
         return pc
 
+
+class BvwpProjectOptimisedElectrification(BvwpCost):
+
+
 # class BvwpCostH2(BvwpCost):
 #     # TODO: Algorithm for caluclating cost of h2 infrastructure
 #     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):

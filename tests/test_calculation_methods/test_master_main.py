@@ -14,6 +14,6 @@ def get_infra_version(scenario_id):
 
 
 class TestMasterMain(BaseTestCase):
-
+    def test
 
 

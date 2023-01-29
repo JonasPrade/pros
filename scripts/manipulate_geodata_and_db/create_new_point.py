@@ -2,20 +2,18 @@ from prosd import db
 from prosd.models import RailwayPoint, RailwayNodes, RailwayStation, RailMlOcp
 from prosd.graph import railgraph
 
-node_id = 80229
+node_id = 79902
 
 node = RailwayNodes.query.get(node_id)
 
 point_dict = {
-    "route_number": 1280,
-    "name": "Hamburg-Rothenburgsort",
-    "type": "Hp",
-    "db_kuerzel": "AHROO",
+    "route_number": 9421,
+    "name": "Karlsruhe Albtalbahnhof",
+    "type": "Bf",
+    "db_kuerzel": "RKAB",
     "coordinates": node.coordinate,
     "node_id": node.id
 }
-
-# TODO: Calculate height and add that also
 
 station = RailwayStation.query.filter(RailwayStation.db_kuerzel == point_dict["db_kuerzel"]).first()
 if not station:
