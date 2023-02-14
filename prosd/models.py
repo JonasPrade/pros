@@ -95,6 +95,10 @@ class NoSplitPossibleError(Exception):
         super().__init__(message)
 
 
+class NoTractionFound(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 # TODO: Table railway_line to projects
 
 # allowed_values_type_of_station = conf.allowed_values_type_of_station  # TODO: Add enum to type of station
@@ -1211,6 +1215,7 @@ class ProjectContent(db.Model):
     h2 = db.Column(db.Boolean, default=False)
     efuel = db.Column(db.Boolean, default=False)
     closure = db.Column(db.Boolean, default=False)  # close of rail
+    optimised_electrification = db.Column(db.Boolean, default=False)
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -2576,6 +2581,7 @@ class MasterArea(db.Model):
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas, backref=db.backref('master_areas'))
     scenario = db.relationship("MasterScenario", backref=db.backref('master_areas'))
     superior_master_area = db.relationship('MasterArea', remote_side=[id], backref=db.backref('sub_master_areas'))
+    traction_optimised_electrification = db.relationship("TractionOptimisedElectrification", backref="masterarea")
 
     @property
     def categories(self):
@@ -2586,9 +2592,24 @@ class MasterArea(db.Model):
         return categories
 
     @hybrid_method
-    def get_train_cost_for_traction(self, traction):
+    def get_operating_cost_traction(self, traction):
+        """
+        get the operating cost for all trains for one traction
+        :param traction: str
+        :return:
+        """
         train_cost = 0
         for tg in self.traingroups:
+            if traction == 'optimised_electrification':
+                try:
+                    traction = TractionOptimisedElectrification.query.filter(
+                        TractionOptimisedElectrification.traingroup_id == tg.id,
+                        TractionOptimisedElectrification.master_area_id == self.id
+                    ).one()
+                except sqlalchemy.orm.exc.NoResultFound:
+                    raise NoTractionFound(
+                        f"Could not find fitting traction for {traction} and MasterArea {self.id}")
+
             calculation_method = get_calculation_method(traingroup=tg, traction=traction)
             ttc = TimetableTrainCost.query.filter(
                 TimetableTrainCost.traingroup_id == tg.id,
@@ -2604,19 +2625,26 @@ class MasterArea(db.Model):
         return train_cost_base_year
 
     @property
-    def train_cost(self):
+    def operating_cost_all_tractions(self):
+        """
+        Get the operating cost for all tractions
+        :return:
+        """
         tractions = parameter.TRACTIONS
         train_costs = dict()
         for traction in tractions:
             if 'sgv' in self.categories and (traction == "battery" or traction == "h2"):
                 continue
-            costs = self.get_train_cost_for_traction(traction)
-            train_costs[traction] = costs
+            try:
+                costs = self.get_operating_cost_traction(traction)
+                train_costs[traction] = costs
+            except NoTractionFound as e:
+                logging.error(f"{e}")
 
         return train_costs
 
     @property
-    def infrastructure_cost(self):
+    def infrastructure_cost_all_tractions(self):
         """
         returns a dictionary that contents the project_contents for each traction
         :return:
@@ -2628,6 +2656,8 @@ class MasterArea(db.Model):
                 cost_by_traction["electrification"] = pc.planned_total_cost
             elif pc.battery is True:
                 cost_by_traction["battery"] = pc.planned_total_cost
+            elif pc.optimised_electrification is True:
+                cost_by_traction["optimised_electrification"] = pc.planned_total_cost
             # elif pc.h2 is True:
             #     cost_by_traction["h2"] = pc.planned_total_cost
             # elif pc.efuel is True:
@@ -2640,36 +2670,49 @@ class MasterArea(db.Model):
 
         return cost_by_traction
 
+    # @property
+    # def project_content_by_traction(self):
+    #     pc_by_traction = dict()
+    #
+    #     for pc in self.project_contents:
+    #         if pc.elektrification is True:
+    #             pc_by_traction["electrification"] = pc
+    #
+    #         elif pc.battery is True:
+    #             pc_by_traction["battery"] = pc
+    #         # elif pc.h2 is True:
+    #         #     pc_by_traction["h2"] = pc
+    #         # elif pc.efuel is True:
+    #         #     pc_by_traction["efuel"] = [pc, pc.planned_total_cost]
+    #
+    #         # commented -> not ready for calculation
+    #
+    #     pc_by_traction["efuel"] = None
+    #     # pc_by_traction["diesel"] = None
+    #
+    #     return pc_by_traction
+
+    @hybrid_method
+    def cost_traction(self, traction):
+        """
+        get infrastructure cost and cost of trains for one traction
+        """
+        cost_traction = self.get_operating_cost_traction(traction) + self.infrastructure_cost_all_tractions["electrification"]
+
     @property
-    def project_content_by_traction(self):
-        pc_by_traction = dict()
-
-        for pc in self.project_contents:
-            if pc.elektrification is True:
-                pc_by_traction["electrification"] = pc
-
-            elif pc.battery is True:
-                pc_by_traction["battery"] = pc
-            # elif pc.h2 is True:
-            #     pc_by_traction["h2"] = pc
-            # elif pc.efuel is True:
-            #     pc_by_traction["efuel"] = [pc, pc.planned_total_cost]
-
-            # commented -> not ready for calculation
-
-        pc_by_traction["efuel"] = None
-        # pc_by_traction["diesel"] = None
-
-        return pc_by_traction
-
-    @property
-    def cost_traction(self):
+    def cost_all_tractions(self):
+        """
+        the complete costs for all tractions
+        includes infrastructure and operating costs
+        :return:
+        """
         cost_tractions = dict()
-        infrastructure_cost = self.infrastructure_cost
+        infrastructure_cost = self.infrastructure_cost_all_tractions
+        train_cost = self.operating_cost_all_tractions
 
         for traction in tractions:
             try:
-                cost_tractions[traction] = infrastructure_cost[traction] + self.train_cost[traction]
+                cost_tractions[traction] = infrastructure_cost[traction] + train_cost[traction]
             except KeyError as e:
                 logging.warning(f"No infrastructure cost or train_cost for {self.id} {e}")
 
@@ -2677,58 +2720,12 @@ class MasterArea(db.Model):
 
     @property
     def cost_effective_traction(self):
-        cost_traction = self.cost_traction
+        cost_traction = self.cost_all_tractions
         traction = min(cost_traction, key=cost_traction.get)
 
         return traction
 
-    def create_sub_areas(self):
-        """
-        clusters the infrastructure of one area in sub_areas, that have exactly the same traingroups
-        :param infra_version:
-        :return:
-        """
-        lines = self.railway_lines.copy()
-        sub_areas = list()
-
-        while lines:
-            line = lines[0]
-            lines_same_traingroups = get_lines_with_same_traingroups(line=line, scenario_id=self.scenario_id, lines=lines)
-            area = MasterArea(
-                scenario_id=self.scenario_id,
-                superior_master_id=self.id,
-                traingroups=line.get_traingroup_for_scenario(self.scenario_id),
-                railway_lines=lines_same_traingroups
-            )
-            sub_areas.append(area)
-            # remove the now used railway_lines from the while loop
-            lines = [line for line in lines if line not in lines_same_traingroups]
-
-        db.session.add_all(sub_areas)
-        db.session.commit()
-
-    def delete_sub_areas(self):
-        """
-        deletes the areas that are sub_areas for that area
-        :return:
-        """
-        areas = MasterArea.query.filter(MasterArea.superior_master_id == self.id).all()
-        pc_delete = []
-        for area in areas:
-            area.traingroups = []
-            area.railway_lines = []
-            pc_delete.extend(area.project_contents)
-            area.project_contents = []
-
-        for pc in pc_delete:
-            db.session.delete(pc)
-
-        for area in areas:
-            db.session.delete(area)
-
-        db.session.commit()
-
-    def calc_train_cost(self, traction, infra_version, order_calculation_methods=["bvwp", "standi"]):
+    def calc_train_cost(self, traction, infra_version, order_calculation_methods=None, traingroup_to_traction=None):
         """
         get the train costs for all traingroups in that area.
         Checks first if cost calculation for area exists. If yes, this will be used.
@@ -2737,16 +2734,36 @@ class MasterArea(db.Model):
         :param order_calculation_methods: sets the order in which the calculation methods are searched.
         :return:
         """
+        if order_calculation_methods is None:
+            order_calculation_methods = ["bvwp", "standi"]
+
+        ttc_list = []
         for tg in self.traingroups:
+            # TODO: Traction for traingroup_to_traction (not via input but for finished infrastructure calculation
+            if traction == 'optimised_electrification':
+                traction_optimised_electrification = TractionOptimisedElectrification.query.filter(
+                    TractionOptimisedElectrification.master_area_id == self.id,
+                    TractionOptimisedElectrification.traingroup_id == tg.id
+                ).scalar()
+                if traction_optimised_electrification is None:
+                    raise NoTractionFound(
+                        f"There is no caclculated traction for tg {tg} for masterarea {self.id}"
+                    )
+                else:
+                    traction_train = traction_optimised_electrification.traction
+            else:
+                traction_train = traction
+
             for method in order_calculation_methods:
                 ttc = TimetableTrainCost.query.filter(
                     TimetableTrainCost.traingroup_id == tg.id,
                     TimetableTrainCost.calculation_method == method,
                     TimetableTrainCost.master_scenario_id == self.scenario_id,
-                    TimetableTrainCost.traction == traction
+                    TimetableTrainCost.traction == traction_train
                 ).scalar()
 
                 if ttc:
+                    ttc_list.append(ttc)
                     break
 
             if ttc is None:
@@ -2757,9 +2774,12 @@ class MasterArea(db.Model):
                         traction=traction,
                         infra_version=infra_version
                     )
+                    ttc_list.append(ttc)
                 except Exception as e:
                     logging.error(e)
                     continue
+
+        return ttc_list
 
     def calculate_infrastructure_cost(self, traction, infra_version, overwrite):
         """
@@ -2784,9 +2804,15 @@ class MasterArea(db.Model):
             db.session.commit()  # and calculate a new project_content
 
         """
+        if the traction is optimised electrification -> check if sub areas are created and if not, recreate thenm
+        """
+        if traction == 'optimised_electrification' and len(self.sub_master_areas) == 0:
+            self.create_sub_areas()
+
+        """
         Calculate the infrastructure cost
         """
-        from prosd.calculation_methods.cost import BvwpCostElectrification, BvwpProjectBattery
+        from prosd.calculation_methods.cost import BvwpCostElectrification, BvwpProjectBattery, BvwpProjectOptimisedElectrification
         start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
 
         pc_data = dict()
@@ -2798,6 +2824,7 @@ class MasterArea(db.Model):
             )
             pc_data["elektrification"] = True
             pc_data["length"] = infrastructure_cost.length
+            pc_data["railway_lines"] = self.railway_lines.copy()
 
         elif traction == "battery":
             infrastructure_cost = BvwpProjectBattery(
@@ -2806,6 +2833,14 @@ class MasterArea(db.Model):
                 infra_version=infra_version
             )
             pc_data["battery"] = True
+
+        elif traction == "optimised_electrification":
+            infrastructure_cost = BvwpProjectOptimisedElectrification(
+                start_year_planning=start_year_planning,
+                area=self,
+                infra_version=infra_version
+            )
+            pc_data["optimised_electrification"] = True
 
         elif traction == 'efuel':
             return None
@@ -2853,15 +2888,89 @@ class MasterArea(db.Model):
         db.session.add(pc)
         db.session.commit()
 
-        if traction == "battery":
+        if traction == "battery" or traction=="optimised_electrification":
             subprojects = infrastructure_cost.project_contents
+            prepared_subprojects = list()
             if subprojects:
                 for project in subprojects:
                     project.superior_project_content_id = pc.id
-                db.session.add_all(subprojects)
+                    project = infra_version.prepare_commit_project_content(project)
+                    prepared_subprojects.append(project)
+
+                db.session.add_all(prepared_subprojects)
                 db.session.commit()
 
+        if traction == "optimised_electrification":
+            traction_traingroups = []
+            for tg, traction in infrastructure_cost.traingroup_to_traction.items():
+                traction_traingroup = TractionOptimisedElectrification(
+                    traingroup_id = tg.id,
+                    master_area_id=self.id,
+                    traction=traction
+                )
+                traction_traingroups.append(traction_traingroup)
+
+            db.session.add_all(traction_traingroups)
+            db.session.commit()
+
         return pc
+
+    def create_sub_areas(self):
+        """
+        clusters the infrastructure of one area in sub_areas, that have exactly the same traingroups
+        :param infra_version:
+        :return:
+        """
+        lines = self.railway_lines.copy()
+        sub_areas = list()
+
+        while lines:
+            line = lines[0]
+            lines_same_traingroups = get_lines_with_same_traingroups(line=line, scenario_id=self.scenario_id, lines=lines)
+            area = MasterArea(
+                scenario_id=self.scenario_id,
+                superior_master_id=self.id,
+                traingroups=line.get_traingroup_for_scenario(self.scenario_id),
+                railway_lines=lines_same_traingroups
+            )
+            sub_areas.append(area)
+            # remove the now used railway_lines from the while loop
+            lines = [line for line in lines if line not in lines_same_traingroups]
+
+        db.session.add_all(sub_areas)
+        db.session.commit()
+
+    def delete_sub_areas(self):
+        """
+        deletes the areas that are sub_areas for that area
+        :return:
+        """
+        areas = MasterArea.query.filter(MasterArea.superior_master_id == self.id).all()
+        pc_delete = []
+        for area in areas:
+            area.traingroups = []
+            area.railway_lines = []
+            pc_delete.extend(area.project_contents)
+            area.project_contents = []
+
+        for pc in pc_delete:
+            db.session.delete(pc)
+
+        for area in areas:
+            db.session.delete(area)
+
+        db.session.commit()
+
+
+class TractionOptimisedElectrification(db.Model):
+    __tablename__ = 'traction_optimised_electrification'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    traingroup_id = db.Column(db.String(255), db.ForeignKey('timetable_train_groups.id'), nullable=False)
+    master_area_id = db.Column(db.Integer, db.ForeignKey('master_areas.id'), nullable=False)
+    traction = db.Column(db.String(50), nullable=False)
+
+    traingroup = db.relationship("TimetableTrainGroup", backref=db.backref('traction_optimised_electrification'))
 
 
 class User(db.Model):

@@ -11,28 +11,29 @@ FORCE_RECALCULATION = True
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-scenarios = [MasterScenario.query.get(1)]
-# scenarios = MasterScenario.query.all()
+# scenarios = [MasterScenario.query.get(1)]
+scenarios = MasterScenario.query.all()
 
 
 # tgs = TimetableTrainGroup.query.join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
 #     TimetableCategory.transport_mode=='spfv').all()
 
-tgs = TimetableTrainGroup.query.all()
+# tgs = TimetableTrainGroup.query.all()π
 
-# tgs = [TimetableTrainGroup.query.get('tg_BW5.a1_SRN_x0020_5101_93908')]
+tgs = [TimetableTrainGroup.query.get('tg_NW46_N_x0020_46001_67163')]
 
 # logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
+
+print(tgs[0].trains[0].train_part.timetable_ocps)
 
 for scenario in scenarios:
     infra_version = version.Version(scenario=scenario)
     route = routing.GraphRoute(graph=graph, infra_version=infra_version)
     for tg in tgs:
-        if len(tg.railway_lines) == 0:
-                try:
-                    route.line(traingroup=tg, force_recalculation=FORCE_RECALCULATION)
-                    ocp = tg.trains[0].train_part.timetable_ocps
-                except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
-                    logging.error(f"{e.args} {tg}")
+        try:
+            route.line(traingroup=tg, force_recalculation=FORCE_RECALCULATION)
+            ocp = tg.trains[0].train_part.timetable_ocps
+        except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
+            logging.error(f"{e.args} {tg}")
 
 

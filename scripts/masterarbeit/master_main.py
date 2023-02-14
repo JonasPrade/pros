@@ -8,12 +8,14 @@ from prosd.calculation_methods import use, cost, base
 from prosd.manage_db.version import Version
 from prosd.graph import railgraph, routing
 
-logging.basicConfig(encoding='utf-8', level=logging.INFO)
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 
 base = base.BaseCalculation()
 ROUTE_TRAINGROUP = False
 DELETE_AREAS = False
 CREATE_AREAS = False
+OVERWRITE_INFRASTRUCTURE = True
+scenario_id = 1
 start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
 start_year = parameter.START_YEAR
 duration_operation = parameter.DURATION_OPERATION
@@ -24,10 +26,10 @@ def calculate_cost_area(area, tractions, scenario_infra):
             if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
                 continue
             else:
-                area.infrastructure_cost(traction=traction, area=area, name=f"{traction} s{scenario_infra.scenario.id}-a{area.id}",
-                                    infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
+                logging.debug(f"started calculation {traction} {area.id}")
+                area.calculate_infrastructure_cost(traction=traction, infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
                 area.calc_train_cost(traction=traction, infra_version=scenario_infra)
-                logging.info(f"finished calculation {traction} {area.id}")
+                logging.debug(f"finished calculation {traction} {area.id}")
 
 
 def main(scenario_id):
@@ -52,6 +54,4 @@ def main(scenario_id):
 
 
 if __name__ == '__main__':
-    OVERWRITE_INFRASTRUCTURE = True
-    scenario_id = 1
     main(scenario_id=scenario_id)

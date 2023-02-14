@@ -2,35 +2,11 @@
 A class that creates a infrastrucutre state that differs from the railway by adding project_contents
 """
 
-import os
 import pandas
 import sqlalchemy
 
-from prosd.models import ProjectContent, RailwayLine, RailwayStation
+from prosd.models import RailwayLine, RailwayStation
 from prosd import db
-
-
-def _change_electrification(project_content, railway_line):
-    if project_content.elektrification:
-        railway_line.electrified = True
-        railway_line.catenary = True
-        railway_line.voltage = 15
-        railway_line.dc_ac = 'ac'
-
-    return railway_line
-
-
-def _change_closing(project_content, railway_line):
-    if project_content.closure:
-        railway_line.closed = True
-    return railway_line
-
-
-def _change_charging_station(project_content, railway_station):
-    if project_content.charging_station:
-        railway_station.charging_station = True
-
-    return railway_station
 
 
 class Version:
@@ -43,12 +19,12 @@ class Version:
     def load_changes(self):
         self._load_projects_to_version()
 
-    def add_projectcontents_to_version_temporary(self, pc_list, update_infra=False):
+    def add_projectcontents_to_version_temporary(self, pc_list, update_infra=False, use_subprojects=False):
         if update_infra:  # if True, the project content changes are added to the self.infra dataframes
-           for pc in pc_list:
-            self.load_single_project_to_version(pc=pc, use_subprojects=False)
+            for pc in pc_list:
+                self.load_single_project_to_version(pc=pc, use_subprojects=use_subprojects)
 
-    def _prepare_commit_project_content(self, project_content):
+    def prepare_commit_project_content(self, project_content):
         """
         commits a projectcontent to the database, if the project content does not exists.
         The problem is, that the projectcontent may bring some changed railway infrastructure data.
@@ -57,7 +33,7 @@ class Version:
         """
         # check if project_content exists:
         if sqlalchemy.inspect(project_content).persistent == True:
-            return
+            return project_content
 
         # remove all changes to stations that the project_content may bring with.
         stations = project_content.railway_stations
@@ -111,18 +87,12 @@ class Version:
         for pc in pc_list:
             for line in pc.railway_lines:
                 # get the correct railwayline and remove that from the dataFrame
-                rl_changed = self.infra["railway_lines"][self.infra["railway_lines"].railway_line_id == line.id][
-                    "railway_line_model"].iloc[0]
-                self.infra["railway_lines"] = self.infra["railway_lines"][
-                    self.infra["railway_lines"].railway_line_id != line.id]
-
-                rl_changed = _change_electrification(project_content=pc, railway_line=rl_changed)
-                rl_changed = _change_closing(project_content=pc, railway_line=rl_changed)
-                db.session.expunge(rl_changed)
+                rl_changed = self.get_railwayline_model(railwayline_id=line.id)
+                if pc.elektrification is True:
+                    rl_changed = self._add_electrification(railway_line=rl_changed)
+                rl_changed = self._change_closing(project_content=pc, railway_line=rl_changed)
                 # Here can be more changes added
-
-                rl_df = pandas.DataFrame([[line.id, rl_changed]], columns=['railway_line_id', 'railway_line_model'])
-                self.infra["railway_lines"] = pandas.concat([self.infra["railway_lines"], rl_df])
+                self._change_infrastructure_df(railway_line_changed=rl_changed)
 
             for station in pc.railway_stations:
                 rs_changed = self.infra["railway_stations"][self.infra["railway_stations"].railway_station_id == station.id][
@@ -130,12 +100,22 @@ class Version:
                 self.infra["railway_stations"] = self.infra["railway_stations"][
                     self.infra["railway_stations"].railway_station_id != station.id]
 
-                rs_changed = _change_charging_station(project_content=pc, railway_station=rs_changed)
+                rs_changed = self._add_charging_station(project_content=pc, railway_station=rs_changed)
                 db.session.expunge(rs_changed)
                 # Here can be added some more
 
                 rs_df = pandas.DataFrame([[station.id, rs_changed]], columns=['railway_station_id', 'railway_station_model'])
                 self.infra["railway_stations"] = pandas.concat([self.infra["railway_stations"], rs_df])
+
+    def _change_infrastructure_df(self, railway_line_changed):
+        # remove the line_model from df and add the changed line
+        railway_line_id = railway_line_changed.id
+        if sqlalchemy.inspect(railway_line_changed).detached is False:
+            db.session.expunge(railway_line_changed)
+        self.infra["railway_lines"] = self.infra["railway_lines"][
+            self.infra["railway_lines"].railway_line_id != railway_line_id]
+        rl_df = pandas.DataFrame([[railway_line_id, railway_line_changed]], columns=['railway_line_id', 'railway_line_model'])
+        self.infra["railway_lines"] = pandas.concat([self.infra["railway_lines"], rl_df])
 
     def get_railwayline_model(self, railwayline_id):
         """
@@ -159,3 +139,51 @@ class Version:
                 railway_line_ids.append(line.id)
 
         return railway_line_ids
+
+    def add_electrification_for_rw_lines(self, rw_lines):
+        """
+
+        :param rw_lines:
+        :return:
+        """
+        for line_db in rw_lines:
+            line_infra_version = self.get_railwayline_model(line_db.id)
+            railway_line_changed = self._add_electrification(railway_line=line_infra_version)
+            self._change_infrastructure_df(railway_line_changed=railway_line_changed)
+
+    def remove_electrification_for_rw_lines(self, rw_lines):
+        """
+        remove electrification for rw_lines
+        :param rw_lines: list of railway_lines
+        :return:
+        """
+        for line_db in rw_lines:
+            line_infra_version = self.get_railwayline_model(line_db.id)
+            railway_line_changed = self._remove_electrification(railway_line=line_infra_version)
+            self._change_infrastructure_df(railway_line_changed=railway_line_changed)
+
+    def _add_electrification(self, railway_line):
+        railway_line.electrified = True
+        railway_line.catenary = True
+        railway_line.voltage = 15
+        railway_line.dc_ac = 'ac'
+
+        return railway_line
+
+    def _remove_electrification(self, railway_line):
+        railway_line.electrified = False
+        railway_line.catenary = False
+        railway_line.voltage = None
+        railway_line.dc_ac = None
+        return railway_line
+
+    def _change_closing(self, project_content, railway_line):
+        if project_content.closure:
+            railway_line.closed = True
+        return railway_line
+
+    def _add_charging_station(self, project_content, railway_station):
+        if project_content.charging_station:
+            railway_station.charging_station = True
+
+        return railway_station

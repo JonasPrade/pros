@@ -2,16 +2,16 @@ from prosd.graph import railgraph, routing
 from prosd.models import MasterScenario
 from prosd.manage_db import version
 
-station_from = "AH"
-station_to = "XDNK"
+station_from = "LDBG"
+station_to = "LLWS"
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-scenario = MasterScenario.query.get(2)
+scenario = MasterScenario.query.get(1)
 version = version.Version(scenario=scenario)
 
 route = routing.GraphRoute(graph=graph, infra_version=version)
 
-path = route.route_line(station_from=station_from, station_to=station_to, stations_via=[])
+path = route.route_line(station_from=station_from, station_to=station_to, stations_via=[], save_route=True)
 
 print(path)

@@ -26,12 +26,11 @@ for scenario in scenarios:
     infra_version = version.Version(scenario=scenario)
     route = routing.GraphRoute(graph=graph, infra_version=infra_version)
     for tg in tgs:
-        if len(tg.railway_lines) == 0:
-                try:
-                    route.line(traingroup=tg, force_recalculation=FORCE_RECALCULATION)
-                    ocp = tg.trains[0].train_part.timetable_ocps
-                except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
-                    logging.error(f"{e.args} {tg}")
+        try:
+            route.line(traingroup=tg, force_recalculation=FORCE_RECALCULATION)
+            ocp = tg.trains[0].train_part.timetable_ocps
+        except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
+            logging.error(f"{e.args} {tg}")
 
 
 geojson_data["traingroups"] = []

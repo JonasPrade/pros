@@ -2,11 +2,11 @@ from tests.base import BaseTestCase
 from prosd import parameter
 from prosd.manage_db.version import Version
 from prosd.models import MasterScenario, MasterArea, TimetableLine
-from prosd.calculation_methods.cost import BvwpProjectBattery
+from prosd.calculation_methods.cost import BvwpProjectBattery, BvwpProjectOptimisedElectrification
 
 tt_id = 1720
 
-def calculate_battery():
+def get_infra_version():
     scenario_id = 1
     scenario = MasterScenario.query.get(scenario_id)
     scenario_infra = Version(scenario=scenario)
@@ -21,7 +21,7 @@ class TestCostBattery(BaseTestCase):
         :return:
         """
         area_id = 73
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -38,7 +38,7 @@ class TestCostBattery(BaseTestCase):
         :return:
         """
         area_id = 81
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -51,7 +51,7 @@ class TestCostBattery(BaseTestCase):
 
     def test_cost_battery_testcase3(self):
         area_id = 148
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -64,7 +64,7 @@ class TestCostBattery(BaseTestCase):
 
     def test_cost_battery_testcase4(self):
         area_id = 76
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -77,7 +77,7 @@ class TestCostBattery(BaseTestCase):
 
     def test_cost_battery_testcase_area64(self):
         area_id = 64
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -90,7 +90,7 @@ class TestCostBattery(BaseTestCase):
 
     def test_cost_battery_testcase_area73(self):
         area_id = 73
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -103,7 +103,7 @@ class TestCostBattery(BaseTestCase):
 
     def test_cost_battery_testcase_area74(self):
         area_id = 74
-        infra_version = calculate_battery()
+        infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
         infrastructure_cost = BvwpProjectBattery(
@@ -113,4 +113,28 @@ class TestCostBattery(BaseTestCase):
         )
 
         self.assertTrue(round(infrastructure_cost.cost_2015) == 48888)
+
+
+class TestOptimisedElectrification(BaseTestCase):
+    def test_cost_optimised_electrification_area_60(self):
+        area_id = 60
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        project_optimised_electrification = BvwpProjectOptimisedElectrification(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+    def test_cost_optimised_electrification_area_106(self):
+        area_id = 106
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        project_optimised_electrification = BvwpProjectOptimisedElectrification(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
 

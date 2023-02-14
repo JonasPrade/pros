@@ -4,7 +4,7 @@ ANUALITY_FACTOR = 0.0428
 START_YEAR = 2030
 START_MONTH = 1
 START_DATE = 1
-TRACTIONS = ["electrification", "efuel", "battery"]
+TRACTIONS = ["electrification", "efuel", "battery", "optimised_electrification"]
 
 ### COST FACTORS
 CO2_COST = 670

@@ -1,4 +1,4 @@
-import geoalchemy2.shape
+#import geoalchemy2.shape
 import geojson
 import marshmallow
 import shapely
@@ -10,14 +10,14 @@ from prosd import models
 
 from marshmallow_sqlalchemy import ModelConverter, auto_field, property2field
 from marshmallow import fields
-from geoalchemy2.types import Geometry
+import geoalchemy2
 
 
 # Model Converter for Geoalchemy
 class GeoConverter(ModelConverter):
     SQLA_TYPE_MAPPING = {
         **ModelConverter.SQLA_TYPE_MAPPING,
-        **{Geometry: fields.Str}
+        **{geoalchemy2.types.Geometry: fields.Str}
     }
 
 
@@ -371,11 +371,11 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
         model = models.MasterArea
         include_fk = True
 
-    cost_traction = fields.Dict()
+    cost_all_tractions = fields.Dict()
+    infrastructure_cost_all_tractions = fields.Dict()
+    operating_cost_all_tractions = fields.Dict()
     cost_effective_traction = fields.Str()
     categories = fields.List(fields.Str())
-    infrastructure_cost = fields.Dict()
-    train_cost = fields.Dict()
 
 
 class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):

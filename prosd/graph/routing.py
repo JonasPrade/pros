@@ -16,6 +16,9 @@ class GraphRoute:
         dirname = os.path.dirname(__file__)
         self.filepath_save_path = os.path.realpath(
             os.path.join(dirname, '../../example_data/railgraph/paths_traingroups/{}.json'))
+        self.filepath_save_path_stations = os.path.realpath((
+            os.path.join(dirname, '../../example_data/railgraph/paths/{}to{}.json')
+        ))
 
         self.filepath_ignore_ocp = os.path.realpath(os.path.join(dirname, '../../example_data/railgraph/blacklist_route_ignore_ocp.json'))
 
@@ -93,7 +96,7 @@ class GraphRoute:
 
         return route_traingroups
 
-    def route_line(self, station_from, station_to, stations_via, filename=None, save_route=True):
+    def route_line(self, station_from, station_to, stations_via, filename=None, save_route=False):
         if len(stations_via) > 0:
             pathes = []
             first_target = str(stations_via[0])
@@ -115,7 +118,6 @@ class GraphRoute:
             path = pathes
 
         else:
-            # path = super().shortest_path(graph=graph, source=station_source, target=station_sink)
             path = self._shortest_path(start_station=station_from, target_station=station_to)
             # lines = self.get_lines_of_path(graph, path)
 
@@ -134,6 +136,9 @@ class GraphRoute:
             "nodes": path,
             "edges": lines
         }
+
+        if save_route:
+            self._save_path_stations(path_dict=path_dict, from_station=station_from, to_station=station_to)
 
         return path_dict
 
@@ -157,6 +162,12 @@ class GraphRoute:
         else:
             filepath_save = self.filepath_save_path.format(str(filename))
 
+        path_json = json.dumps(path_dict)
+        with open(filepath_save, "w") as f:
+            f.write(path_json)
+
+    def _save_path_stations(self, path_dict, from_station, to_station):
+        filepath_save = self.filepath_save_path_stations.format(str(from_station),str(to_station))
         path_json = json.dumps(path_dict)
         with open(filepath_save, "w") as f:
             f.write(path_json)

@@ -408,7 +408,11 @@ class BvwpProjectBattery(BvwpCost):
         """
         # calculate for each rw_lines_ordered the energy needed and battery level
 
-        vehicles = train.train_part.formation.vehicles
+        if train.train_part.formation.formation_calculation_standi:
+            vehicles = train.train_part.formation.formation_calculation_standi.vehicles
+        else:
+            vehicles = train.train_part.formation.vehicles
+
         for section in sections:
             energy_sum_group = 0
             energy_running_group = 0
@@ -477,9 +481,9 @@ class BvwpProjectBattery(BvwpCost):
 
         for stop in stops:
             if stop.station:
-                lines_of_stations = stop.station.railway_lines
+                lines_of_stations = [line.id for line in stop.station.railway_lines]
                 possible_sections = set(
-                    rw_lines[rw_lines["railway_line_model"].isin(lines_of_stations)]["section_id"].to_list())
+                    rw_lines[rw_lines["railway_line_id"].isin(lines_of_stations)]["section_id"].to_list())
                 if len(possible_sections) > 1:
                     # there is more than one group possible
                     # check if only one has catenary
@@ -537,7 +541,11 @@ class BvwpProjectBattery(BvwpCost):
         """
         CHARGE = parameter.CHARGE
 
-        vehicles = trains[0].train_part.formation.vehicles
+        if trains[0].train_part.formation.formation_calculation_standi:
+            vehicles = trains[0].train_part.formation.formation_calculation_standi.vehicles
+        else:
+            vehicles = trains[0].train_part.formation.vehicles
+
         battery_capacity = 0
         for vehicle in vehicles:
             vehicle_pattern = VehiclePattern.query.get(vehicle.vehicle_pattern.vehicle_pattern_id_battery)
@@ -632,65 +640,6 @@ class BvwpProjectBattery(BvwpCost):
                 )
                 new_projects.append(project_load)
 
-        # if cycle_sections[-1][0]["catenary"] or train.last_ocp.ocp.station.charging_station:
-        #     last_ocp_electrified = True
-        # else:
-        #     last_ocp_electrified = False
-        #
-        # if first_ocp_electrified is True and last_ocp_electrified is True:
-        #     both_ocp_electrified = True
-        # else:
-        #     both_ocp_electrified = False
-        #
-        # # analyse where some infrastructure is needed
-        # if one_cycle_problem:
-        #     for record in battery_empty:
-        #         if record[0] == 0:
-        #             energy_one_way_problem = True
-        #         if record[0] == 1:
-        #             energy_cycle_problem = True
-        #
-        # # if the energy is empty in the first segment -> some charging or electrification at the line
-        # if energy_one_way_problem:
-        #     logging.error(f"There is an energy_one_way_problem for {tt_line}, but there are no solutions for that yet")
-        #     #TODO: Check if there is a longer stop to charge
-        #     #TODO: if not -> electrify a railway sector
-        #     pass
-        #
-        # # if the energy gets empty at the second segment -> try recharging at the turning stations
-        # elif energy_cycle_problem:
-        #     if both_ocp_electrified is False:
-        #         if last_ocp_electrified is False:
-        #             pc_charge_last_ocp_temp = self.create_charging_project_content(
-        #                 station=tt_line.train_groups[0].last_ocp.ocp.station,
-        #                 project_group=[PROJECT_GROUP]
-        #             )
-        #             new_project_contents.append(pc_charge_last_ocp_temp)
-        #             logging.info(f"Added {pc_charge_last_ocp_temp} at station {pc_charge_last_ocp_temp.railway_stations}")
-        #         elif first_ocp_electrified is False:
-        #             pc_charge_first_ocp_temp = self.create_charging_project_content(
-        #                 station=tt_line.train_groups[0].first_ocp.ocp.station,
-        #                 project_group=[PROJECT_GROUP]
-        #             )
-        #             new_project_contents.append(pc_charge_first_ocp_temp)
-        #             logging.info(
-        #                 f"Added {pc_charge_first_ocp_temp} at station {pc_charge_first_ocp_temp.railway_stations}")
-        #     else:
-        #         # TODO: Try to add a charging station at other point
-        #         pass
-        #
-        #     # TODO: if not -> electrify a railway_sector
-        #     pass
-        #
-        # elif multi_cycle_problem:
-        #     # TODO: Add multi_cycle_problem
-        #     pass
-        #
-        # # add the new created (but not commited) project_contents
-        # for pc in new_project_contents:
-        #     self.infra_version.load_single_project_to_version(pc)
-        #
-
         return new_projects
 
     def create_charging_or_catenary_station(self, station_id, duration_stop, line):
@@ -784,6 +733,142 @@ class BvwpProjectBattery(BvwpCost):
 
 
 class BvwpProjectOptimisedElectrification(BvwpCost):
+    def __init__(self, start_year_planning, area, infra_version, abs_nbs='abs'):
+        self.start_year_planning = start_year_planning
+        self.area = area
+        self.sub_areas = area.sub_master_areas
+        self.infra_version = infra_version
+
+        self.cost = 0
+
+        self.investment_cost = []
+        self.maintenance_cost = []
+
+        self._electrify_complete_infra()
+        self.traingroup_to_traction = {traingroup: "electrification" for traingroup in self.area.traingroups}
+        sub_area_by_length = self._sort_sub_areas_by_usage()
+        sub_area_cost = self._calculate_optimisation(sub_area_by_length)
+
+        # TOOD: Calculate investement cost and maintenance cost
+        self.investment_cost = 0
+        self.maintenance_cost = 0
+        self.project_contents = []
+        for index, sub_area in sub_area_cost.items():
+            pc = sub_area["project"]
+            self.investment_cost += pc.investment_cost
+            self.maintenance_cost += pc.maintenance_cost
+            self.project_contents.append(pc)
+
+        super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenance_cost,
+                         start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+
+    def _electrify_complete_infra(self):
+        complete_electrification = self.area.calculate_infrastructure_cost(
+            traction='electrification',
+            infra_version=self.infra_version,
+            overwrite=True
+        )
+        self.infra_version.add_projectcontents_to_version_temporary(
+            pc_list=[complete_electrification],
+            update_infra=True
+        )
+        self.area.calc_train_cost(
+            traction='electrification',
+            infra_version=self.infra_version,
+        )
+        self.cost = self.area.cost_traction('electrification')
+
+    def _sort_sub_areas_by_usage(self):
+        sub_area_by_length = dict()
+        for sub_area in self.sub_areas:
+            running_km_day = sum([traingroup.running_km_day(self.infra_version) for traingroup in sub_area.traingroups])
+            sub_area_by_length[sub_area] = running_km_day
+        return sub_area_by_length
+
+    def _calculate_optimisation(self, sub_area_by_length):
+        sub_area_cost = dict()
+
+        while sub_area_by_length:
+            sub_area = min(sub_area_by_length, key=sub_area_by_length.get)
+            sub_area_by_length.pop(sub_area)
+            sub_area_cost = self._caluclate_optimization_for_sub_area(
+                sub_area=sub_area,
+                sub_area_cost=sub_area_cost
+            )
+
+        return sub_area_cost
+
+    def _caluclate_optimization_for_sub_area(self, sub_area, sub_area_cost):
+        if 'sgv' in sub_area.categories:
+            cost_electrification, pc_electrification = self._calculate_cost_for_sub_area(traction='electrification',
+                                                                                         sub_area=sub_area)
+            sub_area_cost[sub_area.id] = {
+                "preferred_traction": 'electrification',
+                "cost_sub_area_electrification": cost_electrification,
+                "project": pc_electrification
+            }
+            return sub_area_cost
+
+        """
+        Remove the electrification for the sub area and calculate the cost for electrification and for battery
+        """
+        self.infra_version.remove_electrification_for_rw_lines(rw_lines=sub_area.railway_lines)
+        cost_electrification, pc_electrification = self._calculate_cost_for_sub_area(traction='electrification',
+                                                                                     sub_area=sub_area)
+        cost_battery, pc_battery = self._calculate_cost_for_sub_area(traction='battery', sub_area=sub_area)
+
+        """
+        Compare the calculated cost
+        """
+        if cost_electrification > cost_battery:
+            self.cost = self.cost - cost_electrification + cost_battery
+            self.infra_version.add_projectcontents_to_version_temporary(pc_list=[pc_battery], update_infra=True,
+                                                                        use_subprojects=True)
+            for tg in sub_area.traingroups:
+                self.traingroup_to_traction[tg] = "battery"
+            preferred_traction = 'battery'
+            project = pc_battery
+        elif cost_electrification <= cost_battery:
+            self.infra_version.add_projectcontents_to_version_temporary(pc_list=[pc_electrification], update_infra=True,
+                                                                        use_subprojects=False)
+            preferred_traction = 'electrification'
+            project = pc_electrification
+
+        sub_area_cost[sub_area.id] = {
+            "preferred_traction": preferred_traction,
+            "cost_sub_area_battery": cost_battery,
+            "cost_sub_area_electrification": cost_electrification,
+            "project": project
+        }
+        return sub_area_cost
+
+    def _calculate_cost_for_sub_area(self, traction, sub_area):
+        if traction == 'electrification':
+            train_costs = sub_area.calc_train_cost(
+                traction=traction,
+                infra_version=self.infra_version,
+                traingroup_to_traction=self.traingroup_to_traction
+            )
+        elif traction == 'battery':
+            train_costs = sub_area.calc_train_cost(
+                traction=traction,
+                infra_version=self.infra_version,
+            )
+
+        base = BaseCalculation()
+        cost_traction = 0
+        for tc in train_costs:
+            cost_year = tc.cost
+            cost_base = base.cost_base_year(start_year = parameter.START_YEAR, duration=parameter.DURATION_OPERATION, cost=cost_year, cost_is_sum=False)
+            cost_traction += cost_base
+
+        infrastructure_cost = sub_area.calculate_infrastructure_cost(
+            traction=traction,
+            infra_version=self.infra_version,
+            overwrite=True
+        )
+        cost = cost_traction + infrastructure_cost.planned_total_cost
+        return cost, infrastructure_cost
 
 
 # class BvwpCostH2(BvwpCost):

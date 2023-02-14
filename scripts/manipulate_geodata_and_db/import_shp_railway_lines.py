@@ -5,16 +5,16 @@ from prosd import db
 from prosd.models import RailwayLine
 from prosd.graph.railgraph import RailGraph
 
-route_number = 10025
+route_number = 9304
 FILEPATH = '../../example_data/import/shp_railway_lines/{route_number}.shp'.format(route_number=route_number)
 
 shp = geopandas.read_file(FILEPATH)
 
-number_tracks = 'zweigleisig'
-catenary = True
+number_tracks = 'eingleisig'
+catenary = False
 conductor_rail = False
-voltage = 15
-dc_ac = 'ac'
+voltage = None
+dc_ac = None
 vmax = None
 type_of_transport = "Pz/Gz-Bahn"
 gauge = 1435
