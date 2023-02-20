@@ -2705,6 +2705,18 @@ class MasterScenario(db.Model):
             except (UnboundLocalError, networkx.exception.NodeNotFound) as e:
                 logging.error(f"{e.args} {tg}")
 
+    @property
+    def cost_effective_traction(self):
+        cost_effective_traction = dict()
+        for area in self.master_areas:
+            if area.superior_master_id is None:
+                effective_traction = area.cost_effective_traction
+                if effective_traction in cost_effective_traction.keys():
+                    cost_effective_traction[effective_traction] += 1
+                else:
+                    cost_effective_traction[area.cost_effective_traction] = 1
+
+        return cost_effective_traction
 
 class MasterArea(db.Model):
     """
@@ -2810,31 +2822,9 @@ class MasterArea(db.Model):
             # commented -> not ready for calculation
 
         cost_by_traction["efuel"] = 0
-        # cost_by_traction["diesel"] = 0
+        cost_by_traction["diesel"] = 0
 
         return cost_by_traction
-
-    # @property
-    # def project_content_by_traction(self):
-    #     pc_by_traction = dict()
-    #
-    #     for pc in self.project_contents:
-    #         if pc.elektrification is True:
-    #             pc_by_traction["electrification"] = pc
-    #
-    #         elif pc.battery is True:
-    #             pc_by_traction["battery"] = pc
-    #         # elif pc.h2 is True:
-    #         #     pc_by_traction["h2"] = pc
-    #         # elif pc.efuel is True:
-    #         #     pc_by_traction["efuel"] = [pc, pc.planned_total_cost]
-    #
-    #         # commented -> not ready for calculation
-    #
-    #     pc_by_traction["efuel"] = None
-    #     # pc_by_traction["diesel"] = None
-    #
-    #     return pc_by_traction
 
     @hybrid_method
     def cost_traction(self, traction):

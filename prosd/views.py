@@ -365,7 +365,7 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     project_contents = ma.Nested(ProjectContentShortSchema, many=True)
     traingroups = ma.Nested(TrainGroupShortSchema, many=True)
-    scenario = ma.Nested(lambda: MasterScenarioSchema(exclude=["master_areas",]))
+    scenario = ma.Nested(lambda: MasterScenarioSchemaShort())
 
     class Meta:
         model = models.MasterArea
@@ -378,13 +378,23 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     categories = fields.List(fields.Str())
 
 
-class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
-    master_areas = ma.Nested(MasterAreaSchema(exclude=["scenario",]), many=True)
+class MasterAreaShort(ma.SQLAlchemyAutoSchema):
+    railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+    class Meta:
+        model = models.MasterArea
+        include_fk = True
 
+    cost_all_tractions = fields.Dict()
+    cost_effective_traction = fields.Str()
+    categories = fields.List(fields.Str())
+
+
+class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.MasterScenario
         include_fk = True
 
+    cost_effective_traction = fields.Dict()
 
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
     class Meta:

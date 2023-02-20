@@ -1,6 +1,6 @@
 import logging
 import time
-import networkx
+from datetime import datetime
 
 from prosd import db, parameter
 from prosd.models import ProjectContent, MasterArea, RouteTraingroup, TimetableTrainCost, MasterScenario, TimetableTrainGroup
@@ -8,13 +8,14 @@ from prosd.calculation_methods import use, cost, base
 from prosd.manage_db.version import Version
 from prosd.graph import railgraph, routing
 
-logging.basicConfig(encoding='utf-8', level=logging.INFO)
+filepath_logging = f"../../example_data/master_logs/{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"
+logging.basicConfig(filename=filepath_logging, encoding='utf-8', level=logging.ERROR)
 
 base = base.BaseCalculation()
 ROUTE_TRAINGROUP = False
 DELETE_AREAS = False
 CREATE_AREAS = False
-OVERWRITE_INFRASTRUCTURE = False
+OVERWRITE_INFRASTRUCTURE = True
 scenario_id = 2
 start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
 start_year = parameter.START_YEAR

@@ -80,6 +80,20 @@ class TestMasterAreaTractionCost(BaseTestCase):
             infra_version=infra_version,
         )
 
+    def test_calc_traction_cost_diesel(self):
+        """
+        Test the traction cost for diesel
+        :return:
+        """
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        ttc = area.calc_train_cost(
+            traction='diesel',
+            infra_version=infra_version,
+        )
+
+        self.assertTrue(ttc[0].cost > 0)
 
 class TestMasterAreaInfrastructureCost(BaseTestCase):
     def test_calculate_infrastructure_cost_electrification(self):

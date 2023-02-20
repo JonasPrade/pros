@@ -34,7 +34,7 @@ def calculate_cost_area(area, tractions, scenario_infra):
 
 
 if __name__ == '__main__':
-    master_area_id = 254
+    master_area_id = 337
     tractions = parameter.TRACTIONS
 
     scenario = MasterScenario.query.get(scenario_id)
