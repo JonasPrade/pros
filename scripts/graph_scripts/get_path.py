@@ -2,8 +2,8 @@ from prosd.graph import railgraph, routing
 from prosd.models import MasterScenario
 from prosd.manage_db import version
 
-station_from = "LDBG"
-station_to = "LLWS"
+station_from = "SKZ"
+station_to = "SKU B"
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)

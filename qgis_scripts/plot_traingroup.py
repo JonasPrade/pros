@@ -4,7 +4,7 @@ import json
 import os
 # TODO: Add the relevant stadions
 
-traingroup_id = 'tg_NW46_N_x0020_46001_67163'
+traingroup_id = 'tg_SA73_N_x0020_73002_40412'
 filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths_traingroups/{traingroup_id}.json")
 print(filepath)
 

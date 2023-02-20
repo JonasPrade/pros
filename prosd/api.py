@@ -145,7 +145,14 @@ def get_all_master_scenarios(**kwargs):
     response = make_response({'master_scenario': output})
     return response
 
-
+@app.route("/railwaylines", methods=['GET'])
+@cross_origin()
+def get_all_railwaylines(**kwargs):
+    railway_lines = models.RailwayLine.query.all()
+    railway_lines_schema = views.RailwayLinesSchema(many=True)
+    output = railway_lines_schema.dump(railway_lines)
+    response = make_response({'railway_lines': output})
+    return response
 
 """
 @app.route("/project/<id>", methods=['POST'])

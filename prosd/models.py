@@ -82,7 +82,41 @@ def get_lines_with_same_traingroups(line, scenario_id, lines):
     ).group_by(RailwayLine).having(
         sqlalchemy.func.count(sqlalchemy.distinct(TimetableTrainGroup.id)) == len(traingroup_line_ids)
     ).all()
+    if len(lines_same_traingroups)== 0:
+        raise SubAreaError(
+            f"{line} for {scenario_id} has no traingroups that uses that line"
+        )
     return lines_same_traingroups
+
+
+def get_next_train(previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
+    # get the ocp where the trains end
+    ocp = previous_train.train_part.last_ocp.ocp
+    arrival = previous_train.train_part.last_ocp_arrival
+
+    # search all trains that starts here
+    list_all_trains_filtered = list_all_trains[list_all_trains.first_ocp == ocp]
+    list_all_trains_filtered = list_all_trains_filtered[list_all_trains_filtered.departure > arrival + wait_time]
+    try:
+        next_train = list_all_trains_filtered.iloc[0][0]
+        # time_information = next_train.train_part.first_ocp_departure - arrival
+    except IndexError:
+        next_train = None
+
+    return next_train
+
+
+def get_earliest_departure(list_all_trains):
+    """
+    searches for the train with the earliest departure at their first stop
+    :param list_all_trains:
+    :return:
+    """
+    list_all_trains = list_all_trains.sort_values('departure')
+
+    earliest_train = list_all_trains.iloc[0][0]
+
+    return earliest_train
 
 
 class PointOfLineNotAtEndError(Exception):
@@ -96,6 +130,16 @@ class NoSplitPossibleError(Exception):
 
 
 class NoTractionFound(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class SubAreaError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class NoTrainCostError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
@@ -567,6 +611,20 @@ class RailwayLine(db.Model):
         return traingroups
 
 
+    @property
+    def get_neighbouring_lines(self):
+        nodes = []
+        for node in self.nodes:
+            nodes.append(RailwayNodes.query.get(node))
+
+        lines = set()
+        for node in nodes:
+            lines.update(node.lines)
+
+        lines.discard(self)
+
+        return lines
+
 class RailwayPoint(db.Model):
     __tablename__ = 'railway_points'
     id = db.Column(db.Integer, primary_key=True)
@@ -1033,7 +1091,7 @@ class ProjectContent(db.Model):
     __tablename__ = 'projects_contents'
 
     # Basic informations
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id', onupdate='SET NULL', ondelete='SET NULL', name='projects_contents_project_id_fkey'))
     project_number = db.Column(
         db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
@@ -2084,6 +2142,108 @@ class TimetableTrainPart(db.Model):
         return last_ocp_arrival
 
 
+class TrainCycle(db.Model):
+    __tablename__ = 'traincycles'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    trainline_id = db.Column(db.Integer, db.ForeignKey('timetable_lines.id'))
+    wait_time = db.Column(db.Time)
+    first_train_id = db.Column(db.String(510), db.ForeignKey('timetable_train.id'))
+
+    elements = db.relationship("TrainCycleElement", backref="train_cycle")
+
+    sqlalchemy.UniqueConstraint(
+        trainline_id,
+        wait_time,
+        first_train_id,
+        name='unique_traincycle'
+    )
+
+    @classmethod
+    def get_train_cycles(obj, timetableline_id, wait_time=datetime.timedelta(minutes=5)):
+        cycles = TrainCycle.query.filter(
+            TrainCycle.trainline_id == timetableline_id,
+            TrainCycle.wait_time == wait_time
+        ).all()
+
+        if len(cycles) == 0:
+            logging.info(f"No traincycles found for timetableline {timetableline_id} and wait_time {wait_time}. Start calculating train_cycles")
+            cycles = TrainCycle.calculate_train_cycles(
+                timetableline_id=timetableline_id,
+                wait_time=wait_time
+            )
+
+        return cycles
+
+    @classmethod
+    def calculate_train_cycles(cls, timetableline_id, wait_time=datetime.timedelta(minutes=5)):
+        TrainCycle.delete_train_cycles(
+            timetable_line_id=timetableline_id,
+            wait_time=wait_time
+        )
+
+        trainline = TimetableLine.query.get(timetableline_id)
+        list_all_trains = trainline.all_trains
+        train_cycles_all = []
+
+        while len(list_all_trains) > 0:
+            first_train = get_earliest_departure(list_all_trains)
+            list_all_trains = list_all_trains[list_all_trains.traingroup != first_train]
+            train_cycle = TrainCycle(
+                trainline_id=trainline.id,
+                wait_time=wait_time,
+                first_train_id=first_train.id
+            )
+            train_cycle_element = TrainCycleElement(
+                train_cycle=train_cycle,
+                train=first_train,
+                sequence=0
+            )
+            train_cycle_elements = [train_cycle_element]
+
+            previous_train = first_train
+            while True:
+                next_train = get_next_train(previous_train=previous_train,
+                                                 list_all_trains=list_all_trains,
+                                                 wait_time=wait_time)
+                if next_train is None:
+                    train_cycles_all.append(train_cycle)
+                    break
+                else:
+                    list_all_trains = list_all_trains[list_all_trains.traingroup != next_train]
+                    sequence = train_cycle_element.sequence + 1
+                    train_cycle_element = TrainCycleElement(
+                        train_cycle=train_cycle,
+                        train=next_train,
+                        sequence=sequence
+                    )
+                    train_cycle_elements.append(train_cycle_element)
+                    previous_train = next_train
+
+
+        db.session.add_all(train_cycles_all)
+        db.session.commit()
+
+        return train_cycles_all
+
+    @classmethod
+    def delete_train_cycles(cls, timetable_line_id, wait_time=datetime.timedelta(minutes=5)):
+        TrainCycle.query.filter(
+            TrainCycle.trainline_id == timetable_line_id,
+            TrainCycle.wait_time == wait_time
+        ).delete()
+
+class TrainCycleElement(db.Model):
+    __tablename__ = 'train_cycle_elements'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    train_cycle_id = db.Column(db.Integer, db.ForeignKey('traincycles.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    train_id = db.Column(db.String(510), db.ForeignKey('timetable_train.id'), nullable=False)
+    sequence = db.Column(db.Integer, nullable=False)
+
+    train = db.relationship("TimetableTrain")
+
+
 class TimetableOcp(db.Model):
     __tablename__ = 'timetable_ocps'
 
@@ -2181,6 +2341,29 @@ class TimetableLine(db.Model):
     code = db.Column(db.String(255), unique=True, nullable=False)
     count_formations = db.Column(db.Integer, default=0)
 
+    @property
+    def travel_time(self):
+        travel_time = datetime.timedelta(seconds=0)
+        for tg in self.train_groups:
+            travel_time += tg.travel_time
+
+        return travel_time
+
+    @property
+    def running_time(self):
+        running_time =datetime.timedelta(seconds=0)
+        for tg in self.train_groups:
+            running_time += tg.minimal_run_time
+
+        return running_time
+
+    @hybrid_method
+    def length_line(self, infra_version):
+        length = 0
+        for tg in self.train_groups:
+            length += tg.length_line(infra_version)
+        return length
+
     @hybrid_method
     def running_km_year(self, infra_version):
         running_km_year = 0
@@ -2208,76 +2391,32 @@ class TimetableLine(db.Model):
         df_all_trains = df_all_trains.sort_values('departure')
         return df_all_trains
 
-    @hybrid_method
-    def get_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
-        list_all_trains = self.all_trains
-        train_cycles_all = []
+    def get_train_cycles(self, wait_time=datetime.timedelta(minutes=5)):
+        train_cycles = TrainCycle.get_train_cycles(
+            timetableline_id=self.id,
+            wait_time=wait_time
+        )
 
-        while len(list_all_trains) > 0:
-            first_train = self._get_earliest_departure(list_all_trains)
-            list_all_trains = list_all_trains[list_all_trains.traingroup != first_train]
-            train_cycle = [first_train]
-            turning_information = []
-
-            previous_train = first_train
-            while True:
-                next_train = self.get_next_train(previous_train=previous_train,
-                                                 list_all_trains=list_all_trains,
-                                                 wait_time=wait_time)
-                if next_train is None:
-                    train_cycles_all.append(train_cycle)
-                    break
-                else:
-                    list_all_trains = list_all_trains[list_all_trains.traingroup != next_train]
-                    train_cycle.append(next_train)
-                    # turning_information.append([previous_train.train_part.last_ocp.ocp, previous_train,
-                    #                             previous_train.train_part.last_ocp_arrival, time_information,
-                    #                             next_train.train_part.first_ocp_departure, next_train])
-                    previous_train = next_train
-
-        return train_cycles_all
+        return train_cycles
 
     def get_one_train_cycle(self, wait_time=datetime.timedelta(minutes=5)):
         """
-        calculates one train cycle (not all)
+        gets the first two trains of one train_cycle
         :return:
         """
-        list_all_trains = self.all_trains
-        first_train = self._get_earliest_departure(list_all_trains)
-        next_train = self.get_next_train(previous_train=first_train,
-                                         list_all_trains=list_all_trains,
-                                         wait_time=wait_time)
-        trains = [first_train, next_train]
+        train_cycles = TrainCycle.get_train_cycles(
+            timetableline_id=self.id,
+            wait_time=wait_time
+        )
+
+        for cycle in train_cycles:
+            if len(cycle.elements[0:2]) == 2:
+                break
+
+        elements = cycle.elements[0:2]
+        trains = [element.train for element in elements]
+
         return trains
-
-    def get_next_train(self, previous_train, list_all_trains, wait_time=datetime.timedelta(minutes=5)):
-
-        # get the ocp where the trains end
-        ocp = previous_train.train_part.last_ocp.ocp
-        arrival = previous_train.train_part.last_ocp_arrival
-
-        # search all trains that starts here
-        list_all_trains_filtered = list_all_trains[list_all_trains.first_ocp == ocp]
-        list_all_trains_filtered = list_all_trains_filtered[list_all_trains_filtered.departure > arrival + wait_time]
-        try:
-            next_train = list_all_trains_filtered.iloc[0][0]
-            # time_information = next_train.train_part.first_ocp_departure - arrival
-        except IndexError:
-            next_train = None
-
-        return next_train
-
-    def _get_earliest_departure(self, list_all_trains):
-        """
-        searches for the train with the earliest departure at their first stop
-        :param list_all_trains:
-        :return:
-        """
-        list_all_trains = list_all_trains.sort_values('departure')
-
-        earliest_train = list_all_trains.iloc[0][0]
-
-        return earliest_train
 
 
 class RailMlOcp(db.Model):
@@ -2605,7 +2744,7 @@ class MasterArea(db.Model):
                     traction = TractionOptimisedElectrification.query.filter(
                         TractionOptimisedElectrification.traingroup_id == tg.id,
                         TractionOptimisedElectrification.master_area_id == self.id
-                    ).one()
+                    ).one().traction
                 except sqlalchemy.orm.exc.NoResultFound:
                     raise NoTractionFound(
                         f"Could not find fitting traction for {traction} and MasterArea {self.id}")
@@ -2617,6 +2756,11 @@ class MasterArea(db.Model):
                 TimetableTrainCost.master_scenario_id == self.scenario_id,
                 TimetableTrainCost.traction == traction
             ).scalar()
+
+            if ttc is None:
+                raise NoTrainCostError(
+                    f"No TimetableTrainCost found for {tg}, traction {traction}, scenario {self.scenario_id} and calculation_method {calculation_method}"
+                )
 
             train_cost += ttc.cost
 
@@ -2638,8 +2782,8 @@ class MasterArea(db.Model):
             try:
                 costs = self.get_operating_cost_traction(traction)
                 train_costs[traction] = costs
-            except NoTractionFound as e:
-                logging.error(f"{e}")
+            except (NoTractionFound, NoTrainCostError) as e:
+                logging.error(f"Error at calulacting operating cost {e}")
 
         return train_costs
 
@@ -2697,7 +2841,9 @@ class MasterArea(db.Model):
         """
         get infrastructure cost and cost of trains for one traction
         """
-        cost_traction = self.get_operating_cost_traction(traction) + self.infrastructure_cost_all_tractions["electrification"]
+        cost_traction = self.get_operating_cost_traction(traction) + self.infrastructure_cost_all_tractions[traction]
+
+        return cost_traction
 
     @property
     def cost_all_tractions(self):
@@ -2767,17 +2913,16 @@ class MasterArea(db.Model):
                     break
 
             if ttc is None:
-                try:
-                    ttc = TimetableTrainCost.create(
-                        traingroup=tg,
-                        master_scenario_id=self.scenario_id,
-                        traction=traction,
-                        infra_version=infra_version
-                    )
-                    ttc_list.append(ttc)
-                except Exception as e:
-                    logging.error(e)
-                    continue
+                ttc = TimetableTrainCost.create(
+                    traingroup=tg,
+                    master_scenario_id=self.scenario_id,
+                    traction=traction,
+                    infra_version=infra_version
+                )
+                ttc_list.append(ttc)
+            # except Exception as e:
+            #     logging.error(f"Error at TimetableTrainCost calculation {e}")
+            #     continue
 
         return ttc_list
 
@@ -2903,11 +3048,18 @@ class MasterArea(db.Model):
         if traction == "optimised_electrification":
             traction_traingroups = []
             for tg, traction in infrastructure_cost.traingroup_to_traction.items():
-                traction_traingroup = TractionOptimisedElectrification(
-                    traingroup_id = tg.id,
-                    master_area_id=self.id,
-                    traction=traction
-                )
+                traction_traingroup = TractionOptimisedElectrification.query.filter(
+                    TractionOptimisedElectrification.traingroup_id == tg.id,
+                    TractionOptimisedElectrification.master_area_id == self.id
+                ).scalar()
+                if traction_traingroup is None:
+                    traction_traingroup = TractionOptimisedElectrification(
+                        traingroup_id = tg.id,
+                        master_area_id=self.id,
+                        traction=traction
+                    )
+                else:
+                    traction_traingroup.traction = traction
                 traction_traingroups.append(traction_traingroup)
 
             db.session.add_all(traction_traingroups)

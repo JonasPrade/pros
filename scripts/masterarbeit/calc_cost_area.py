@@ -1,6 +1,5 @@
 import logging
 import time
-import networkx
 
 from prosd import db, parameter
 from prosd.models import ProjectContent, MasterArea, RouteTraingroup, TimetableTrainCost, MasterScenario, TimetableTrainGroup
@@ -14,7 +13,7 @@ base = base.BaseCalculation()
 ROUTE_TRAINGROUP = False
 DELETE_AREAS = False
 CREATE_AREAS = False
-OVERWRITE_INFRASTRUCTURE = False
+OVERWRITE_INFRASTRUCTURE = True
 scenario_id = 2
 start_year_planning = parameter.START_YEAR - parameter.DURATION_PLANNING  # TODO: get start_year_planning and start_year of operation united
 start_year = parameter.START_YEAR
@@ -22,18 +21,20 @@ duration_operation = parameter.DURATION_OPERATION
 
 
 def calculate_cost_area(area, tractions, scenario_infra):
-        for traction in tractions:
-            if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
-                continue
-            else:
-                start_time = time.time()
-                area.calculate_infrastructure_cost(traction=traction, infra_version=scenario_infra, overwrite=OVERWRITE_INFRASTRUCTURE)
-                area.calc_train_cost(traction=traction, infra_version=scenario_infra)
-                end_time = time.time()
-                logging.info(f"finished calculation {traction} {area.id} (duration {end_time - start_time}s)")
+    for traction in tractions:
+        if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
+            continue
+        else:
+            start_time = time.time()
+            area.calculate_infrastructure_cost(traction=traction, infra_version=scenario_infra,
+                                               overwrite=OVERWRITE_INFRASTRUCTURE)
+            area.calc_train_cost(traction=traction, infra_version=scenario_infra)
+            end_time = time.time()
+            logging.info(f"finished calculation {traction} {area.id} (duration {end_time - start_time}s)")
 
 
-def main(scenario_id):
+if __name__ == '__main__':
+    master_area_id = 254
     tractions = parameter.TRACTIONS
 
     scenario = MasterScenario.query.get(scenario_id)
@@ -46,15 +47,5 @@ def main(scenario_id):
     if CREATE_AREAS:
         scenario.create_areas(infra_version=scenario_infra)
 
-    areas = MasterArea.query.filter(
-        MasterArea.scenario_id == scenario.id,
-        MasterArea.superior_master_area == None
-    ).all()
-
-    for cluster_id, area in enumerate(areas):
-        logging.info(f"calculation {area} is started")
-        calculate_cost_area(area, tractions, scenario_infra)
-
-
-if __name__ == '__main__':
-    main(scenario_id=scenario_id)
+    area = MasterArea.query.get(master_area_id)
+    calculate_cost_area(area, tractions, scenario_infra)

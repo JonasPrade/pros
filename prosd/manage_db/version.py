@@ -26,7 +26,7 @@ class Version:
 
     def prepare_commit_project_content(self, project_content):
         """
-        commits a projectcontent to the database, if the project content does not exists.
+        prepares a projectcontent to the database, if the project content does not exists.
         The problem is, that the projectcontent may bring some changed railway infrastructure data.
         This infrastructure data may not be updated in the database.
         :return:
@@ -37,23 +37,31 @@ class Version:
 
         # remove all changes to stations that the project_content may bring with.
         stations = project_content.railway_stations
+        old_stations = self.prepare_commit_pc_stations(stations)
+        project_content.railway_stations = old_stations
+
+        # remove all changes to railway_lines that the project_content may bring with
+        lines = project_content.railway_lines
+        old_lines = self.prepare_commit_pc_railway_lines(lines)
+        project_content.railway_lines = old_lines
+
+        return project_content
+
+    def prepare_commit_pc_stations(self, stations):
         old_stations = []
         for station in stations:
             old_station = RailwayStation.query.get(station.id)
             old_stations.append(old_station)
 
-        project_content.railway_stations = old_stations
+        return old_stations
 
-        # remove all changes to railway_lines that the project_content may bring with
-        lines = project_content.railway_lines
+    def prepare_commit_pc_railway_lines(self, lines):
         old_lines = []
         for line in lines:
             old_line = RailwayLine.query.get(line.id)
             old_lines.append(old_line)
 
-        project_content.railway_lines = old_lines
-
-        return project_content
+        return old_lines
 
     def _create_railway_df(self):
         infra = dict()
@@ -124,8 +132,16 @@ class Version:
         :return:
         """
         railway_line = self.infra["railway_lines"].railway_line_model[self.infra["railway_lines"].railway_line_id == railwayline_id].iloc[0]
-
         return railway_line
+
+    def get_railwaystation_model(self, railwaystation_id):
+        """
+        returns the model of a railway_station
+        :param railwaystation_id:
+        :return:
+        """
+        railway_station = self.infra["railway_stations"].railway_station_model[self.infra["railway_stations"].railway_station_id == railwaystation_id].iloc[0]
+        return railway_station
 
     def get_railwayline_no_catenary(self):
         """

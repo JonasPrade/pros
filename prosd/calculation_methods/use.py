@@ -1,9 +1,9 @@
 import logging
 import math
+import datetime
 
 from prosd.calculation_methods.base import BaseCalculation
 from prosd import parameter
-
 
 class NoTractionFoundError(Exception):
     def __init__(self, message):
@@ -16,6 +16,11 @@ class NoTransportmodeFoundError(Exception):
 
 
 class NoVehiclePatternExistsError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class TraingroupNoLengthError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
@@ -230,7 +235,7 @@ class BvwpUse(BaseCalculation):
             elif hasattr(self, 'trainline'):
                 id = self.trainline
             raise NoVehiclePatternExistsError(
-                message=f"No Vehicle pattern for {id} and traction {self.traction}")
+                message=f"No Vehicle pattern for vehicle {vehicle}, vehicle_pattern {vehicle_pattern}, trainline {id} and traction {self.traction}")
 
         return vehicle_pattern
 
@@ -365,10 +370,7 @@ class StandiSpnv(BvwpUse):
     def __init__(self, trainline, traction, start_year_operation, duration_operation, infra_version, recalculate_count_formations=False):
         formation = get_formation_calculation_standi(trainline.train_groups[0].trains[0].train_part.formation)
         super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
-        if recalculate_count_formations is True:
-            self.train_cycles = len(self.trainline.get_train_cycle())
-        else:
-            self.train_cycles = self.trainline.count_formations
+        self.train_cycles = len(self.trainline.get_train_cycles(wait_time=datetime.timedelta(minutes=5)))
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = self.calc_use()
         self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
@@ -491,6 +493,10 @@ class StandiSpnv(BvwpUse):
         return energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
+        if traingroup.length_line(self.infra_version) is 0:
+            raise TraingroupNoLengthError(
+                f"traingroup {traingroup.id} has no length ({traingroup.length_line(self.infra_version)}).  Maybe reroute."
+            )
         additional_battery = vehicle_pattern.additional_energy_without_overhead * (traingroup.length_line_no_catenary(self.infra_version)/traingroup.length_line(self.infra_version))
         energy_per_km = vehicle_pattern.energy_per_km
 

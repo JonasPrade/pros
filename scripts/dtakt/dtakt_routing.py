@@ -20,7 +20,7 @@ scenarios = MasterScenario.query.all()
 
 # tgs = TimetableTrainGroup.query.all()π
 
-tgs = [TimetableTrainGroup.query.get('tg_NW46_N_x0020_46001_67163')]
+tgs = [TimetableTrainGroup.query.get('tg_BY75.a2_N_x0020_75121_x00A7__128829')]
 
 # logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
 

@@ -5,8 +5,8 @@ project_id = 4
 traingroup_id = "tg_BY15_X_x0020_15001_4393"
 station_id = 2
 railwaypoint_id = 45819
-masterarea_id = 60
-masterscenario_id = 1
+masterarea_id = 266
+masterscenario_id = 2
 #
 # api_key_headers = Headers({
 #             'x-api-key': 'TEST-API-KEY'

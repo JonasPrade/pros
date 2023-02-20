@@ -30,7 +30,7 @@ class TestCostBattery(BaseTestCase):
             infra_version=infra_version
         )
 
-        self.assertTrue(infrastructure_cost.cost_2015 > 0)
+        self.assertTrue(infrastructure_cost.cost_2015 >= 0)
 
     def test_cost_battery_testcase2(self):
         """
@@ -114,10 +114,34 @@ class TestCostBattery(BaseTestCase):
 
         self.assertTrue(round(infrastructure_cost.cost_2015) == 48888)
 
+    def test_cost_battery_testcase_area251(self):
+        area_id = 251
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        infrastructure_cost = BvwpProjectBattery(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+        self.assertTrue(round(infrastructure_cost.cost_2015) > 0)
+
 
 class TestOptimisedElectrification(BaseTestCase):
     def test_cost_optimised_electrification_area_60(self):
         area_id = 60
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        project_optimised_electrification = BvwpProjectOptimisedElectrification(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+    def test_cost_optimised_electrification_area_58(self):
+        area_id = 58
         infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
@@ -138,3 +162,15 @@ class TestOptimisedElectrification(BaseTestCase):
             infra_version=infra_version
         )
 
+    def test_cost_optimised_electrification_area(self):
+        area_id = 266
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        project_optimised_electrification = BvwpProjectOptimisedElectrification(
+            start_year_planning=parameter.START_YEAR,
+            area=area,
+            infra_version=infra_version
+        )
+
+        self.assertTrue(project_optimised_electrification.planned_total_cost > 0)

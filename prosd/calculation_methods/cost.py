@@ -7,7 +7,7 @@ import math
 import datetime
 
 from prosd import db
-from prosd.models import RailwayLine, RouteTraingroup, VehiclePattern, TimetableOcp, ProjectContent, ProjectGroup, RailwayStation
+from prosd.models import RailwayLine, RouteTraingroup, VehiclePattern, TimetableOcp, ProjectContent, ProjectGroup, RailwayStation, TimetableTrainCost, TrainCycle, TrainCycleElement, NoTrainCostError, get_calculation_method
 from prosd.calculation_methods.base import BaseCalculation
 from prosd import parameter
 
@@ -21,6 +21,11 @@ class BvwpCost(BaseCalculation):
     def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs"):
         # TODO: Change the calculation of that in sepeart funcitons, that is no __init__
         super().__init__()
+        self.cost_2015 = None
+        self.capital_service_cost_2015 = None
+        self.maintenance_cost_2015 = None
+        self.investment_cost_2015 = None
+        self.planning_cost_2015 = None
         self.BASE_YEAR = parameter.BASE_YEAR
         self.p = parameter.RATE
         self.FACTOR_PLANNING = parameter.FACTOR_PLANNING
@@ -40,7 +45,8 @@ class BvwpCost(BaseCalculation):
         self.planning_cost = self.investment_cost * self.FACTOR_PLANNING
         self.maintenace_cost = maintenance_cost
 
-        self.planning_cost_2015 = self.cost_base_year(start_year=start_year_planning, duration=self.DURATION_PLANNING,
+    def calc_base_year_cost(self):
+        self.planning_cost_2015 = self.cost_base_year(start_year=self.start_year_planning, duration=self.DURATION_PLANNING,
                                                       cost=self.planning_cost)
         self.investment_cost_2015 = self.cost_base_year(start_year=self.start_year_building,
                                                         duration=self.duration_build, cost=self.investment_cost)
@@ -112,6 +118,7 @@ class BvwpCostElectrification(BvwpCost):
         self.maintenace_cost = self.investment_cost * self.MAINTENANCE_FACTOR
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost,
                          start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+        super().calc_base_year_cost()
 
     def calc_cost_unelectrified_railway_lines(self):
         """
@@ -129,8 +136,10 @@ class BvwpCostElectrification(BvwpCost):
 
             if line_infraversion.catenary == False:
                 if line_infraversion.number_tracks == 'zweigleisig':
-                    cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
+                    cost_factor = self.COST_OVERHEAD_DOUBLE_TRACK
                     factor_length = 2
+                else:
+                    cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
                 cost += line_infraversion.length * cost_factor / 1000
                 length_no_catenary += line_infraversion.length * factor_length / 1000
 
@@ -156,10 +165,11 @@ class BvwpProjectChargingStation(BvwpCost):
         self.maintenace_cost = self.investment_cost * self.maintenance_factor
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost,
                          start_year_planning=start_year_planning, abs_nbs=abs_nbs)
-
+        super().calc_base_year_cost()
 
 class BvwpProjectBattery(BvwpCost):
     def __init__(self, start_year_planning, area, infra_version, abs_nbs='abs'):
+        self.area = area
         self.infra_version = infra_version
         self.infra_df = infra_version.infra
         self.infrastructure_type = 'battery'
@@ -168,7 +178,7 @@ class BvwpProjectBattery(BvwpCost):
 
         self.project_contents = []
         black_list_train_group = []
-        for group in area.traingroups:
+        for group in self.area.traingroups:
             if group in black_list_train_group:
                 continue
             else:
@@ -188,40 +198,79 @@ class BvwpProjectBattery(BvwpCost):
             self.investment_cost += pc.investment_cost
             self.maintenance_cost += pc.maintenance_cost
 
+
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenance_cost,
                          start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+        super().calc_base_year_cost()
 
     def calculate_infrastructure(self, tt_line):
         trains = tt_line.get_one_train_cycle(wait_time=self.wait_time)
         station_to_rlml_ocp = self._get_station_to_railml_ocp(trains=trains)
 
         # calculate the energy need and if there is a problem with the battery capacity
-        cycle_sections = self.calc_energy_demand(trains, station_to_rlml_ocp)
-        cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
+        cycle_sections, rw_lines = self.calc_energy_demand(trains, station_to_rlml_ocp)
+        cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, energy_needed_multi_cycle = \
             self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
 
-        """
-        if there is a problem with the battery capacity, try to find fitting infrastructure.
-        First endpoints get charging stations.
-        After that recalculation of the energy demand.
-        If still problem with battery capacity -> search for solutions along the line route
-        """
-        project_contents_temp = []
-        if one_cycle_problem or multi_cycle_problem:
-            new_projects = self._create_infrastructure_endpoints(cycle_sections, one_cycle_problem, battery_empty,
-                                                                  multi_cycle_problem, battery_delta, trains)
-            project_contents_temp.extend(new_projects)
-            if new_projects:
-                self.infra_version.add_projectcontents_to_version_temporary(pc_list=project_contents_temp, update_infra=True)
-            cycle_sections = self.calc_energy_demand(trains, station_to_rlml_ocp)
-            cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta = \
-                self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
+        project_contents_temp = self._create_additional_infrastructure(
+            cycle_sections=cycle_sections,
+            one_cycle_problem=one_cycle_problem,
+            battery_empty=battery_empty,
+            multi_cycle_problem=multi_cycle_problem,
+            energy_needed_multi_cycle=energy_needed_multi_cycle,
+            tt_line=tt_line,
+            rw_lines=rw_lines,
+            trains=trains
+        )
+        if project_contents_temp:
+            self.infra_version.add_projectcontents_to_version_temporary(pc_list=project_contents_temp, update_infra=True)
 
-        if one_cycle_problem or multi_cycle_problem:
-            raise BatteryCapacityError(
-                f"After installing loading possibilites at end stations, there is still a battery capacity problem for trainline {tt_line}"
-            )
-            # TODO: Find ways to electrify belong the cycle, not endpoints
+        #
+        # """
+        # if there is a problem with the battery capacity, try to find fitting infrastructure.
+        # First endpoints get charging stations.
+        # After that recalculation of the energy demand.
+        # If still problem with battery capacity -> search for solutions along the line route
+        # """
+        # project_contents_temp = []
+        # if one_cycle_problem or multi_cycle_problem:
+        #     new_projects = self._create_infrastructure_endpoints(cycle_sections)
+        #     project_contents_temp.extend(new_projects)
+        #     if new_projects:
+        #         self.infra_version.add_projectcontents_to_version_temporary(pc_list=new_projects, update_infra=True)
+        #         cycle_sections, rw_lines = self.calc_energy_demand(trains, station_to_rlml_ocp)
+        #         cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, multi_cycle_allowed_delta = \
+        #             self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
+        #         new_projects = None
+        # """
+        # if the electrification of the endpoints is not enough, search for longer stops on the way and electrify them
+        # """
+        # if one_cycle_problem or multi_cycle_problem:
+        #     new_projects = self._create_infrastructure_interstations(cycle_sections=cycle_sections)
+        #     project_contents_temp.extend(new_projects)
+        #     if new_projects:
+        #         self.infra_version.add_projectcontents_to_version_temporary(pc_list=new_projects,
+        #                                                                     update_infra=True)
+        #         cycle_sections, rw_lines = self.calc_energy_demand(trains, station_to_rlml_ocp)
+        #         cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, multi_cycle_allowed_delta = \
+        #             self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
+        #         new_projects = None
+        #
+        # """
+        # if this is still not enough, search for electrification of additional railway_lines
+        # """
+        # if one_cycle_problem or multi_cycle_problem:
+        #     new_projects = self._electrify_additional_railwaylines(cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, multi_cycle_allowed_delta, tt_line, rw_lines)
+        #     project_contents_temp.extend(new_projects)
+        #     if new_projects:
+        #         self.infra_version.add_projectcontents_to_version_temporary(pc_list=new_projects,
+        #                                                                     update_infra=True)
+        #         cycle_sections, rw_lines = self.calc_energy_demand(trains, station_to_rlml_ocp)
+        #         cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, multi_cycle_allowed_delta = \
+        #             self._calculate_energy_delta(cycle_sections=cycle_sections, trains=trains)
+        #         new_projects = None
+
+
 
         db.session.autoflush = True
         return project_contents_temp
@@ -237,7 +286,7 @@ class BvwpProjectBattery(BvwpCost):
                                                                    stations_to_sections=count_stations_to_sections)
             cycle_sections.append(sections_with_energy)
 
-        return cycle_sections
+        return cycle_sections, rw_lines
 
     def _group_rw_lines(self, train, station_to_rlml_ocp):
         """
@@ -293,10 +342,7 @@ class BvwpProjectBattery(BvwpCost):
             if len(station_list) == 1:
                 station = station_list[0]
                 ocp = station_to_rlml_ocp.pop(station)
-                timetable = TimetableOcp.query.filter(sqlalchemy.and_(
-                    TimetableOcp.train_part == train.train_part.id,
-                    TimetableOcp.ocp_id == ocp.id
-                )).scalar()
+                timetable = self.__get_timetable(train_part_id = train.train_part.id, ocp_id=ocp.id)
                 stop_duration = timetable.scheduled_time.departure_with_day - timetable.scheduled_time.arrival_with_day
                 station_charging_point = self.infra_df["railway_stations"][self.infra_df["railway_stations"].railway_station_id == station.id].railway_station_model.iloc[0].charging_station
 
@@ -319,20 +365,28 @@ class BvwpProjectBattery(BvwpCost):
         # Add the latest section to the sections. The ocp is the last ocp of that traingroup
         # therefore the next trains departure at that station must be calculated
         ocp = train.train_group.last_ocp.ocp
-        next_train = train.train_group.traingroup_lines.get_next_train(
-            previous_train=train,
-            list_all_trains=train.train_group.traingroup_lines.all_trains,
-            wait_time=self.wait_time
-        )
-        timetable_train = TimetableOcp.query.filter(sqlalchemy.and_(
-            TimetableOcp.train_part == train.train_part.id,
-            TimetableOcp.ocp_id == ocp.id
-        )).scalar()
-        timetable_next_train = TimetableOcp.query.filter(sqlalchemy.and_(
-            TimetableOcp.train_part == next_train.train_part.id,
-            TimetableOcp.ocp_id == ocp.id
-        )).scalar()
-        stop_duration = timetable_next_train.scheduled_time.departure_with_day - timetable_train.scheduled_time.arrival_with_day
+        train_traincycleelement = TrainCycleElement.query.join(TrainCycle).filter(
+            TrainCycle.trainline_id == train.train_group.traingroup_lines.id,
+            TrainCycle.wait_time == self.wait_time,
+            TrainCycleElement.train_id == train.id
+        ).scalar()
+        next_train = TrainCycleElement.query.join(TrainCycle).filter(
+            TrainCycle.trainline_id == train.train_group.traingroup_lines.id,
+            TrainCycle.wait_time == self.wait_time,
+            TrainCycle.id == train_traincycleelement.train_cycle_id,
+            TrainCycleElement.sequence == train_traincycleelement.sequence + 1
+        ).scalar()
+        timetable_train = self.__get_timetable(train_part_id=train.train_part.id, ocp_id=ocp.id)
+
+        if next_train is None:  # in this case there are only two trains in one cycle
+            # use a standard value
+            # TODO: Find better solution
+            stop_duration = datetime.timedelta(hours=1)
+        else:
+            next_train = next_train.train
+            timetable_next_train = self.__get_timetable(train_part_id=next_train.train_part.id, ocp_id=ocp.id)
+            stop_duration = timetable_next_train.scheduled_time.departure_with_day - timetable_train.scheduled_time.arrival_with_day
+
         station = train.train_group.last_ocp.ocp.station
         station_information = {
             "station_id": station.id,
@@ -355,6 +409,23 @@ class BvwpProjectBattery(BvwpCost):
 
         return sections, rw_lines
 
+    def __get_timetable(self, train_part_id, ocp_id):
+        try:
+            timetable = TimetableOcp.query.filter(sqlalchemy.and_(
+                TimetableOcp.train_part == train_part_id,
+                TimetableOcp.ocp_id == ocp_id
+            )).scalar()
+        except sqlalchemy.exc.MultipleResultsFound as e:
+            timetables = TimetableOcp.query.filter(sqlalchemy.and_(
+                TimetableOcp.train_part == train_part_id,
+                TimetableOcp.ocp_id == ocp_id
+            )).all()
+            for timetable in timetables:
+                if timetable.scheduled_time.arrival is not None:
+                    break
+
+        return timetable
+
     def _get_station_to_railml_ocp(self, trains):
         """
 
@@ -370,7 +441,6 @@ class BvwpProjectBattery(BvwpCost):
             if t_ocp.station:
                 station_to_rlml_ocp[t_ocp.station] = t_ocp
         return station_to_rlml_ocp
-
 
     def _get_rwlines_for_train(self, train):
         """
@@ -503,7 +573,7 @@ class BvwpProjectBattery(BvwpCost):
                 else:
                     logging.error(f"Possible Groups has a non valid length {possible_sections}")
             else:
-                logging.info(f"OCP {stop} not found in infrastructure database. Calculate this stop manual.")
+                logging.debug(f"OCP {stop} not found in infrastructure database. Calculate this stop manual.")
                 # get the arrival at the station
                 tt_ocp = TimetableOcp.query.filter(
                     sqlalchemy.and_(
@@ -540,16 +610,7 @@ class BvwpProjectBattery(BvwpCost):
         :return:
         """
         CHARGE = parameter.CHARGE
-
-        if trains[0].train_part.formation.formation_calculation_standi:
-            vehicles = trains[0].train_part.formation.formation_calculation_standi.vehicles
-        else:
-            vehicles = trains[0].train_part.formation.vehicles
-
-        battery_capacity = 0
-        for vehicle in vehicles:
-            vehicle_pattern = VehiclePattern.query.get(vehicle.vehicle_pattern.vehicle_pattern_id_battery)
-            battery_capacity += vehicle_pattern.battery_capacity  # TODO: Add correct battery_capacity to battery vehicle patterns
+        battery_capacity = self._calc_battery_capacity(trains)
 
         battery_status = battery_capacity
         battery_empty = []
@@ -563,6 +624,7 @@ class BvwpProjectBattery(BvwpCost):
                     charge = CHARGE * (
                                 duration.seconds / 3600) + battery_status
                     battery_status = min(battery_capacity, charge)
+                    section["battery_after_group"] = battery_status
                 else:
                     battery_status = battery_status - section["energy"]
                     section["battery_after_group"] = battery_status
@@ -575,7 +637,8 @@ class BvwpProjectBattery(BvwpCost):
                         battery_status = min(battery_status, charge)
 
                 if battery_status < 0:
-                    battery_empty.append({"cycle_index": index, "section_index": index_section, "battery_status": battery_status})
+                    charge_time_needed = datetime.timedelta(hours=abs(battery_status/CHARGE))
+                    battery_empty.append({"cycle_index": index, "section_index": index_section, "battery_status": battery_status, "charge_time_needed": charge_time_needed})
 
             # add the time that the vehicle stands at the end of a segment
             if index != len(
@@ -602,25 +665,126 @@ class BvwpProjectBattery(BvwpCost):
         battery_delta = battery_capacity - battery_status
         if battery_delta != 0:
             possible_cycles = battery_capacity / battery_delta
-            needed_cycles = len(trains[0].train_group.trains) / trains[0].train_group.traingroup_lines.count_formations
+            needed_cycles = int(len(TrainCycle.get_train_cycles(
+                timetableline_id = train.train_group.traingroup_lines.id,
+                wait_time=self.wait_time
+            )[0].elements)/2)
             if possible_cycles < needed_cycles:
                 multi_cycle_problem = True
+                allowed_minimal_battery_status = battery_capacity - battery_capacity/needed_cycles
+                energy_needed_multi_cycle = allowed_minimal_battery_status - battery_status
             else:
                 multi_cycle_problem = False
+                energy_needed_multi_cycle = None
         else:
             multi_cycle_problem = False
+            energy_needed_multi_cycle = None
 
-        return cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, battery_delta
+        return cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, energy_needed_multi_cycle
 
-    def _create_infrastructure_endpoints(self, cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem,
-                               battery_delta, train):
+    def _create_additional_infrastructure(self, cycle_sections, one_cycle_problem, battery_empty, multi_cycle_problem, energy_needed_multi_cycle, tt_line, rw_lines, trains):
+        new_projects = []
+
+        additional_charge_one_cycle_problem = 0
+        battery_capacity = self._calc_battery_capacity(trains)
+        if one_cycle_problem is True:
+            forward = False
+            backwards = False
+            forward_energy_needed = 0
+            backward_energy_needed = 0
+            for empty in battery_empty:
+                if empty["cycle_index"] == 0:
+                    forward = True
+                    forward_energy_needed = max(forward_energy_needed, abs(empty["battery_status"]))
+
+                if empty["cycle_index"] == 1:
+                    backwards = True
+                    backward_energy_needed = max(backward_energy_needed, abs(empty["battery_status"]))
+
+            if backwards is True:
+                pc, possible_charge = self._create_infrastructure_point(cycle_sections[0][-1], battery_capacity)
+                if pc is not None:
+                    additional_charge = min(battery_capacity, cycle_sections[0][-1]["battery_after_group"] + possible_charge)-cycle_sections[0][-1]["battery_after_group"]
+                    additional_charge_one_cycle_problem += additional_charge
+                    backwards = False
+                    new_projects.append(pc)
+                    for section in cycle_sections[1]:
+                        section["battery_after_group"] = min(battery_capacity, section["battery_after_group"] + additional_charge)
+                        if section["battery_after_group"] < 0:
+                            backwards = True
+
+            if forward is True:
+                possible_lines_id = []
+                for section_index, section in enumerate(cycle_sections[0]):
+                    forward = False
+                    backwards = False
+                    possible_lines_id.extend([line.id for line in section["railway_lines"]])
+                    if section["battery_after_group"] > 0:
+                        continue
+                    pc, charge_needed = self._electrify_additional_railwaylines(tt_line, rw_lines, forward_energy_needed, possible_lines_id, battery_capacity)
+                    energy_possible = forward_energy_needed - charge_needed
+                    additional_charge_one_cycle_problem += energy_possible
+                    for segment_index, segment in enumerate(cycle_sections):
+                        for section in segment:
+                            if segment_index == 0 and section_index > section["group_id"]:
+                                continue
+                            section["battery_after_group"] = min(battery_capacity, section["battery_after_group"] + energy_possible)
+                            if section["battery_after_group"] < 0:
+                                if segment_index == 0:
+                                    forward = True
+                                if segment_index == 1:
+                                    backwards = True
+                    new_projects.append(pc)
+                    if forward is False and backwards is False:
+                        break
+            if forward is True:
+                raise BatteryCapacityError(
+                    f"For {tt_line} there is not enough infrastructure for the first way. Therefore there is actually no solution programmed."
+                )
+
+            if backwards is True:
+                raise BatteryCapacityError(
+                    f"For {tt_line} there is a one_cycle_problem on the backward path which can't be solved yet"
+                )
+
+        if multi_cycle_problem is True:
+            energy_needed_multi_cycle -= additional_charge_one_cycle_problem
+
+            # infrastructure endpoint
+            if energy_needed_multi_cycle > 0:
+                projects, energy_needed_multi_cycle = self._create_infrastructure_endpoints(cycle_sections, energy_needed_multi_cycle, battery_capacity)
+                new_projects.extend(projects)
+
+            # charging stations between
+            if energy_needed_multi_cycle > 0:
+                projects, energy_needed_multi_cycle = self._create_infrastructure_interstations(cycle_sections, energy_needed_multi_cycle)
+                new_projects.extend(projects)
+
+            # additional railway_infrastructure
+            if energy_needed_multi_cycle > 0:
+                possible_lines_id = []
+                for section in cycle_sections[0]:
+                    if section["catenary"] is False:
+                        possible_lines_id.extend([line.id for line in section["railway_lines"]])
+
+                project, energy_needed_multi_cycle = self._electrify_additional_railwaylines(tt_line=tt_line,
+                                                                                              rw_lines=rw_lines,
+                                                                                              charge_needed=energy_needed_multi_cycle,
+                                                                                              possible_lines_id=possible_lines_id,
+                                                                                              battery_capacity=battery_capacity)
+                new_projects.append(project)
+
+            if energy_needed_multi_cycle > 0:
+                raise BatteryCapacityError(
+                    f"For {tt_line} there couldn't be installed enough infrastructure for multi_cycle_problem"
+                )
+
+        return new_projects
+
+    def _create_infrastructure_endpoints(self, cycle_sections, charge_needed, battery_capacity):
         """
-
         :param cycle_sections:
-        :param one_cycle_problem:
-        :param battery_empty:
-        :param multi_cycle_problem:
-        :param battery_delta:
+        :param charge_needed:
         :return:
         """
         energy_one_way_problem = False
@@ -630,17 +794,161 @@ class BvwpProjectBattery(BvwpCost):
 
         new_projects = []
         for segment in cycle_sections:
-            last_section = segment[-1]
-            ocp_last_section = last_section["last_station"]
-            if last_section["catenary"] is False and ocp_last_section["station_charging_point"] is None:
-                project_load, possible_charge = self.create_charging_or_catenary_station(
-                    station_id=ocp_last_section["station_id"],
-                    line=last_section["railway_lines"][-1],
-                    duration_stop=ocp_last_section["stop_duration"]
-                )
-                new_projects.append(project_load)
+            pc, possible_charge = self._create_infrastructure_point(segment[-1], battery_capacity)
+            if pc is not None:
+                charge_needed = charge_needed - possible_charge
+                if charge_needed < 0:
+                    return new_projects, charge_needed
+                new_projects.append(pc)
 
-        return new_projects
+        return new_projects, charge_needed
+
+    def _create_infrastructure_point(self, section, battery_capacity):
+        project_load = None
+        possible_charge = 0
+        ocp_last_section = section["last_station"]
+        if section["catenary"] is False and (
+                ocp_last_section["station_charging_point"] is None or ocp_last_section[
+            "station_charging_point"] is False):
+            project_load, possible_charge = self.create_charging_or_catenary_station(
+                station_id=ocp_last_section["station_id"],
+                line=section["railway_lines"][-1],
+                duration_stop=ocp_last_section["stop_duration"]
+            )
+
+        possible_charge = min(battery_capacity, possible_charge + section["battery_after_group"])
+        return project_load, possible_charge
+
+    def _create_infrastructure_interstations(self, cycle_sections, charge_needed, battery_capacity):
+        """
+        create charging possibility at interstations where the train stops long enough
+        :param cycle_sections:
+        :return:
+        """
+        new_projects = []
+        for segment in cycle_sections:
+            for section in segment[:-1]:  # get all sections without the last section
+                pc, possible_charge = self._create_infrastructure_point(section, battery_capacity)
+                if pc is not None:
+                    new_projects.append(pc)
+                    charge_needed = charge_needed - possible_charge
+                    if charge_needed < 0:
+                        return new_projects, charge_needed
+
+        return new_projects, charge_needed
+
+    def _electrify_additional_railwaylines(self, tt_line, rw_lines, charge_needed, possible_lines_id, battery_capacity):
+        """
+        electrify railwaylines so there is no energy problem left anymore
+        :param one_cycle_problem:
+        :param battery_empt:
+        :param multi_cycle_problem:
+        :param multi_cycle_allowed_delta:
+        :return:
+        """
+        # PART 1: get lines for electrification
+        # try to electrify additional railway_lines
+        rw_line_after_usage = db.session.query(RailwayLine, sqlalchemy.func.count(RouteTraingroup.id)).join(RouteTraingroup).filter(
+            RailwayLine.id.in_(possible_lines_id),
+            RouteTraingroup.master_scenario_id == self.infra_version.scenario.id
+        ).group_by(RailwayLine).order_by(sqlalchemy.func.count(RouteTraingroup.id).desc(), RailwayLine.length.asc()).all()
+
+        count_traingroup_max = rw_line_after_usage[0][1]
+        lines_most_usage = set()
+
+        # PART 2
+        lines_connected_to_electrification = set()
+        for line in rw_line_after_usage:
+            add_line = False
+            line_infra_version = self.infra_version.get_railwayline_model(line[0].id)
+            if line[1] == count_traingroup_max:
+                lines_most_usage.add(line_infra_version)
+            # check if a station of that line has a charging possibility or if any line in the station has a catenary
+            for station in line_infra_version.stations:
+                station_version = self.infra_version.get_railwaystation_model(station.id)
+                add_line = self._check_if_station_has_charge_or_catenary(station_version)
+
+            # check if a neighbour railway_line has a catenary
+            if add_line is False:
+                add_line = self._check_if_neighbour_line_has_catenary(line_infra_version)
+
+            if add_line is True:
+                lines_connected_to_electrification.add(line_infra_version)
+
+        # If lines_most_usage is empty, take the rw_line_after as lines_most_usage
+        if len(lines_connected_to_electrification) == 0:
+            lines_connected_to_electrification = lines_most_usage
+
+        # PART 3
+        # calculate the duration while running on that line
+        lines_to_electrify = set()
+        average_speed = tt_line.length_line(self.infra_version) / (tt_line.running_time.seconds/3600)
+        while lines_connected_to_electrification:
+            line = lines_connected_to_electrification.pop()
+            # get the lines that are used most and electrify that
+            running_time = datetime.timedelta(seconds=((line.length/1000) / average_speed)*3600)
+            charge_possible = min((running_time.seconds/3600) * parameter.CHARGE, battery_capacity)
+            lines_to_electrify.add(line)
+            charge_needed = charge_needed - charge_possible
+            if charge_needed < 0:
+                # TODO: Throw some error if that added charge is too high
+                break
+
+            # check if the neighbour lines are also in the most used list. If yes -> add that to lines_connect_to_electrification
+            sequence_in_rw_lines = rw_lines[rw_lines["railway_line_id"] == line.id].sequence.tolist()[0]
+            neighbour_lines = self._get_neighbour_lines_of_traingroup(sequence_in_rw_lines, rw_lines)
+            lines_connected_to_electrification.update(neighbour_lines)
+            lines_connected_to_electrification = lines_connected_to_electrification.difference(lines_to_electrify)
+
+        # TODO: Find next package of lines if that is not enough
+
+        pc = self.create_electrification(lines=list(lines_to_electrify))
+
+        return pc, charge_needed
+
+    def _get_neighbour_lines_of_traingroup(self, sequence_in_rw_lines, rw_lines):
+        lines = []
+        next_line = rw_lines[rw_lines["sequence"] == sequence_in_rw_lines + 1].railway_line_id.tolist()
+        previous_line = rw_lines[rw_lines["sequence"] == sequence_in_rw_lines -1].railway_line_id.tolist()
+        if len(next_line) == 1:
+            next_line = next_line[0]
+            next_line = self.infra_version.get_railwayline_model(next_line)
+            lines.append(next_line)
+        if len(previous_line) == 1:
+            previous_line = previous_line[0]
+            previous_line = self.infra_version.get_railwayline_model(previous_line)
+            lines.append(previous_line)
+
+        return lines
+
+    def _check_if_neighbour_line_has_catenary(self, line):
+        catenary = False
+        neighbour_lines = line.get_neighbouring_lines
+        for neighbour_line in neighbour_lines:
+            neighbour_line_infra_version = self.infra_version.get_railwayline_model(railwayline_id=neighbour_line.id)
+            if neighbour_line_infra_version.catenary is True:
+                catenary = True
+                break
+
+        return catenary
+
+    def _check_if_station_has_charge_or_catenary(self, station):
+        station_electrified = False
+        if station.charging_station is True:
+            station_electrified = True
+        lines_station = station.railway_lines
+        for line_station in lines_station:
+            line_infra_version = self.infra_version.get_railwayline_model(
+                railwayline_id=line_station.id
+            )
+            if line_infra_version.catenary is True:
+                station_electrified = True
+                break
+        return station_electrified
+
+    def _get_needed_duration_for_charging(self, energy_needed):
+        duration = datetime.timedelta(seconds=energy_needed/parameter.CHARGE*3600)
+        return duration
 
     def create_charging_or_catenary_station(self, station_id, duration_stop, line):
         """
@@ -688,11 +996,13 @@ class BvwpProjectBattery(BvwpCost):
             infra_version=self.infra_version
         )
 
+        line = self.infra_version.prepare_commit_pc_railway_lines(lines=[line])
+
         pc = ProjectContent(
             name=name,
             description=description,
             elektrification=True,
-            railway_lines=[line],
+            railway_lines=line,
             investment_cost=infrastructure_cost.investment_cost_2015,
             planning_cost=infrastructure_cost.planning_cost_2015,
             maintenance_cost=infrastructure_cost.maintenance_cost_2015,
@@ -701,6 +1011,45 @@ class BvwpProjectBattery(BvwpCost):
         )
 
         return pc
+
+    def create_electrification(self, lines):
+        name = f"Electrification for battery case for master_area {self.area.id}"
+        description = f"Oberleitung für Batteriefall Untersuchunsgebiet {self.area.id}"
+
+        infrastructure_cost = BvwpCostElectrification(
+            start_year_planning=self.start_year_planning,
+            railway_lines_scope=lines,
+            infra_version=self.infra_version
+        )
+
+        lines = self.infra_version.prepare_commit_pc_railway_lines(lines)
+
+        pc = ProjectContent(
+            name=name,
+            description=description,
+            elektrification=True,
+            railway_lines=lines,
+            investment_cost=infrastructure_cost.investment_cost_2015,
+            planning_cost=infrastructure_cost.planning_cost_2015,
+            maintenance_cost=infrastructure_cost.maintenance_cost_2015,
+            capital_service_cost=infrastructure_cost.capital_service_cost_2015,
+            planned_total_cost=infrastructure_cost.cost_2015
+        )
+
+        return pc
+
+    def _calc_battery_capacity(self, trains):
+        if trains[0].train_part.formation.formation_calculation_standi:
+            vehicles = trains[0].train_part.formation.formation_calculation_standi.vehicles
+        else:
+            vehicles = trains[0].train_part.formation.vehicles
+
+        battery_capacity = 0
+        for vehicle in vehicles:
+            vehicle_pattern = VehiclePattern.query.get(vehicle.vehicle_pattern.vehicle_pattern_id_battery)
+            battery_capacity += vehicle_pattern.battery_capacity  # TODO: Add correct battery_capacity to battery vehicle patterns
+
+        return battery_capacity
 
     def create_charging_project_content(self, station):
         """
@@ -715,11 +1064,13 @@ class BvwpProjectBattery(BvwpCost):
             station=station
         )
 
+        station = self.infra_version.prepare_commit_pc_stations([station])
+
         pc = ProjectContent(
             name=name,
             description=description,
             charging_station=True,
-            railway_stations=[station],
+            railway_stations=station,
             investment_cost=infrastructure_cost.investment_cost_2015,
             planning_cost=infrastructure_cost.planning_cost_2015,
             maintenance_cost=infrastructure_cost.maintenance_cost_2015,
@@ -734,6 +1085,8 @@ class BvwpProjectBattery(BvwpCost):
 
 class BvwpProjectOptimisedElectrification(BvwpCost):
     def __init__(self, start_year_planning, area, infra_version, abs_nbs='abs'):
+        self.infrastructure_type = 'optimised_electrification'
+
         self.start_year_planning = start_year_planning
         self.area = area
         self.sub_areas = area.sub_master_areas
@@ -744,6 +1097,11 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         self.investment_cost = []
         self.maintenance_cost = []
 
+        if len(self.sub_areas) == 0:
+            self.logging(f"No subareas found for {area}. Start calculating subareas")
+            self.area.create_sub_areas()
+            self.sub_areas = self.area.sub_master_areas
+
         self._electrify_complete_infra()
         self.traingroup_to_traction = {traingroup: "electrification" for traingroup in self.area.traingroups}
         sub_area_by_length = self._sort_sub_areas_by_usage()
@@ -752,6 +1110,7 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         # TOOD: Calculate investement cost and maintenance cost
         self.investment_cost = 0
         self.maintenance_cost = 0
+        self.planning_cost = 0
         self.project_contents = []
         for index, sub_area in sub_area_cost.items():
             pc = sub_area["project"]
@@ -761,6 +1120,19 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
 
         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenance_cost,
                          start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+
+        # the subprojects are already on cost base 2015
+        self.cost_2015 = 0
+        self.capital_service_cost_2015 = 0
+        self.maintenance_cost_2015 = 0
+        self.planning_cost_2015 = 0
+        for index, sub_area in sub_area_cost.items():
+            pc = sub_area["project"]
+            self.investment_cost_2015 = pc.investment_cost
+            self.cost_2015 += pc.planned_total_cost
+            self.capital_service_cost_2015 += pc.capital_service_cost
+            self.maintenance_cost_2015 += pc.maintenance_cost
+            self.planning_cost_2015 += pc.planning_cost
 
     def _electrify_complete_infra(self):
         complete_electrification = self.area.calculate_infrastructure_cost(
@@ -776,7 +1148,19 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
             traction='electrification',
             infra_version=self.infra_version,
         )
-        self.cost = self.area.cost_traction('electrification')
+        try:
+            self.cost = self.area.cost_traction('electrification')
+        except NoTrainCostError:
+            for tg in self.area.traingroups:
+                calculation_method = get_calculation_method(traingroup=tg, traction='electrification')
+                TimetableTrainCost.create(
+                    traingroup = tg,
+                    master_scenario_id = self.area.scenario_id,
+                    traction = 'electrification',
+                    infra_version = self.infra_version,
+                    calculation_method = calculation_method
+                )
+            self.cost = self.area.cost_traction('electrification')
 
     def _sort_sub_areas_by_usage(self):
         sub_area_by_length = dict()
@@ -799,6 +1183,21 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         return sub_area_cost
 
     def _caluclate_optimization_for_sub_area(self, sub_area, sub_area_cost):
+        """
+
+        :param sub_area:
+        :param sub_area_cost:
+        :return:
+        """
+
+        """
+        Remove the electrification for the sub area and calculate the cost for electrification and for battery
+        """
+        self.infra_version.remove_electrification_for_rw_lines(rw_lines=sub_area.railway_lines)
+
+        """
+        if sgv is in the sub area -> directly calculate cost für electrification
+        """
         if 'sgv' in sub_area.categories:
             cost_electrification, pc_electrification = self._calculate_cost_for_sub_area(traction='electrification',
                                                                                          sub_area=sub_area)
@@ -810,16 +1209,11 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
             return sub_area_cost
 
         """
-        Remove the electrification for the sub area and calculate the cost for electrification and for battery
+        Calculate cost for battery and electrification
         """
-        self.infra_version.remove_electrification_for_rw_lines(rw_lines=sub_area.railway_lines)
         cost_electrification, pc_electrification = self._calculate_cost_for_sub_area(traction='electrification',
                                                                                      sub_area=sub_area)
         cost_battery, pc_battery = self._calculate_cost_for_sub_area(traction='battery', sub_area=sub_area)
-
-        """
-        Compare the calculated cost
-        """
         if cost_electrification > cost_battery:
             self.cost = self.cost - cost_electrification + cost_battery
             self.infra_version.add_projectcontents_to_version_temporary(pc_list=[pc_battery], update_infra=True,
