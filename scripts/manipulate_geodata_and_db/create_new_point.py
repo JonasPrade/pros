@@ -2,15 +2,14 @@ from prosd import db
 from prosd.models import RailwayPoint, RailwayNodes, RailwayStation, RailMlOcp
 from prosd.graph import railgraph
 
-node_id = 80391
-
+node_id = 80662
 node = RailwayNodes.query.get(node_id)
 
 point_dict = {
-    "route_number": 6774,
-    "name": "Zinnowitz",
+    "route_number": 6620,
+    "name": "Hainichen",
     "type": "Bf",
-    "db_kuerzel": "WZ",
+    "db_kuerzel": "DHA",
     "coordinates": node.coordinate,
     "node_id": node.id
 }

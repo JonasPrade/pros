@@ -363,14 +363,12 @@ class BvwpSpnv(BvwpUse):
         energy = energy_km + energy_time
         return energy
 
-    # TODO: Does energy_diesel also need update??
-
 
 class StandiSpnv(BvwpUse):
     def __init__(self, trainline, traction, start_year_operation, duration_operation, infra_version, recalculate_count_formations=False):
         formation = get_formation_calculation_standi(trainline.train_groups[0].trains[0].train_part.formation)
         super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
-        self.train_cycles = len(self.trainline.get_train_cycles(wait_time=datetime.timedelta(minutes=5)))
+        self.train_cycles = len(self.trainline.get_train_cycles(wait_time=parameter.WAIT_TIME))
 
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum = self.calc_use()
         self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
@@ -493,7 +491,7 @@ class StandiSpnv(BvwpUse):
         return energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost
 
     def energy(self, vehicle_pattern, traingroup):
-        if traingroup.length_line(self.infra_version) is 0:
+        if traingroup.length_line(self.infra_version) == 0:
             raise TraingroupNoLengthError(
                 f"traingroup {traingroup.id} has no length ({traingroup.length_line(self.infra_version)}).  Maybe reroute."
             )

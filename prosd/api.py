@@ -130,7 +130,7 @@ def get_master_areas(**kwargs):
 def get_master_area_short(**kwargs):
     master_area_id = kwargs.pop('id')
     master_area = models.MasterArea.query.get(master_area_id)
-    area_schema = views.MasterAreaShort()
+    area_schema = views.MasterAreaShortSchema()
     output = area_schema.dump(master_area)
     response = make_response({'master_area': output})
     return response
@@ -155,7 +155,7 @@ def get_main_masterareas_for_scenario(**kwargs):
         models.MasterArea.scenario_id == master_scenario_id,
         models.MasterArea.superior_master_id == None
     )
-    scenario_schema = views.MasterAreaShort(many=True)
+    scenario_schema = views.MasterAreaShortSchema(many=True)
     output = scenario_schema.dump(master_areas)
     response = make_response({'master_areas': output})
     return response

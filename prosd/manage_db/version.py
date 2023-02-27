@@ -32,8 +32,8 @@ class Version:
         :return:
         """
         # check if project_content exists:
-        if sqlalchemy.inspect(project_content).persistent == True:
-            return project_content
+        # if sqlalchemy.inspect(project_content).persistent == True:
+        #     return project_content
 
         # remove all changes to stations that the project_content may bring with.
         stations = project_content.railway_stations
@@ -58,7 +58,8 @@ class Version:
     def prepare_commit_pc_railway_lines(self, lines):
         old_lines = []
         for line in lines:
-            old_line = RailwayLine.query.get(line.id)
+            line_id = line.id
+            old_line = RailwayLine.query.get(line_id)
             old_lines.append(old_line)
 
         return old_lines
@@ -109,7 +110,8 @@ class Version:
                     self.infra["railway_stations"].railway_station_id != station.id]
 
                 rs_changed = self._add_charging_station(project_content=pc, railway_station=rs_changed)
-                db.session.expunge(rs_changed)
+                if sqlalchemy.inspect(rs_changed).detached is False:
+                    db.session.expunge(rs_changed)
                 # Here can be added some more
 
                 rs_df = pandas.DataFrame([[station.id, rs_changed]], columns=['railway_station_id', 'railway_station_model'])
@@ -149,12 +151,19 @@ class Version:
         :return:
         """
         railway_line_ids = []
+
         for index, row in self.infra["railway_lines"].iterrows():
-            line = row.railway_line_model
-            if line.catenary==False:
-                railway_line_ids.append(line.id)
+            add_to_line = self.__no_catenary_function(row.railway_line_model)
+            if add_to_line is True:
+                railway_line_ids.append(row.railway_line_model.id)
 
         return railway_line_ids
+
+    def __no_catenary_function(self, line):
+        add_to_line = False
+        if line.catenary is False and line.conductor_rail is False:
+            add_to_line = True
+        return add_to_line
 
     def add_electrification_for_rw_lines(self, rw_lines):
         """

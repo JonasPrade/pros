@@ -1,19 +1,45 @@
-BASE_YEAR = 2015
+import datetime
+
+## CALCUATION PARAMETER
+REROUTE_TRAINGROUP = False
+DELETE_AREAS = False
+CREATE_AREAS = False
+OVERWRITE_INFRASTRUCTURE = False
+
+## H2
+KILOMETER_PER_STATION_H2 = 60
+COST_STATION_H2 = 6000 # Tausend Euro
+
+## Diesel
+KILOMETER_PER_STATION_DIESEL = 40
+COST_STATION_DIESEL = 1000  # Tausend Euro
+
+## EFuel
+KILOMETER_PER_STATION_EFUEL = 40
+COST_STATION_EFUEL = 1000  # Tausend Euro
+
+# Battery
+WAIT_TIME = datetime.timedelta(minutes=10)
+
+## DATE STUFF
+BASE_YEAR = 2016
 RATE = 0.017
 ANUALITY_FACTOR = 0.0428
 START_YEAR = 2030
 START_MONTH = 1
 START_DATE = 1
-TRACTIONS = ["electrification", "efuel", "battery", "optimised_electrification", "diesel"]
+TRACTIONS = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "efuel", "h2"]
+SPFV_STANDI_METHOD = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "efuel", "h2"]
 
 ### COST FACTORS
 CO2_COST = 670
 
 FACTOR_PLANNING = 0.18
-MAINTENANCE_FACTOR = 0.014  # electrification
+MAINTENANCE_FACTOR = 0.014  # electrification   # TODO: Do i have to change maintenance factor??
+MAINTENANCE_FACTOR_FILLING_STATION = 0.03
 COST_OVERHEAD_ONE_TRACK = 1500  # Tausend Euro
-COST_OVERHEAD_TWO_TRACKS = 3500  # Tausend Euro
-COST_CHARGING_STATION = 2000  # Tausend Euro  TODO Find correct value
+COST_OVERHEAD_TWO_TRACKS = 3000  # Tausend Euro
+COST_CHARGING_STATION = 2  # Tausend Euro  TODO Find correct value
 
 ENERGY_COST_ELECTRO_CASUAL = 0.12
 ENERGY_COST_ELECTRO_RENEWABLE = 0.14
@@ -43,7 +69,8 @@ UTILITY_POINT_PRIMARY_ENERGY = 0.9
 UTILITY_TO_MONEY = 15.5
 
 ### durations
-DURATION_PLANNING = 7
+DURATION_PLANNING = 5
+DURATION_BUILDING = 5
 DURATION_OPERATION = 30
 
 

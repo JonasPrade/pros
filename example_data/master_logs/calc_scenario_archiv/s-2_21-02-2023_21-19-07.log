@@ -1,0 +1,875 @@
+INFO:root:calculation <MasterArea 1070> started
+INFO:root:finished calculation electrification 1070 (duration 0.0968010425567627s)
+INFO:root:finished calculation efuel 1070 (duration 0.07302308082580566s)
+INFO:root:finished calculation optimised_electrification 1070 (duration 0.09731912612915039s)
+INFO:root:finished calculation diesel 1070 (duration 0.05946087837219238s)
+INFO:root:finished calculation efuel 1070 (duration 0.05880022048950195s)
+INFO:root:calculation <MasterArea 1071> started
+INFO:root:finished calculation electrification 1071 (duration 0.2556881904602051s)
+INFO:root:finished calculation efuel 1071 (duration 1.5199201107025146s)
+INFO:root:finished calculation battery 1071 (duration 146.8280210494995s)
+INFO:root:finished calculation optimised_electrification 1071 (duration 476.1781268119812s)
+INFO:root:finished calculation diesel 1071 (duration 1.1621050834655762s)
+INFO:root:finished calculation efuel 1071 (duration 0.039788007736206055s)
+INFO:root:finished calculation h2 1071 (duration 89.86372590065002s)
+INFO:root:calculation <MasterArea 1072> started
+INFO:root:finished calculation electrification 1072 (duration 0.11717891693115234s)
+INFO:root:finished calculation efuel 1072 (duration 0.1127469539642334s)
+INFO:root:finished calculation battery 1072 (duration 50.77597117424011s)
+INFO:root:Catenary in Nidda for 6532 is too long 3051m
+INFO:root:Catenary in Beienheim for 6513 is too long 2870m
+INFO:root:finished calculation optimised_electrification 1072 (duration 104.8278501033783s)
+INFO:root:finished calculation diesel 1072 (duration 0.11926078796386719s)
+INFO:root:finished calculation efuel 1072 (duration 0.025059223175048828s)
+INFO:root:finished calculation h2 1072 (duration 27.4804048538208s)
+INFO:root:calculation <MasterArea 1073> started
+INFO:root:finished calculation electrification 1073 (duration 3.4512698650360107s)
+INFO:root:finished calculation efuel 1073 (duration 3.481433153152466s)
+INFO:root:Catenary in Limburg (Lahn) for 6421 is too long 1301m
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Limburg (Lahn) for 6421 is too long 1301m
+INFO:root:finished calculation battery 1073 (duration 99.75518584251404s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW93_N 93002§ N 93 Au (Sieg) - Altenkirchen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1073 (duration 249.8032419681549s)
+INFO:root:finished calculation diesel 1073 (duration 4.378006935119629s)
+INFO:root:finished calculation efuel 1073 (duration 0.016489028930664062s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1792 NW93_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1792 NW93_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 1073 (duration 49.47194004058838s)
+INFO:root:calculation <MasterArea 1074> started
+INFO:root:finished calculation electrification 1074 (duration 0.12626218795776367s)
+INFO:root:finished calculation efuel 1074 (duration 1.8525700569152832s)
+INFO:root:Catenary in Neustadt (Weinstr) Hbf for 5267 is too long 1375m
+INFO:root:Catenary in Neustadt (Weinstr) Hbf for 5267 is too long 1375m
+INFO:root:finished calculation battery 1074 (duration 89.72861409187317s)
+INFO:root:Catenary in Neustadt (Weinstr) Hbf for 5267 is too long 1375m
+INFO:root:Catenary in Neustadt (Weinstr) Hbf for 5267 is too long 1375m
+INFO:root:finished calculation optimised_electrification 1074 (duration 182.77648425102234s)
+INFO:root:finished calculation diesel 1074 (duration 1.8343369960784912s)
+INFO:root:finished calculation efuel 1074 (duration 0.017731189727783203s)
+INFO:root:finished calculation h2 1074 (duration 67.45681405067444s)
+INFO:root:calculation <MasterArea 1075> started
+INFO:root:finished calculation electrification 1075 (duration 0.09119081497192383s)
+INFO:root:finished calculation efuel 1075 (duration 0.09010601043701172s)
+INFO:root:finished calculation battery 1075 (duration 39.08040714263916s)
+INFO:root:finished calculation optimised_electrification 1075 (duration 66.02933406829834s)
+INFO:root:finished calculation diesel 1075 (duration 0.09396767616271973s)
+INFO:root:finished calculation efuel 1075 (duration 0.007061004638671875s)
+INFO:root:finished calculation h2 1075 (duration 17.399246215820312s)
+INFO:root:calculation <MasterArea 1076> started
+INFO:root:finished calculation electrification 1076 (duration 0.24410605430603027s)
+INFO:root:finished calculation efuel 1076 (duration 0.19533181190490723s)
+INFO:root:Catenary in Ascheberg (Holst) for 20673 is too long 25348m
+INFO:root:Catenary in Bad Oldesloe for 9538 is too long 2375m
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12201 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12201 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12202 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12202 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12102 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12102 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12101 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12101 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12201 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12202 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12102 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup SH12_AKN 12101 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation optimised_electrification 1076 (duration 325.1644928455353s)
+INFO:root:finished calculation diesel 1076 (duration 0.13091611862182617s)
+INFO:root:finished calculation efuel 1076 (duration 0.0407106876373291s)
+INFO:root:calculation <MasterArea 1077> started
+INFO:root:finished calculation electrification 1077 (duration 0.08830904960632324s)
+INFO:root:finished calculation efuel 1077 (duration 0.08170104026794434s)
+INFO:root:finished calculation optimised_electrification 1077 (duration 0.9655361175537109s)
+INFO:root:finished calculation diesel 1077 (duration 0.07938909530639648s)
+INFO:root:finished calculation efuel 1077 (duration 0.0036602020263671875s)
+INFO:root:calculation <MasterArea 1078> started
+INFO:root:finished calculation electrification 1078 (duration 0.08635807037353516s)
+INFO:root:finished calculation efuel 1078 (duration 0.08130669593811035s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Baal for 22332 is too long 2360m
+INFO:root:finished calculation battery 1078 (duration 50.30208396911621s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup NW26_N 26101 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Baal for 22332 is too long 2360m
+INFO:root:finished calculation optimised_electrification 1078 (duration 80.14271783828735s)
+INFO:root:finished calculation diesel 1078 (duration 0.09452700614929199s)
+INFO:root:finished calculation efuel 1078 (duration 0.009351015090942383s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1767 NW26_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1767 NW26_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 1078 (duration 18.388947010040283s)
+INFO:root:calculation <MasterArea 1079> started
+INFO:root:finished calculation electrification 1079 (duration 0.08805298805236816s)
+INFO:root:finished calculation efuel 1079 (duration 0.08385515213012695s)
+INFO:root:finished calculation optimised_electrification 1079 (duration 8.147520065307617s)
+INFO:root:finished calculation diesel 1079 (duration 0.083251953125s)
+INFO:root:finished calculation efuel 1079 (duration 0.0054590702056884766s)
+INFO:root:calculation <MasterArea 1080> started
+INFO:root:finished calculation electrification 1080 (duration 0.1989729404449463s)
+INFO:root:finished calculation efuel 1080 (duration 0.1603710651397705s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:Catenary in Landshut (Bay) Hbf for 41384 is too long 1077m
+INFO:root:Catenary in Landshut (Bay) Hbf for 41384 is too long 1077m
+INFO:root:Catenary in Rosenheim for 10582 is too long 2448m
+ERROR:root:For TimetableLine 1442 BY54_N there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 1080 (duration 89.26173186302185s)
+INFO:root:finished calculation diesel 1080 (duration 0.15298032760620117s)
+INFO:root:finished calculation efuel 1080 (duration 0.03809618949890137s)
+INFO:root:calculation <MasterArea 1081> started
+INFO:root:finished calculation electrification 1081 (duration 0.12694191932678223s)
+INFO:root:finished calculation efuel 1081 (duration 0.08997702598571777s)
+INFO:root:finished calculation optimised_electrification 1081 (duration 15.782723188400269s)
+INFO:root:finished calculation diesel 1081 (duration 0.08826112747192383s)
+INFO:root:finished calculation efuel 1081 (duration 0.008117914199829102s)
+INFO:root:calculation <MasterArea 1082> started
+INFO:root:finished calculation electrification 1082 (duration 0.27483677864074707s)
+INFO:root:finished calculation efuel 1082 (duration 0.19031190872192383s)
+INFO:root:Catenary in Braunschweig Hbf for 33362 is too long 1441m
+INFO:root:Catenary in Kreiensen for 1806 is too long 1170m
+INFO:root:finished calculation optimised_electrification 1082 (duration 307.56762075424194s)
+INFO:root:finished calculation diesel 1082 (duration 0.16990089416503906s)
+INFO:root:finished calculation efuel 1082 (duration 0.04969429969787598s)
+INFO:root:calculation <MasterArea 1083> started
+INFO:root:finished calculation electrification 1083 (duration 0.11226630210876465s)
+INFO:root:finished calculation efuel 1083 (duration 0.1011960506439209s)
+INFO:root:finished calculation optimised_electrification 1083 (duration 171.19711875915527s)
+INFO:root:finished calculation diesel 1083 (duration 0.09676790237426758s)
+INFO:root:finished calculation efuel 1083 (duration 0.019371986389160156s)
+INFO:root:calculation <MasterArea 1084> started
+INFO:root:finished calculation electrification 1084 (duration 4.343689918518066s)
+INFO:root:finished calculation efuel 1084 (duration 6.3675291538238525s)
+INFO:root:finished calculation battery 1084 (duration 59.83626127243042s)
+INFO:root:finished calculation optimised_electrification 1084 (duration 90.50478792190552s)
+INFO:root:finished calculation diesel 1084 (duration 6.3368518352508545s)
+INFO:root:finished calculation efuel 1084 (duration 0.012853860855102539s)
+INFO:root:finished calculation h2 1084 (duration 48.01699113845825s)
+INFO:root:calculation <MasterArea 1085> started
+INFO:root:finished calculation electrification 1085 (duration 0.08281707763671875s)
+INFO:root:finished calculation efuel 1085 (duration 0.08120894432067871s)
+INFO:root:Catenary in Remagen for 4383 is too long 1299m
+INFO:root:finished calculation battery 1085 (duration 20.295469760894775s)
+INFO:root:Catenary in Remagen for 4383 is too long 1299m
+INFO:root:finished calculation optimised_electrification 1085 (duration 42.904425382614136s)
+INFO:root:finished calculation diesel 1085 (duration 0.08742523193359375s)
+INFO:root:finished calculation efuel 1085 (duration 0.005088090896606445s)
+INFO:root:finished calculation h2 1085 (duration 18.558347940444946s)
+INFO:root:calculation <MasterArea 1086> started
+INFO:root:finished calculation electrification 1086 (duration 0.08439016342163086s)
+INFO:root:finished calculation efuel 1086 (duration 0.08513593673706055s)
+INFO:root:finished calculation battery 1086 (duration 6.568173170089722s)
+INFO:root:finished calculation optimised_electrification 1086 (duration 13.244847059249878s)
+INFO:root:finished calculation diesel 1086 (duration 0.08664488792419434s)
+INFO:root:finished calculation efuel 1086 (duration 0.005082130432128906s)
+INFO:root:finished calculation h2 1086 (duration 9.46373987197876s)
+INFO:root:calculation <MasterArea 1087> started
+INFO:root:finished calculation electrification 1087 (duration 0.09473180770874023s)
+INFO:root:finished calculation efuel 1087 (duration 0.09353184700012207s)
+INFO:root:finished calculation battery 1087 (duration 28.243804931640625s)
+INFO:root:finished calculation optimised_electrification 1087 (duration 57.7266948223114s)
+INFO:root:finished calculation diesel 1087 (duration 0.10100793838500977s)
+INFO:root:finished calculation efuel 1087 (duration 0.012737035751342773s)
+INFO:root:finished calculation h2 1087 (duration 17.479631900787354s)
+INFO:root:calculation <MasterArea 1088> started
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation electrification 1088 (duration 2.721436023712158s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 1088 (duration 9.249636173248291s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Tübingen Hbf for 7867 is too long 1333m
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1088 (duration 137.7189712524414s)
+INFO:root:Catenary in Aulendorf for 7714 is too long 1171m
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Tübingen Hbf for 7867 is too long 1333m
+INFO:root:Catenary in Tübingen Hbf for 7867 is too long 1333m
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46002 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW46_N 46001 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1088 (duration 258.2887051105499s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 1088 (duration 9.23288893699646s)
+INFO:root:finished calculation efuel 1088 (duration 0.02581620216369629s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 1088 (duration 77.04946494102478s)
+INFO:root:calculation <MasterArea 1089> started
+INFO:root:finished calculation electrification 1089 (duration 0.08206009864807129s)
+INFO:root:finished calculation efuel 1089 (duration 0.08310484886169434s)
+INFO:root:finished calculation battery 1089 (duration 8.54501461982727s)
+INFO:root:finished calculation optimised_electrification 1089 (duration 9.496371030807495s)
+INFO:root:finished calculation diesel 1089 (duration 0.08506417274475098s)
+INFO:root:finished calculation efuel 1089 (duration 0.005162954330444336s)
+INFO:root:finished calculation h2 1089 (duration 5.212783098220825s)
+INFO:root:calculation <MasterArea 1090> started
+INFO:root:finished calculation electrification 1090 (duration 0.08522439002990723s)
+INFO:root:finished calculation efuel 1090 (duration 0.0864560604095459s)
+INFO:root:finished calculation battery 1090 (duration 11.355482816696167s)
+INFO:root:finished calculation optimised_electrification 1090 (duration 12.357883930206299s)
+INFO:root:finished calculation diesel 1090 (duration 0.09092020988464355s)
+INFO:root:finished calculation efuel 1090 (duration 0.006888151168823242s)
+INFO:root:finished calculation h2 1090 (duration 6.177892684936523s)
+INFO:root:calculation <MasterArea 1091> started
+INFO:root:finished calculation electrification 1091 (duration 0.16291403770446777s)
+INFO:root:finished calculation efuel 1091 (duration 0.1273331642150879s)
+INFO:root:finished calculation battery 1091 (duration 152.14414620399475s)
+INFO:root:finished calculation optimised_electrification 1091 (duration 391.37599897384644s)
+INFO:root:finished calculation diesel 1091 (duration 0.13653802871704102s)
+INFO:root:finished calculation efuel 1091 (duration 0.022934913635253906s)
+INFO:root:finished calculation h2 1091 (duration 84.23084998130798s)
+INFO:root:calculation <MasterArea 1092> started
+INFO:root:finished calculation electrification 1092 (duration 0.10229325294494629s)
+INFO:root:finished calculation efuel 1092 (duration 0.09818077087402344s)
+INFO:root:finished calculation optimised_electrification 1092 (duration 32.73448896408081s)
+INFO:root:finished calculation diesel 1092 (duration 0.10722184181213379s)
+INFO:root:finished calculation efuel 1092 (duration 0.014605998992919922s)
+INFO:root:calculation <MasterArea 1093> started
+INFO:root:finished calculation electrification 1093 (duration 0.11583089828491211s)
+INFO:root:finished calculation efuel 1093 (duration 0.0874791145324707s)
+INFO:root:finished calculation optimised_electrification 1093 (duration 6.513476133346558s)
+INFO:root:finished calculation diesel 1093 (duration 0.08824491500854492s)
+INFO:root:finished calculation efuel 1093 (duration 0.0057201385498046875s)
+INFO:root:calculation <MasterArea 1094> started
+INFO:root:finished calculation electrification 1094 (duration 0.09655976295471191s)
+INFO:root:finished calculation efuel 1094 (duration 0.08591794967651367s)
+INFO:root:finished calculation optimised_electrification 1094 (duration 0.9952008724212646s)
+INFO:root:finished calculation diesel 1094 (duration 0.08617424964904785s)
+INFO:root:finished calculation efuel 1094 (duration 0.0046100616455078125s)
+INFO:root:calculation <MasterArea 1095> started
+INFO:root:finished calculation electrification 1095 (duration 0.08694624900817871s)
+INFO:root:finished calculation efuel 1095 (duration 0.076995849609375s)
+INFO:root:finished calculation optimised_electrification 1095 (duration 0.7857730388641357s)
+INFO:root:finished calculation diesel 1095 (duration 0.07985687255859375s)
+INFO:root:finished calculation efuel 1095 (duration 0.003206968307495117s)
+INFO:root:calculation <MasterArea 1096> started
+INFO:root:finished calculation electrification 1096 (duration 0.10257983207702637s)
+INFO:root:finished calculation efuel 1096 (duration 0.09202408790588379s)
+INFO:root:finished calculation optimised_electrification 1096 (duration 13.554216146469116s)
+INFO:root:finished calculation diesel 1096 (duration 0.09084224700927734s)
+INFO:root:finished calculation efuel 1096 (duration 0.0060939788818359375s)
+INFO:root:calculation <MasterArea 1097> started
+INFO:root:finished calculation electrification 1097 (duration 0.08848214149475098s)
+INFO:root:finished calculation efuel 1097 (duration 0.0808720588684082s)
+INFO:root:Catenary in Wesel for 2420 is too long 4658m
+INFO:root:finished calculation battery 1097 (duration 2.3025050163269043s)
+INFO:root:Catenary in Wesel for 2420 is too long 4658m
+INFO:root:finished calculation optimised_electrification 1097 (duration 3.0681650638580322s)
+INFO:root:finished calculation diesel 1097 (duration 0.0835878849029541s)
+INFO:root:finished calculation efuel 1097 (duration 0.004051923751831055s)
+INFO:root:finished calculation h2 1097 (duration 2.1328318119049072s)
+INFO:root:calculation <MasterArea 1098> started
+INFO:root:finished calculation electrification 1098 (duration 0.08054709434509277s)
+INFO:root:finished calculation efuel 1098 (duration 0.08233404159545898s)
+INFO:root:finished calculation battery 1098 (duration 6.730897903442383s)
+INFO:root:finished calculation optimised_electrification 1098 (duration 7.522820234298706s)
+INFO:root:finished calculation diesel 1098 (duration 0.08626890182495117s)
+INFO:root:finished calculation efuel 1098 (duration 0.005300998687744141s)
+INFO:root:finished calculation h2 1098 (duration 7.807788133621216s)
+INFO:root:calculation <MasterArea 1099> started
+INFO:root:finished calculation electrification 1099 (duration 0.0998530387878418s)
+INFO:root:finished calculation efuel 1099 (duration 0.09737896919250488s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1099 (duration 58.864922761917114s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BB21.1_N 21102 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1099 (duration 111.53725624084473s)
+INFO:root:finished calculation diesel 1099 (duration 0.09698319435119629s)
+INFO:root:finished calculation efuel 1099 (duration 0.012046098709106445s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1408 BB21.1_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1408 BB21.1_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 1099 (duration 24.087481021881104s)
+INFO:root:calculation <MasterArea 1100> started
+INFO:root:finished calculation electrification 1100 (duration 0.08619117736816406s)
+INFO:root:finished calculation efuel 1100 (duration 0.08656501770019531s)
+INFO:root:finished calculation battery 1100 (duration 30.547173023223877s)
+INFO:root:Catenary in Grävenwiesbach for 20806 is too long 8029m
+INFO:root:finished calculation optimised_electrification 1100 (duration 19.58200192451477s)
+INFO:root:finished calculation diesel 1100 (duration 0.09203720092773438s)
+INFO:root:finished calculation efuel 1100 (duration 0.007707834243774414s)
+INFO:root:finished calculation h2 1100 (duration 20.440156936645508s)
+INFO:root:calculation <MasterArea 1101> started
+INFO:root:finished calculation electrification 1101 (duration 0.09916019439697266s)
+INFO:root:finished calculation efuel 1101 (duration 0.09131407737731934s)
+INFO:root:finished calculation battery 1101 (duration 26.61691689491272s)
+INFO:root:finished calculation optimised_electrification 1101 (duration 28.155812740325928s)
+INFO:root:finished calculation diesel 1101 (duration 0.09477400779724121s)
+INFO:root:finished calculation efuel 1101 (duration 0.008503913879394531s)
+INFO:root:finished calculation h2 1101 (duration 28.376797914505005s)
+INFO:root:calculation <MasterArea 1102> started
+INFO:root:finished calculation electrification 1102 (duration 0.1336369514465332s)
+INFO:root:finished calculation efuel 1102 (duration 0.1283578872680664s)
+INFO:root:Catenary in Nevinghof/Münster Zentrum Nord for 1903 is too long 1210m
+INFO:root:finished calculation battery 1102 (duration 82.93623781204224s)
+INFO:root:finished calculation optimised_electrification 1102 (duration 210.0847990512848s)
+INFO:root:finished calculation diesel 1102 (duration 0.14090299606323242s)
+INFO:root:finished calculation efuel 1102 (duration 0.029625892639160156s)
+INFO:root:finished calculation h2 1102 (duration 66.8514928817749s)
+INFO:root:calculation <MasterArea 1103> started
+INFO:root:finished calculation electrification 1103 (duration 0.18149995803833008s)
+INFO:root:finished calculation efuel 1103 (duration 0.15617609024047852s)
+INFO:root:finished calculation battery 1103 (duration 136.65755605697632s)
+INFO:root:finished calculation optimised_electrification 1103 (duration 173.10268902778625s)
+INFO:root:finished calculation diesel 1103 (duration 0.15195989608764648s)
+INFO:root:finished calculation efuel 1103 (duration 0.034974098205566406s)
+INFO:root:finished calculation h2 1103 (duration 68.2895359992981s)
+INFO:root:calculation <MasterArea 1104> started
+INFO:root:finished calculation electrification 1104 (duration 0.09440112113952637s)
+INFO:root:finished calculation efuel 1104 (duration 0.09205985069274902s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1104 (duration 51.179184913635254s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW6.a_SR 6102 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BW9.b_N 9202 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1104 (duration 82.95726704597473s)
+INFO:root:finished calculation diesel 1104 (duration 0.09533405303955078s)
+INFO:root:finished calculation efuel 1104 (duration 0.010728120803833008s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1296 BW6.a_SR. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1523 BW9.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1523 BW9.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1523 BW9.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1523 BW9.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 1104 (duration 34.5530207157135s)
+INFO:root:calculation <MasterArea 1105> started
+INFO:root:finished calculation electrification 1105 (duration 0.08535504341125488s)
+INFO:root:finished calculation efuel 1105 (duration 0.08373308181762695s)
+INFO:root:finished calculation battery 1105 (duration 10.334579944610596s)
+INFO:root:finished calculation optimised_electrification 1105 (duration 7.919785976409912s)
+INFO:root:finished calculation diesel 1105 (duration 0.08362221717834473s)
+INFO:root:finished calculation efuel 1105 (duration 0.005204200744628906s)
+INFO:root:finished calculation h2 1105 (duration 5.593625783920288s)
+INFO:root:calculation <MasterArea 1106> started
+INFO:root:finished calculation electrification 1106 (duration 2.2035818099975586s)
+INFO:root:finished calculation efuel 1106 (duration 2.216317892074585s)
+INFO:root:finished calculation battery 1106 (duration 21.504718780517578s)
+INFO:root:finished calculation optimised_electrification 1106 (duration 29.743424892425537s)
+INFO:root:finished calculation diesel 1106 (duration 2.226996898651123s)
+INFO:root:finished calculation efuel 1106 (duration 0.010307073593139648s)
+INFO:root:finished calculation h2 1106 (duration 13.463371992111206s)
+INFO:root:calculation <MasterArea 1107> started
+INFO:root:finished calculation electrification 1107 (duration 0.07509493827819824s)
+INFO:root:finished calculation efuel 1107 (duration 0.0790860652923584s)
+INFO:root:finished calculation battery 1107 (duration 6.672666788101196s)
+INFO:root:finished calculation optimised_electrification 1107 (duration 7.364873170852661s)
+INFO:root:finished calculation diesel 1107 (duration 0.08272314071655273s)
+INFO:root:finished calculation efuel 1107 (duration 0.0046689510345458984s)
+INFO:root:finished calculation h2 1107 (duration 3.142084836959839s)
+INFO:root:calculation <MasterArea 1108> started
+INFO:root:finished calculation electrification 1108 (duration 0.0764930248260498s)
+INFO:root:finished calculation efuel 1108 (duration 0.07532000541687012s)
+INFO:root:finished calculation battery 1108 (duration 3.143437147140503s)
+INFO:root:finished calculation optimised_electrification 1108 (duration 3.9464781284332275s)
+INFO:root:finished calculation diesel 1108 (duration 0.0784759521484375s)
+INFO:root:finished calculation efuel 1108 (duration 0.0041179656982421875s)
+INFO:root:finished calculation h2 1108 (duration 4.9297521114349365s)
+INFO:root:calculation <MasterArea 1109> started
+INFO:root:finished calculation electrification 1109 (duration 0.08292317390441895s)
+INFO:root:finished calculation efuel 1109 (duration 0.0782320499420166s)
+INFO:root:Catenary in Steinach (b Rothenburg o d Tauber) for 9079 is too long 3005m
+INFO:root:finished calculation battery 1109 (duration 5.273173093795776s)
+INFO:root:Catenary in Steinach (b Rothenburg o d Tauber) for 9079 is too long 3005m
+INFO:root:finished calculation optimised_electrification 1109 (duration 6.417768955230713s)
+INFO:root:finished calculation diesel 1109 (duration 0.0837240219116211s)
+INFO:root:finished calculation efuel 1109 (duration 0.0052149295806884766s)
+INFO:root:finished calculation h2 1109 (duration 4.455533266067505s)
+INFO:root:calculation <MasterArea 1110> started
+INFO:root:finished calculation electrification 1110 (duration 0.07612991333007812s)
+INFO:root:finished calculation efuel 1110 (duration 0.07361698150634766s)
+INFO:root:finished calculation battery 1110 (duration 2.5692460536956787s)
+INFO:root:finished calculation optimised_electrification 1110 (duration 3.292179822921753s)
+INFO:root:finished calculation diesel 1110 (duration 0.0791780948638916s)
+INFO:root:finished calculation efuel 1110 (duration 0.004363059997558594s)
+INFO:root:finished calculation h2 1110 (duration 1.9811782836914062s)
+INFO:root:calculation <MasterArea 1111> started
+INFO:root:finished calculation electrification 1111 (duration 0.0821981430053711s)
+INFO:root:finished calculation efuel 1111 (duration 0.08578991889953613s)
+INFO:root:finished calculation battery 1111 (duration 11.715315103530884s)
+INFO:root:Catenary in Geldern for 3010 is too long 6494m
+INFO:root:finished calculation optimised_electrification 1111 (duration 21.71624779701233s)
+INFO:root:finished calculation diesel 1111 (duration 0.07991337776184082s)
+INFO:root:finished calculation efuel 1111 (duration 0.004906892776489258s)
+INFO:root:finished calculation h2 1111 (duration 11.739049911499023s)
+INFO:root:calculation <MasterArea 1112> started
+INFO:root:finished calculation electrification 1112 (duration 0.07918477058410645s)
+INFO:root:finished calculation efuel 1112 (duration 0.08053994178771973s)
+INFO:root:finished calculation battery 1112 (duration 6.919439077377319s)
+INFO:root:finished calculation optimised_electrification 1112 (duration 12.00892424583435s)
+INFO:root:finished calculation diesel 1112 (duration 0.08523201942443848s)
+INFO:root:finished calculation efuel 1112 (duration 0.005254030227661133s)
+INFO:root:finished calculation h2 1112 (duration 7.982728958129883s)
+INFO:root:calculation <MasterArea 1113> started
+INFO:root:finished calculation electrification 1113 (duration 0.09014725685119629s)
+INFO:root:finished calculation efuel 1113 (duration 3.89323091506958s)
+INFO:root:finished calculation battery 1113 (duration 15.668294906616211s)
+INFO:root:finished calculation optimised_electrification 1113 (duration 14.08051609992981s)
+INFO:root:finished calculation diesel 1113 (duration 3.828939914703369s)
+INFO:root:finished calculation efuel 1113 (duration 0.006467103958129883s)
+INFO:root:finished calculation h2 1113 (duration 18.281939029693604s)
+INFO:root:calculation <MasterArea 1114> started
+INFO:root:finished calculation electrification 1114 (duration 0.0900108814239502s)
+INFO:root:finished calculation efuel 1114 (duration 0.08607721328735352s)
+INFO:root:finished calculation battery 1114 (duration 31.249709844589233s)
+INFO:root:finished calculation optimised_electrification 1114 (duration 55.44279909133911s)
+INFO:root:finished calculation diesel 1114 (duration 0.08967995643615723s)
+INFO:root:finished calculation efuel 1114 (duration 0.007643699645996094s)
+INFO:root:finished calculation h2 1114 (duration 14.366846799850464s)
+INFO:root:calculation <MasterArea 1115> started
+INFO:root:finished calculation electrification 1115 (duration 0.07540297508239746s)
+INFO:root:finished calculation efuel 1115 (duration 0.07934808731079102s)
+INFO:root:finished calculation battery 1115 (duration 2.478168249130249s)
+INFO:root:finished calculation optimised_electrification 1115 (duration 3.2097790241241455s)
+INFO:root:finished calculation diesel 1115 (duration 0.07965588569641113s)
+INFO:root:finished calculation efuel 1115 (duration 0.0042171478271484375s)
+INFO:root:finished calculation h2 1115 (duration 1.7866921424865723s)
+INFO:root:calculation <MasterArea 1116> started
+INFO:root:finished calculation electrification 1116 (duration 0.11146402359008789s)
+INFO:root:finished calculation efuel 1116 (duration 0.1000509262084961s)
+INFO:root:Catenary in Crailsheim for 39588 is too long 1117m
+INFO:root:Catenary in Crailsheim for 39588 is too long 1117m
+INFO:root:finished calculation battery 1116 (duration 85.36284375190735s)
+INFO:root:Catenary in Miltenberg for 9000 is too long 1153m
+INFO:root:Catenary in Crailsheim for 39588 is too long 1117m
+ERROR:root:For TimetableLine 1294 BW84.b_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 1116 (duration 94.27985405921936s)
+INFO:root:finished calculation diesel 1116 (duration 0.1029508113861084s)
+INFO:root:finished calculation efuel 1116 (duration 0.012983083724975586s)
+INFO:root:finished calculation h2 1116 (duration 26.392643928527832s)
+INFO:root:calculation <MasterArea 1117> started
+INFO:root:finished calculation electrification 1117 (duration 0.09361696243286133s)
+INFO:root:finished calculation efuel 1117 (duration 0.09133076667785645s)
+INFO:root:finished calculation battery 1117 (duration 24.292118072509766s)
+INFO:root:finished calculation optimised_electrification 1117 (duration 36.602880001068115s)
+INFO:root:finished calculation diesel 1117 (duration 0.09632372856140137s)
+INFO:root:finished calculation efuel 1117 (duration 0.00941014289855957s)
+INFO:root:finished calculation h2 1117 (duration 12.724205017089844s)
+INFO:root:calculation <MasterArea 1118> started
+INFO:root:finished calculation electrification 1118 (duration 0.18480896949768066s)
+INFO:root:finished calculation efuel 1118 (duration 0.14958405494689941s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation battery 1118 (duration 104.6945219039917s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation optimised_electrification 1118 (duration 233.39663791656494s)
+INFO:root:finished calculation diesel 1118 (duration 0.14677000045776367s)
+INFO:root:finished calculation efuel 1118 (duration 0.03245902061462402s)
+INFO:root:finished calculation h2 1118 (duration 76.13699674606323s)
+INFO:root:calculation <MasterArea 1119> started
+INFO:root:finished calculation electrification 1119 (duration 0.12107205390930176s)
+INFO:root:finished calculation efuel 1119 (duration 0.12443900108337402s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation battery 1119 (duration 61.882534980773926s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:Catenary in Klosterfelde for 21107 is too long 9224m
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation optimised_electrification 1119 (duration 80.30867719650269s)
+INFO:root:finished calculation diesel 1119 (duration 0.12679219245910645s)
+INFO:root:finished calculation efuel 1119 (duration 0.02086496353149414s)
+INFO:root:finished calculation h2 1119 (duration 24.31548810005188s)
+INFO:root:calculation <MasterArea 1120> started
+INFO:root:finished calculation electrification 1120 (duration 0.08308696746826172s)
+INFO:root:finished calculation efuel 1120 (duration 0.08334493637084961s)
+INFO:root:Catenary in Korntal for 21490 is too long 5227m
+INFO:root:finished calculation battery 1120 (duration 8.197094917297363s)
+INFO:root:Catenary in Korntal for 21490 is too long 5227m
+INFO:root:finished calculation optimised_electrification 1120 (duration 13.504153728485107s)
+INFO:root:finished calculation diesel 1120 (duration 0.08867979049682617s)
+INFO:root:finished calculation efuel 1120 (duration 0.007796049118041992s)
+INFO:root:finished calculation h2 1120 (duration 7.010796070098877s)
+INFO:root:calculation <MasterArea 1121> started
+INFO:root:finished calculation electrification 1121 (duration 0.08272004127502441s)
+INFO:root:finished calculation efuel 1121 (duration 0.07948899269104004s)
+INFO:root:finished calculation battery 1121 (duration 6.593693017959595s)
+INFO:root:finished calculation optimised_electrification 1121 (duration 13.097601175308228s)
+INFO:root:finished calculation diesel 1121 (duration 0.08289599418640137s)
+INFO:root:finished calculation efuel 1121 (duration 0.005268096923828125s)
+INFO:root:finished calculation h2 1121 (duration 5.159315824508667s)
+INFO:root:calculation <MasterArea 1122> started
+INFO:root:finished calculation electrification 1122 (duration 0.09855198860168457s)
+INFO:root:finished calculation efuel 1122 (duration 0.0930640697479248s)
+INFO:root:finished calculation battery 1122 (duration 33.95170998573303s)
+INFO:root:Catenary in Groß-Umstadt-Wiebelsbach for 7068 is too long 3942m
+INFO:root:Catenary in Groß-Umstadt-Wiebelsbach for 7068 is too long 3942m
+INFO:root:finished calculation optimised_electrification 1122 (duration 49.64138722419739s)
+INFO:root:finished calculation diesel 1122 (duration 0.10047793388366699s)
+INFO:root:finished calculation efuel 1122 (duration 0.011770963668823242s)
+INFO:root:finished calculation h2 1122 (duration 16.0620539188385s)
+INFO:root:calculation <MasterArea 1123> started
+INFO:root:finished calculation electrification 1123 (duration 0.1419210433959961s)
+INFO:root:finished calculation efuel 1123 (duration 0.12057089805603027s)
+INFO:root:Catenary in Bischofswerda for 12968 is too long 1290m
+INFO:root:Catenary in Bischofswerda for 12968 is too long 1290m
+INFO:root:Catenary in Zittau for 12915 is too long 1059m
+ERROR:root:For TimetableLine 1838 SA65_N there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 1123 (duration 63.41492486000061s)
+INFO:root:finished calculation diesel 1123 (duration 0.12279105186462402s)
+INFO:root:finished calculation efuel 1123 (duration 0.024807214736938477s)
+INFO:root:calculation <MasterArea 1124> started
+INFO:root:finished calculation electrification 1124 (duration 0.10622167587280273s)
+INFO:root:finished calculation efuel 1124 (duration 0.07965397834777832s)
+INFO:root:finished calculation battery 1124 (duration 6.059349060058594s)
+INFO:root:finished calculation optimised_electrification 1124 (duration 6.8661229610443115s)
+INFO:root:finished calculation diesel 1124 (duration 0.0813608169555664s)
+INFO:root:finished calculation efuel 1124 (duration 0.004897117614746094s)
+INFO:root:finished calculation h2 1124 (duration 4.828199148178101s)
+INFO:root:calculation <MasterArea 1125> started
+INFO:root:finished calculation electrification 1125 (duration 0.18995881080627441s)
+INFO:root:finished calculation efuel 1125 (duration 0.14610719680786133s)
+INFO:root:Catenary in Iserlohn for 3807 is too long 1194m
+INFO:root:finished calculation battery 1125 (duration 103.97211694717407s)
+INFO:root:Catenary in Korbach for 4166 is too long 3719m
+INFO:root:Catenary in Iserlohn for 3807 is too long 1194m
+INFO:root:finished calculation optimised_electrification 1125 (duration 162.6128180027008s)
+INFO:root:finished calculation diesel 1125 (duration 0.1429119110107422s)
+INFO:root:finished calculation efuel 1125 (duration 0.033017873764038086s)
+INFO:root:finished calculation h2 1125 (duration 58.25722002983093s)
+INFO:root:calculation <MasterArea 1126> started
+INFO:root:finished calculation electrification 1126 (duration 0.07590508460998535s)
+INFO:root:finished calculation efuel 1126 (duration 0.0731210708618164s)
+INFO:root:finished calculation battery 1126 (duration 2.3271331787109375s)
+INFO:root:finished calculation optimised_electrification 1126 (duration 3.067617177963257s)
+INFO:root:finished calculation diesel 1126 (duration 0.07784390449523926s)
+INFO:root:finished calculation efuel 1126 (duration 0.0043010711669921875s)
+INFO:root:finished calculation h2 1126 (duration 2.103060007095337s)
+INFO:root:calculation <MasterArea 1127> started
+INFO:root:finished calculation electrification 1127 (duration 0.07473206520080566s)
+INFO:root:finished calculation efuel 1127 (duration 0.07463979721069336s)
+INFO:root:finished calculation battery 1127 (duration 3.687817335128784s)
+INFO:root:finished calculation optimised_electrification 1127 (duration 4.410343885421753s)
+INFO:root:finished calculation diesel 1127 (duration 0.08017683029174805s)
+INFO:root:finished calculation efuel 1127 (duration 0.004689931869506836s)
+INFO:root:finished calculation h2 1127 (duration 2.7854483127593994s)
+INFO:root:calculation <MasterArea 1128> started
+INFO:root:finished calculation electrification 1128 (duration 0.12299013137817383s)
+INFO:root:finished calculation efuel 1128 (duration 0.10683131217956543s)
+INFO:root:finished calculation battery 1128 (duration 42.24682593345642s)
+INFO:root:finished calculation optimised_electrification 1128 (duration 48.50401496887207s)
+INFO:root:finished calculation diesel 1128 (duration 0.11439704895019531s)
+INFO:root:finished calculation efuel 1128 (duration 0.018976926803588867s)
+INFO:root:finished calculation h2 1128 (duration 23.568237781524658s)
+INFO:root:calculation <MasterArea 1129> started
+INFO:root:finished calculation electrification 1129 (duration 0.07354903221130371s)
+INFO:root:finished calculation efuel 1129 (duration 0.07367396354675293s)
+INFO:root:finished calculation battery 1129 (duration 3.164829969406128s)
+INFO:root:finished calculation optimised_electrification 1129 (duration 3.9397408962249756s)
+INFO:root:finished calculation diesel 1129 (duration 0.07734990119934082s)
+INFO:root:finished calculation efuel 1129 (duration 0.003072023391723633s)
+INFO:root:finished calculation h2 1129 (duration 2.1327497959136963s)
+INFO:root:calculation <MasterArea 1130> started
+INFO:root:finished calculation electrification 1130 (duration 0.07824277877807617s)
+INFO:root:finished calculation efuel 1130 (duration 0.08052396774291992s)
+INFO:root:finished calculation battery 1130 (duration 6.188607215881348s)
+INFO:root:finished calculation optimised_electrification 1130 (duration 7.132584810256958s)
+INFO:root:finished calculation diesel 1130 (duration 0.08667230606079102s)
+INFO:root:finished calculation efuel 1130 (duration 0.007456064224243164s)
+INFO:root:finished calculation h2 1130 (duration 4.76444411277771s)
+INFO:root:calculation <MasterArea 1131> started
+INFO:root:finished calculation electrification 1131 (duration 0.07437491416931152s)
+INFO:root:finished calculation efuel 1131 (duration 0.0736398696899414s)
+INFO:root:finished calculation battery 1131 (duration 2.7351560592651367s)
+INFO:root:finished calculation optimised_electrification 1131 (duration 3.483854055404663s)
+INFO:root:finished calculation diesel 1131 (duration 0.07769298553466797s)
+INFO:root:finished calculation efuel 1131 (duration 0.0046231746673583984s)
+INFO:root:finished calculation h2 1131 (duration 1.9516470432281494s)
+INFO:root:calculation <MasterArea 1132> started
+INFO:root:finished calculation electrification 1132 (duration 0.07861471176147461s)
+INFO:root:finished calculation efuel 1132 (duration 0.07733917236328125s)
+INFO:root:Catenary in Elze (Han) for 1707 is too long 1021m
+INFO:root:finished calculation battery 1132 (duration 5.084763050079346s)
+INFO:root:Catenary in Elze (Han) for 1707 is too long 1021m
+INFO:root:finished calculation optimised_electrification 1132 (duration 5.905544996261597s)
+INFO:root:finished calculation diesel 1132 (duration 0.08009910583496094s)
+INFO:root:finished calculation efuel 1132 (duration 0.003078937530517578s)
+INFO:root:finished calculation h2 1132 (duration 3.0430688858032227s)
+INFO:root:calculation <MasterArea 1133> started
+INFO:root:finished calculation electrification 1133 (duration 0.09580516815185547s)
+INFO:root:finished calculation efuel 1133 (duration 0.08833503723144531s)
+INFO:root:finished calculation battery 1133 (duration 13.518357992172241s)
+INFO:root:Catenary in Gotteszell for 21337 is too long 7150m
+INFO:root:finished calculation optimised_electrification 1133 (duration 14.151462316513062s)
+INFO:root:finished calculation diesel 1133 (duration 0.09434700012207031s)
+INFO:root:finished calculation efuel 1133 (duration 0.011378765106201172s)
+INFO:root:finished calculation h2 1133 (duration 17.180861949920654s)
+INFO:root:calculation <MasterArea 1134> started
+INFO:root:finished calculation electrification 1134 (duration 0.09407687187194824s)
+INFO:root:finished calculation efuel 1134 (duration 0.09657096862792969s)
+INFO:root:finished calculation battery 1134 (duration 39.620875120162964s)
+INFO:root:finished calculation optimised_electrification 1134 (duration 47.064186811447144s)
+INFO:root:finished calculation diesel 1134 (duration 0.10197687149047852s)
+INFO:root:finished calculation efuel 1134 (duration 0.011401891708374023s)
+INFO:root:finished calculation h2 1134 (duration 27.59674906730652s)
+INFO:root:calculation <MasterArea 1135> started
+INFO:root:finished calculation electrification 1135 (duration 0.07756400108337402s)
+INFO:root:finished calculation efuel 1135 (duration 0.07857894897460938s)
+INFO:root:finished calculation battery 1135 (duration 22.44507908821106s)
+INFO:root:finished calculation optimised_electrification 1135 (duration 23.90877890586853s)
+INFO:root:finished calculation diesel 1135 (duration 0.08496904373168945s)
+INFO:root:finished calculation efuel 1135 (duration 0.00608515739440918s)
+INFO:root:finished calculation h2 1135 (duration 15.169274806976318s)
+INFO:root:calculation <MasterArea 1136> started
+INFO:root:finished calculation electrification 1136 (duration 0.07631897926330566s)
+INFO:root:finished calculation efuel 1136 (duration 0.07889795303344727s)
+INFO:root:finished calculation battery 1136 (duration 8.005284786224365s)
+INFO:root:finished calculation optimised_electrification 1136 (duration 18.89667296409607s)
+INFO:root:finished calculation diesel 1136 (duration 0.0773320198059082s)
+INFO:root:finished calculation efuel 1136 (duration 0.0052721500396728516s)
+INFO:root:finished calculation h2 1136 (duration 8.795371055603027s)
+INFO:root:calculation <MasterArea 1137> started
+INFO:root:finished calculation electrification 1137 (duration 0.0862429141998291s)
+INFO:root:finished calculation efuel 1137 (duration 0.07917308807373047s)
+INFO:root:finished calculation battery 1137 (duration 18.109085083007812s)
+INFO:root:finished calculation optimised_electrification 1137 (duration 19.192999124526978s)
+INFO:root:finished calculation diesel 1137 (duration 0.07915115356445312s)
+INFO:root:finished calculation efuel 1137 (duration 0.005322933197021484s)
+INFO:root:finished calculation h2 1137 (duration 9.228372812271118s)
+INFO:root:calculation <MasterArea 1138> started
+INFO:root:finished calculation electrification 1138 (duration 7.072218894958496s)
+INFO:root:finished calculation efuel 1138 (duration 7.060567855834961s)
+INFO:root:finished calculation battery 1138 (duration 42.96144390106201s)
+INFO:root:finished calculation optimised_electrification 1138 (duration 51.32578682899475s)
+INFO:root:finished calculation diesel 1138 (duration 7.1028900146484375s)
+INFO:root:finished calculation efuel 1138 (duration 0.006766080856323242s)
+INFO:root:finished calculation h2 1138 (duration 14.777635097503662s)
+INFO:root:calculation <MasterArea 1139> started
+INFO:root:finished calculation electrification 1139 (duration 0.089508056640625s)
+INFO:root:finished calculation efuel 1139 (duration 0.08785271644592285s)
+INFO:root:finished calculation battery 1139 (duration 21.316216945648193s)
+INFO:root:finished calculation optimised_electrification 1139 (duration 33.49191403388977s)
+INFO:root:finished calculation diesel 1139 (duration 0.09724688529968262s)
+INFO:root:finished calculation efuel 1139 (duration 0.012346744537353516s)
+INFO:root:finished calculation h2 1139 (duration 22.400240182876587s)
+INFO:root:calculation <MasterArea 1140> started
+INFO:root:finished calculation electrification 1140 (duration 0.07349777221679688s)
+INFO:root:finished calculation efuel 1140 (duration 0.07284998893737793s)
+INFO:root:finished calculation battery 1140 (duration 7.8733062744140625s)
+INFO:root:finished calculation optimised_electrification 1140 (duration 8.528061151504517s)
+INFO:root:finished calculation diesel 1140 (duration 0.07990241050720215s)
+INFO:root:finished calculation efuel 1140 (duration 0.0029859542846679688s)
+INFO:root:finished calculation h2 1140 (duration 4.046766042709351s)
+INFO:root:calculation <MasterArea 1141> started
+INFO:root:finished calculation electrification 1141 (duration 0.07451701164245605s)
+INFO:root:finished calculation efuel 1141 (duration 0.07416391372680664s)
+INFO:root:finished calculation battery 1141 (duration 2.5722858905792236s)
+INFO:root:finished calculation optimised_electrification 1141 (duration 3.3724820613861084s)
+INFO:root:finished calculation diesel 1141 (duration 0.07512187957763672s)
+INFO:root:finished calculation efuel 1141 (duration 0.004785060882568359s)
+INFO:root:finished calculation h2 1141 (duration 2.2846009731292725s)
+INFO:root:calculation <MasterArea 1142> started
+INFO:root:finished calculation electrification 1142 (duration 0.07189393043518066s)
+INFO:root:finished calculation efuel 1142 (duration 0.0724642276763916s)
+INFO:root:finished calculation battery 1142 (duration 2.9378788471221924s)
+INFO:root:finished calculation optimised_electrification 1142 (duration 3.519684076309204s)
+INFO:root:finished calculation diesel 1142 (duration 0.07643389701843262s)
+INFO:root:finished calculation efuel 1142 (duration 0.004311084747314453s)
+INFO:root:finished calculation h2 1142 (duration 1.9407308101654053s)
+INFO:root:calculation <MasterArea 1143> started
+INFO:root:finished calculation electrification 1143 (duration 0.07352709770202637s)
+INFO:root:finished calculation efuel 1143 (duration 0.16840600967407227s)
+INFO:root:finished calculation battery 1143 (duration 2.7971832752227783s)
+INFO:root:finished calculation optimised_electrification 1143 (duration 3.482219696044922s)
+INFO:root:finished calculation diesel 1143 (duration 0.07993888854980469s)
+INFO:root:finished calculation efuel 1143 (duration 0.004410743713378906s)
+INFO:root:finished calculation h2 1143 (duration 1.931839942932129s)
+INFO:root:calculation <MasterArea 1144> started
+INFO:root:finished calculation electrification 1144 (duration 5.2350640296936035s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 1144 (duration 5.237761735916138s)
+INFO:root:finished calculation battery 1144 (duration 22.544377088546753s)
+INFO:root:finished calculation optimised_electrification 1144 (duration 33.27232909202576s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2382 SA3.2_SC. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 1144 (duration 5.239583969116211s)
+INFO:root:finished calculation efuel 1144 (duration 0.0050449371337890625s)
+INFO:root:finished calculation h2 1144 (duration 9.045893907546997s)
+INFO:root:calculation <MasterArea 1145> started
+INFO:root:finished calculation electrification 1145 (duration 0.07544207572937012s)
+INFO:root:finished calculation efuel 1145 (duration 0.07691812515258789s)
+INFO:root:finished calculation battery 1145 (duration 6.865214109420776s)
+INFO:root:finished calculation optimised_electrification 1145 (duration 7.715452194213867s)
+INFO:root:finished calculation diesel 1145 (duration 0.08127999305725098s)
+INFO:root:finished calculation efuel 1145 (duration 0.005296945571899414s)
+INFO:root:finished calculation h2 1145 (duration 4.679909944534302s)
+INFO:root:calculation <MasterArea 1146> started
+INFO:root:finished calculation electrification 1146 (duration 0.07674789428710938s)
+INFO:root:finished calculation efuel 1146 (duration 0.07922792434692383s)
+INFO:root:finished calculation battery 1146 (duration 9.680367708206177s)
+INFO:root:finished calculation optimised_electrification 1146 (duration 16.280867099761963s)
+INFO:root:finished calculation diesel 1146 (duration 0.08119010925292969s)
+INFO:root:finished calculation efuel 1146 (duration 0.0052640438079833984s)
+INFO:root:finished calculation h2 1146 (duration 11.455015897750854s)
+INFO:root:calculation <MasterArea 1147> started
+INFO:root:finished calculation electrification 1147 (duration 0.08680200576782227s)
+INFO:root:finished calculation efuel 1147 (duration 0.0847921371459961s)
+INFO:root:finished calculation battery 1147 (duration 79.09050393104553s)
+INFO:root:finished calculation optimised_electrification 1147 (duration 46.55078411102295s)
+INFO:root:finished calculation diesel 1147 (duration 0.09451127052307129s)
+INFO:root:finished calculation efuel 1147 (duration 0.009536027908325195s)
+INFO:root:finished calculation h2 1147 (duration 33.174537897109985s)
+INFO:root:calculation <MasterArea 1148> started
+INFO:root:finished calculation electrification 1148 (duration 0.07429289817810059s)
+INFO:root:finished calculation efuel 1148 (duration 0.07202601432800293s)
+INFO:root:finished calculation battery 1148 (duration 5.6501219272613525s)
+INFO:root:finished calculation optimised_electrification 1148 (duration 6.422945976257324s)
+INFO:root:finished calculation diesel 1148 (duration 0.07952308654785156s)
+INFO:root:finished calculation efuel 1148 (duration 0.004023075103759766s)
+INFO:root:finished calculation h2 1148 (duration 3.436717987060547s)
+INFO:root:calculation <MasterArea 1149> started
+INFO:root:finished calculation electrification 1149 (duration 0.07397675514221191s)
+INFO:root:finished calculation efuel 1149 (duration 0.07353591918945312s)
+INFO:root:finished calculation battery 1149 (duration 7.524571895599365s)
+INFO:root:finished calculation optimised_electrification 1149 (duration 8.333478927612305s)
+INFO:root:finished calculation diesel 1149 (duration 0.07502412796020508s)
+INFO:root:finished calculation efuel 1149 (duration 0.0030651092529296875s)
+INFO:root:finished calculation h2 1149 (duration 3.6040501594543457s)
+INFO:root:calculation <MasterArea 1150> started
+INFO:root:finished calculation electrification 1150 (duration 0.07469797134399414s)
+INFO:root:finished calculation efuel 1150 (duration 0.07582807540893555s)
+INFO:root:finished calculation battery 1150 (duration 5.739288091659546s)
+INFO:root:finished calculation optimised_electrification 1150 (duration 6.581175088882446s)
+INFO:root:finished calculation diesel 1150 (duration 0.0807809829711914s)
+INFO:root:finished calculation efuel 1150 (duration 0.005263805389404297s)
+INFO:root:finished calculation h2 1150 (duration 3.8331758975982666s)
+INFO:root:calculation <MasterArea 1151> started
+INFO:root:finished calculation electrification 1151 (duration 0.07736492156982422s)
+INFO:root:finished calculation efuel 1151 (duration 0.07358884811401367s)
+INFO:root:finished calculation battery 1151 (duration 17.247226238250732s)
+INFO:root:finished calculation optimised_electrification 1151 (duration 30.974843978881836s)
+INFO:root:finished calculation diesel 1151 (duration 0.08065629005432129s)
+INFO:root:finished calculation efuel 1151 (duration 0.004758119583129883s)
+INFO:root:finished calculation h2 1151 (duration 8.494821071624756s)
+INFO:root:calculation <MasterArea 1152> started
+INFO:root:finished calculation electrification 1152 (duration 3.0035338401794434s)
+INFO:root:finished calculation efuel 1152 (duration 3.83382511138916s)
+INFO:root:finished calculation battery 1152 (duration 15.883437871932983s)
+INFO:root:finished calculation optimised_electrification 1152 (duration 20.375924110412598s)
+INFO:root:finished calculation diesel 1152 (duration 3.9082541465759277s)
+INFO:root:finished calculation efuel 1152 (duration 0.00658416748046875s)
+INFO:root:finished calculation h2 1152 (duration 7.040859937667847s)
+INFO:root:calculation <MasterArea 1153> started
+INFO:root:finished calculation electrification 1153 (duration 0.07363295555114746s)
+INFO:root:finished calculation efuel 1153 (duration 0.07353520393371582s)
+INFO:root:finished calculation battery 1153 (duration 5.295593023300171s)
+INFO:root:finished calculation optimised_electrification 1153 (duration 6.042056083679199s)
+INFO:root:finished calculation diesel 1153 (duration 0.07743120193481445s)
+INFO:root:finished calculation efuel 1153 (duration 0.004112720489501953s)
+INFO:root:finished calculation h2 1153 (duration 3.176011085510254s)
+INFO:root:calculation <MasterArea 1154> started

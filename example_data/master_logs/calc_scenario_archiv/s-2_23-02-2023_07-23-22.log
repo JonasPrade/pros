@@ -1,0 +1,241 @@
+INFO:root:calculation <MasterArea 1800> started
+INFO:root:finished calculation electrification 1800 (duration 0.008918046951293945s)
+INFO:root:finished calculation efuel 1800 (duration 0.0042612552642822266s)
+INFO:root:finished calculation battery 1800 (duration 0.0045130252838134766s)
+INFO:root:finished calculation optimised_electrification 1800 (duration 0.01129913330078125s)
+INFO:root:finished calculation diesel 1800 (duration 0.0047969818115234375s)
+INFO:root:finished calculation efuel 1800 (duration 0.0040209293365478516s)
+INFO:root:finished calculation h2 1800 (duration 0.004090785980224609s)
+INFO:root:calculation <MasterArea 1801> started
+INFO:root:finished calculation electrification 1801 (duration 0.005197048187255859s)
+INFO:root:finished calculation efuel 1801 (duration 0.00433802604675293s)
+INFO:root:finished calculation battery 1801 (duration 0.004194021224975586s)
+INFO:root:finished calculation optimised_electrification 1801 (duration 0.005280971527099609s)
+INFO:root:finished calculation diesel 1801 (duration 0.004311084747314453s)
+INFO:root:finished calculation efuel 1801 (duration 0.003849029541015625s)
+INFO:root:finished calculation h2 1801 (duration 0.0038089752197265625s)
+INFO:root:calculation <MasterArea 1802> started
+INFO:root:finished calculation electrification 1802 (duration 0.0035920143127441406s)
+INFO:root:finished calculation efuel 1802 (duration 0.0028629302978515625s)
+INFO:root:finished calculation battery 1802 (duration 0.0028028488159179688s)
+INFO:root:finished calculation optimised_electrification 1802 (duration 0.003471851348876953s)
+INFO:root:finished calculation diesel 1802 (duration 0.0030879974365234375s)
+INFO:root:finished calculation efuel 1802 (duration 0.0027811527252197266s)
+INFO:root:finished calculation h2 1802 (duration 0.002938985824584961s)
+INFO:root:calculation <MasterArea 1803> started
+INFO:root:finished calculation electrification 1803 (duration 0.09890222549438477s)
+INFO:root:finished calculation efuel 1803 (duration 0.10184025764465332s)
+INFO:root:Catenary in Hof Hbf for 39817 is too long 4629m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Münchberg for 8801 is too long 5429m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1803 (duration 1728.3852999210358s)
+INFO:root:finished calculation diesel 1803 (duration 0.31916165351867676s)
+INFO:root:finished calculation efuel 1803 (duration 0.1098787784576416s)
+INFO:root:calculation <MasterArea 1804> started
+INFO:root:finished calculation electrification 1804 (duration 0.08286309242248535s)
+INFO:root:finished calculation efuel 1804 (duration 0.0795431137084961s)
+INFO:root:finished calculation battery 1804 (duration 20.39152717590332s)
+INFO:root:finished calculation optimised_electrification 1804 (duration 20.76307702064514s)
+INFO:root:finished calculation diesel 1804 (duration 0.08137083053588867s)
+INFO:root:finished calculation efuel 1804 (duration 0.002964019775390625s)
+INFO:root:finished calculation h2 1804 (duration 0.08109474182128906s)
+INFO:root:calculation <MasterArea 1805> started
+INFO:root:finished calculation electrification 1805 (duration 0.19487786293029785s)
+INFO:root:finished calculation efuel 1805 (duration 0.15250611305236816s)
+INFO:root:finished calculation battery 1805 (duration 300.79493975639343s)
+INFO:root:Catenary in Kempten (Allgäu) Hbf for 9349 is too long 3037m
+INFO:root:finished calculation optimised_electrification 1805 (duration 925.6263971328735s)
+INFO:root:finished calculation diesel 1805 (duration 0.12847900390625s)
+INFO:root:finished calculation efuel 1805 (duration 0.027592182159423828s)
+INFO:root:finished calculation h2 1805 (duration 0.11258983612060547s)
+INFO:root:calculation <MasterArea 1806> started
+INFO:root:finished calculation electrification 1806 (duration 9.147079944610596s)
+INFO:root:finished calculation efuel 1806 (duration 8.660622835159302s)
+INFO:root:finished calculation battery 1806 (duration 143.5387613773346s)
+INFO:root:finished calculation optimised_electrification 1806 (duration 202.24396586418152s)
+INFO:root:finished calculation diesel 1806 (duration 8.799400091171265s)
+INFO:root:finished calculation efuel 1806 (duration 0.01721024513244629s)
+INFO:root:finished calculation h2 1806 (duration 8.769489765167236s)
+INFO:root:calculation <MasterArea 1807> started
+INFO:root:finished calculation electrification 1807 (duration 0.13552594184875488s)
+INFO:root:finished calculation efuel 1807 (duration 0.12181615829467773s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1807 (duration 285.0491600036621s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1807 (duration 526.6750569343567s)
+INFO:root:finished calculation diesel 1807 (duration 0.12971806526184082s)
+INFO:root:finished calculation efuel 1807 (duration 0.03456687927246094s)
+INFO:root:finished calculation h2 1807 (duration 0.11582112312316895s)
+INFO:root:calculation <MasterArea 1808> started
+INFO:root:finished calculation electrification 1808 (duration 0.09577202796936035s)
+INFO:root:finished calculation efuel 1808 (duration 0.09006619453430176s)
+INFO:root:finished calculation battery 1808 (duration 65.14249801635742s)
+INFO:root:Catenary in Westerburg for 6442 is too long 2139m
+INFO:root:finished calculation optimised_electrification 1808 (duration 222.1929759979248s)
+INFO:root:finished calculation diesel 1808 (duration 0.09562802314758301s)
+INFO:root:finished calculation efuel 1808 (duration 0.008732795715332031s)
+INFO:root:finished calculation h2 1808 (duration 0.09232211112976074s)
+INFO:root:calculation <MasterArea 1809> started
+INFO:root:finished calculation electrification 1809 (duration 0.13363909721374512s)
+INFO:root:finished calculation efuel 1809 (duration 0.11626887321472168s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation battery 1809 (duration 124.41052222251892s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation optimised_electrification 1809 (duration 237.15467619895935s)
+INFO:root:finished calculation diesel 1809 (duration 0.1186530590057373s)
+INFO:root:finished calculation efuel 1809 (duration 0.019377946853637695s)
+INFO:root:finished calculation h2 1809 (duration 0.1032400131225586s)
+INFO:root:calculation <MasterArea 1810> started
+INFO:root:finished calculation electrification 1810 (duration 0.18743109703063965s)
+INFO:root:finished calculation efuel 1810 (duration 0.14085698127746582s)
+INFO:root:finished calculation battery 1810 (duration 265.1401960849762s)
+INFO:root:finished calculation optimised_electrification 1810 (duration 603.1825551986694s)
+INFO:root:finished calculation diesel 1810 (duration 0.1364428997039795s)
+INFO:root:finished calculation efuel 1810 (duration 0.04227495193481445s)
+INFO:root:finished calculation h2 1810 (duration 0.14810395240783691s)
+INFO:root:calculation <MasterArea 1811> started
+INFO:root:finished calculation electrification 1811 (duration 0.0915217399597168s)
+INFO:root:finished calculation efuel 1811 (duration 0.08194684982299805s)
+INFO:root:finished calculation battery 1811 (duration 41.214892625808716s)
+INFO:root:finished calculation optimised_electrification 1811 (duration 82.29468393325806s)
+INFO:root:finished calculation diesel 1811 (duration 0.08517694473266602s)
+INFO:root:finished calculation efuel 1811 (duration 0.005261898040771484s)
+INFO:root:finished calculation h2 1811 (duration 0.08402609825134277s)
+INFO:root:calculation <MasterArea 1812> started
+INFO:root:finished calculation electrification 1812 (duration 0.38752007484436035s)
+INFO:root:finished calculation efuel 1812 (duration 0.17750334739685059s)
+INFO:root:finished calculation optimised_electrification 1812 (duration 539.4336342811584s)
+INFO:root:finished calculation diesel 1812 (duration 0.17330598831176758s)
+INFO:root:finished calculation efuel 1812 (duration 0.059980154037475586s)
+INFO:root:calculation <MasterArea 1813> started
+INFO:root:finished calculation electrification 1813 (duration 0.09454107284545898s)
+INFO:root:finished calculation efuel 1813 (duration 0.07816410064697266s)
+INFO:root:finished calculation battery 1813 (duration 16.519516944885254s)
+INFO:root:finished calculation optimised_electrification 1813 (duration 26.250618934631348s)
+INFO:root:finished calculation diesel 1813 (duration 0.08811497688293457s)
+INFO:root:finished calculation efuel 1813 (duration 0.007634878158569336s)
+INFO:root:finished calculation h2 1813 (duration 0.08650875091552734s)
+INFO:root:calculation <MasterArea 1814> started
+INFO:root:finished calculation electrification 1814 (duration 0.11547017097473145s)
+INFO:root:finished calculation efuel 1814 (duration 0.09651422500610352s)
+INFO:root:finished calculation battery 1814 (duration 180.42408895492554s)
+INFO:root:finished calculation optimised_electrification 1814 (duration 176.08465909957886s)
+INFO:root:finished calculation diesel 1814 (duration 0.09633922576904297s)
+INFO:root:finished calculation efuel 1814 (duration 0.012163162231445312s)
+INFO:root:finished calculation h2 1814 (duration 0.09571576118469238s)
+INFO:root:calculation <MasterArea 1815> started
+INFO:root:finished calculation electrification 1815 (duration 0.14234495162963867s)
+INFO:root:finished calculation efuel 1815 (duration 0.1159060001373291s)
+INFO:root:finished calculation battery 1815 (duration 179.8802719116211s)
+INFO:root:finished calculation optimised_electrification 1815 (duration 284.79427003860474s)
+INFO:root:finished calculation diesel 1815 (duration 0.14323711395263672s)
+INFO:root:finished calculation efuel 1815 (duration 0.024701833724975586s)
+INFO:root:finished calculation h2 1815 (duration 0.1192171573638916s)
+INFO:root:calculation <MasterArea 1816> started
+INFO:root:finished calculation electrification 1816 (duration 0.14104008674621582s)
+INFO:root:finished calculation efuel 1816 (duration 0.12604284286499023s)
+INFO:root:finished calculation battery 1816 (duration 180.73612308502197s)
+INFO:root:finished calculation optimised_electrification 1816 (duration 366.00341391563416s)
+INFO:root:finished calculation diesel 1816 (duration 0.11962890625s)
+INFO:root:finished calculation efuel 1816 (duration 0.020356178283691406s)
+INFO:root:finished calculation h2 1816 (duration 0.11183595657348633s)
+INFO:root:calculation <MasterArea 1817> started
+INFO:root:finished calculation electrification 1817 (duration 0.09244585037231445s)
+INFO:root:finished calculation efuel 1817 (duration 0.08771920204162598s)
+INFO:root:finished calculation battery 1817 (duration 79.49206399917603s)
+INFO:root:finished calculation optimised_electrification 1817 (duration 133.35412788391113s)
+INFO:root:finished calculation diesel 1817 (duration 0.08415699005126953s)
+INFO:root:finished calculation efuel 1817 (duration 0.0074617862701416016s)
+INFO:root:finished calculation h2 1817 (duration 0.08398127555847168s)
+INFO:root:calculation <MasterArea 1818> started

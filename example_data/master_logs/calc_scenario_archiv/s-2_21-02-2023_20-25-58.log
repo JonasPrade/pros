@@ -1,0 +1,35 @@
+INFO:root:calculation <MasterArea 1070> started
+INFO:root:finished calculation electrification 1070 (duration 0.0839231014251709s)
+INFO:root:finished calculation efuel 1070 (duration 0.07670283317565918s)
+INFO:root:Catenary in Zeitz for 13528 is too long 3800m
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Weida for 14579 is too long 5995m
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20002 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup BY20_N 20001 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()

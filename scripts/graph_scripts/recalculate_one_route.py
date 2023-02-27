@@ -5,7 +5,7 @@ from prosd.graph import railgraph
 from prosd.models import RailwayRoute
 
 
-route = RailwayRoute.query.filter(RailwayRoute.number == 6774).scalar()
+route = RailwayRoute.query.filter(RailwayRoute.number == 5021).scalar()
 
 rg = railgraph.RailGraph()
 

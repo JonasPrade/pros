@@ -1,0 +1,1280 @@
+INFO:root:calculation <MasterArea 1800> started
+INFO:root:finished calculation electrification 1800 (duration 0.010771989822387695s)
+INFO:root:finished calculation efuel 1800 (duration 0.005519866943359375s)
+INFO:root:finished calculation battery 1800 (duration 0.006105899810791016s)
+INFO:root:finished calculation optimised_electrification 1800 (duration 0.009665966033935547s)
+INFO:root:finished calculation diesel 1800 (duration 0.006102085113525391s)
+INFO:root:finished calculation efuel 1800 (duration 0.005910158157348633s)
+INFO:root:finished calculation h2 1800 (duration 0.00612187385559082s)
+INFO:root:calculation <MasterArea 1801> started
+INFO:root:finished calculation electrification 1801 (duration 0.006005764007568359s)
+INFO:root:finished calculation efuel 1801 (duration 0.0048258304595947266s)
+INFO:root:finished calculation battery 1801 (duration 0.00493311882019043s)
+INFO:root:finished calculation optimised_electrification 1801 (duration 0.0065059661865234375s)
+INFO:root:finished calculation diesel 1801 (duration 0.004672050476074219s)
+INFO:root:finished calculation efuel 1801 (duration 0.0043756961822509766s)
+INFO:root:finished calculation h2 1801 (duration 0.004492044448852539s)
+INFO:root:calculation <MasterArea 1802> started
+INFO:root:finished calculation electrification 1802 (duration 0.003508329391479492s)
+INFO:root:finished calculation efuel 1802 (duration 0.0028798580169677734s)
+INFO:root:finished calculation battery 1802 (duration 0.002924203872680664s)
+INFO:root:finished calculation optimised_electrification 1802 (duration 0.0036559104919433594s)
+INFO:root:finished calculation diesel 1802 (duration 0.0033042430877685547s)
+INFO:root:finished calculation efuel 1802 (duration 0.0028553009033203125s)
+INFO:root:finished calculation h2 1802 (duration 0.002991914749145508s)
+INFO:root:calculation <MasterArea 1803> started
+INFO:root:finished calculation electrification 1803 (duration 0.08719205856323242s)
+INFO:root:finished calculation efuel 1803 (duration 0.07779312133789062s)
+INFO:root:finished calculation optimised_electrification 1803 (duration 0.08690476417541504s)
+INFO:root:finished calculation diesel 1803 (duration 0.05782294273376465s)
+INFO:root:finished calculation efuel 1803 (duration 0.05876421928405762s)
+INFO:root:calculation <MasterArea 1804> started
+INFO:root:finished calculation electrification 1804 (duration 0.0022499561309814453s)
+INFO:root:finished calculation efuel 1804 (duration 0.00197601318359375s)
+INFO:root:finished calculation battery 1804 (duration 0.0018880367279052734s)
+INFO:root:finished calculation optimised_electrification 1804 (duration 0.0023849010467529297s)
+INFO:root:finished calculation diesel 1804 (duration 0.0019121170043945312s)
+INFO:root:finished calculation efuel 1804 (duration 0.0019059181213378906s)
+INFO:root:finished calculation h2 1804 (duration 0.0018949508666992188s)
+INFO:root:calculation <MasterArea 1805> started
+INFO:root:finished calculation electrification 1805 (duration 0.02291584014892578s)
+INFO:root:finished calculation efuel 1805 (duration 0.025012969970703125s)
+INFO:root:finished calculation battery 1805 (duration 0.026015043258666992s)
+INFO:root:finished calculation optimised_electrification 1805 (duration 0.03231000900268555s)
+INFO:root:finished calculation diesel 1805 (duration 0.01884293556213379s)
+INFO:root:finished calculation efuel 1805 (duration 0.01872992515563965s)
+INFO:root:finished calculation h2 1805 (duration 0.019533157348632812s)
+INFO:root:calculation <MasterArea 1806> started
+INFO:root:finished calculation electrification 1806 (duration 0.01137685775756836s)
+INFO:root:finished calculation efuel 1806 (duration 0.013289213180541992s)
+INFO:root:finished calculation battery 1806 (duration 0.01305699348449707s)
+INFO:root:finished calculation optimised_electrification 1806 (duration 0.018516063690185547s)
+INFO:root:finished calculation diesel 1806 (duration 0.013000011444091797s)
+INFO:root:finished calculation efuel 1806 (duration 0.01278376579284668s)
+INFO:root:finished calculation h2 1806 (duration 0.010636091232299805s)
+INFO:root:calculation <MasterArea 1807> started
+INFO:root:finished calculation electrification 1807 (duration 0.018767118453979492s)
+INFO:root:finished calculation efuel 1807 (duration 0.019495248794555664s)
+INFO:root:finished calculation battery 1807 (duration 0.01930975914001465s)
+INFO:root:finished calculation optimised_electrification 1807 (duration 0.026767730712890625s)
+INFO:root:finished calculation diesel 1807 (duration 0.018697023391723633s)
+INFO:root:finished calculation efuel 1807 (duration 0.019455909729003906s)
+INFO:root:finished calculation h2 1807 (duration 0.018871784210205078s)
+INFO:root:calculation <MasterArea 1808> started
+INFO:root:finished calculation electrification 1808 (duration 0.00716710090637207s)
+INFO:root:finished calculation efuel 1808 (duration 0.0065348148345947266s)
+INFO:root:finished calculation battery 1808 (duration 0.006373882293701172s)
+INFO:root:finished calculation optimised_electrification 1808 (duration 0.008732080459594727s)
+INFO:root:finished calculation diesel 1808 (duration 0.0061798095703125s)
+INFO:root:finished calculation efuel 1808 (duration 0.0062940120697021484s)
+INFO:root:finished calculation h2 1808 (duration 0.006424903869628906s)
+INFO:root:calculation <MasterArea 1809> started
+INFO:root:finished calculation electrification 1809 (duration 0.011559009552001953s)
+INFO:root:finished calculation efuel 1809 (duration 0.010836124420166016s)
+INFO:root:finished calculation battery 1809 (duration 0.012965917587280273s)
+INFO:root:finished calculation optimised_electrification 1809 (duration 0.013934135437011719s)
+INFO:root:finished calculation diesel 1809 (duration 0.010376214981079102s)
+INFO:root:finished calculation efuel 1809 (duration 0.011739015579223633s)
+INFO:root:finished calculation h2 1809 (duration 0.010846853256225586s)
+INFO:root:calculation <MasterArea 1810> started
+INFO:root:finished calculation electrification 1810 (duration 0.019786834716796875s)
+INFO:root:finished calculation efuel 1810 (duration 0.021871328353881836s)
+INFO:root:finished calculation battery 1810 (duration 0.024412870407104492s)
+INFO:root:finished calculation optimised_electrification 1810 (duration 0.03133392333984375s)
+INFO:root:finished calculation diesel 1810 (duration 0.01648426055908203s)
+INFO:root:finished calculation efuel 1810 (duration 0.01650094985961914s)
+INFO:root:finished calculation h2 1810 (duration 0.017384052276611328s)
+INFO:root:calculation <MasterArea 1811> started
+INFO:root:finished calculation electrification 1811 (duration 0.003943920135498047s)
+INFO:root:finished calculation efuel 1811 (duration 0.003186941146850586s)
+INFO:root:finished calculation battery 1811 (duration 0.003143310546875s)
+INFO:root:finished calculation optimised_electrification 1811 (duration 0.004478931427001953s)
+INFO:root:finished calculation diesel 1811 (duration 0.003735065460205078s)
+INFO:root:finished calculation efuel 1811 (duration 0.003771066665649414s)
+INFO:root:finished calculation h2 1811 (duration 0.003551006317138672s)
+INFO:root:calculation <MasterArea 1812> started
+INFO:root:finished calculation electrification 1812 (duration 0.04502511024475098s)
+INFO:root:finished calculation efuel 1812 (duration 0.043946027755737305s)
+INFO:root:finished calculation optimised_electrification 1812 (duration 0.050595998764038086s)
+INFO:root:finished calculation diesel 1812 (duration 0.03193402290344238s)
+INFO:root:finished calculation efuel 1812 (duration 0.030659198760986328s)
+INFO:root:calculation <MasterArea 1813> started
+INFO:root:finished calculation electrification 1813 (duration 0.005050182342529297s)
+INFO:root:finished calculation efuel 1813 (duration 0.004723072052001953s)
+INFO:root:finished calculation battery 1813 (duration 0.004470109939575195s)
+INFO:root:finished calculation optimised_electrification 1813 (duration 0.006059885025024414s)
+INFO:root:finished calculation diesel 1813 (duration 0.004642963409423828s)
+INFO:root:finished calculation efuel 1813 (duration 0.004373073577880859s)
+INFO:root:finished calculation h2 1813 (duration 0.00434112548828125s)
+INFO:root:calculation <MasterArea 1814> started
+INFO:root:finished calculation electrification 1814 (duration 0.008140087127685547s)
+INFO:root:finished calculation efuel 1814 (duration 0.008865118026733398s)
+INFO:root:finished calculation battery 1814 (duration 0.012716054916381836s)
+INFO:root:finished calculation optimised_electrification 1814 (duration 0.010831117630004883s)
+INFO:root:finished calculation diesel 1814 (duration 0.007992982864379883s)
+INFO:root:finished calculation efuel 1814 (duration 0.010275840759277344s)
+INFO:root:finished calculation h2 1814 (duration 0.01044011116027832s)
+INFO:root:calculation <MasterArea 1815> started
+INFO:root:finished calculation electrification 1815 (duration 0.01650691032409668s)
+INFO:root:finished calculation efuel 1815 (duration 0.01967787742614746s)
+INFO:root:finished calculation battery 1815 (duration 0.022693872451782227s)
+INFO:root:finished calculation optimised_electrification 1815 (duration 0.02938985824584961s)
+INFO:root:finished calculation diesel 1815 (duration 0.023183107376098633s)
+INFO:root:finished calculation efuel 1815 (duration 0.021888017654418945s)
+INFO:root:finished calculation h2 1815 (duration 0.02203226089477539s)
+INFO:root:calculation <MasterArea 1816> started
+INFO:root:finished calculation electrification 1816 (duration 0.02454090118408203s)
+INFO:root:finished calculation efuel 1816 (duration 0.03201889991760254s)
+INFO:root:finished calculation battery 1816 (duration 0.019059181213378906s)
+INFO:root:finished calculation optimised_electrification 1816 (duration 0.024709224700927734s)
+INFO:root:finished calculation diesel 1816 (duration 0.018342018127441406s)
+INFO:root:finished calculation efuel 1816 (duration 0.01695108413696289s)
+INFO:root:finished calculation h2 1816 (duration 0.015496969223022461s)
+INFO:root:calculation <MasterArea 1817> started
+INFO:root:finished calculation electrification 1817 (duration 0.015535116195678711s)
+INFO:root:finished calculation efuel 1817 (duration 0.014235734939575195s)
+INFO:root:finished calculation battery 1817 (duration 0.014859199523925781s)
+INFO:root:finished calculation optimised_electrification 1817 (duration 0.02111983299255371s)
+INFO:root:finished calculation diesel 1817 (duration 0.015829801559448242s)
+INFO:root:finished calculation efuel 1817 (duration 0.01616215705871582s)
+INFO:root:finished calculation h2 1817 (duration 0.020685672760009766s)
+INFO:root:calculation <MasterArea 1818> started
+INFO:root:finished calculation electrification 1818 (duration 0.035475969314575195s)
+INFO:root:finished calculation efuel 1818 (duration 0.03158307075500488s)
+INFO:root:finished calculation optimised_electrification 1818 (duration 0.04529309272766113s)
+INFO:root:finished calculation diesel 1818 (duration 0.030848026275634766s)
+INFO:root:finished calculation efuel 1818 (duration 0.033410072326660156s)
+INFO:root:calculation <MasterArea 1819> started
+INFO:root:finished calculation electrification 1819 (duration 0.021576881408691406s)
+INFO:root:finished calculation efuel 1819 (duration 0.022879838943481445s)
+INFO:root:finished calculation battery 1819 (duration 0.019104957580566406s)
+INFO:root:finished calculation optimised_electrification 1819 (duration 0.0223848819732666s)
+INFO:root:finished calculation diesel 1819 (duration 0.014585256576538086s)
+INFO:root:finished calculation efuel 1819 (duration 0.014625072479248047s)
+INFO:root:finished calculation h2 1819 (duration 0.014469146728515625s)
+INFO:root:calculation <MasterArea 1820> started
+INFO:root:finished calculation electrification 1820 (duration 0.02763080596923828s)
+INFO:root:finished calculation efuel 1820 (duration 0.026724815368652344s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:For TimetableLine 1429 BY57_N there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 1820 (duration 197.14118909835815s)
+INFO:root:finished calculation diesel 1820 (duration 0.10236430168151855s)
+INFO:root:finished calculation efuel 1820 (duration 0.033471107482910156s)
+INFO:root:calculation <MasterArea 1821> started
+INFO:root:finished calculation electrification 1821 (duration 0.09218502044677734s)
+INFO:root:finished calculation efuel 1821 (duration 0.07988905906677246s)
+INFO:root:finished calculation battery 1821 (duration 11.823854923248291s)
+INFO:root:finished calculation optimised_electrification 1821 (duration 12.633420944213867s)
+INFO:root:finished calculation diesel 1821 (duration 0.08071684837341309s)
+INFO:root:finished calculation efuel 1821 (duration 0.0032379627227783203s)
+INFO:root:finished calculation h2 1821 (duration 0.08247494697570801s)
+INFO:root:calculation <MasterArea 1822> started
+INFO:root:finished calculation electrification 1822 (duration 0.08840608596801758s)
+INFO:root:finished calculation efuel 1822 (duration 0.08749079704284668s)
+INFO:root:finished calculation optimised_electrification 1822 (duration 0.9856839179992676s)
+INFO:root:finished calculation diesel 1822 (duration 0.0817573070526123s)
+INFO:root:finished calculation efuel 1822 (duration 0.005513906478881836s)
+INFO:root:calculation <MasterArea 1823> started
+INFO:root:finished calculation electrification 1823 (duration 0.11865115165710449s)
+INFO:root:finished calculation efuel 1823 (duration 0.1100468635559082s)
+INFO:root:finished calculation battery 1823 (duration 110.22943687438965s)
+INFO:root:finished calculation optimised_electrification 1823 (duration 176.2658212184906s)
+INFO:root:finished calculation diesel 1823 (duration 0.11145210266113281s)
+INFO:root:finished calculation efuel 1823 (duration 0.013595104217529297s)
+INFO:root:finished calculation h2 1823 (duration 0.1011810302734375s)
+INFO:root:calculation <MasterArea 1824> started
+INFO:root:finished calculation electrification 1824 (duration 0.09630608558654785s)
+INFO:root:finished calculation efuel 1824 (duration 0.08783888816833496s)
+INFO:root:finished calculation optimised_electrification 1824 (duration 15.038044929504395s)
+INFO:root:finished calculation diesel 1824 (duration 0.0884709358215332s)
+INFO:root:finished calculation efuel 1824 (duration 0.006471872329711914s)
+INFO:root:calculation <MasterArea 1825> started
+INFO:root:finished calculation electrification 1825 (duration 0.11498785018920898s)
+INFO:root:finished calculation efuel 1825 (duration 0.09661221504211426s)
+INFO:root:finished calculation optimised_electrification 1825 (duration 29.97344994544983s)
+INFO:root:finished calculation diesel 1825 (duration 0.0976111888885498s)
+INFO:root:finished calculation efuel 1825 (duration 0.010248899459838867s)
+INFO:root:calculation <MasterArea 1826> started
+INFO:root:finished calculation electrification 1826 (duration 0.12842702865600586s)
+INFO:root:finished calculation efuel 1826 (duration 0.11010622978210449s)
+INFO:root:finished calculation optimised_electrification 1826 (duration 342.46699714660645s)
+INFO:root:finished calculation diesel 1826 (duration 0.12207603454589844s)
+INFO:root:finished calculation efuel 1826 (duration 0.02698493003845215s)
+INFO:root:calculation <MasterArea 1827> started
+INFO:root:finished calculation electrification 1827 (duration 0.14355206489562988s)
+INFO:root:finished calculation efuel 1827 (duration 0.11490392684936523s)
+INFO:root:finished calculation battery 1827 (duration 106.89690399169922s)
+INFO:root:finished calculation optimised_electrification 1827 (duration 171.26799297332764s)
+INFO:root:finished calculation diesel 1827 (duration 0.11234879493713379s)
+INFO:root:finished calculation efuel 1827 (duration 0.01816082000732422s)
+INFO:root:finished calculation h2 1827 (duration 0.11081671714782715s)
+INFO:root:calculation <MasterArea 1828> started
+INFO:root:finished calculation electrification 1828 (duration 0.09188294410705566s)
+INFO:root:finished calculation efuel 1828 (duration 0.08669018745422363s)
+INFO:root:finished calculation battery 1828 (duration 13.646249055862427s)
+INFO:root:finished calculation optimised_electrification 1828 (duration 26.697826147079468s)
+INFO:root:finished calculation diesel 1828 (duration 0.08632802963256836s)
+INFO:root:finished calculation efuel 1828 (duration 0.005043983459472656s)
+INFO:root:finished calculation h2 1828 (duration 0.08541011810302734s)
+INFO:root:calculation <MasterArea 1829> started
+INFO:root:finished calculation electrification 1829 (duration 0.11042904853820801s)
+INFO:root:finished calculation efuel 1829 (duration 0.1012880802154541s)
+INFO:root:finished calculation battery 1829 (duration 58.51620292663574s)
+INFO:root:Catenary in Bad Lausick for 14432 is too long 3197m
+INFO:root:finished calculation optimised_electrification 1829 (duration 121.25471997261047s)
+INFO:root:finished calculation diesel 1829 (duration 0.10243725776672363s)
+INFO:root:finished calculation efuel 1829 (duration 0.011739253997802734s)
+INFO:root:finished calculation h2 1829 (duration 0.09792327880859375s)
+INFO:root:calculation <MasterArea 1830> started
+INFO:root:finished calculation electrification 1830 (duration 0.08601093292236328s)
+INFO:root:finished calculation efuel 1830 (duration 0.08342504501342773s)
+INFO:root:finished calculation battery 1830 (duration 19.87247085571289s)
+INFO:root:finished calculation optimised_electrification 1830 (duration 20.612756967544556s)
+INFO:root:finished calculation diesel 1830 (duration 0.0854499340057373s)
+INFO:root:finished calculation efuel 1830 (duration 0.005377054214477539s)
+INFO:root:finished calculation h2 1830 (duration 0.08441329002380371s)
+INFO:root:calculation <MasterArea 1831> started
+INFO:root:finished calculation electrification 1831 (duration 0.08933782577514648s)
+INFO:root:finished calculation efuel 1831 (duration 0.08497786521911621s)
+INFO:root:finished calculation battery 1831 (duration 14.730026960372925s)
+INFO:root:finished calculation optimised_electrification 1831 (duration 16.116880893707275s)
+INFO:root:finished calculation diesel 1831 (duration 0.09050297737121582s)
+INFO:root:finished calculation efuel 1831 (duration 0.007324934005737305s)
+INFO:root:finished calculation h2 1831 (duration 0.08838510513305664s)
+INFO:root:calculation <MasterArea 1832> started
+INFO:root:finished calculation electrification 1832 (duration 0.18583202362060547s)
+INFO:root:finished calculation efuel 1832 (duration 0.14098882675170898s)
+INFO:root:finished calculation battery 1832 (duration 265.8226001262665s)
+INFO:root:Catenary in Rheinbach for 3327 is too long 1425m
+INFO:root:finished calculation optimised_electrification 1832 (duration 819.6287548542023s)
+INFO:root:finished calculation diesel 1832 (duration 0.13410472869873047s)
+INFO:root:finished calculation efuel 1832 (duration 0.02095794677734375s)
+INFO:root:finished calculation h2 1832 (duration 0.11667203903198242s)
+INFO:root:calculation <MasterArea 1833> started
+INFO:root:finished calculation electrification 1833 (duration 0.10220885276794434s)
+INFO:root:finished calculation efuel 1833 (duration 0.09865021705627441s)
+INFO:root:finished calculation optimised_electrification 1833 (duration 29.531224012374878s)
+INFO:root:finished calculation diesel 1833 (duration 0.10232090950012207s)
+INFO:root:finished calculation efuel 1833 (duration 0.01361083984375s)
+INFO:root:calculation <MasterArea 1834> started
+INFO:root:finished calculation electrification 1834 (duration 0.10814905166625977s)
+INFO:root:finished calculation efuel 1834 (duration 0.08597707748413086s)
+INFO:root:Catenary in Rathenow for 15170 is too long 1049m
+INFO:root:finished calculation optimised_electrification 1834 (duration 12.322579860687256s)
+INFO:root:finished calculation diesel 1834 (duration 0.08842611312866211s)
+INFO:root:finished calculation efuel 1834 (duration 0.005068063735961914s)
+INFO:root:calculation <MasterArea 1835> started
+INFO:root:finished calculation electrification 1835 (duration 0.091033935546875s)
+INFO:root:finished calculation efuel 1835 (duration 0.0843052864074707s)
+INFO:root:finished calculation optimised_electrification 1835 (duration 0.8542759418487549s)
+INFO:root:finished calculation diesel 1835 (duration 0.08611297607421875s)
+INFO:root:finished calculation efuel 1835 (duration 0.004679203033447266s)
+INFO:root:calculation <MasterArea 1836> started
+INFO:root:finished calculation electrification 1836 (duration 0.08466887474060059s)
+INFO:root:finished calculation efuel 1836 (duration 0.08028602600097656s)
+INFO:root:finished calculation optimised_electrification 1836 (duration 0.6872620582580566s)
+INFO:root:finished calculation diesel 1836 (duration 0.08121395111083984s)
+INFO:root:finished calculation efuel 1836 (duration 0.002601146697998047s)
+INFO:root:calculation <MasterArea 1837> started
+INFO:root:finished calculation electrification 1837 (duration 0.09890007972717285s)
+INFO:root:finished calculation efuel 1837 (duration 0.08792400360107422s)
+INFO:root:finished calculation optimised_electrification 1837 (duration 25.64369797706604s)
+INFO:root:finished calculation diesel 1837 (duration 0.08708906173706055s)
+INFO:root:finished calculation efuel 1837 (duration 0.006067991256713867s)
+INFO:root:calculation <MasterArea 1838> started
+INFO:root:finished calculation electrification 1838 (duration 0.09031820297241211s)
+INFO:root:finished calculation efuel 1838 (duration 0.08231806755065918s)
+INFO:root:finished calculation battery 1838 (duration 16.173216104507446s)
+INFO:root:finished calculation optimised_electrification 1838 (duration 16.89083433151245s)
+INFO:root:finished calculation diesel 1838 (duration 0.08398294448852539s)
+INFO:root:finished calculation efuel 1838 (duration 0.005033969879150391s)
+INFO:root:finished calculation h2 1838 (duration 0.08140897750854492s)
+INFO:root:calculation <MasterArea 1839> started
+INFO:root:finished calculation electrification 1839 (duration 0.10794281959533691s)
+INFO:root:finished calculation efuel 1839 (duration 0.1044166088104248s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1839 (duration 124.98219084739685s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB21.1_N_x0020_21102_2533 N 21.1 Ludwigsfelde - Berlin Hbf - P Wissensch Golm - Bln-Lichtenberg. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1839 (duration 229.91647624969482s)
+INFO:root:finished calculation diesel 1839 (duration 0.09842395782470703s)
+INFO:root:finished calculation efuel 1839 (duration 0.011176824569702148s)
+INFO:root:finished calculation h2 1839 (duration 0.08871126174926758s)
+INFO:root:calculation <MasterArea 1840> started
+INFO:root:finished calculation electrification 1840 (duration 0.10114884376525879s)
+INFO:root:finished calculation efuel 1840 (duration 0.09418201446533203s)
+INFO:root:finished calculation battery 1840 (duration 55.84637475013733s)
+INFO:root:finished calculation optimised_electrification 1840 (duration 57.440303325653076s)
+INFO:root:finished calculation diesel 1840 (duration 0.09250402450561523s)
+INFO:root:finished calculation efuel 1840 (duration 0.008211374282836914s)
+INFO:root:finished calculation h2 1840 (duration 0.09081292152404785s)
+INFO:root:calculation <MasterArea 1841> started
+INFO:root:finished calculation electrification 1841 (duration 0.10710000991821289s)
+INFO:root:finished calculation efuel 1841 (duration 0.09621930122375488s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1841 (duration 109.35847091674805s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW6.a_SR_x0020_6102_23605 S 6 Pforzheim Hbf - Bad Wildbad Kurpark. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW9.b_N_x0020_9202_33692 N9b  - Nagold - Pforzheim Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1841 (duration 174.40295004844666s)
+INFO:root:finished calculation diesel 1841 (duration 0.10166692733764648s)
+INFO:root:finished calculation efuel 1841 (duration 0.009649991989135742s)
+INFO:root:finished calculation h2 1841 (duration 0.09273505210876465s)
+INFO:root:calculation <MasterArea 1842> started
+INFO:root:finished calculation electrification 1842 (duration 0.09152102470397949s)
+INFO:root:finished calculation efuel 1842 (duration 0.08389019966125488s)
+INFO:root:finished calculation battery 1842 (duration 25.723695278167725s)
+INFO:root:finished calculation optimised_electrification 1842 (duration 19.397260665893555s)
+INFO:root:finished calculation diesel 1842 (duration 0.08276200294494629s)
+INFO:root:finished calculation efuel 1842 (duration 0.005051136016845703s)
+INFO:root:finished calculation h2 1842 (duration 0.0853719711303711s)
+INFO:root:calculation <MasterArea 1843> started
+INFO:root:finished calculation electrification 1843 (duration 0.10460805892944336s)
+INFO:root:finished calculation efuel 1843 (duration 0.09987211227416992s)
+INFO:root:finished calculation battery 1843 (duration 43.48887395858765s)
+INFO:root:finished calculation optimised_electrification 1843 (duration 64.69327688217163s)
+INFO:root:finished calculation diesel 1843 (duration 0.08849716186523438s)
+INFO:root:finished calculation efuel 1843 (duration 0.00913691520690918s)
+INFO:root:finished calculation h2 1843 (duration 0.20524191856384277s)
+INFO:root:calculation <MasterArea 1844> started
+INFO:root:finished calculation electrification 1844 (duration 0.08097577095031738s)
+INFO:root:finished calculation efuel 1844 (duration 0.07892298698425293s)
+INFO:root:finished calculation battery 1844 (duration 19.29295778274536s)
+INFO:root:finished calculation optimised_electrification 1844 (duration 19.74955987930298s)
+INFO:root:finished calculation diesel 1844 (duration 0.07947492599487305s)
+INFO:root:finished calculation efuel 1844 (duration 0.0030531883239746094s)
+INFO:root:finished calculation h2 1844 (duration 0.08012890815734863s)
+INFO:root:calculation <MasterArea 1845> started
+INFO:root:finished calculation electrification 1845 (duration 0.08165597915649414s)
+INFO:root:finished calculation efuel 1845 (duration 0.07863879203796387s)
+INFO:root:finished calculation battery 1845 (duration 6.368248224258423s)
+INFO:root:finished calculation optimised_electrification 1845 (duration 7.107590913772583s)
+INFO:root:finished calculation diesel 1845 (duration 0.07956480979919434s)
+INFO:root:finished calculation efuel 1845 (duration 0.0027458667755126953s)
+INFO:root:finished calculation h2 1845 (duration 0.0770118236541748s)
+INFO:root:calculation <MasterArea 1846> started
+INFO:root:finished calculation electrification 1846 (duration 0.0755007266998291s)
+INFO:root:finished calculation efuel 1846 (duration 0.07530713081359863s)
+INFO:root:finished calculation battery 1846 (duration 4.144750118255615s)
+INFO:root:finished calculation optimised_electrification 1846 (duration 4.810322999954224s)
+INFO:root:finished calculation diesel 1846 (duration 0.07990574836730957s)
+INFO:root:finished calculation efuel 1846 (duration 0.004271030426025391s)
+INFO:root:finished calculation h2 1846 (duration 0.07918190956115723s)
+INFO:root:calculation <MasterArea 1847> started
+INFO:root:finished calculation electrification 1847 (duration 0.0800619125366211s)
+INFO:root:finished calculation efuel 1847 (duration 0.08083415031433105s)
+INFO:root:Catenary in Horb for 38927 is too long 1523m
+INFO:root:finished calculation battery 1847 (duration 13.770279169082642s)
+INFO:root:Catenary in Horb for 38927 is too long 1523m
+INFO:root:Catenary in Horb for 38927 is too long 1523m
+INFO:root:finished calculation optimised_electrification 1847 (duration 26.226895809173584s)
+INFO:root:finished calculation diesel 1847 (duration 0.08564615249633789s)
+INFO:root:finished calculation efuel 1847 (duration 0.004001140594482422s)
+INFO:root:finished calculation h2 1847 (duration 0.08559894561767578s)
+INFO:root:calculation <MasterArea 1848> started
+INFO:root:finished calculation electrification 1848 (duration 0.08766388893127441s)
+INFO:root:finished calculation efuel 1848 (duration 0.07855725288391113s)
+INFO:root:finished calculation battery 1848 (duration 31.836498975753784s)
+INFO:root:finished calculation optimised_electrification 1848 (duration 29.30761218070984s)
+INFO:root:finished calculation diesel 1848 (duration 0.09868216514587402s)
+INFO:root:finished calculation efuel 1848 (duration 0.009530305862426758s)
+INFO:root:finished calculation h2 1848 (duration 0.11162996292114258s)
+INFO:root:calculation <MasterArea 1849> started
+INFO:root:finished calculation electrification 1849 (duration 0.09996819496154785s)
+INFO:root:finished calculation efuel 1849 (duration 0.08797883987426758s)
+INFO:root:finished calculation battery 1849 (duration 65.7384581565857s)
+INFO:root:finished calculation optimised_electrification 1849 (duration 111.97364211082458s)
+INFO:root:finished calculation diesel 1849 (duration 0.08511114120483398s)
+INFO:root:finished calculation efuel 1849 (duration 0.006901979446411133s)
+INFO:root:finished calculation h2 1849 (duration 0.08323478698730469s)
+INFO:root:calculation <MasterArea 1850> started
+INFO:root:finished calculation electrification 1850 (duration 0.07633519172668457s)
+INFO:root:finished calculation efuel 1850 (duration 0.07431983947753906s)
+INFO:root:finished calculation battery 1850 (duration 5.986304998397827s)
+INFO:root:finished calculation optimised_electrification 1850 (duration 7.568350076675415s)
+INFO:root:finished calculation diesel 1850 (duration 0.07915687561035156s)
+INFO:root:finished calculation efuel 1850 (duration 0.004158973693847656s)
+INFO:root:finished calculation h2 1850 (duration 0.0801839828491211s)
+INFO:root:calculation <MasterArea 1851> started
+INFO:root:finished calculation electrification 1851 (duration 0.09967303276062012s)
+INFO:root:finished calculation efuel 1851 (duration 0.08922314643859863s)
+INFO:root:finished calculation battery 1851 (duration 59.92933392524719s)
+INFO:root:finished calculation optimised_electrification 1851 (duration 83.42766571044922s)
+INFO:root:finished calculation diesel 1851 (duration 0.08456110954284668s)
+INFO:root:finished calculation efuel 1851 (duration 0.007060050964355469s)
+INFO:root:finished calculation h2 1851 (duration 0.08127093315124512s)
+INFO:root:calculation <MasterArea 1852> started
+INFO:root:finished calculation electrification 1852 (duration 0.14792585372924805s)
+INFO:root:finished calculation efuel 1852 (duration 0.1469728946685791s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation battery 1852 (duration 244.29760694503784s)
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+ERROR:root:Possible Groups has a non valid length set()
+INFO:root:finished calculation optimised_electrification 1852 (duration 532.9445519447327s)
+INFO:root:finished calculation diesel 1852 (duration 0.16908025741577148s)
+INFO:root:finished calculation efuel 1852 (duration 0.039443016052246094s)
+INFO:root:finished calculation h2 1852 (duration 0.26664185523986816s)
+INFO:root:calculation <MasterArea 1853> started
+INFO:root:finished calculation electrification 1853 (duration 0.08870506286621094s)
+INFO:root:finished calculation efuel 1853 (duration 0.07888197898864746s)
+INFO:root:Catenary in Holzkirchen for 10473 is too long 1501m
+INFO:root:finished calculation battery 1853 (duration 13.868688344955444s)
+INFO:root:Catenary in Holzkirchen for 10473 is too long 1501m
+INFO:root:finished calculation optimised_electrification 1853 (duration 27.962398052215576s)
+INFO:root:finished calculation diesel 1853 (duration 0.07937479019165039s)
+INFO:root:finished calculation efuel 1853 (duration 0.004410982131958008s)
+INFO:root:finished calculation h2 1853 (duration 0.07812619209289551s)
+INFO:root:calculation <MasterArea 1854> started
+INFO:root:finished calculation electrification 1854 (duration 5.306981086730957s)
+INFO:root:finished calculation efuel 1854 (duration 5.2553911209106445s)
+ERROR:root:For TimetableLine 1838 SA65_N there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 1854 (duration 196.33148908615112s)
+INFO:root:finished calculation diesel 1854 (duration 5.27570915222168s)
+INFO:root:finished calculation efuel 1854 (duration 0.02143263816833496s)
+INFO:root:calculation <MasterArea 1855> started
+INFO:root:finished calculation electrification 1855 (duration 0.08483695983886719s)
+INFO:root:finished calculation efuel 1855 (duration 0.07551884651184082s)
+INFO:root:finished calculation battery 1855 (duration 7.7832911014556885s)
+INFO:root:finished calculation optimised_electrification 1855 (duration 8.431980848312378s)
+INFO:root:finished calculation diesel 1855 (duration 0.0794060230255127s)
+INFO:root:finished calculation efuel 1855 (duration 0.005246162414550781s)
+INFO:root:finished calculation h2 1855 (duration 0.08223199844360352s)
+INFO:root:calculation <MasterArea 1856> started
+INFO:root:finished calculation electrification 1856 (duration 0.07825183868408203s)
+INFO:root:finished calculation efuel 1856 (duration 0.07681584358215332s)
+INFO:root:finished calculation battery 1856 (duration 6.427064895629883s)
+INFO:root:finished calculation optimised_electrification 1856 (duration 7.992804050445557s)
+INFO:root:finished calculation diesel 1856 (duration 0.07915496826171875s)
+INFO:root:finished calculation efuel 1856 (duration 0.003920078277587891s)
+INFO:root:finished calculation h2 1856 (duration 0.0786888599395752s)
+INFO:root:calculation <MasterArea 1857> started
+INFO:root:finished calculation electrification 1857 (duration 0.07586193084716797s)
+INFO:root:finished calculation efuel 1857 (duration 0.07850122451782227s)
+INFO:root:finished calculation battery 1857 (duration 11.072246789932251s)
+INFO:root:finished calculation optimised_electrification 1857 (duration 11.948119878768921s)
+INFO:root:finished calculation diesel 1857 (duration 0.08328604698181152s)
+INFO:root:finished calculation efuel 1857 (duration 0.005023956298828125s)
+INFO:root:finished calculation h2 1857 (duration 0.07840108871459961s)
+INFO:root:calculation <MasterArea 1858> started
+INFO:root:finished calculation electrification 1858 (duration 0.11919999122619629s)
+INFO:root:finished calculation efuel 1858 (duration 0.08854103088378906s)
+INFO:root:finished calculation battery 1858 (duration 76.46231293678284s)
+INFO:root:finished calculation optimised_electrification 1858 (duration 77.40490198135376s)
+INFO:root:finished calculation diesel 1858 (duration 0.15669798851013184s)
+INFO:root:finished calculation efuel 1858 (duration 0.01669907569885254s)
+INFO:root:finished calculation h2 1858 (duration 0.10259604454040527s)
+INFO:root:calculation <MasterArea 1859> started
+INFO:root:finished calculation electrification 1859 (duration 0.08238840103149414s)
+INFO:root:finished calculation efuel 1859 (duration 0.07270598411560059s)
+INFO:root:finished calculation battery 1859 (duration 8.409722805023193s)
+INFO:root:finished calculation optimised_electrification 1859 (duration 9.27447509765625s)
+INFO:root:finished calculation diesel 1859 (duration 0.11115097999572754s)
+INFO:root:finished calculation efuel 1859 (duration 0.0052149295806884766s)
+INFO:root:finished calculation h2 1859 (duration 0.08557581901550293s)
+INFO:root:calculation <MasterArea 1860> started
+INFO:root:finished calculation electrification 1860 (duration 0.09756326675415039s)
+INFO:root:finished calculation efuel 1860 (duration 0.07910895347595215s)
+INFO:root:finished calculation battery 1860 (duration 8.902624130249023s)
+INFO:root:finished calculation optimised_electrification 1860 (duration 10.126453161239624s)
+INFO:root:finished calculation diesel 1860 (duration 0.08005714416503906s)
+INFO:root:finished calculation efuel 1860 (duration 0.00629115104675293s)
+INFO:root:finished calculation h2 1860 (duration 0.08197903633117676s)
+INFO:root:calculation <MasterArea 1861> started
+INFO:root:finished calculation electrification 1861 (duration 0.08033299446105957s)
+INFO:root:finished calculation efuel 1861 (duration 0.07416510581970215s)
+INFO:root:finished calculation battery 1861 (duration 4.903250217437744s)
+INFO:root:finished calculation optimised_electrification 1861 (duration 5.2588019371032715s)
+INFO:root:finished calculation diesel 1861 (duration 0.0772390365600586s)
+INFO:root:finished calculation efuel 1861 (duration 0.005277156829833984s)
+INFO:root:finished calculation h2 1861 (duration 0.07736015319824219s)
+INFO:root:calculation <MasterArea 1862> started
+INFO:root:finished calculation electrification 1862 (duration 0.21725916862487793s)
+INFO:root:finished calculation efuel 1862 (duration 0.09186506271362305s)
+INFO:root:finished calculation battery 1862 (duration 35.43182897567749s)
+INFO:root:finished calculation optimised_electrification 1862 (duration 32.149035930633545s)
+INFO:root:finished calculation diesel 1862 (duration 0.09674406051635742s)
+INFO:root:finished calculation efuel 1862 (duration 0.00995182991027832s)
+INFO:root:finished calculation h2 1862 (duration 0.09039616584777832s)
+INFO:root:calculation <MasterArea 1863> started
+INFO:root:finished calculation electrification 1863 (duration 0.1053929328918457s)
+INFO:root:finished calculation efuel 1863 (duration 0.09580421447753906s)
+INFO:root:finished calculation battery 1863 (duration 90.92906594276428s)
+INFO:root:finished calculation optimised_electrification 1863 (duration 105.84964609146118s)
+INFO:root:finished calculation diesel 1863 (duration 0.10158610343933105s)
+INFO:root:finished calculation efuel 1863 (duration 0.012601852416992188s)
+INFO:root:finished calculation h2 1863 (duration 0.08850407600402832s)
+INFO:root:calculation <MasterArea 1864> started
+INFO:root:finished calculation electrification 1864 (duration 0.08656191825866699s)
+INFO:root:finished calculation efuel 1864 (duration 0.07536816596984863s)
+INFO:root:finished calculation battery 1864 (duration 20.28128719329834s)
+INFO:root:finished calculation optimised_electrification 1864 (duration 20.996954917907715s)
+INFO:root:finished calculation diesel 1864 (duration 0.07500600814819336s)
+INFO:root:finished calculation efuel 1864 (duration 0.002805948257446289s)
+INFO:root:finished calculation h2 1864 (duration 0.0755758285522461s)
+INFO:root:calculation <MasterArea 1865> started
+INFO:root:finished calculation electrification 1865 (duration 0.08072209358215332s)
+INFO:root:finished calculation efuel 1865 (duration 0.0801992416381836s)
+INFO:root:finished calculation battery 1865 (duration 50.697434186935425s)
+INFO:root:finished calculation optimised_electrification 1865 (duration 52.43206810951233s)
+INFO:root:finished calculation diesel 1865 (duration 0.08002114295959473s)
+INFO:root:finished calculation efuel 1865 (duration 0.005339860916137695s)
+INFO:root:finished calculation h2 1865 (duration 0.07942891120910645s)
+INFO:root:calculation <MasterArea 1866> started
+INFO:root:finished calculation electrification 1866 (duration 0.0789940357208252s)
+INFO:root:finished calculation efuel 1866 (duration 0.07642102241516113s)
+INFO:root:finished calculation battery 1866 (duration 19.233612060546875s)
+INFO:root:finished calculation optimised_electrification 1866 (duration 42.025039196014404s)
+INFO:root:finished calculation diesel 1866 (duration 0.0796358585357666s)
+INFO:root:finished calculation efuel 1866 (duration 0.005251646041870117s)
+INFO:root:finished calculation h2 1866 (duration 0.07861495018005371s)
+INFO:root:calculation <MasterArea 1867> started
+INFO:root:finished calculation electrification 1867 (duration 0.09276318550109863s)
+INFO:root:finished calculation efuel 1867 (duration 0.08137989044189453s)
+INFO:root:finished calculation battery 1867 (duration 42.431884765625s)
+INFO:root:finished calculation optimised_electrification 1867 (duration 43.05900597572327s)
+INFO:root:finished calculation diesel 1867 (duration 0.08704495429992676s)
+INFO:root:finished calculation efuel 1867 (duration 0.010558128356933594s)
+INFO:root:finished calculation h2 1867 (duration 0.09438705444335938s)
+INFO:root:calculation <MasterArea 1868> started
+INFO:root:finished calculation electrification 1868 (duration 0.09044313430786133s)
+INFO:root:finished calculation efuel 1868 (duration 0.07894206047058105s)
+INFO:root:finished calculation battery 1868 (duration 75.07820916175842s)
+INFO:root:finished calculation optimised_electrification 1868 (duration 104.31282210350037s)
+INFO:root:finished calculation diesel 1868 (duration 0.0864098072052002s)
+INFO:root:finished calculation efuel 1868 (duration 0.0056951045989990234s)
+INFO:root:finished calculation h2 1868 (duration 0.08156585693359375s)
+INFO:root:calculation <MasterArea 1869> started
+INFO:root:finished calculation electrification 1869 (duration 0.0774540901184082s)
+INFO:root:finished calculation efuel 1869 (duration 0.079071044921875s)
+INFO:root:finished calculation battery 1869 (duration 21.16146993637085s)
+INFO:root:finished calculation optimised_electrification 1869 (duration 19.200390100479126s)
+INFO:root:finished calculation diesel 1869 (duration 0.08420300483703613s)
+INFO:root:finished calculation efuel 1869 (duration 0.004806041717529297s)
+INFO:root:finished calculation h2 1869 (duration 0.08082890510559082s)
+INFO:root:calculation <MasterArea 1870> started
+INFO:root:finished calculation electrification 1870 (duration 0.07884693145751953s)
+INFO:root:finished calculation efuel 1870 (duration 0.08500909805297852s)
+INFO:root:finished calculation battery 1870 (duration 73.00644612312317s)
+INFO:root:finished calculation optimised_electrification 1870 (duration 42.92698812484741s)
+INFO:root:finished calculation diesel 1870 (duration 0.08122515678405762s)
+INFO:root:finished calculation efuel 1870 (duration 0.004842996597290039s)
+INFO:root:finished calculation h2 1870 (duration 0.07683086395263672s)
+INFO:root:calculation <MasterArea 1871> started
+INFO:root:finished calculation electrification 1871 (duration 0.07890820503234863s)
+INFO:root:finished calculation efuel 1871 (duration 1.012613296508789s)
+INFO:root:finished calculation battery 1871 (duration 47.28142213821411s)
+INFO:root:finished calculation optimised_electrification 1871 (duration 86.74619007110596s)
+INFO:root:finished calculation diesel 1871 (duration 0.9976530075073242s)
+INFO:root:finished calculation efuel 1871 (duration 0.0060269832611083984s)
+INFO:root:finished calculation h2 1871 (duration 0.9810349941253662s)
+INFO:root:calculation <MasterArea 1872> started
+INFO:root:finished calculation electrification 1872 (duration 0.09115386009216309s)
+INFO:root:finished calculation efuel 1872 (duration 0.08296704292297363s)
+INFO:root:finished calculation battery 1872 (duration 53.66525316238403s)
+INFO:root:finished calculation optimised_electrification 1872 (duration 77.52227401733398s)
+INFO:root:finished calculation diesel 1872 (duration 0.09502410888671875s)
+INFO:root:finished calculation efuel 1872 (duration 0.010155916213989258s)
+INFO:root:finished calculation h2 1872 (duration 0.08890414237976074s)
+INFO:root:calculation <MasterArea 1873> started
+INFO:root:finished calculation electrification 1873 (duration 0.07506203651428223s)
+INFO:root:finished calculation efuel 1873 (duration 0.07118010520935059s)
+INFO:root:finished calculation battery 1873 (duration 17.47914433479309s)
+INFO:root:finished calculation optimised_electrification 1873 (duration 18.08225703239441s)
+INFO:root:finished calculation diesel 1873 (duration 0.07892680168151855s)
+INFO:root:finished calculation efuel 1873 (duration 0.002858877182006836s)
+INFO:root:finished calculation h2 1873 (duration 0.07336282730102539s)
+INFO:root:calculation <MasterArea 1874> started
+INFO:root:finished calculation electrification 1874 (duration 0.0798330307006836s)
+INFO:root:finished calculation efuel 1874 (duration 0.07332777976989746s)
+INFO:root:finished calculation battery 1874 (duration 4.394056797027588s)
+INFO:root:finished calculation optimised_electrification 1874 (duration 4.971153020858765s)
+INFO:root:finished calculation diesel 1874 (duration 0.0748441219329834s)
+INFO:root:finished calculation efuel 1874 (duration 0.004620075225830078s)
+INFO:root:finished calculation h2 1874 (duration 0.07493400573730469s)
+INFO:root:calculation <MasterArea 1875> started
+INFO:root:finished calculation electrification 1875 (duration 0.07604074478149414s)
+INFO:root:finished calculation efuel 1875 (duration 0.0755620002746582s)
+INFO:root:finished calculation battery 1875 (duration 7.192436933517456s)
+INFO:root:finished calculation optimised_electrification 1875 (duration 7.755265951156616s)
+INFO:root:finished calculation diesel 1875 (duration 0.0746161937713623s)
+INFO:root:finished calculation efuel 1875 (duration 0.004108905792236328s)
+INFO:root:finished calculation h2 1875 (duration 0.07743310928344727s)
+INFO:root:calculation <MasterArea 1876> started
+INFO:root:finished calculation electrification 1876 (duration 0.07698392868041992s)
+INFO:root:finished calculation efuel 1876 (duration 0.07339787483215332s)
+INFO:root:finished calculation battery 1876 (duration 4.528641939163208s)
+INFO:root:finished calculation optimised_electrification 1876 (duration 5.175353288650513s)
+INFO:root:finished calculation diesel 1876 (duration 0.07517194747924805s)
+INFO:root:finished calculation efuel 1876 (duration 0.0028340816497802734s)
+INFO:root:finished calculation h2 1876 (duration 0.07501792907714844s)
+INFO:root:calculation <MasterArea 1877> started
+INFO:root:finished calculation electrification 1877 (duration 0.08074092864990234s)
+INFO:root:finished calculation efuel 1877 (duration 0.07759499549865723s)
+INFO:root:finished calculation battery 1877 (duration 40.867141008377075s)
+INFO:root:finished calculation optimised_electrification 1877 (duration 76.34239196777344s)
+INFO:root:finished calculation diesel 1877 (duration 0.0783388614654541s)
+INFO:root:finished calculation efuel 1877 (duration 0.00436711311340332s)
+INFO:root:finished calculation h2 1877 (duration 0.08122682571411133s)
+INFO:root:calculation <MasterArea 1878> started
+INFO:root:finished calculation electrification 1878 (duration 0.10235190391540527s)
+INFO:root:finished calculation efuel 1878 (duration 0.09253215789794922s)
+INFO:root:finished calculation battery 1878 (duration 77.1064670085907s)
+INFO:root:finished calculation optimised_electrification 1878 (duration 110.15184688568115s)
+INFO:root:finished calculation diesel 1878 (duration 0.09026837348937988s)
+INFO:root:finished calculation efuel 1878 (duration 0.009729146957397461s)
+INFO:root:finished calculation h2 1878 (duration 0.08655285835266113s)
+INFO:root:calculation <MasterArea 1879> started
+INFO:root:finished calculation electrification 1879 (duration 0.08232688903808594s)
+INFO:root:finished calculation efuel 1879 (duration 0.08044862747192383s)
+INFO:root:finished calculation battery 1879 (duration 8.109213829040527s)
+INFO:root:finished calculation optimised_electrification 1879 (duration 9.214216947555542s)
+INFO:root:finished calculation diesel 1879 (duration 0.07748794555664062s)
+INFO:root:finished calculation efuel 1879 (duration 0.0043070316314697266s)
+INFO:root:finished calculation h2 1879 (duration 0.0751807689666748s)
+INFO:root:calculation <MasterArea 1880> started
+INFO:root:finished calculation electrification 1880 (duration 0.07803106307983398s)
+INFO:root:finished calculation efuel 1880 (duration 0.07590031623840332s)
+INFO:root:finished calculation battery 1880 (duration 22.579899072647095s)
+INFO:root:finished calculation optimised_electrification 1880 (duration 36.15205407142639s)
+INFO:root:finished calculation diesel 1880 (duration 0.07949399948120117s)
+INFO:root:finished calculation efuel 1880 (duration 0.004580259323120117s)
+INFO:root:finished calculation h2 1880 (duration 0.0791780948638916s)
+INFO:root:calculation <MasterArea 1881> started
+INFO:root:finished calculation electrification 1881 (duration 0.09464669227600098s)
+INFO:root:finished calculation efuel 1881 (duration 0.08597517013549805s)
+INFO:root:finished calculation battery 1881 (duration 175.84447407722473s)
+INFO:root:finished calculation optimised_electrification 1881 (duration 94.4903130531311s)
+INFO:root:finished calculation diesel 1881 (duration 0.08521699905395508s)
+INFO:root:finished calculation efuel 1881 (duration 0.007985115051269531s)
+INFO:root:finished calculation h2 1881 (duration 0.08044266700744629s)
+INFO:root:calculation <MasterArea 1882> started
+INFO:root:finished calculation electrification 1882 (duration 0.07602405548095703s)
+INFO:root:finished calculation efuel 1882 (duration 0.07786798477172852s)
+INFO:root:finished calculation battery 1882 (duration 13.010009050369263s)
+INFO:root:finished calculation optimised_electrification 1882 (duration 13.970540046691895s)
+INFO:root:finished calculation diesel 1882 (duration 0.07120108604431152s)
+INFO:root:finished calculation efuel 1882 (duration 0.004534721374511719s)
+INFO:root:finished calculation h2 1882 (duration 0.07617378234863281s)
+INFO:root:calculation <MasterArea 1883> started
+INFO:root:finished calculation electrification 1883 (duration 0.07778000831604004s)
+INFO:root:finished calculation efuel 1883 (duration 0.07657694816589355s)
+INFO:root:finished calculation battery 1883 (duration 17.03538417816162s)
+INFO:root:finished calculation optimised_electrification 1883 (duration 17.456199884414673s)
+INFO:root:finished calculation diesel 1883 (duration 0.07622122764587402s)
+INFO:root:finished calculation efuel 1883 (duration 0.004825115203857422s)
+INFO:root:finished calculation h2 1883 (duration 0.07589292526245117s)
+INFO:root:calculation <MasterArea 1884> started
+INFO:root:finished calculation electrification 1884 (duration 0.07643723487854004s)
+INFO:root:finished calculation efuel 1884 (duration 0.07416701316833496s)
+INFO:root:finished calculation battery 1884 (duration 9.232948064804077s)
+INFO:root:finished calculation optimised_electrification 1884 (duration 10.014133930206299s)
+INFO:root:finished calculation diesel 1884 (duration 0.07759213447570801s)
+INFO:root:finished calculation efuel 1884 (duration 0.0046460628509521484s)
+INFO:root:finished calculation h2 1884 (duration 0.07648420333862305s)
+INFO:root:calculation <MasterArea 1885> started
+INFO:root:finished calculation electrification 1885 (duration 0.07884097099304199s)
+INFO:root:finished calculation efuel 1885 (duration 0.07792091369628906s)
+INFO:root:finished calculation battery 1885 (duration 37.95772194862366s)
+INFO:root:finished calculation optimised_electrification 1885 (duration 66.21308279037476s)
+INFO:root:finished calculation diesel 1885 (duration 0.0769810676574707s)
+INFO:root:finished calculation efuel 1885 (duration 0.004604816436767578s)
+INFO:root:finished calculation h2 1885 (duration 0.07585883140563965s)
+INFO:root:calculation <MasterArea 1886> started
+INFO:root:finished calculation electrification 1886 (duration 0.08262419700622559s)
+INFO:root:finished calculation efuel 1886 (duration 0.08236098289489746s)
+INFO:root:finished calculation battery 1886 (duration 30.678030014038086s)
+INFO:root:finished calculation optimised_electrification 1886 (duration 45.11605381965637s)
+INFO:root:finished calculation diesel 1886 (duration 0.08553504943847656s)
+INFO:root:finished calculation efuel 1886 (duration 0.0061566829681396484s)
+INFO:root:finished calculation h2 1886 (duration 0.07986998558044434s)
+INFO:root:calculation <MasterArea 1887> started
+INFO:root:finished calculation electrification 1887 (duration 0.07629728317260742s)
+INFO:root:finished calculation efuel 1887 (duration 0.07056403160095215s)
+INFO:root:finished calculation battery 1887 (duration 12.235049962997437s)
+INFO:root:finished calculation optimised_electrification 1887 (duration 12.798813819885254s)
+INFO:root:finished calculation diesel 1887 (duration 0.07203078269958496s)
+INFO:root:finished calculation efuel 1887 (duration 0.004330873489379883s)
+INFO:root:finished calculation h2 1887 (duration 0.07706594467163086s)
+INFO:root:calculation <MasterArea 1888> started
+INFO:root:finished calculation electrification 1888 (duration 0.082489013671875s)
+INFO:root:finished calculation efuel 1888 (duration 0.0774850845336914s)
+INFO:root:finished calculation battery 1888 (duration 71.3941559791565s)
+INFO:root:finished calculation optimised_electrification 1888 (duration 43.803282737731934s)
+INFO:root:finished calculation diesel 1888 (duration 0.07713007926940918s)
+INFO:root:finished calculation efuel 1888 (duration 0.00442194938659668s)
+INFO:root:finished calculation h2 1888 (duration 0.07892990112304688s)
+INFO:root:calculation <MasterArea 1889> started
+INFO:root:finished calculation electrification 1889 (duration 0.08498907089233398s)
+INFO:root:finished calculation efuel 1889 (duration 0.07510590553283691s)
+INFO:root:finished calculation battery 1889 (duration 41.11229705810547s)
+INFO:root:finished calculation optimised_electrification 1889 (duration 41.71569514274597s)
+INFO:root:finished calculation diesel 1889 (duration 0.07315778732299805s)
+INFO:root:finished calculation efuel 1889 (duration 0.002827167510986328s)
+INFO:root:finished calculation h2 1889 (duration 0.07295489311218262s)
+INFO:root:calculation <MasterArea 1890> started
+INFO:root:finished calculation electrification 1890 (duration 0.0745851993560791s)
+INFO:root:finished calculation efuel 1890 (duration 0.07426309585571289s)
+INFO:root:finished calculation battery 1890 (duration 5.666009187698364s)
+INFO:root:finished calculation optimised_electrification 1890 (duration 6.420701742172241s)
+INFO:root:finished calculation diesel 1890 (duration 0.07421016693115234s)
+INFO:root:finished calculation efuel 1890 (duration 0.00292205810546875s)
+INFO:root:finished calculation h2 1890 (duration 0.07284092903137207s)
+INFO:root:calculation <MasterArea 1891> started
+INFO:root:finished calculation electrification 1891 (duration 0.07567596435546875s)
+INFO:root:finished calculation efuel 1891 (duration 0.07347512245178223s)
+INFO:root:finished calculation battery 1891 (duration 10.69812297821045s)
+INFO:root:finished calculation optimised_electrification 1891 (duration 11.308527708053589s)
+INFO:root:finished calculation diesel 1891 (duration 0.07369327545166016s)
+INFO:root:finished calculation efuel 1891 (duration 0.002888202667236328s)
+INFO:root:finished calculation h2 1891 (duration 0.0728609561920166s)
+INFO:root:calculation <MasterArea 1892> started
+INFO:root:finished calculation electrification 1892 (duration 0.07424616813659668s)
+INFO:root:finished calculation efuel 1892 (duration 0.07286286354064941s)
+INFO:root:finished calculation battery 1892 (duration 6.338764190673828s)
+INFO:root:finished calculation optimised_electrification 1892 (duration 6.849910020828247s)
+INFO:root:finished calculation diesel 1892 (duration 0.07651305198669434s)
+INFO:root:finished calculation efuel 1892 (duration 0.0029549598693847656s)
+INFO:root:finished calculation h2 1892 (duration 0.07462406158447266s)
+INFO:root:calculation <MasterArea 1893> started
+INFO:root:finished calculation electrification 1893 (duration 0.08577466011047363s)
+INFO:root:finished calculation efuel 1893 (duration 0.08108711242675781s)
+INFO:root:finished calculation battery 1893 (duration 37.18659210205078s)
+INFO:root:finished calculation optimised_electrification 1893 (duration 40.648844957351685s)
+INFO:root:finished calculation diesel 1893 (duration 0.0832219123840332s)
+INFO:root:finished calculation efuel 1893 (duration 0.009497880935668945s)
+INFO:root:finished calculation h2 1893 (duration 0.0813608169555664s)
+INFO:root:calculation <MasterArea 1894> started
+INFO:root:finished calculation electrification 1894 (duration 0.07996416091918945s)
+INFO:root:finished calculation efuel 1894 (duration 0.07721376419067383s)
+INFO:root:finished calculation battery 1894 (duration 6.023024797439575s)
+INFO:root:finished calculation optimised_electrification 1894 (duration 6.652864933013916s)
+INFO:root:finished calculation diesel 1894 (duration 0.07352495193481445s)
+INFO:root:finished calculation efuel 1894 (duration 0.0028209686279296875s)
+INFO:root:finished calculation h2 1894 (duration 0.07526469230651855s)
+INFO:root:calculation <MasterArea 1895> started
+INFO:root:finished calculation electrification 1895 (duration 0.07639479637145996s)
+INFO:root:finished calculation efuel 1895 (duration 0.07943511009216309s)
+INFO:root:finished calculation battery 1895 (duration 25.28779697418213s)
+INFO:root:finished calculation optimised_electrification 1895 (duration 41.34458589553833s)
+INFO:root:finished calculation diesel 1895 (duration 0.07689785957336426s)
+INFO:root:finished calculation efuel 1895 (duration 0.004401206970214844s)
+INFO:root:finished calculation h2 1895 (duration 0.07666587829589844s)
+INFO:root:calculation <MasterArea 1896> started
+INFO:root:finished calculation electrification 1896 (duration 0.07895445823669434s)
+INFO:root:finished calculation efuel 1896 (duration 0.07286381721496582s)
+INFO:root:finished calculation battery 1896 (duration 4.191303014755249s)
+INFO:root:finished calculation optimised_electrification 1896 (duration 4.878879070281982s)
+INFO:root:finished calculation diesel 1896 (duration 0.0784308910369873s)
+INFO:root:finished calculation efuel 1896 (duration 0.004268169403076172s)
+INFO:root:finished calculation h2 1896 (duration 0.07707691192626953s)
+INFO:root:calculation <MasterArea 1897> started
+INFO:root:finished calculation electrification 1897 (duration 0.07796192169189453s)
+INFO:root:finished calculation efuel 1897 (duration 0.07712602615356445s)
+INFO:root:Catenary in Nürtingen for 22592 is too long 6598m
+INFO:root:finished calculation battery 1897 (duration 8.136693000793457s)
+INFO:root:Catenary in Nürtingen for 22592 is too long 6598m
+INFO:root:finished calculation optimised_electrification 1897 (duration 8.779503107070923s)
+INFO:root:finished calculation diesel 1897 (duration 0.07484006881713867s)
+INFO:root:finished calculation efuel 1897 (duration 0.004494190216064453s)
+INFO:root:finished calculation h2 1897 (duration 0.07338404655456543s)
+INFO:root:calculation <MasterArea 1898> started
+INFO:root:finished calculation electrification 1898 (duration 0.07519793510437012s)
+INFO:root:finished calculation efuel 1898 (duration 0.07162809371948242s)
+INFO:root:finished calculation battery 1898 (duration 14.117658853530884s)
+INFO:root:finished calculation optimised_electrification 1898 (duration 15.707329034805298s)
+INFO:root:finished calculation diesel 1898 (duration 0.07145285606384277s)
+INFO:root:finished calculation efuel 1898 (duration 0.0027620792388916016s)
+INFO:root:finished calculation h2 1898 (duration 0.07283782958984375s)
+INFO:root:calculation <MasterArea 1899> started
+INFO:root:finished calculation electrification 1899 (duration 0.0825660228729248s)
+INFO:root:finished calculation efuel 1899 (duration 0.08020305633544922s)
+INFO:root:finished calculation battery 1899 (duration 94.52947402000427s)
+INFO:root:finished calculation optimised_electrification 1899 (duration 97.80012702941895s)
+INFO:root:finished calculation diesel 1899 (duration 0.07868480682373047s)
+INFO:root:finished calculation efuel 1899 (duration 0.005625724792480469s)
+INFO:root:finished calculation h2 1899 (duration 0.07445597648620605s)
+INFO:root:calculation <MasterArea 1900> started
+INFO:root:finished calculation electrification 1900 (duration 0.07321715354919434s)
+INFO:root:finished calculation efuel 1900 (duration 0.07026171684265137s)
+INFO:root:finished calculation optimised_electrification 1900 (duration 0.6946990489959717s)
+INFO:root:finished calculation diesel 1900 (duration 0.07151627540588379s)
+INFO:root:finished calculation efuel 1900 (duration 0.0027551651000976562s)
+INFO:root:calculation <MasterArea 1901> started
+INFO:root:finished calculation electrification 1901 (duration 0.07498717308044434s)
+INFO:root:finished calculation efuel 1901 (duration 0.07204389572143555s)
+INFO:root:finished calculation battery 1901 (duration 9.319204092025757s)
+INFO:root:finished calculation optimised_electrification 1901 (duration 10.151486158370972s)
+INFO:root:finished calculation diesel 1901 (duration 0.07498812675476074s)
+INFO:root:finished calculation efuel 1901 (duration 0.004956960678100586s)
+INFO:root:finished calculation h2 1901 (duration 0.07653021812438965s)
+INFO:root:calculation <MasterArea 1902> started
+INFO:root:finished calculation electrification 1902 (duration 0.0755319595336914s)
+INFO:root:finished calculation efuel 1902 (duration 0.07214474678039551s)
+INFO:root:Catenary in Friedberg (Hess) for 6040 is too long 1713m
+INFO:root:finished calculation battery 1902 (duration 11.792289972305298s)
+INFO:root:Catenary in Friedberg (Hess) for 6040 is too long 1713m
+INFO:root:finished calculation optimised_electrification 1902 (duration 14.919308185577393s)
+INFO:root:finished calculation diesel 1902 (duration 0.07620096206665039s)
+INFO:root:finished calculation efuel 1902 (duration 0.0047838687896728516s)
+INFO:root:finished calculation h2 1902 (duration 0.07881712913513184s)
+INFO:root:calculation <MasterArea 1903> started
+INFO:root:finished calculation electrification 1903 (duration 0.07813882827758789s)
+INFO:root:finished calculation efuel 1903 (duration 0.07560992240905762s)
+INFO:root:finished calculation battery 1903 (duration 12.682553768157959s)
+INFO:root:finished calculation optimised_electrification 1903 (duration 10.311024188995361s)
+INFO:root:finished calculation diesel 1903 (duration 0.07886910438537598s)
+INFO:root:finished calculation efuel 1903 (duration 0.004097938537597656s)
+INFO:root:finished calculation h2 1903 (duration 0.07267284393310547s)
+INFO:root:calculation <MasterArea 1904> started
+INFO:root:finished calculation electrification 1904 (duration 0.07867121696472168s)
+INFO:root:finished calculation efuel 1904 (duration 0.07558393478393555s)
+INFO:root:finished calculation battery 1904 (duration 41.28306579589844s)
+INFO:root:finished calculation optimised_electrification 1904 (duration 40.14122986793518s)
+INFO:root:finished calculation diesel 1904 (duration 0.0807638168334961s)
+INFO:root:finished calculation efuel 1904 (duration 0.004621267318725586s)
+INFO:root:finished calculation h2 1904 (duration 0.07660698890686035s)
+INFO:root:calculation <MasterArea 1905> started
+INFO:root:finished calculation electrification 1905 (duration 0.0787360668182373s)
+INFO:root:finished calculation efuel 1905 (duration 0.07716894149780273s)
+INFO:root:finished calculation battery 1905 (duration 13.785096168518066s)
+INFO:root:finished calculation optimised_electrification 1905 (duration 14.351558208465576s)
+INFO:root:finished calculation diesel 1905 (duration 0.07441592216491699s)
+INFO:root:finished calculation efuel 1905 (duration 0.0027518272399902344s)
+INFO:root:finished calculation h2 1905 (duration 0.0745401382446289s)
+INFO:root:calculation <MasterArea 1906> started
+INFO:root:finished calculation electrification 1906 (duration 0.07491803169250488s)
+INFO:root:finished calculation efuel 1906 (duration 0.07220315933227539s)
+INFO:root:finished calculation battery 1906 (duration 11.699258804321289s)
+INFO:root:finished calculation optimised_electrification 1906 (duration 13.597877025604248s)
+INFO:root:finished calculation diesel 1906 (duration 0.07657599449157715s)
+INFO:root:finished calculation efuel 1906 (duration 0.004822731018066406s)
+INFO:root:finished calculation h2 1906 (duration 0.07704806327819824s)
+INFO:root:calculation <MasterArea 1907> started
+INFO:root:finished calculation electrification 1907 (duration 0.08597493171691895s)
+INFO:root:finished calculation efuel 1907 (duration 0.07757019996643066s)
+INFO:root:finished calculation battery 1907 (duration 11.40145206451416s)
+INFO:root:finished calculation optimised_electrification 1907 (duration 11.580588817596436s)
+INFO:root:finished calculation diesel 1907 (duration 0.07779884338378906s)
+INFO:root:finished calculation efuel 1907 (duration 0.005032062530517578s)
+INFO:root:finished calculation h2 1907 (duration 0.07837200164794922s)
+INFO:root:calculation <MasterArea 1908> started
+INFO:root:finished calculation electrification 1908 (duration 0.08091497421264648s)
+INFO:root:finished calculation efuel 1908 (duration 0.08011007308959961s)
+INFO:root:finished calculation optimised_electrification 1908 (duration 0.9461660385131836s)
+INFO:root:finished calculation diesel 1908 (duration 0.07731294631958008s)
+INFO:root:finished calculation efuel 1908 (duration 0.0058400630950927734s)
+INFO:root:calculation <MasterArea 1909> started
+INFO:root:finished calculation electrification 1909 (duration 0.07619690895080566s)
+INFO:root:finished calculation efuel 1909 (duration 0.07607817649841309s)
+INFO:root:finished calculation battery 1909 (duration 5.158935785293579s)
+INFO:root:finished calculation optimised_electrification 1909 (duration 5.7065160274505615s)
+INFO:root:finished calculation diesel 1909 (duration 0.07683420181274414s)
+INFO:root:finished calculation efuel 1909 (duration 0.0042989253997802734s)
+INFO:root:finished calculation h2 1909 (duration 0.07389211654663086s)
+INFO:root:calculation <MasterArea 1910> started
+INFO:root:finished calculation electrification 1910 (duration 0.07922530174255371s)
+INFO:root:finished calculation efuel 1910 (duration 0.08023786544799805s)
+INFO:root:finished calculation battery 1910 (duration 13.186578035354614s)
+INFO:root:finished calculation optimised_electrification 1910 (duration 14.04340410232544s)
+INFO:root:finished calculation diesel 1910 (duration 0.07187008857727051s)
+INFO:root:finished calculation efuel 1910 (duration 0.0052149295806884766s)
+INFO:root:finished calculation h2 1910 (duration 0.07553505897521973s)
+INFO:root:calculation <MasterArea 1911> started
+INFO:root:finished calculation electrification 1911 (duration 0.0803060531616211s)
+INFO:root:finished calculation efuel 1911 (duration 0.0766909122467041s)
+INFO:root:Catenary in Bad Bentheim for 21396 is too long 14396m
+INFO:root:finished calculation battery 1911 (duration 6.71793007850647s)
+INFO:root:Catenary in Bad Bentheim for 21396 is too long 14396m
+INFO:root:finished calculation optimised_electrification 1911 (duration 7.330100059509277s)
+INFO:root:finished calculation diesel 1911 (duration 0.07300519943237305s)
+INFO:root:finished calculation efuel 1911 (duration 0.002978801727294922s)
+INFO:root:finished calculation h2 1911 (duration 0.07321596145629883s)
+INFO:root:calculation <MasterArea 1912> started
+INFO:root:finished calculation electrification 1912 (duration 0.07931900024414062s)
+INFO:root:finished calculation efuel 1912 (duration 0.0732121467590332s)
+INFO:root:finished calculation battery 1912 (duration 8.53062105178833s)
+INFO:root:finished calculation optimised_electrification 1912 (duration 9.201029062271118s)
+INFO:root:finished calculation diesel 1912 (duration 0.07902908325195312s)
+INFO:root:finished calculation efuel 1912 (duration 0.002885103225708008s)
+INFO:root:finished calculation h2 1912 (duration 0.07285404205322266s)
+INFO:root:calculation <MasterArea 1913> started
+INFO:root:finished calculation electrification 1913 (duration 0.08301019668579102s)
+INFO:root:finished calculation efuel 1913 (duration 0.07779812812805176s)
+INFO:root:finished calculation battery 1913 (duration 35.706835985183716s)
+INFO:root:finished calculation optimised_electrification 1913 (duration 37.48968505859375s)
+INFO:root:finished calculation diesel 1913 (duration 0.07965326309204102s)
+INFO:root:finished calculation efuel 1913 (duration 0.004724025726318359s)
+INFO:root:finished calculation h2 1913 (duration 0.07687211036682129s)
+INFO:root:calculation <MasterArea 1914> started
+INFO:root:finished calculation electrification 1914 (duration 0.07854914665222168s)
+INFO:root:finished calculation efuel 1914 (duration 0.07345795631408691s)
+INFO:root:finished calculation battery 1914 (duration 11.973272800445557s)
+INFO:root:finished calculation optimised_electrification 1914 (duration 12.349148988723755s)
+INFO:root:finished calculation diesel 1914 (duration 0.07820510864257812s)
+INFO:root:finished calculation efuel 1914 (duration 0.004239082336425781s)
+INFO:root:finished calculation h2 1914 (duration 0.07471632957458496s)
+INFO:root:calculation <MasterArea 1915> started
+INFO:root:finished calculation electrification 1915 (duration 0.0776677131652832s)
+INFO:root:finished calculation efuel 1915 (duration 0.07469391822814941s)
+INFO:root:finished calculation battery 1915 (duration 12.27604079246521s)
+INFO:root:finished calculation optimised_electrification 1915 (duration 13.066750049591064s)
+INFO:root:finished calculation diesel 1915 (duration 0.0736699104309082s)
+INFO:root:finished calculation efuel 1915 (duration 0.0029549598693847656s)
+INFO:root:finished calculation h2 1915 (duration 0.07391095161437988s)
+INFO:root:calculation <MasterArea 1916> started
+INFO:root:finished calculation electrification 1916 (duration 0.08137202262878418s)
+INFO:root:finished calculation efuel 1916 (duration 0.07591986656188965s)
+INFO:root:finished calculation battery 1916 (duration 4.368945121765137s)
+INFO:root:finished calculation optimised_electrification 1916 (duration 6.465433120727539s)
+INFO:root:finished calculation diesel 1916 (duration 0.07973003387451172s)
+INFO:root:finished calculation efuel 1916 (duration 0.004836082458496094s)
+INFO:root:finished calculation h2 1916 (duration 0.07816338539123535s)
+INFO:root:calculation <MasterArea 1917> started
+INFO:root:finished calculation electrification 1917 (duration 0.09447193145751953s)
+INFO:root:finished calculation efuel 1917 (duration 0.0786287784576416s)
+INFO:root:Catenary in Günzburg for 9288 is too long 3339m
+INFO:root:finished calculation battery 1917 (duration 12.999515295028687s)
+INFO:root:Catenary in Günzburg for 9288 is too long 3339m
+INFO:root:finished calculation optimised_electrification 1917 (duration 15.081442832946777s)
+INFO:root:finished calculation diesel 1917 (duration 0.07735705375671387s)
+INFO:root:finished calculation efuel 1917 (duration 0.0028650760650634766s)
+INFO:root:finished calculation h2 1917 (duration 0.07245802879333496s)
+INFO:root:calculation <MasterArea 1918> started
+INFO:root:finished calculation electrification 1918 (duration 0.07727980613708496s)
+INFO:root:finished calculation efuel 1918 (duration 0.07529187202453613s)
+INFO:root:finished calculation battery 1918 (duration 11.74313497543335s)
+INFO:root:finished calculation optimised_electrification 1918 (duration 11.598576784133911s)
+INFO:root:finished calculation diesel 1918 (duration 0.0748291015625s)
+INFO:root:finished calculation efuel 1918 (duration 0.004898786544799805s)
+INFO:root:finished calculation h2 1918 (duration 0.07903122901916504s)
+INFO:root:calculation <MasterArea 1919> started
+INFO:root:finished calculation electrification 1919 (duration 0.10479116439819336s)
+INFO:root:finished calculation efuel 1919 (duration 0.07752108573913574s)
+INFO:root:finished calculation battery 1919 (duration 48.98344397544861s)
+INFO:root:finished calculation optimised_electrification 1919 (duration 70.80833005905151s)
+INFO:root:finished calculation diesel 1919 (duration 0.08438706398010254s)
+INFO:root:finished calculation efuel 1919 (duration 0.007294893264770508s)
+INFO:root:finished calculation h2 1919 (duration 0.0847628116607666s)
+INFO:root:calculation <MasterArea 1920> started
+INFO:root:finished calculation electrification 1920 (duration 0.07633209228515625s)
+INFO:root:finished calculation efuel 1920 (duration 0.07206201553344727s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1920 (duration 14.327532052993774s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH4.d_SH_x0020_4402_91584 S4 West Hamburg-Altona S - Pinneberg - Elmshorn. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1920 (duration 14.301777124404907s)
+INFO:root:finished calculation diesel 1920 (duration 0.08027386665344238s)
+INFO:root:finished calculation efuel 1920 (duration 0.005635976791381836s)
+INFO:root:finished calculation h2 1920 (duration 0.07849597930908203s)
+INFO:root:calculation <MasterArea 1921> started
+INFO:root:finished calculation electrification 1921 (duration 0.08226799964904785s)
+INFO:root:finished calculation efuel 1921 (duration 0.07737398147583008s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35001_60512 N 35 Fürstenw (Spree) - Bad Saarow Kl Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35001_60512 N 35 Fürstenw (Spree) - Bad Saarow Kl Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35002_60659 N 35 Bad Saarow Kl Hp - Fürstenw (Spree). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35002_60659 N 35 Bad Saarow Kl Hp - Fürstenw (Spree). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1921 (duration 4.806297063827515s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35001_60512 N 35 Fürstenw (Spree) - Bad Saarow Kl Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35001_60512 N 35 Fürstenw (Spree) - Bad Saarow Kl Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35002_60659 N 35 Bad Saarow Kl Hp - Fürstenw (Spree). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BB35_N_x0020_35002_60659 N 35 Bad Saarow Kl Hp - Fürstenw (Spree). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1921 (duration 5.400924921035767s)
+INFO:root:finished calculation diesel 1921 (duration 0.07578802108764648s)
+INFO:root:finished calculation efuel 1921 (duration 0.0031490325927734375s)
+INFO:root:finished calculation h2 1921 (duration 0.07247209548950195s)
+INFO:root:calculation <MasterArea 1922> started
+INFO:root:finished calculation electrification 1922 (duration 0.07438015937805176s)
+INFO:root:finished calculation efuel 1922 (duration 0.07760000228881836s)
+INFO:root:finished calculation battery 1922 (duration 16.476459980010986s)
+INFO:root:finished calculation optimised_electrification 1922 (duration 16.401089906692505s)
+INFO:root:finished calculation diesel 1922 (duration 0.07674598693847656s)
+INFO:root:finished calculation efuel 1922 (duration 0.002755880355834961s)
+INFO:root:finished calculation h2 1922 (duration 0.0721888542175293s)
+INFO:root:calculation <MasterArea 1923> started
+INFO:root:finished calculation electrification 1923 (duration 0.0809178352355957s)
+INFO:root:finished calculation efuel 1923 (duration 0.07685208320617676s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1923 (duration 90.93640303611755s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1923 (duration 151.35340309143066s)
+INFO:root:finished calculation diesel 1923 (duration 0.08160805702209473s)
+INFO:root:finished calculation efuel 1923 (duration 0.005815982818603516s)
+INFO:root:finished calculation h2 1923 (duration 0.07711911201477051s)
+INFO:root:calculation <MasterArea 1924> started
+INFO:root:finished calculation electrification 1924 (duration 0.07810211181640625s)
+INFO:root:finished calculation efuel 1924 (duration 0.07543611526489258s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 1924 (duration 14.135327100753784s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_NW26_N_x0020_26101_9642 N 26a Hückelhoven-Baal - Düren Pbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 1924 (duration 14.944720029830933s)
+INFO:root:finished calculation diesel 1924 (duration 0.0774850845336914s)
+INFO:root:finished calculation efuel 1924 (duration 0.003911733627319336s)
+INFO:root:finished calculation h2 1924 (duration 0.07568693161010742s)
+INFO:root:calculation <MasterArea 1925> started
+INFO:root:finished calculation electrification 1925 (duration 0.07811403274536133s)
+INFO:root:finished calculation efuel 1925 (duration 0.0779869556427002s)
+INFO:root:finished calculation battery 1925 (duration 3.642690658569336s)
+INFO:root:finished calculation optimised_electrification 1925 (duration 4.321660757064819s)
+INFO:root:finished calculation diesel 1925 (duration 0.07610273361206055s)
+INFO:root:finished calculation efuel 1925 (duration 0.0032041072845458984s)
+INFO:root:finished calculation h2 1925 (duration 0.07489299774169922s)
+INFO:root:calculation <MasterArea 1926> started
+INFO:root:finished calculation electrification 1926 (duration 0.07924985885620117s)
+INFO:root:finished calculation efuel 1926 (duration 0.07523608207702637s)
+INFO:root:finished calculation battery 1926 (duration 19.566187143325806s)
+INFO:root:finished calculation optimised_electrification 1926 (duration 20.228646278381348s)
+INFO:root:finished calculation diesel 1926 (duration 0.0807340145111084s)
+INFO:root:finished calculation efuel 1926 (duration 0.003145933151245117s)
+INFO:root:finished calculation h2 1926 (duration 0.07498598098754883s)
+INFO:root:calculation <MasterArea 1927> started
+INFO:root:finished calculation electrification 1927 (duration 0.07990884780883789s)
+INFO:root:finished calculation efuel 1927 (duration 0.07450318336486816s)
+INFO:root:finished calculation battery 1927 (duration 14.297274112701416s)
+INFO:root:finished calculation optimised_electrification 1927 (duration 14.917963981628418s)
+INFO:root:finished calculation diesel 1927 (duration 0.07669806480407715s)
+INFO:root:finished calculation efuel 1927 (duration 0.0035240650177001953s)
+INFO:root:finished calculation h2 1927 (duration 0.07960391044616699s)
+INFO:root:calculation <MasterArea 1928> started
+INFO:root:finished calculation electrification 1928 (duration 0.07757377624511719s)
+INFO:root:finished calculation efuel 1928 (duration 0.07546019554138184s)
+INFO:root:finished calculation battery 1928 (duration 13.670697927474976s)
+INFO:root:finished calculation optimised_electrification 1928 (duration 13.1890287399292s)
+INFO:root:finished calculation diesel 1928 (duration 0.07507705688476562s)
+INFO:root:finished calculation efuel 1928 (duration 0.002989053726196289s)
+INFO:root:finished calculation h2 1928 (duration 0.07459783554077148s)
+INFO:root:calculation <MasterArea 1929> started
+INFO:root:finished calculation electrification 1929 (duration 0.07944393157958984s)
+INFO:root:finished calculation efuel 1929 (duration 0.07690691947937012s)
+INFO:root:finished calculation battery 1929 (duration 19.452601194381714s)
+INFO:root:finished calculation optimised_electrification 1929 (duration 20.134586811065674s)
+INFO:root:finished calculation diesel 1929 (duration 0.07619500160217285s)
+INFO:root:finished calculation efuel 1929 (duration 0.005126237869262695s)
+INFO:root:finished calculation h2 1929 (duration 0.08063697814941406s)
+INFO:root:calculation <MasterArea 1930> started
+INFO:root:finished calculation electrification 1930 (duration 0.07928109169006348s)
+INFO:root:finished calculation efuel 1930 (duration 0.0749061107635498s)
+INFO:root:finished calculation battery 1930 (duration 5.24572491645813s)
+INFO:root:finished calculation optimised_electrification 1930 (duration 5.941339015960693s)
+INFO:root:finished calculation diesel 1930 (duration 0.07944226264953613s)
+INFO:root:finished calculation efuel 1930 (duration 0.005035877227783203s)
+INFO:root:finished calculation h2 1930 (duration 0.08014297485351562s)
+INFO:root:calculation <MasterArea 1931> started
+INFO:root:finished calculation electrification 1931 (duration 0.08135080337524414s)
+INFO:root:finished calculation efuel 1931 (duration 0.0767507553100586s)
+INFO:root:finished calculation battery 1931 (duration 12.378994941711426s)
+INFO:root:finished calculation optimised_electrification 1931 (duration 13.192220211029053s)
+INFO:root:finished calculation diesel 1931 (duration 0.07602405548095703s)
+INFO:root:finished calculation efuel 1931 (duration 0.003180980682373047s)
+INFO:root:finished calculation h2 1931 (duration 0.07523894309997559s)
+INFO:root:calculation <MasterArea 1932> started
+INFO:root:finished calculation electrification 1932 (duration 0.07910394668579102s)
+INFO:root:finished calculation efuel 1932 (duration 0.07655787467956543s)
+INFO:root:finished calculation battery 1932 (duration 8.877339124679565s)
+INFO:root:finished calculation optimised_electrification 1932 (duration 9.56515884399414s)
+INFO:root:finished calculation diesel 1932 (duration 0.07721114158630371s)
+INFO:root:finished calculation efuel 1932 (duration 0.0031130313873291016s)
+INFO:root:finished calculation h2 1932 (duration 0.07583403587341309s)
+INFO:root:calculation <MasterArea 1933> started
+INFO:root:finished calculation electrification 1933 (duration 0.07751011848449707s)
+INFO:root:finished calculation efuel 1933 (duration 0.07775688171386719s)
+INFO:root:finished calculation battery 1933 (duration 3.482689142227173s)
+INFO:root:finished calculation optimised_electrification 1933 (duration 4.125161170959473s)
+INFO:root:finished calculation diesel 1933 (duration 0.07588315010070801s)
+INFO:root:finished calculation efuel 1933 (duration 0.003133058547973633s)
+INFO:root:finished calculation h2 1933 (duration 0.07661700248718262s)
+INFO:root:calculation <MasterArea 1934> started
+INFO:root:finished calculation electrification 1934 (duration 0.08662009239196777s)
+INFO:root:finished calculation efuel 1934 (duration 0.07637906074523926s)
+INFO:root:finished calculation battery 1934 (duration 13.485037088394165s)
+INFO:root:finished calculation optimised_electrification 1934 (duration 14.418736219406128s)
+INFO:root:finished calculation diesel 1934 (duration 0.0764760971069336s)
+INFO:root:finished calculation efuel 1934 (duration 0.0030829906463623047s)
+INFO:root:finished calculation h2 1934 (duration 0.07689332962036133s)
+INFO:root:calculation <MasterArea 1935> started
+INFO:root:finished calculation electrification 1935 (duration 0.0809791088104248s)
+INFO:root:finished calculation efuel 1935 (duration 0.07584905624389648s)
+INFO:root:finished calculation battery 1935 (duration 9.846972227096558s)
+INFO:root:finished calculation optimised_electrification 1935 (duration 10.519988059997559s)
+INFO:root:finished calculation diesel 1935 (duration 0.07751178741455078s)
+INFO:root:finished calculation efuel 1935 (duration 0.0031757354736328125s)
+INFO:root:finished calculation h2 1935 (duration 0.07607817649841309s)
+INFO:root:calculation <MasterArea 1936> started
+INFO:root:finished calculation electrification 1936 (duration 0.08196282386779785s)
+INFO:root:finished calculation efuel 1936 (duration 0.07605910301208496s)
+INFO:root:finished calculation battery 1936 (duration 12.077614068984985s)
+INFO:root:finished calculation optimised_electrification 1936 (duration 12.8126962184906s)
+INFO:root:finished calculation diesel 1936 (duration 0.07703113555908203s)
+INFO:root:finished calculation efuel 1936 (duration 0.0031232833862304688s)
+INFO:root:finished calculation h2 1936 (duration 0.07521414756774902s)
+INFO:root:calculation <MasterArea 1937> started
+INFO:root:finished calculation electrification 1937 (duration 0.07887816429138184s)
+INFO:root:finished calculation efuel 1937 (duration 0.07646012306213379s)
+INFO:root:finished calculation battery 1937 (duration 10.49350094795227s)
+INFO:root:finished calculation optimised_electrification 1937 (duration 11.238474130630493s)
+INFO:root:finished calculation diesel 1937 (duration 0.07803201675415039s)
+INFO:root:finished calculation efuel 1937 (duration 0.0031599998474121094s)
+INFO:root:finished calculation h2 1937 (duration 0.07421302795410156s)
+INFO:root:calculation <MasterArea 1938> started
+INFO:root:finished calculation electrification 1938 (duration 0.07696890830993652s)
+INFO:root:finished calculation efuel 1938 (duration 0.07531595230102539s)
+INFO:root:finished calculation battery 1938 (duration 6.569521188735962s)
+INFO:root:finished calculation optimised_electrification 1938 (duration 5.9846882820129395s)
+INFO:root:finished calculation diesel 1938 (duration 0.07507109642028809s)
+INFO:root:finished calculation efuel 1938 (duration 0.0030117034912109375s)
+INFO:root:finished calculation h2 1938 (duration 0.07619190216064453s)
+INFO:root:calculation <MasterArea 1939> started
+INFO:root:finished calculation electrification 1939 (duration 0.0795438289642334s)
+INFO:root:finished calculation efuel 1939 (duration 0.07582902908325195s)
+INFO:root:finished calculation battery 1939 (duration 227.49274373054504s)
+INFO:root:finished calculation optimised_electrification 1939 (duration 13.189544200897217s)
+INFO:root:finished calculation diesel 1939 (duration 0.07338714599609375s)
+INFO:root:finished calculation efuel 1939 (duration 0.004683017730712891s)
+INFO:root:finished calculation h2 1939 (duration 0.07493877410888672s)
+INFO:root:calculation <MasterArea 1940> started
+INFO:root:finished calculation electrification 1940 (duration 0.08447098731994629s)
+INFO:root:finished calculation efuel 1940 (duration 0.07751011848449707s)
+INFO:root:finished calculation battery 1940 (duration 204.44668698310852s)
+INFO:root:finished calculation optimised_electrification 1940 (duration 2047.5706977844238s)
+INFO:root:finished calculation diesel 1940 (duration 0.07604193687438965s)
+INFO:root:finished calculation efuel 1940 (duration 0.004904985427856445s)
+INFO:root:finished calculation h2 1940 (duration 0.07985424995422363s)
+INFO:root:calculation <MasterArea 1941> started
+INFO:root:finished calculation electrification 1941 (duration 0.08248019218444824s)
+INFO:root:finished calculation efuel 1941 (duration 0.07582902908325195s)
+INFO:root:finished calculation battery 1941 (duration 107.06990885734558s)
+INFO:root:finished calculation optimised_electrification 1941 (duration 22.043407201766968s)
+INFO:root:finished calculation diesel 1941 (duration 0.08001899719238281s)
+INFO:root:finished calculation efuel 1941 (duration 0.0034890174865722656s)
+INFO:root:finished calculation h2 1941 (duration 0.07727789878845215s)
+INFO:root:calculation <MasterArea 1942> started
+INFO:root:finished calculation electrification 1942 (duration 0.07832598686218262s)
+INFO:root:finished calculation efuel 1942 (duration 0.07508707046508789s)
+INFO:root:finished calculation battery 1942 (duration 103.44345688819885s)
+INFO:root:finished calculation optimised_electrification 1942 (duration 4.0569748878479s)
+INFO:root:finished calculation diesel 1942 (duration 0.07663631439208984s)
+INFO:root:finished calculation efuel 1942 (duration 0.0035369396209716797s)
+INFO:root:finished calculation h2 1942 (duration 0.07526302337646484s)
+INFO:root:calculation <MasterArea 1943> started
+INFO:root:finished calculation electrification 1943 (duration 0.09271502494812012s)
+INFO:root:finished calculation efuel 1943 (duration 0.0774381160736084s)
+INFO:root:finished calculation battery 1943 (duration 1354.3889019489288s)

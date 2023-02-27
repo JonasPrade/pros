@@ -11,20 +11,20 @@ FORCE_RECALCULATION = True
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-# scenarios = [MasterScenario.query.get(1)]
-scenarios = MasterScenario.query.all()
+scenarios = [MasterScenario.query.get(4)]
+# scenarios = MasterScenario.query.all()
 
 
 # tgs = TimetableTrainGroup.query.join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
 #     TimetableCategory.transport_mode=='spfv').all()
 
-# tgs = TimetableTrainGroup.query.all()π
+tgs = TimetableTrainGroup.query.all()
 
-tgs = [TimetableTrainGroup.query.get('tg_BY75.a2_N_x0020_75121_x00A7__128829')]
+# tgs = [TimetableTrainGroup.query.get('tg_BY20_N_x0020_20002_3338')]
 
-# logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
+logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
 
-print(tgs[0].trains[0].train_part.timetable_ocps)
+# print(tgs[0].trains[0].train_part.timetable_ocps)
 
 for scenario in scenarios:
     infra_version = version.Version(scenario=scenario)

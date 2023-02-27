@@ -1,7 +1,7 @@
 from tests.base import BaseTestCase
 
 from prosd.manage_db.version import Version
-from scripts.masterarbeit import master_main
+from scripts.masterarbeit import calc_cost_scenario
 from prosd.models import MasterScenario, MasterArea
 from prosd import parameter
 

@@ -1,0 +1,46 @@
+INFO:root:calculation <MasterArea 1800> started
+INFO:root:finished calculation electrification 1800 (duration 0.31200385093688965s)
+INFO:root:finished calculation efuel 1800 (duration 0.2153339385986328s)
+INFO:root:finished calculation battery 1800 (duration 27.383682012557983s)
+INFO:root:finished calculation optimised_electrification 1800 (duration 18.242852687835693s)
+INFO:root:finished calculation diesel 1800 (duration 0.2212231159210205s)
+INFO:root:finished calculation efuel 1800 (duration 0.2193899154663086s)
+INFO:root:finished calculation h2 1800 (duration 0.222182035446167s)
+INFO:root:calculation <MasterArea 1801> started
+INFO:root:finished calculation electrification 1801 (duration 0.2293241024017334s)
+INFO:root:finished calculation efuel 1801 (duration 0.20548295974731445s)
+INFO:root:Catenary in Neustadt (Aisch) Bahnhof for 11318 is too long 4058m
+INFO:root:finished calculation battery 1801 (duration 11.155510902404785s)
+INFO:root:Catenary in Neustadt (Aisch) Bahnhof for 11318 is too long 4058m
+INFO:root:finished calculation optimised_electrification 1801 (duration 12.670727968215942s)
+INFO:root:finished calculation diesel 1801 (duration 0.21713614463806152s)
+INFO:root:finished calculation efuel 1801 (duration 0.2034740447998047s)
+INFO:root:finished calculation h2 1801 (duration 0.21545815467834473s)
+INFO:root:calculation <MasterArea 1802> started
+INFO:root:finished calculation electrification 1802 (duration 0.1962141990661621s)
+INFO:root:finished calculation efuel 1802 (duration 0.19532394409179688s)
+INFO:root:finished calculation battery 1802 (duration 31.586892127990723s)
+INFO:root:finished calculation optimised_electrification 1802 (duration 32.86320090293884s)
+INFO:root:finished calculation diesel 1802 (duration 0.20284819602966309s)
+INFO:root:finished calculation efuel 1802 (duration 0.19294190406799316s)
+INFO:root:finished calculation h2 1802 (duration 0.19372200965881348s)
+INFO:root:calculation <MasterArea 1803> started
+INFO:root:finished calculation electrification 1803 (duration 1.472853183746338s)
+INFO:root:finished calculation efuel 1803 (duration 1.4366137981414795s)
+INFO:root:Catenary in Hof Hbf for 39817 is too long 4629m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20001_1330 N 20 Bad Steben Hp - Hof Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BY20_N_x0020_20002_3338 N 20 Hof Hbf - Bad Steben Hp. More information on page 197 Verfahrensanleitung Standardisierte Bewertung

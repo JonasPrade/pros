@@ -136,7 +136,9 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
     budgets = ma.Nested(BudgetSchema, many=True)
     texts = ma.Nested(TextSchema, many=True)
     projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
-    projectcontent_railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+    railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+    railway_stations = ma.Nested(RailwayStationSchema, many=True)
+    sub_project_contents = ma.Nested(lambda: ProjectContentSchema(), many=True)
 
     class Meta:
         model = models.ProjectContent
@@ -167,7 +169,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
             centroid = shapely.geometry.mapping(centroid)
             return centroid
         except IndexError:
-            logging.warning("Error while calculating centroid. Possibly no geo coordinates?")
+            logging.info("Error while calculating centroid. Possibly no geo coordinates?")
 
 
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
@@ -190,6 +192,14 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     etcs = auto_field()
     etcs_level = auto_field()
     elektrification = auto_field()
+    battery = auto_field()
+    h2 = auto_field()
+    efuel = auto_field()
+    filling_stations_efuel = auto_field()
+    filling_stations_h2 = auto_field()
+    filling_stations_diesel = auto_field()
+    filling_stations_count = auto_field()
+    closure = auto_field()
     second_track = auto_field()
     third_track = auto_field()
     fourth_track = auto_field()
@@ -363,29 +373,26 @@ class TrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
 
 class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
-    project_contents = ma.Nested(ProjectContentShortSchema, many=True)
+    project_contents = ma.Nested(ProjectContentSchema, many=True)
     traingroups = ma.Nested(TrainGroupShortSchema, many=True)
     scenario = ma.Nested(lambda: MasterScenarioSchemaShort())
+    sub_master_areas = ma.Nested(lambda: MasterAreaShortSchema(), many=True)
 
     class Meta:
         model = models.MasterArea
         include_fk = True
 
-    cost_all_tractions = fields.Dict()
-    infrastructure_cost_all_tractions = fields.Dict()
-    operating_cost_all_tractions = fields.Dict()
-    cost_effective_traction = fields.Str()
+    cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
 
 
-class MasterAreaShort(ma.SQLAlchemyAutoSchema):
+class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     class Meta:
         model = models.MasterArea
         include_fk = True
 
-    cost_all_tractions = fields.Dict()
-    cost_effective_traction = fields.Str()
+    cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
 
 
@@ -395,6 +402,7 @@ class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
     cost_effective_traction = fields.Dict()
+
 
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
     class Meta:

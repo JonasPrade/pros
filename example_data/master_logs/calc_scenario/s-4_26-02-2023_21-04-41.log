@@ -1,0 +1,200 @@
+INFO:root:calculation <MasterArea 3098> started
+INFO:root:finished calculation electrification 3098 (duration 16.71418809890747s)
+INFO:root:finished calculation efuel 3098 (duration 15.72077202796936s)
+INFO:root:finished calculation battery 3098 (duration 95.64174103736877s)
+INFO:root:finished calculation optimised_electrification 3098 (duration 111.53653573989868s)
+INFO:root:finished calculation diesel 3098 (duration 15.984955072402954s)
+INFO:root:finished calculation efuel 3098 (duration 0.2022237777709961s)
+INFO:root:finished calculation h2 3098 (duration 16.009954690933228s)
+INFO:root:calculation <MasterArea 3099> started
+INFO:root:finished calculation electrification 3099 (duration 2.4476921558380127s)
+INFO:root:finished calculation efuel 3099 (duration 2.470639228820801s)
+INFO:root:finished calculation battery 3099 (duration 8.665563106536865s)
+INFO:root:finished calculation optimised_electrification 3099 (duration 7.300152778625488s)
+INFO:root:finished calculation diesel 3099 (duration 2.500972032546997s)
+INFO:root:finished calculation efuel 3099 (duration 0.27177977561950684s)
+INFO:root:finished calculation h2 3099 (duration 2.426792860031128s)
+INFO:root:calculation <MasterArea 3100> started
+INFO:root:finished calculation electrification 3100 (duration 5.174756050109863s)
+INFO:root:finished calculation efuel 3100 (duration 5.12575888633728s)
+INFO:root:Catenary in Langerwehe for 21230 is too long 1171m
+INFO:root:finished calculation battery 3100 (duration 24.443480730056763s)
+INFO:root:Catenary in Langerwehe for 21230 is too long 1171m
+INFO:root:finished calculation optimised_electrification 3100 (duration 20.391486167907715s)
+INFO:root:finished calculation diesel 3100 (duration 5.2992260456085205s)
+INFO:root:finished calculation efuel 3100 (duration 0.19911885261535645s)
+INFO:root:finished calculation h2 3100 (duration 5.394132852554321s)
+INFO:root:calculation <MasterArea 3101> started
+INFO:root:finished calculation electrification 3101 (duration 11.359702110290527s)
+INFO:root:finished calculation efuel 3101 (duration 12.109977722167969s)
+INFO:root:finished calculation battery 3101 (duration 37.386009216308594s)
+INFO:root:finished calculation optimised_electrification 3101 (duration 71.71278381347656s)
+INFO:root:finished calculation diesel 3101 (duration 11.240215063095093s)
+INFO:root:finished calculation efuel 3101 (duration 0.22050118446350098s)
+INFO:root:finished calculation h2 3101 (duration 11.248272180557251s)
+INFO:root:calculation <MasterArea 3102> started
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation electrification 3102 (duration 167.50897192955017s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3102 (duration 169.92898106575012s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+WARNING:root:For TimetableLine 1540 MV6.a_X too much elecitrification -7.222732130081377kWh
+WARNING:root:For TimetableLine 1540 MV6.a_X too much elecitrification -2.8262549588571253kWh
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Heide (Holst) for 592 is too long 1144m
+INFO:root:Catenary in Niebüll for 610 is too long 1092m
+INFO:root:finished calculation optimised_electrification 3102 (duration 1941.423504114151s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1718 SH17_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1491 SH12_AKN_Express. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1276 SH12_AKN. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 3102 (duration 163.11352920532227s)
+INFO:root:finished calculation efuel 3102 (duration 0.7724888324737549s)
+INFO:root:calculation <MasterArea 3103> started
+INFO:root:finished calculation electrification 3103 (duration 8.949797868728638s)
+INFO:root:finished calculation efuel 3103 (duration 8.93138599395752s)
+INFO:root:finished calculation battery 3103 (duration 25.922168254852295s)
+INFO:root:finished calculation optimised_electrification 3103 (duration 17.859258890151978s)
+INFO:root:finished calculation diesel 3103 (duration 8.830268859863281s)
+INFO:root:finished calculation efuel 3103 (duration 0.209306001663208s)
+INFO:root:finished calculation h2 3103 (duration 8.800783157348633s)
+INFO:root:calculation <MasterArea 3104> started
+INFO:root:finished calculation electrification 3104 (duration 98.5917420387268s)
+INFO:root:finished calculation efuel 3104 (duration 98.54376983642578s)
+WARNING:root:For TimetableLine 2262 TH103.1_X too much elecitrification -25.91337268508107kWh
+WARNING:root:For TimetableLine 2262 TH103.1_X too much elecitrification -18.10817115624294kWh
+INFO:root:finished calculation battery 3104 (duration 503.91775393486023s)
+INFO:root:Catenary in Blankenstein (Saale) for 15588 is too long 2460m
+INFO:root:finished calculation optimised_electrification 3104 (duration 1503.6148419380188s)
+INFO:root:finished calculation diesel 3104 (duration 97.906977891922s)
+INFO:root:finished calculation efuel 3104 (duration 0.5553121566772461s)
+INFO:root:finished calculation h2 3104 (duration 98.02939820289612s)
+INFO:root:calculation <MasterArea 3105> started
+INFO:root:finished calculation electrification 3105 (duration 172.291100025177s)
+INFO:root:finished calculation efuel 3105 (duration 172.12200498580933s)
+WARNING:root:For TimetableLine 2379 FR5.a H too much elecitrification -51.83896607482987kWh
+WARNING:root:For TimetableLine 2379 FR5.a H too much elecitrification -10.32759315884028kWh
+WARNING:root:For TimetableLine 2409 FR2 H too much elecitrification -47.42014372752161kWh
+INFO:root:finished calculation optimised_electrification 3105 (duration 1423.3256809711456s)
+INFO:root:finished calculation diesel 3105 (duration 170.26425695419312s)
+INFO:root:finished calculation efuel 3105 (duration 0.9305260181427002s)
+INFO:root:calculation <MasterArea 3106> started
+INFO:root:finished calculation electrification 3106 (duration 25.68513298034668s)
+INFO:root:finished calculation efuel 3106 (duration 25.471346139907837s)
+INFO:root:finished calculation battery 3106 (duration 155.6565670967102s)
+INFO:root:finished calculation optimised_electrification 3106 (duration 260.7525906562805s)
+INFO:root:finished calculation diesel 3106 (duration 25.46222996711731s)
+INFO:root:finished calculation efuel 3106 (duration 0.2799248695373535s)
+INFO:root:finished calculation h2 3106 (duration 25.450574159622192s)
+INFO:root:calculation <MasterArea 3107> started
+INFO:root:finished calculation electrification 3107 (duration 2.9210400581359863s)
+INFO:root:finished calculation efuel 3107 (duration 2.943294048309326s)
+INFO:root:finished calculation battery 3107 (duration 16.012540340423584s)
+INFO:root:finished calculation optimised_electrification 3107 (duration 13.982250928878784s)
+INFO:root:finished calculation diesel 3107 (duration 2.9570670127868652s)
+INFO:root:finished calculation efuel 3107 (duration 0.1991569995880127s)
+INFO:root:finished calculation h2 3107 (duration 2.9155991077423096s)
+INFO:root:calculation <MasterArea 3108> started
+INFO:root:finished calculation electrification 3108 (duration 37.20982885360718s)
+INFO:root:finished calculation efuel 3108 (duration 37.07482409477234s)
+INFO:root:finished calculation optimised_electrification 3108 (duration 1.3088440895080566s)
+INFO:root:finished calculation diesel 3108 (duration 37.088845014572144s)
+INFO:root:finished calculation efuel 3108 (duration 0.21096491813659668s)
+INFO:root:calculation <MasterArea 3109> started
+INFO:root:finished calculation electrification 3109 (duration 4.389036178588867s)
+INFO:root:finished calculation efuel 3109 (duration 4.338608264923096s)
+INFO:root:finished calculation optimised_electrification 3109 (duration 16.924211978912354s)
+INFO:root:finished calculation diesel 3109 (duration 4.331575870513916s)
+INFO:root:finished calculation efuel 3109 (duration 0.2422802448272705s)
+INFO:root:calculation <MasterArea 3110> started
+INFO:root:finished calculation electrification 3110 (duration 74.56804084777832s)
+INFO:root:finished calculation efuel 3110 (duration 74.5410590171814s)
+WARNING:root:For TimetableLine 1723 TH17.a_N too much elecitrification -119.35624997213989kWh
+WARNING:root:For TimetableLine 1723 TH17.a_N too much elecitrification -264.1966322200831kWh
+WARNING:root:For TimetableLine 1713 TH17.b_N too much elecitrification -297.89453487025156kWh
+ERROR:root:For TimetableLine 1713 TH17.b_N there is a one_cycle_problem on the backward path which can't be solved yet
+WARNING:root:For TimetableLine 1734 TH16.1_N too much elecitrification -14.039330429066656kWh
+WARNING:root:For TimetableLine 1734 TH16.1_N too much elecitrification -55.016963193123274kWh
+WARNING:root:For TimetableLine 2307 BY4.1_X too much elecitrification -58.743576688055526kWh
+WARNING:root:For TimetableLine 2307 BY4.1_X too much elecitrification -2.0116830005838864kWh
+INFO:root:finished calculation battery 3110 (duration 360.2961232662201s)
+WARNING:root:For TimetableLine 1723 TH17.a_N too much elecitrification -33.670304150489926kWh
+WARNING:root:For TimetableLine 2307 BY4.1_X too much elecitrification -26.291066233293847kWh
+WARNING:root:For TimetableLine 2307 BY4.1_X too much elecitrification -56.804532036426906kWh
+WARNING:root:For TimetableLine 1734 TH16.1_N too much elecitrification -51.228166222938626kWh
+INFO:root:finished calculation optimised_electrification 3110 (duration 1195.8097958564758s)
+INFO:root:finished calculation diesel 3110 (duration 74.00819373130798s)
+INFO:root:finished calculation efuel 3110 (duration 0.4584319591522217s)
+INFO:root:finished calculation h2 3110 (duration 74.27779197692871s)
+INFO:root:calculation <MasterArea 3111> started
+INFO:root:finished calculation electrification 3111 (duration 21.930441856384277s)
+INFO:root:finished calculation efuel 3111 (duration 21.894961833953857s)
+INFO:root:finished calculation battery 3111 (duration 92.9458360671997s)
+INFO:root:Catenary in Usingen for 20804 is too long 17521m
+INFO:root:finished calculation optimised_electrification 3111 (duration 116.79968404769897s)
+INFO:root:finished calculation diesel 3111 (duration 22.112149953842163s)
+INFO:root:finished calculation efuel 3111 (duration 0.21663999557495117s)
+INFO:root:finished calculation h2 3111 (duration 21.9896981716156s)
+INFO:root:calculation <MasterArea 3112> started
+INFO:root:finished calculation electrification 3112 (duration 89.65496110916138s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1705 NW23.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1705 NW23.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3112 (duration 89.69788217544556s)
