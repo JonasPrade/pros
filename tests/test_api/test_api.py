@@ -116,3 +116,27 @@ class TestApi(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['master_scenario']) >0)
             self.assertEqual(response.status_code, 200)
+
+    def test_get_main_masterareas_for_scenario(self):
+        with self.client:
+            api_string = f"/main_masterareas_for_scenario/{masterscenario_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['master_areas']) >0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_get_traction_for_optimised_electrification(self):
+        with self.client:
+            api_string = f"/masterarea_optimised_traingroups/{masterarea_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['tractions']) >0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_running_km_for_master_scenario(self):
+        with self.client:
+            api_string = f"/traingroups-scenario/{masterscenario_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['master_scenario']) >0)
+            self.assertEqual(response.status_code, 200)

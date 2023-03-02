@@ -170,6 +170,7 @@ def get_all_master_scenarios(**kwargs):
     response = make_response({'master_scenario': output})
     return response
 
+
 @app.route("/railwaylines", methods=['GET'])
 @cross_origin()
 def get_all_railwaylines(**kwargs):
@@ -179,20 +180,31 @@ def get_all_railwaylines(**kwargs):
     response = make_response({'railway_lines': output})
     return response
 
-"""
-@app.route("/project/<id>", methods=['POST'])
-@cross_origin()
-@token_required
-def project_create():
-    data = request.get_json()
-    project_schema = views.ProjectSchema()
-    project = project_schema.load(data)
 
-    status_code = Response(status=201)
-    return status_code
-"""
+@app.route("/masterarea_optimised_traingroups/<id>", methods=['GET'])
+@cross_origin()
+def masterarea_optimised_traingroups(**kwargs):
+    master_area_id = kwargs.pop('id')
+    tractions = models.TractionOptimisedElectrification.query.filter(models.TractionOptimisedElectrification.master_area_id == master_area_id)
+    tractions_schema = views.TractionOptimisedElectrificationSchema(many=True)
+    output = tractions_schema.dump(tractions)
+    response = make_response({'tractions': output})
+    return response
+
+
+@app.route("/traingroups-scenario/<id>", methods=['GET'])
+@cross_origin()
+def running_km_for_scenario(**kwargs):
+    master_scenario_id = kwargs.pop('id')
+    master_scenario = models.MasterScenario.query.get(master_scenario_id)
+    area_schema = views.MasterScenarioRunningKmShort()
+    output = area_schema.dump(master_scenario)
+    response = make_response({'master_scenario': output})
+    return response
+
 
 @app.route("/projects")
+@cross_origin()
 def projects_short():
     projects = models.Project.query.filter(models.Project.superior_project_content_id == None).all()
     projects_schema = views.ProjectShortSchema(many=True)

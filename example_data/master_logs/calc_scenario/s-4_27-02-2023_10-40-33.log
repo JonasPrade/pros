@@ -122,3 +122,659 @@ INFO:root:calculation <MasterArea 3114> started
 INFO:root:finished calculation electrification 3114 (duration 0.012977123260498047s)
 INFO:root:finished calculation efuel 3114 (duration 18.904127836227417s)
 INFO:root:finished calculation battery 3114 (duration 335.3274097442627s)
+INFO:root:finished calculation optimised_electrification 3114 (duration 567.7819020748138s)
+INFO:root:finished calculation diesel 3114 (duration 72.82264184951782s)
+INFO:root:finished calculation efuel 3114 (duration 0.01164698600769043s)
+INFO:root:finished calculation h2 3114 (duration 72.29600477218628s)
+INFO:root:calculation <MasterArea 3115> started
+INFO:root:finished calculation electrification 3115 (duration 4.60933518409729s)
+INFO:root:finished calculation efuel 3115 (duration 4.736926078796387s)
+INFO:root:finished calculation battery 3115 (duration 12.861474990844727s)
+INFO:root:finished calculation optimised_electrification 3115 (duration 10.898516416549683s)
+INFO:root:finished calculation diesel 3115 (duration 2.9315662384033203s)
+INFO:root:finished calculation efuel 3115 (duration 0.0028390884399414062s)
+INFO:root:finished calculation h2 3115 (duration 2.8735570907592773s)
+INFO:root:calculation <MasterArea 3116> started
+INFO:root:finished calculation electrification 3116 (duration 63.89004898071289s)
+INFO:root:finished calculation efuel 3116 (duration 64.05831408500671s)
+WARNING:root:For TimetableLine 1777 NW17_X too much elecitrification -7.262032366008949kWh
+WARNING:root:For TimetableLine 1777 NW17_X too much elecitrification -59.57950752043507kWh
+INFO:root:finished calculation battery 3116 (duration 296.34056997299194s)
+WARNING:root:For TimetableLine 1777 NW17_X too much elecitrification -1.7209369549748246kWh
+WARNING:root:For TimetableLine 1777 NW17_X too much elecitrification -22.889735550399372kWh
+WARNING:root:For TimetableLine 1777 NW17_X too much elecitrification -23.660494849531442kWh
+INFO:root:finished calculation optimised_electrification 3116 (duration 714.3569238185883s)
+INFO:root:finished calculation diesel 3116 (duration 63.95712471008301s)
+INFO:root:finished calculation efuel 3116 (duration 0.014416933059692383s)
+INFO:root:finished calculation h2 3116 (duration 63.73123598098755s)
+INFO:root:calculation <MasterArea 3117> started
+INFO:root:finished calculation electrification 3117 (duration 2.350832223892212s)
+INFO:root:finished calculation efuel 3117 (duration 2.3626439571380615s)
+INFO:root:finished calculation battery 3117 (duration 5.678252935409546s)
+INFO:root:finished calculation optimised_electrification 3117 (duration 4.295773029327393s)
+INFO:root:finished calculation diesel 3117 (duration 2.3794519901275635s)
+INFO:root:finished calculation efuel 3117 (duration 0.0029480457305908203s)
+INFO:root:finished calculation h2 3117 (duration 2.356796979904175s)
+INFO:root:calculation <MasterArea 3118> started
+INFO:root:finished calculation electrification 3118 (duration 26.965768337249756s)
+INFO:root:finished calculation efuel 3118 (duration 26.98112988471985s)
+WARNING:root:For TimetableLine 1320 BB6_X too much elecitrification -10.388956420667224kWh
+WARNING:root:For TimetableLine 1320 BB6_X too much elecitrification -44.060216077813664kWh
+INFO:root:finished calculation battery 3118 (duration 152.56553483009338s)
+ERROR:root:For TimetableLine 1320 BB6_X there is a one_cycle_problem on the backward path which can't be solved yet
+WARNING:root:For TimetableLine 1320 BB6_X too much elecitrification -21.67843846869994kWh
+WARNING:root:For TimetableLine 1320 BB6_X too much elecitrification -44.51645696570326kWh
+ERROR:root:For TimetableLine 1320 BB6_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 3118 (duration 362.2359080314636s)
+INFO:root:finished calculation diesel 3118 (duration 26.789001941680908s)
+INFO:root:finished calculation efuel 3118 (duration 0.012504816055297852s)
+INFO:root:finished calculation h2 3118 (duration 26.757120847702026s)
+INFO:root:calculation <MasterArea 3119> started
+INFO:root:finished calculation electrification 3119 (duration 16.879153966903687s)
+INFO:root:finished calculation efuel 3119 (duration 16.86743402481079s)
+INFO:root:finished calculation battery 3119 (duration 83.40589594841003s)
+INFO:root:finished calculation optimised_electrification 3119 (duration 226.7450270652771s)
+INFO:root:finished calculation diesel 3119 (duration 16.769420862197876s)
+INFO:root:finished calculation efuel 3119 (duration 0.006026029586791992s)
+INFO:root:finished calculation h2 3119 (duration 16.78281807899475s)
+INFO:root:calculation <MasterArea 3120> started
+INFO:root:finished calculation electrification 3120 (duration 14.700209140777588s)
+INFO:root:finished calculation efuel 3120 (duration 14.71040391921997s)
+INFO:root:finished calculation battery 3120 (duration 106.74310207366943s)
+INFO:root:finished calculation optimised_electrification 3120 (duration 93.6769769191742s)
+INFO:root:finished calculation diesel 3120 (duration 14.73368763923645s)
+INFO:root:finished calculation efuel 3120 (duration 0.004743099212646484s)
+INFO:root:finished calculation h2 3120 (duration 14.921576976776123s)
+INFO:root:calculation <MasterArea 3121> started
+INFO:root:finished calculation electrification 3121 (duration 30.18849492073059s)
+INFO:root:finished calculation efuel 3121 (duration 30.118167638778687s)
+INFO:root:finished calculation battery 3121 (duration 161.8499641418457s)
+INFO:root:finished calculation optimised_electrification 3121 (duration 288.86009407043457s)
+INFO:root:finished calculation diesel 3121 (duration 30.00418210029602s)
+INFO:root:finished calculation efuel 3121 (duration 0.009987831115722656s)
+INFO:root:finished calculation h2 3121 (duration 29.962494134902954s)
+INFO:root:calculation <MasterArea 3122> started
+INFO:root:finished calculation electrification 3122 (duration 75.65175604820251s)
+INFO:root:finished calculation efuel 3122 (duration 75.79537606239319s)
+WARNING:root:For TimetableLine 1429 BY57_N too much elecitrification -45.31588336971839kWh
+ERROR:root:For TimetableLine 1429 BY57_N there is a one_cycle_problem on the backward path which can't be solved yet
+WARNING:root:For TimetableLine 2111 BY58_N too much elecitrification -16.535620520064317kWh
+INFO:root:finished calculation optimised_electrification 3122 (duration 334.4163589477539s)
+INFO:root:finished calculation diesel 3122 (duration 75.31552815437317s)
+INFO:root:finished calculation efuel 3122 (duration 0.017810344696044922s)
+INFO:root:calculation <MasterArea 3123> started
+INFO:root:finished calculation electrification 3123 (duration 7.440652132034302s)
+INFO:root:finished calculation efuel 3123 (duration 7.451245069503784s)
+INFO:root:Catenary in Düren for 22341 is too long 1386m
+INFO:root:finished calculation battery 3123 (duration 22.069801092147827s)
+INFO:root:Catenary in Düren for 22341 is too long 1386m
+INFO:root:finished calculation optimised_electrification 3123 (duration 15.650096893310547s)
+INFO:root:finished calculation diesel 3123 (duration 7.426208019256592s)
+INFO:root:finished calculation efuel 3123 (duration 0.002917051315307617s)
+INFO:root:finished calculation h2 3123 (duration 7.38644814491272s)
+INFO:root:calculation <MasterArea 3124> started
+INFO:root:finished calculation electrification 3124 (duration 7.472293853759766s)
+INFO:root:finished calculation efuel 3124 (duration 7.452702283859253s)
+INFO:root:finished calculation optimised_electrification 3124 (duration 60.77997088432312s)
+INFO:root:finished calculation diesel 3124 (duration 7.420854091644287s)
+INFO:root:finished calculation efuel 3124 (duration 0.005182027816772461s)
+INFO:root:calculation <MasterArea 3125> started
+INFO:root:finished calculation electrification 3125 (duration 102.01362204551697s)
+INFO:root:finished calculation efuel 3125 (duration 103.27712297439575s)
+WARNING:root:For TimetableLine 1763 BY27.1_X too much elecitrification -22.471843265615007kWh
+WARNING:root:For TimetableLine 1683 BY24_X too much elecitrification -118.0101652527389kWh
+INFO:root:finished calculation battery 3125 (duration 446.72499990463257s)
+INFO:root:Catenary in Illertissen for 9496 is too long 1579m
+INFO:root:Catenary in Senden for 9501 is too long 5605m
+INFO:root:finished calculation optimised_electrification 3125 (duration 1472.2017579078674s)
+INFO:root:finished calculation diesel 3125 (duration 98.4615318775177s)
+INFO:root:finished calculation efuel 3125 (duration 0.023420095443725586s)
+INFO:root:finished calculation h2 3125 (duration 98.60066771507263s)
+INFO:root:calculation <MasterArea 3126> started
+INFO:root:finished calculation electrification 3126 (duration 19.64078998565674s)
+INFO:root:finished calculation efuel 3126 (duration 19.647138118743896s)
+INFO:root:finished calculation battery 3126 (duration 62.41319823265076s)
+INFO:root:finished calculation optimised_electrification 3126 (duration 86.21443104743958s)
+INFO:root:finished calculation diesel 3126 (duration 19.526054859161377s)
+INFO:root:finished calculation efuel 3126 (duration 0.003924846649169922s)
+INFO:root:finished calculation h2 3126 (duration 19.48819589614868s)
+INFO:root:calculation <MasterArea 3127> started
+INFO:root:finished calculation electrification 3127 (duration 7.041857004165649s)
+INFO:root:finished calculation efuel 3127 (duration 7.018255233764648s)
+INFO:root:finished calculation battery 3127 (duration 21.5085289478302s)
+INFO:root:finished calculation optimised_electrification 3127 (duration 15.956867933273315s)
+INFO:root:finished calculation diesel 3127 (duration 7.036070108413696s)
+INFO:root:finished calculation efuel 3127 (duration 0.002866029739379883s)
+INFO:root:finished calculation h2 3127 (duration 7.009519100189209s)
+INFO:root:calculation <MasterArea 3128> started
+INFO:root:finished calculation electrification 3128 (duration 51.18080925941467s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3128 (duration 51.4193000793457s)
+INFO:root:finished calculation battery 3128 (duration 162.71578097343445s)
+INFO:root:finished calculation optimised_electrification 3128 (duration 244.67310094833374s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2231 BW38.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2235 BW38.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 3128 (duration 51.24520397186279s)
+INFO:root:finished calculation efuel 3128 (duration 0.009547948837280273s)
+INFO:root:finished calculation h2 3128 (duration 50.795685052871704s)
+INFO:root:calculation <MasterArea 3129> started
+INFO:root:finished calculation electrification 3129 (duration 10.741268157958984s)
+INFO:root:finished calculation efuel 3129 (duration 10.764575004577637s)
+INFO:root:finished calculation battery 3129 (duration 24.795237064361572s)
+INFO:root:finished calculation optimised_electrification 3129 (duration 28.495184898376465s)
+INFO:root:finished calculation diesel 3129 (duration 10.734435081481934s)
+INFO:root:finished calculation efuel 3129 (duration 0.0040209293365478516s)
+INFO:root:finished calculation h2 3129 (duration 10.73003888130188s)
+INFO:root:calculation <MasterArea 3130> started
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation electrification 3130 (duration 82.95560097694397s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3130 (duration 82.97168302536011s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+WARNING:root:For TimetableLine 2162 BW33_X too much elecitrification -1.8292982879538382kWh
+WARNING:root:For TimetableLine 2162 BW33_X too much elecitrification -16.640146160320075kWh
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation battery 3130 (duration 361.0848939418793s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Hechingen for 22202 is too long 1488m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 3130 (duration 1240.3427262306213s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2060 BW50_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2074 BW50.a_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2148 BW44.b_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 3130 (duration 82.87810206413269s)
+INFO:root:finished calculation efuel 3130 (duration 0.013074874877929688s)
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 2157 BW46_N. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation h2 3130 (duration 82.37590003013611s)
+INFO:root:calculation <MasterArea 3131> started
+INFO:root:finished calculation electrification 3131 (duration 7.055524826049805s)
+INFO:root:finished calculation efuel 3131 (duration 7.0423219203948975s)
+INFO:root:finished calculation battery 3131 (duration 22.213723182678223s)
+INFO:root:finished calculation optimised_electrification 3131 (duration 16.674779891967773s)
+INFO:root:finished calculation diesel 3131 (duration 7.053456783294678s)
+INFO:root:finished calculation efuel 3131 (duration 0.004656314849853516s)
+INFO:root:finished calculation h2 3131 (duration 7.028473138809204s)
+INFO:root:calculation <MasterArea 3132> started
+INFO:root:finished calculation electrification 3132 (duration 5.835931062698364s)
+INFO:root:finished calculation efuel 3132 (duration 5.8516600131988525s)
+INFO:root:finished calculation battery 3132 (duration 26.41446876525879s)
+INFO:root:finished calculation optimised_electrification 3132 (duration 21.8401620388031s)
+INFO:root:finished calculation diesel 3132 (duration 5.840718746185303s)
+INFO:root:finished calculation efuel 3132 (duration 0.0039408206939697266s)
+INFO:root:finished calculation h2 3132 (duration 5.853116750717163s)
+INFO:root:calculation <MasterArea 3133> started
+INFO:root:finished calculation electrification 3133 (duration 26.131057262420654s)
+INFO:root:finished calculation efuel 3133 (duration 26.251664876937866s)
+INFO:root:finished calculation optimised_electrification 3133 (duration 82.40869998931885s)
+INFO:root:finished calculation diesel 3133 (duration 25.94011688232422s)
+INFO:root:finished calculation efuel 3133 (duration 0.010376930236816406s)
+INFO:root:calculation <MasterArea 3134> started
+INFO:root:finished calculation electrification 3134 (duration 2.68731689453125s)
+INFO:root:finished calculation efuel 3134 (duration 2.6947038173675537s)
+INFO:root:finished calculation battery 3134 (duration 8.446991920471191s)
+INFO:root:finished calculation optimised_electrification 3134 (duration 6.675813913345337s)
+INFO:root:finished calculation diesel 3134 (duration 2.7126429080963135s)
+INFO:root:finished calculation efuel 3134 (duration 0.002895832061767578s)
+INFO:root:finished calculation h2 3134 (duration 2.6883370876312256s)
+INFO:root:calculation <MasterArea 3135> started
+INFO:root:finished calculation electrification 3135 (duration 3.987652063369751s)
+INFO:root:finished calculation efuel 3135 (duration 3.9247641563415527s)
+INFO:root:finished calculation battery 3135 (duration 24.66425895690918s)
+INFO:root:finished calculation optimised_electrification 3135 (duration 21.538225173950195s)
+INFO:root:finished calculation diesel 3135 (duration 3.9540977478027344s)
+INFO:root:finished calculation efuel 3135 (duration 0.002950906753540039s)
+INFO:root:finished calculation h2 3135 (duration 3.919739246368408s)
+INFO:root:calculation <MasterArea 3136> started
+INFO:root:finished calculation electrification 3136 (duration 66.11481499671936s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3136 (duration 66.5442852973938s)
+INFO:root:finished calculation battery 3136 (duration 238.89354801177979s)
+INFO:root:finished calculation optimised_electrification 3136 (duration 383.71334314346313s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1554 HE7_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 3136 (duration 67.95517492294312s)
+INFO:root:finished calculation efuel 3136 (duration 0.013015031814575195s)
+INFO:root:finished calculation h2 3136 (duration 68.25236797332764s)
+INFO:root:calculation <MasterArea 3137> started
+INFO:root:finished calculation electrification 3137 (duration 36.95948886871338s)
+INFO:root:finished calculation efuel 3137 (duration 36.89693284034729s)
+INFO:root:finished calculation battery 3137 (duration 130.43391013145447s)
+INFO:root:finished calculation optimised_electrification 3137 (duration 126.80391716957092s)
+INFO:root:finished calculation diesel 3137 (duration 38.11108183860779s)
+INFO:root:finished calculation efuel 3137 (duration 0.005219936370849609s)
+INFO:root:finished calculation h2 3137 (duration 38.24197483062744s)
+INFO:root:calculation <MasterArea 3138> started
+INFO:root:finished calculation electrification 3138 (duration 6.823084115982056s)
+INFO:root:finished calculation efuel 3138 (duration 8.107177972793579s)
+INFO:root:finished calculation battery 3138 (duration 35.08934712409973s)
+INFO:root:finished calculation optimised_electrification 3138 (duration 51.42460608482361s)
+INFO:root:finished calculation diesel 3138 (duration 7.20737099647522s)
+INFO:root:finished calculation efuel 3138 (duration 0.003155946731567383s)
+INFO:root:finished calculation h2 3138 (duration 6.378429174423218s)
+INFO:root:calculation <MasterArea 3139> started
+INFO:root:finished calculation electrification 3139 (duration 15.330299139022827s)
+INFO:root:finished calculation efuel 3139 (duration 16.17674708366394s)
+INFO:root:finished calculation battery 3139 (duration 62.578662157058716s)
+INFO:root:finished calculation optimised_electrification 3139 (duration 70.14908218383789s)
+INFO:root:finished calculation diesel 3139 (duration 15.246321201324463s)
+INFO:root:finished calculation efuel 3139 (duration 0.006288290023803711s)
+INFO:root:finished calculation h2 3139 (duration 15.34276294708252s)
+INFO:root:calculation <MasterArea 3140> started
+INFO:root:finished calculation electrification 3140 (duration 3.190099000930786s)
+INFO:root:finished calculation efuel 3140 (duration 3.166663885116577s)
+INFO:root:finished calculation battery 3140 (duration 14.499249935150146s)
+INFO:root:finished calculation optimised_electrification 3140 (duration 12.109364032745361s)
+INFO:root:finished calculation diesel 3140 (duration 3.088886022567749s)
+INFO:root:finished calculation efuel 3140 (duration 0.002524852752685547s)
+INFO:root:finished calculation h2 3140 (duration 3.0364139080047607s)
+INFO:root:calculation <MasterArea 3141> started
+INFO:root:finished calculation electrification 3141 (duration 3.3957598209381104s)
+INFO:root:finished calculation efuel 3141 (duration 3.4055850505828857s)
+INFO:root:finished calculation battery 3141 (duration 26.386757135391235s)
+INFO:root:finished calculation optimised_electrification 3141 (duration 23.097060203552246s)
+INFO:root:finished calculation diesel 3141 (duration 3.5707640647888184s)
+INFO:root:finished calculation efuel 3141 (duration 0.002687215805053711s)
+INFO:root:finished calculation h2 3141 (duration 3.5744788646698s)
+INFO:root:calculation <MasterArea 3142> started
+INFO:root:finished calculation electrification 3142 (duration 2.8165781497955322s)
+INFO:root:finished calculation efuel 3142 (duration 2.7531440258026123s)
+INFO:root:finished calculation battery 3142 (duration 12.349707841873169s)
+INFO:root:finished calculation optimised_electrification 3142 (duration 10.858495950698853s)
+INFO:root:finished calculation diesel 3142 (duration 2.8721182346343994s)
+INFO:root:finished calculation efuel 3142 (duration 0.002709627151489258s)
+INFO:root:finished calculation h2 3142 (duration 2.759284019470215s)
+INFO:root:calculation <MasterArea 3143> started
+INFO:root:finished calculation electrification 3143 (duration 133.0052092075348s)
+INFO:root:finished calculation efuel 3143 (duration 132.458557844162s)
+INFO:root:Catenary in Sömmerda for 22629 is too long 8153m
+INFO:root:Catenary in Aschersleben for 14984 is too long 1106m
+INFO:root:finished calculation optimised_electrification 3143 (duration 1430.013876914978s)
+INFO:root:finished calculation diesel 3143 (duration 125.93388509750366s)
+INFO:root:finished calculation efuel 3143 (duration 0.042867183685302734s)
+INFO:root:calculation <MasterArea 3144> started
+INFO:root:finished calculation electrification 3144 (duration 5.626923084259033s)
+INFO:root:finished calculation efuel 3144 (duration 5.591885089874268s)
+INFO:root:finished calculation battery 3144 (duration 12.270644903182983s)
+INFO:root:finished calculation optimised_electrification 3144 (duration 7.707913160324097s)
+INFO:root:finished calculation diesel 3144 (duration 5.632763862609863s)
+INFO:root:finished calculation efuel 3144 (duration 0.0029649734497070312s)
+INFO:root:finished calculation h2 3144 (duration 5.515241861343384s)
+INFO:root:calculation <MasterArea 3145> started
+INFO:root:finished calculation electrification 3145 (duration 9.012014865875244s)
+INFO:root:finished calculation efuel 3145 (duration 8.868743896484375s)
+INFO:root:finished calculation battery 3145 (duration 42.467325925827026s)
+INFO:root:finished calculation optimised_electrification 3145 (duration 35.345669984817505s)
+INFO:root:finished calculation diesel 3145 (duration 8.892289161682129s)
+INFO:root:finished calculation efuel 3145 (duration 0.0029549598693847656s)
+INFO:root:finished calculation h2 3145 (duration 8.850719928741455s)
+INFO:root:calculation <MasterArea 3146> started
+INFO:root:finished calculation electrification 3146 (duration 11.793148040771484s)
+INFO:root:finished calculation efuel 3146 (duration 11.500098943710327s)
+INFO:root:finished calculation battery 3146 (duration 80.35423684120178s)
+INFO:root:finished calculation optimised_electrification 3146 (duration 104.41733312606812s)
+INFO:root:finished calculation diesel 3146 (duration 12.37692379951477s)
+INFO:root:finished calculation efuel 3146 (duration 0.0037941932678222656s)
+INFO:root:finished calculation h2 3146 (duration 12.671350955963135s)
+INFO:root:calculation <MasterArea 3147> started
+INFO:root:finished calculation electrification 3147 (duration 20.656249046325684s)
+INFO:root:finished calculation efuel 3147 (duration 20.029620885849s)
+INFO:root:finished calculation battery 3147 (duration 70.55736875534058s)
+INFO:root:finished calculation optimised_electrification 3147 (duration 86.23545980453491s)
+INFO:root:finished calculation diesel 3147 (duration 20.755818843841553s)
+INFO:root:finished calculation efuel 3147 (duration 0.004098176956176758s)
+INFO:root:finished calculation h2 3147 (duration 20.098945140838623s)
+INFO:root:calculation <MasterArea 3148> started
+INFO:root:finished calculation electrification 3148 (duration 32.68755292892456s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1490 NW12.c_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1490 NW12.c_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation efuel 3148 (duration 32.73681306838989s)
+INFO:root:finished calculation battery 3148 (duration 125.85136985778809s)
+INFO:root:finished calculation optimised_electrification 3148 (duration 111.17921686172485s)
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1490 NW12.c_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1490 NW12.c_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1493 NW12.b_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for line TimetableLine 1582 NW12.a_S. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation diesel 3148 (duration 33.35803484916687s)
+INFO:root:finished calculation efuel 3148 (duration 0.007745981216430664s)
+INFO:root:finished calculation h2 3148 (duration 32.66820693016052s)
+INFO:root:calculation <MasterArea 3149> started
+INFO:root:finished calculation electrification 3149 (duration 16.219542980194092s)
+INFO:root:finished calculation efuel 3149 (duration 15.528604984283447s)
+INFO:root:finished calculation battery 3149 (duration 45.3217089176178s)
+INFO:root:Catenary in Geldern for 22557 is too long 1107m
+INFO:root:finished calculation optimised_electrification 3149 (duration 56.4721736907959s)
+INFO:root:finished calculation diesel 3149 (duration 13.838582038879395s)
+INFO:root:finished calculation efuel 3149 (duration 0.0037581920623779297s)
+INFO:root:finished calculation h2 3149 (duration 13.98298692703247s)
+INFO:root:calculation <MasterArea 3150> started
+INFO:root:finished calculation electrification 3150 (duration 5.484314918518066s)
+INFO:root:finished calculation efuel 3150 (duration 5.457377195358276s)
+INFO:root:finished calculation battery 3150 (duration 17.492332696914673s)
+INFO:root:finished calculation optimised_electrification 3150 (duration 14.327166080474854s)
+INFO:root:finished calculation diesel 3150 (duration 5.359743118286133s)
+INFO:root:finished calculation efuel 3150 (duration 0.0034618377685546875s)
+INFO:root:finished calculation h2 3150 (duration 5.431879758834839s)
+INFO:root:calculation <MasterArea 3151> started
+INFO:root:finished calculation electrification 3151 (duration 8.834386825561523s)
+INFO:root:finished calculation efuel 3151 (duration 8.639049053192139s)
+INFO:root:finished calculation battery 3151 (duration 50.67733120918274s)
+INFO:root:finished calculation optimised_electrification 3151 (duration 41.65357995033264s)
+INFO:root:finished calculation diesel 3151 (duration 8.694024801254272s)
+INFO:root:finished calculation efuel 3151 (duration 0.003438711166381836s)
+INFO:root:finished calculation h2 3151 (duration 8.568152904510498s)
+INFO:root:calculation <MasterArea 3152> started
+INFO:root:finished calculation electrification 3152 (duration 9.850877046585083s)
+INFO:root:finished calculation efuel 3152 (duration 9.603959083557129s)
+INFO:root:finished calculation battery 3152 (duration 25.2601158618927s)
+INFO:root:finished calculation optimised_electrification 3152 (duration 27.924532890319824s)
+INFO:root:finished calculation diesel 3152 (duration 9.609090805053711s)
+INFO:root:finished calculation efuel 3152 (duration 0.004395961761474609s)
+INFO:root:finished calculation h2 3152 (duration 9.662118911743164s)
+INFO:root:calculation <MasterArea 3153> started
+INFO:root:finished calculation electrification 3153 (duration 21.853659868240356s)
+INFO:root:finished calculation efuel 3153 (duration 21.28472900390625s)
+INFO:root:finished calculation battery 3153 (duration 56.17490100860596s)
+INFO:root:finished calculation optimised_electrification 3153 (duration 48.05356192588806s)
+INFO:root:finished calculation diesel 3153 (duration 21.334570169448853s)
+INFO:root:finished calculation efuel 3153 (duration 0.004312992095947266s)
+INFO:root:finished calculation h2 3153 (duration 21.30846905708313s)
+INFO:root:calculation <MasterArea 3154> started
+INFO:root:finished calculation electrification 3154 (duration 16.522703886032104s)
+INFO:root:finished calculation efuel 3154 (duration 16.753700971603394s)
+INFO:root:finished calculation battery 3154 (duration 85.4423942565918s)
+INFO:root:finished calculation optimised_electrification 3154 (duration 115.88024115562439s)
+INFO:root:finished calculation diesel 3154 (duration 16.2511568069458s)
+INFO:root:finished calculation efuel 3154 (duration 0.004262685775756836s)
+INFO:root:finished calculation h2 3154 (duration 16.401603937149048s)
+INFO:root:calculation <MasterArea 3155> started
+INFO:root:finished calculation electrification 3155 (duration 2.3339178562164307s)
+INFO:root:finished calculation efuel 3155 (duration 2.0388309955596924s)
+INFO:root:finished calculation battery 3155 (duration 7.877368211746216s)
+INFO:root:finished calculation optimised_electrification 3155 (duration 6.521105051040649s)
+INFO:root:finished calculation diesel 3155 (duration 2.090985059738159s)
+INFO:root:finished calculation efuel 3155 (duration 0.002244234085083008s)
+INFO:root:finished calculation h2 3155 (duration 2.0525848865509033s)
+INFO:root:calculation <MasterArea 3156> started
+INFO:root:finished calculation electrification 3156 (duration 28.440836191177368s)
+INFO:root:finished calculation efuel 3156 (duration 28.368222951889038s)
+WARNING:root:For TimetableLine 1294 BW84.b_X too much elecitrification -12.980654543599712kWh
+WARNING:root:For TimetableLine 1294 BW84.b_X too much elecitrification -22.915129083916483kWh
+INFO:root:finished calculation battery 3156 (duration 212.17745685577393s)
+WARNING:root:For TimetableLine 2200 BW84.a_X too much elecitrification -57.77962365731999kWh
+INFO:root:finished calculation optimised_electrification 3156 (duration 588.9577009677887s)
+INFO:root:finished calculation diesel 3156 (duration 28.579599857330322s)
+INFO:root:finished calculation efuel 3156 (duration 0.007072925567626953s)
+INFO:root:finished calculation h2 3156 (duration 28.598774909973145s)
+INFO:root:calculation <MasterArea 3157> started
+INFO:root:finished calculation electrification 3157 (duration 73.09526801109314s)
+INFO:root:finished calculation efuel 3157 (duration 73.98422288894653s)
+INFO:root:finished calculation battery 3157 (duration 264.5102620124817s)
+INFO:root:finished calculation optimised_electrification 3157 (duration 531.4783771038055s)
+INFO:root:finished calculation diesel 3157 (duration 75.35706973075867s)
+INFO:root:finished calculation efuel 3157 (duration 0.011892080307006836s)
+INFO:root:finished calculation h2 3157 (duration 75.03974390029907s)
+INFO:root:calculation <MasterArea 3158> started
+INFO:root:finished calculation electrification 3158 (duration 4.150856971740723s)
+INFO:root:finished calculation efuel 3158 (duration 3.7488560676574707s)
+INFO:root:finished calculation battery 3158 (duration 25.735422134399414s)
+INFO:root:finished calculation optimised_electrification 3158 (duration 24.386937856674194s)
+INFO:root:finished calculation diesel 3158 (duration 3.8052690029144287s)
+INFO:root:finished calculation efuel 3158 (duration 0.002763032913208008s)
+INFO:root:finished calculation h2 3158 (duration 3.936091184616089s)
+INFO:root:calculation <MasterArea 3159> started
+INFO:root:finished calculation electrification 3159 (duration 8.855217218399048s)
+INFO:root:finished calculation efuel 3159 (duration 8.748047828674316s)
+INFO:root:finished calculation battery 3159 (duration 41.29445028305054s)
+INFO:root:finished calculation optimised_electrification 3159 (duration 49.09908413887024s)
+INFO:root:finished calculation diesel 3159 (duration 8.630087852478027s)
+INFO:root:finished calculation efuel 3159 (duration 0.004501819610595703s)
+INFO:root:finished calculation h2 3159 (duration 8.838681936264038s)
+INFO:root:calculation <MasterArea 3160> started
+INFO:root:finished calculation electrification 3160 (duration 14.886523962020874s)
+INFO:root:finished calculation efuel 3160 (duration 14.636738061904907s)
+INFO:root:finished calculation battery 3160 (duration 73.99968004226685s)
+INFO:root:finished calculation optimised_electrification 3160 (duration 92.02777600288391s)
+INFO:root:finished calculation diesel 3160 (duration 15.510240077972412s)
+INFO:root:finished calculation efuel 3160 (duration 0.0051877498626708984s)
+INFO:root:finished calculation h2 3160 (duration 15.00605297088623s)
+INFO:root:calculation <MasterArea 3161> started
+INFO:root:finished calculation electrification 3161 (duration 87.60065603256226s)
+INFO:root:finished calculation efuel 3161 (duration 89.07817602157593s)
+INFO:root:finished calculation battery 3161 (duration 330.01717495918274s)
+INFO:root:finished calculation optimised_electrification 3161 (duration 1303.2705171108246s)
+INFO:root:finished calculation diesel 3161 (duration 83.7665627002716s)
+INFO:root:finished calculation efuel 3161 (duration 0.020865917205810547s)
+INFO:root:finished calculation h2 3161 (duration 83.4770770072937s)
+INFO:root:calculation <MasterArea 3162> started
+INFO:root:finished calculation electrification 3162 (duration 79.85559892654419s)
+INFO:root:finished calculation efuel 3162 (duration 81.60433316230774s)
+WARNING:root:For TimetableLine 1838 SA65_N too much elecitrification -77.52110811027394kWh
+INFO:root:finished calculation optimised_electrification 3162 (duration 667.1051640510559s)
+INFO:root:finished calculation diesel 3162 (duration 79.37453103065491s)
+INFO:root:finished calculation efuel 3162 (duration 0.0144500732421875s)
+INFO:root:calculation <MasterArea 3163> started
+INFO:root:finished calculation electrification 3163 (duration 5.039162874221802s)
+INFO:root:finished calculation efuel 3163 (duration 4.995726823806763s)
+INFO:root:finished calculation battery 3163 (duration 11.57192611694336s)
+INFO:root:finished calculation optimised_electrification 3163 (duration 8.02591586112976s)
+INFO:root:finished calculation diesel 3163 (duration 5.024125814437866s)
+INFO:root:finished calculation efuel 3163 (duration 0.004098176956176758s)
+INFO:root:finished calculation h2 3163 (duration 4.987116813659668s)
+INFO:root:calculation <MasterArea 3164> started
+INFO:root:finished calculation electrification 3164 (duration 7.828525066375732s)
+INFO:root:finished calculation efuel 3164 (duration 7.821830987930298s)
+INFO:root:finished calculation battery 3164 (duration 26.09006690979004s)
+INFO:root:finished calculation optimised_electrification 3164 (duration 28.590505838394165s)
+INFO:root:finished calculation diesel 3164 (duration 7.904644012451172s)
+INFO:root:finished calculation efuel 3164 (duration 0.005006074905395508s)
+INFO:root:finished calculation h2 3164 (duration 8.009249925613403s)
+INFO:root:calculation <MasterArea 3165> started
+INFO:root:finished calculation electrification 3165 (duration 17.708913326263428s)
+INFO:root:finished calculation efuel 3165 (duration 17.519180059432983s)
+INFO:root:finished calculation battery 3165 (duration 93.15948271751404s)
+INFO:root:finished calculation optimised_electrification 3165 (duration 116.72169017791748s)
+INFO:root:finished calculation diesel 3165 (duration 18.418529748916626s)
+INFO:root:finished calculation efuel 3165 (duration 0.005778074264526367s)
+INFO:root:finished calculation h2 3165 (duration 18.417280912399292s)
+INFO:root:calculation <MasterArea 3166> started
+INFO:root:finished calculation electrification 3166 (duration 19.40439009666443s)
+INFO:root:finished calculation efuel 3166 (duration 19.353778839111328s)
+INFO:root:finished calculation battery 3166 (duration 102.93639183044434s)
+INFO:root:finished calculation optimised_electrification 3166 (duration 146.19258999824524s)
+INFO:root:finished calculation diesel 3166 (duration 229.62159204483032s)
+INFO:root:finished calculation efuel 3166 (duration 0.004758596420288086s)
+INFO:root:finished calculation h2 3166 (duration 19.28255820274353s)
+INFO:root:calculation <MasterArea 3167> started
+INFO:root:finished calculation electrification 3167 (duration 6.061361789703369s)
+INFO:root:finished calculation efuel 3167 (duration 6.014845848083496s)
+INFO:root:finished calculation battery 3167 (duration 41.01130795478821s)
+INFO:root:finished calculation optimised_electrification 3167 (duration 324.76286911964417s)
+INFO:root:finished calculation diesel 3167 (duration 5.922881126403809s)
+INFO:root:finished calculation efuel 3167 (duration 0.0034210681915283203s)
+INFO:root:finished calculation h2 3167 (duration 5.891235113143921s)
+INFO:root:calculation <MasterArea 3168> started
+INFO:root:finished calculation electrification 3168 (duration 16.351747035980225s)
+INFO:root:finished calculation efuel 3168 (duration 147.51573395729065s)
+INFO:root:finished calculation battery 3168 (duration 62.251976013183594s)

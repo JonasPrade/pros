@@ -1831,7 +1831,15 @@ class TimetableTrainGroup(db.Model):
         return cost
 
     @hybrid_method
-    def railway_lines_scenario(self, infra_version):
+    def railway_lines_scenario(self, scenario_id):
+        rw_lines = RailwayLine.query.join(RouteTraingroup).filter(
+            RouteTraingroup.master_scenario_id == scenario_id,
+            RouteTraingroup.traingroup_id == self.id
+        ).all()
+
+        return rw_lines
+
+    def railway_lines_scenario_infra_version(self, infra_version):
         rw_lines_id = db.session.query(RailwayLine.id).join(RouteTraingroup).filter(
             RouteTraingroup.master_scenario_id == infra_version.scenario.id,
             RouteTraingroup.traingroup_id == self.id
@@ -1845,9 +1853,9 @@ class TimetableTrainGroup(db.Model):
         return rw_lines
 
     @hybrid_method
-    def length_line(self, infra_version):
+    def length_line(self, scenario_id):
         km = 0
-        for rw_line in self.railway_lines_scenario(infra_version):
+        for rw_line in self.railway_lines_scenario(scenario_id):
             km += rw_line.length / 1000
 
         return km
@@ -1855,22 +1863,22 @@ class TimetableTrainGroup(db.Model):
     @hybrid_method
     def length_line_no_catenary(self, infra_version):
         km = 0
-        for line in self.railway_lines_scenario(infra_version):
+        for line in self.railway_lines_scenario_infra_version(infra_version):
             if line.catenary is False:
                 km += line.length / 1000
 
         return km
 
     @hybrid_method
-    def running_km_day(self, infra_version):
-        running_km_day = self.length_line(infra_version) * len(self.trains)
+    def running_km_day(self, scenario_id):
+        running_km_day = self.length_line(scenario_id) * len(self.trains)
 
         return running_km_day
 
     @hybrid_method
     def running_km_day_abs(self, infra_version):
         running_km_day_abs = 0
-        for line in self.railway_lines_scenario(infra_version):
+        for line in self.railway_lines_scenario_infra_version(infra_version):
             if line.abs_nbs == "ABS":
                 running_km_day_abs += line.length / 1000
 
@@ -1880,7 +1888,7 @@ class TimetableTrainGroup(db.Model):
     @hybrid_method
     def running_km_day_nbs(self, infra_version):
         running_km_day_nbs = 0
-        for line in self.railway_lines_scenario(infra_version):
+        for line in self.railway_lines_scenario_infra_version(infra_version):
             if line.abs_nbs == "NBS":
                 running_km_day_nbs += line.length / 1000
 
@@ -1890,7 +1898,7 @@ class TimetableTrainGroup(db.Model):
     @hybrid_method
     def running_km_day_no_catenary(self, infra_version):
         running_km_day_no_catenary = 0
-        for line in self.railway_lines_scenario(infra_version):
+        for line in self.railway_lines_scenario_infra_version(infra_version):
             if line.catenary is False:
                 running_km_day_no_catenary += line.length / 1000
 
@@ -1898,8 +1906,8 @@ class TimetableTrainGroup(db.Model):
         return running_km_day_no_catenary
 
     @hybrid_method
-    def running_km_year(self, infra_version):
-        running_km_year = self.running_km_day(infra_version) * 365 / 1000
+    def running_km_year(self, scenario_id):
+        running_km_year = self.running_km_day(scenario_id) * 365 / 1000
         return running_km_year
 
     @hybrid_method
@@ -2072,7 +2080,7 @@ class TimetableTrainGroup(db.Model):
         The speed of the line including all stops
         :return:
         """
-        travel_speed = self.length_line(infra_version)/(self.travel_time.seconds/3600)
+        travel_speed = self.length_line(infra_version.scenario.id)/(self.travel_time.seconds/3600)
         return travel_speed
 
 
@@ -2385,10 +2393,10 @@ class TimetableLine(db.Model):
         return length
 
     @hybrid_method
-    def running_km_year(self, infra_version):
+    def running_km_year(self, scenario_id):
         running_km_year = 0
         for tg in self.train_groups:
-            running_km_year += tg.running_km_year(infra_version)
+            running_km_year += tg.running_km_year(scenario_id)
 
         return running_km_year
 
@@ -2461,7 +2469,6 @@ class TimetableLine(db.Model):
                     train_cycles.append(cycle)
 
         return train_cycles
-
 
 
 class RailMlOcp(db.Model):
@@ -2865,6 +2872,35 @@ class MasterArea(db.Model):
         length_lines = [line.length for line in self.railway_lines]
         length = sum(length_lines)
         return length  # in meter
+
+    @property
+    def traction_optimised_traingroups(self):
+
+        tractions = TractionOptimisedElectrification.query.filter(
+            TractionOptimisedElectrification.master_area_id == self.id
+        ).all()
+
+        traction_optimised_traingroups = {traction.traingroup_id:traction.traction for traction in tractions}
+
+        return traction_optimised_traingroups
+
+    @property
+    def running_km_traingroups(self):
+        result = db.session.execute(
+            """SELECT ttg.id, sum(rl.length)/1000 as length_tg, count(distinct tt.id) as count_trains, sum(rl.length)/1000 * count(distinct tt.id) as running_km_day
+        FROM timetable_train_groups ttg
+        JOIN tg_to_masterareas ttm on ttg.id = ttm.traingroup_id
+        JOIN master_areas ma on ttm.masterarea_id = ma.id
+        JOIN route_traingroups rt on ttg.id = rt.traingroup_id
+        JOIN railway_lines rl on rt.railway_line_id = rl.id
+        JOIN timetable_train tt on ttg.id = tt.train_group_id
+        WHERE
+            rt.master_scenario_id = :scenario_id and
+            ttm.masterarea_id = :masterarea_id
+        GROUP BY ttg.id""", {'scenario_id': self.scenario_id, 'masterarea_id': self.id}
+        )
+        running_km_traingroups = {row[0]:row[3] for row in result}
+        return running_km_traingroups
 
     @hybrid_method
     def get_operating_cost_traction(self, traction):

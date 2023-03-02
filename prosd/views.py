@@ -388,23 +388,51 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
 
 class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
+
     class Meta:
         model = models.MasterArea
         include_fk = True
 
+    length = fields.Float()
     cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
+    proportion_traction_optimised_electrification = fields.Dict()
+    running_km_traingroups = fields.Dict()
+    traction_optimised_traingroups = fields.Dict()
+
+
+class MasterAreaRunningKmSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.MasterArea
+        include_fk = True
+
+    running_km_traingroups = fields.List(fields.Dict())
 
 
 class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
+    # master_areas = ma.Nested(MasterAreaShortSchema, many=True)
     class Meta:
         model = models.MasterScenario
         include_fk = True
 
-    cost_effective_traction = fields.Dict()
+    # cost_effective_traction = fields.Dict()
+    # master_areas_without_subareas = fields.Dict()
 
 
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.MasterScenario
         include_fk = False
+
+
+class MasterScenarioRunningKmShort(ma.SQLAlchemyAutoSchema):
+    master_areas = ma.Nested(MasterAreaRunningKmSchema, many=True)
+    class Meta:
+        model = models.MasterScenario
+        include_fk = False
+
+
+class TractionOptimisedElectrificationSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.TractionOptimisedElectrification
+        include_fk = True
