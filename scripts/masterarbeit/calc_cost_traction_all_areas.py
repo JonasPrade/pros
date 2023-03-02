@@ -7,8 +7,8 @@ from prosd.calculation_methods import use, cost, base
 from prosd.manage_db.version import Version
 from prosd.graph import railgraph, routing
 
-scenario_id = 2
-traction = 'diesel'
+scenario_id = 4
+traction = 'electrification'
 filepath_logging = f"../../example_data/master_logs/calc_traction/s-{scenario_id}_traction-{traction}.log"
 logging.basicConfig(filename=filepath_logging, encoding='utf-8', level=logging.INFO, filemode='w')
 

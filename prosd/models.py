@@ -1697,6 +1697,7 @@ class TimetableTrainCost(db.Model):
     co2_cost = db.Column(db.Integer)
     pollutants_cost = db.Column(db.Integer)
     primary_energy_cost = db.Column(db.Integer)
+    co2_emission = db.Column(db.Integer)
 
     traingroup = db.relationship('TimetableTrainGroup', backref='train_costs')
 
@@ -1732,6 +1733,7 @@ class TimetableTrainCost(db.Model):
             obj_attributes["co2_cost"] = utility.co2_energy_cost_sum
             obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum
             obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum
+            obj_attributes["co2_emission"] = utility.co2_sum
 
         elif calculation_method == 'standi':
             trainline = traingroup.traingroup_lines
@@ -1752,6 +1754,7 @@ class TimetableTrainCost(db.Model):
             obj_attributes["co2_cost"] = utility.co2_energy_cost_sum/len(trainline.train_groups)
             obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum/len(trainline.train_groups)
             obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum/len(trainline.train_groups)
+            obj_attributes["co2_emission"] = utility.co2_sum/len(trainline.train_groups)
 
         obj = cls(
             **obj_attributes
@@ -2821,7 +2824,24 @@ class MasterScenario(db.Model):
                 traction=traction,
                 infra_version=infra_version,
                 order_calculation_methods=None,
-                traingroup_to_traction=None)
+                traingroup_to_traction=None,
+                overwrite=False
+            )
+
+    def calc_operating_cost_one_traction(self, traction, infra_version, overwrite_operating_cost):
+        areas = MasterArea.query.filter(
+            MasterArea.scenario_id == self.id,
+            MasterArea.superior_master_area == None
+        ).all()
+
+        for area in areas:
+            area.calc_operating_cost(
+                traction=traction,
+                infra_version=infra_version,
+                order_calculation_methods=None,
+                traingroup_to_traction=None,
+                overwrite=overwrite_operating_cost
+            )
 
     @property
     def cost_effective_traction(self):
@@ -3064,7 +3084,7 @@ class MasterArea(db.Model):
 
         return proportion_traction_by_km
 
-    def calc_operating_cost(self, traction, infra_version, order_calculation_methods=None, traingroup_to_traction=None):
+    def calc_operating_cost(self, traction, infra_version, order_calculation_methods=None, traingroup_to_traction=None, overwrite=False):
         """
         get the train costs for all traingroups in that area.
         Checks first if cost calculation for area exists. If yes, this will be used.
@@ -3104,6 +3124,11 @@ class MasterArea(db.Model):
                 if ttc:
                     ttc_list.append(ttc)
                     break
+
+            if overwrite is True and ttc is not None:
+                db.session.delete(ttc)
+                db.session.commit()
+                ttc = None
 
             if ttc is None:
                 ttc = TimetableTrainCost.create(
