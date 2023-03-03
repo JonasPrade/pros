@@ -1719,7 +1719,8 @@ class TimetableTrainCost(db.Model):
         if calculation_method == 'bvwp':
             match traingroup.category.transport_mode:
                 case "sgv":
-
+                    if traction == 'h2' or traction == 'battery':
+                        return None
                     utility = BvwpSgv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)
                 case "spfv":
                     utility = BvwpSpfv(tg=traingroup, traction=traction, start_year_operation=start_year_operation, duration_operation=duration_operation, infra_version=infra_version)

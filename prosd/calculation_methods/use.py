@@ -109,8 +109,8 @@ class BvwpUse(BaseCalculation):
         if vehicle_pattern.type_of_traction == "Elektro":
             energy = self.energy_electro(vehicle_pattern)
             energy_cost = self.ENERGY_COST_ELECTRO_RENEWABLE * energy
-            co2 = energy * self.ENERGY_CO2_ELECTRO_RENEWABLE * 10 ** (-6)  # in t
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_ELECTRO_RENEWABLE * 10 ** (-3)  # in t
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_ELECTRO_RENEWABLE * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_ELECTRO_RENEWABLE * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -118,8 +118,8 @@ class BvwpUse(BaseCalculation):
         elif vehicle_pattern.type_of_traction == "Diesel":
             energy = self.energy_diesel(vehicle_pattern)
             energy_cost = self.ENERGY_COST_DIESEL * energy
-            co2 = energy * self.ENERGY_CO2_DIESEl * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_DIESEl * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_DIESEL * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_DIESEL * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -127,8 +127,8 @@ class BvwpUse(BaseCalculation):
         elif vehicle_pattern.type_of_traction == "eFuel":
             energy = self.energy_diesel(vehicle_pattern)
             energy_cost = self.ENERGY_COST_EFUEL * energy
-            co2 = energy * self.ENERGY_CO2_EFUEL * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_EFUEL * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_EFUEL * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_EFUEL * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -462,8 +462,8 @@ class StandiSpnv(BvwpUse):
         if vehicle_pattern.type_of_traction == "Elektro" or vehicle_pattern.type_of_traction == "Batterie":
             energy = self.energy(vehicle_pattern=vehicle_pattern, traingroup=traingroup)
             energy_cost = self.ENERGY_COST_ELECTRO_RENEWABLE * energy
-            co2 = energy * self.ENERGY_CO2_ELECTRO_RENEWABLE * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_ELECTRO_RENEWABLE * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_ELECTRO_RENEWABLE * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_ELECTRO_RENEWABLE * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -471,8 +471,8 @@ class StandiSpnv(BvwpUse):
         elif vehicle_pattern.type_of_traction == "Diesel":
             energy = self.energy(vehicle_pattern=vehicle_pattern, traingroup=traingroup)
             energy_cost = self.ENERGY_COST_DIESEL * energy
-            co2 = energy * self.ENERGY_CO2_DIESEl * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_DIESEl * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_DIESEL * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_DIESEL * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -480,8 +480,8 @@ class StandiSpnv(BvwpUse):
         elif vehicle_pattern.type_of_traction == "eFuel":
             energy = self.energy(vehicle_pattern=vehicle_pattern, traingroup=traingroup)
             energy_cost = self.ENERGY_COST_EFUEL * energy
-            co2 = energy * self.ENERGY_CO2_EFUEL * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_EFUEL * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_EFUEL * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_EFUEL * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
@@ -489,8 +489,8 @@ class StandiSpnv(BvwpUse):
         elif vehicle_pattern.type_of_traction == "H2":
             energy = self.energy(vehicle_pattern=vehicle_pattern, traingroup=traingroup)
             energy_cost = self.ENERGY_COST_H2 * energy
-            co2 = energy * self.ENERGY_CO2_H2 * 10 ** (-6)
-            co2_energy_cost = co2 * self.CO2_COST
+            co2 = energy * self.ENERGY_CO2_H2 * 10 ** (-3)
+            co2_energy_cost = co2 * self.CO2_COST * 10 ** (-3)
             pollutants_cost = energy * self.ENERGY_POLLUTANTS_H2 * 10 ** (-2)
             primary_energy_cost = energy * self.ENERGY_PRIMARYENERGY_H2 * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_POINT_PRIMARY_ENERGY * self.UTILITY_TO_MONEY * 10 ** (
                 -3)
