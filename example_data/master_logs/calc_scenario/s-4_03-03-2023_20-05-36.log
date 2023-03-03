@@ -1,0 +1,3 @@
+INFO:root:calculation <MasterArea 3098> started
+INFO:root:finished calculation electrification 3098 (duration 0.3588249683380127s)
+INFO:root:finished calculation efuel 3098 (duration 0.24720525741577148s)

@@ -1,0 +1,76 @@
+INFO:root:calculation <MasterArea 3098> started
+INFO:root:finished calculation electrification 3098 (duration 0.3726210594177246s)
+INFO:root:finished calculation efuel 3098 (duration 0.2346029281616211s)
+INFO:root:finished calculation battery 3098 (duration 73.34505081176758s)
+INFO:root:finished calculation optimised_electrification 3098 (duration 103.64187479019165s)
+INFO:root:finished calculation diesel 3098 (duration 0.2669978141784668s)
+INFO:root:finished calculation efuel 3098 (duration 0.2493438720703125s)
+INFO:root:finished calculation h2 3098 (duration 0.24685215950012207s)
+INFO:root:calculation <MasterArea 3099> started
+INFO:root:finished calculation electrification 3099 (duration 0.22851896286010742s)
+INFO:root:finished calculation efuel 3099 (duration 0.21868205070495605s)
+INFO:root:finished calculation battery 3099 (duration 6.15450119972229s)
+INFO:root:finished calculation optimised_electrification 3099 (duration 6.961487293243408s)
+INFO:root:finished calculation diesel 3099 (duration 0.22588491439819336s)
+INFO:root:finished calculation efuel 3099 (duration 0.21779465675354004s)
+INFO:root:finished calculation h2 3099 (duration 0.21935415267944336s)
+INFO:root:calculation <MasterArea 3100> started
+INFO:root:finished calculation electrification 3100 (duration 0.25575685501098633s)
+INFO:root:finished calculation efuel 3100 (duration 0.24487900733947754s)
+INFO:root:Catenary in Langerwehe for 21230 is too long 1171m
+INFO:root:finished calculation battery 3100 (duration 18.92631196975708s)
+INFO:root:Catenary in Langerwehe for 21230 is too long 1171m
+INFO:root:finished calculation optimised_electrification 3100 (duration 19.75432515144348s)
+INFO:root:finished calculation diesel 3100 (duration 0.24430203437805176s)
+INFO:root:finished calculation efuel 3100 (duration 0.24539709091186523s)
+INFO:root:finished calculation h2 3100 (duration 0.23026800155639648s)
+INFO:root:calculation <MasterArea 3101> started
+INFO:root:finished calculation electrification 3101 (duration 0.276608943939209s)
+INFO:root:finished calculation efuel 3101 (duration 0.2745201587677002s)
+INFO:root:finished calculation battery 3101 (duration 25.126450061798096s)
+INFO:root:finished calculation optimised_electrification 3101 (duration 69.91387915611267s)
+INFO:root:finished calculation diesel 3101 (duration 0.28972530364990234s)
+INFO:root:finished calculation efuel 3101 (duration 0.28832101821899414s)
+INFO:root:finished calculation h2 3101 (duration 0.292189359664917s)
+INFO:root:calculation <MasterArea 3102> started
+INFO:root:finished calculation electrification 3102 (duration 1.7038650512695312s)
+INFO:root:finished calculation efuel 3102 (duration 1.0315179824829102s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Preetz for 240 is too long 5724m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Heide (Holst) for 592 is too long 1144m
+INFO:root:Catenary in Niebüll for 610 is too long 1092m
+INFO:root:finished calculation optimised_electrification 3102 (duration 1625.5647838115692s)
+INFO:root:finished calculation diesel 3102 (duration 1.0053341388702393s)
+INFO:root:finished calculation efuel 3102 (duration 0.9480068683624268s)
+INFO:root:calculation <MasterArea 3103> started
+INFO:root:finished calculation electrification 3103 (duration 0.26230525970458984s)
+INFO:root:finished calculation efuel 3103 (duration 0.2391350269317627s)
+INFO:root:finished calculation battery 3103 (duration 16.80722212791443s)
+INFO:root:finished calculation optimised_electrification 3103 (duration 17.67573308944702s)
+INFO:root:finished calculation diesel 3103 (duration 0.23612475395202637s)
+INFO:root:finished calculation efuel 3103 (duration 0.23203206062316895s)
+INFO:root:finished calculation h2 3103 (duration 0.2294752597808838s)
+INFO:root:calculation <MasterArea 3104> started
+INFO:root:finished calculation electrification 3104 (duration 1.3456120491027832s)
+INFO:root:finished calculation efuel 3104 (duration 0.5636818408966064s)

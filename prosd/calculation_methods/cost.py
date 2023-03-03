@@ -184,8 +184,91 @@ class BvwpProjectChargingStation(BvwpCost):
         super().calc_base_year_cost()
 
 
+class BvwpProjectSmallChargingStation(BvwpCost):
+    def __init__(self, start_year_planning, station, abs_nbs='abs'):
+        """
+        calculates the cost of a building a catenary for all railway_lines_scope that has no catenary.
+        It uses the infra_version (and not the db) to look up what railway_lines have catenary and which do not have catenary.
+        :param start_year_planning:
+        :param railway_lines_scope:
+        :param infra_version:
+        :param abs_nbs:
+        """
+        self.station = station
+        self.maintenance_factor = parameter.MAINTENANCE_FACTOR  # factor from standardisierte Bewertung Tabelle B-19
+        self.cost_charging_station = parameter.COST_SMALL_CHARGING_STATION  # in thousand Euro
+        self.infrastructure_type = 'small_charging_station'
+
+        self.investment_cost = self.cost_charging_station
+        self.maintenace_cost = self.investment_cost * self.maintenance_factor
+        super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost,
+                         start_year_planning=start_year_planning, abs_nbs=abs_nbs)
+        super().calc_base_year_cost()
+
+
+def _check_if_station_has_charge_or_catenary(station, infra_version):
+    station_electrified = False
+    if station.charging_station is True:
+        station_electrified = True
+        return station_electrified
+
+    lines_station = station.railway_lines
+    for line_station in lines_station:
+        line_infra_version = infra_version.get_railwayline_model(
+            railwayline_id=line_station.id
+        )
+        if line_infra_version.catenary is True:
+            station_electrified = True
+            break
+    return station_electrified
+
+
+def create_small_charging_station_project_content(station, start_year_planning, infra_version):
+    name = f'Small charging station for {station.name}'
+
+    infrastructure_cost = BvwpProjectSmallChargingStation(
+        start_year_planning=start_year_planning,
+        station=station
+    )
+
+    station = infra_version.prepare_commit_pc_stations([station])
+
+    pc = ProjectContent(
+        name=name,
+        small_charging_station=True,
+        railway_stations=station,
+        investment_cost=infrastructure_cost.investment_cost_2015,
+        planning_cost=infrastructure_cost.planning_cost_2015,
+        maintenance_cost=infrastructure_cost.maintenance_cost_2015,
+        capital_service_cost=infrastructure_cost.capital_service_cost_2015,
+        planned_total_cost=infrastructure_cost.cost_2015
+    )
+
+    return pc
+
+
+def add_small_charging_stations(infra_version, start_ocps, start_year_planning):
+    """
+    Check if the start_ocp has a charging possibility for that line. If not -> add a small charging station
+    :return:
+    """
+    small_charging_stations = list()
+    for ocp in start_ocps:
+        station = infra_version.get_railwaystation_model(ocp.station.id)
+        station_electrified = _check_if_station_has_charge_or_catenary(station, infra_version=infra_version)
+        if station_electrified is False:
+            small_charging_station = create_small_charging_station_project_content(
+                station=station,
+                start_year_planning=start_year_planning,
+                infra_version=infra_version
+            )
+            small_charging_stations.append(small_charging_station)
+
+    return small_charging_stations
+
+
 class BvwpProjectBattery(BvwpCost):
-    def __init__(self, start_year_planning, area, infra_version, abs_nbs='abs'):
+    def __init__(self, start_year_planning, area, infra_version, abs_nbs='abs', battery_electrify_start_ocps=True):
         self.area = area
         self.infra_version = infra_version
         self.infra_df = infra_version.infra
@@ -195,6 +278,7 @@ class BvwpProjectBattery(BvwpCost):
 
         self.project_contents = []
         black_list_train_group = []
+        self.start_ocps = set()
         for group in self.area.traingroups:
             if group in black_list_train_group:
                 continue
@@ -203,6 +287,8 @@ class BvwpProjectBattery(BvwpCost):
                 if tt_line:
                     for tg in tt_line.train_groups:
                         black_list_train_group.append(tg)
+                        self.start_ocps.add(tg.first_ocp.ocp)
+                        self.start_ocps.add(tg.last_ocp.ocp)
                     cycles = tt_line.get_train_cycles_each_starting_ocp()
                     for cycle in cycles:
                         elements = cycle.elements[0:2]
@@ -211,6 +297,17 @@ class BvwpProjectBattery(BvwpCost):
                         self.project_contents.extend(new_projectcontents)
                 else:
                     logging.error(f'No line for {group}')
+
+        if battery_electrify_start_ocps is True:
+            new_projectcontents = add_small_charging_stations(
+                infra_version=self.infra_version,
+                start_ocps=self.start_ocps,
+                start_year_planning=start_year_planning
+            )
+            if len(new_projectcontents) > 0:
+                self.infra_version.add_projectcontents_to_version_temporary(pc_list=new_projectcontents,
+                                                                        update_infra=True)
+            self.project_contents.extend(new_projectcontents)
 
         self.investment_cost = 0
         self.maintenance_cost = 0
@@ -843,7 +940,7 @@ class BvwpProjectBattery(BvwpCost):
             # check if a station of that line has a charging possibility or if any line in the station has a catenary
             for station in line_infra_version.stations:
                 station_version = self.infra_version.get_railwaystation_model(station.id)
-                add_line = self._check_if_station_has_charge_or_catenary(station_version)
+                add_line = _check_if_station_has_charge_or_catenary(station_version, infra_version=self.infra_version)
 
             # check if a neighbour railway_line has a catenary
             if add_line is False:
@@ -859,7 +956,7 @@ class BvwpProjectBattery(BvwpCost):
         # PART 3
         # calculate the duration while running on that line
         lines_to_electrify = set()
-        average_speed = tt_line.length_line(self.self.infra_version.scenario.id) / (tt_line.running_time.seconds/3600)
+        average_speed = tt_line.length_line(self.infra_version.scenario.id) / (tt_line.running_time.seconds/3600)
         while lines_connected_to_electrification:
             line = lines_connected_to_electrification.pop()
             # get the lines that are used most and electrify that
@@ -909,20 +1006,6 @@ class BvwpProjectBattery(BvwpCost):
                 break
 
         return catenary
-
-    def _check_if_station_has_charge_or_catenary(self, station):
-        station_electrified = False
-        if station.charging_station is True:
-            station_electrified = True
-        lines_station = station.railway_lines
-        for line_station in lines_station:
-            line_infra_version = self.infra_version.get_railwayline_model(
-                railwayline_id=line_station.id
-            )
-            if line_infra_version.catenary is True:
-                station_electrified = True
-                break
-        return station_electrified
 
     def _get_needed_duration_for_charging(self, energy_needed):
         duration = datetime.timedelta(seconds=energy_needed/parameter.CHARGE*3600)
@@ -1086,11 +1169,29 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         sub_area_by_length = self._sort_sub_areas_by_usage()
         sub_area_cost = self._calculate_optimisation(sub_area_by_length)
 
-        # TOOD: Calculate investement cost and maintenance cost
+        self.start_ocps = set()
+        for tg in self.area.traingroups:
+            self.start_ocps.add(tg.first_ocp.ocp)
+            self.start_ocps.add(tg.last_ocp.ocp)
+
         self.investment_cost = 0
         self.maintenance_cost = 0
         self.planning_cost = 0
         self.project_contents = []
+
+        # add small charging stations to starting ocps if there is no charging possibility there.
+        small_charging_projects = add_small_charging_stations(
+            infra_version=self.infra_version,
+            start_ocps=self.start_ocps,
+            start_year_planning=start_year_planning
+        )
+        if len(small_charging_projects) > 0:
+            self.infra_version.add_projectcontents_to_version_temporary(pc_list=small_charging_projects,
+                                                                        update_infra=True)
+            for pc in small_charging_projects:
+                self.investment_cost += pc.investment_cost
+                self.maintenance_cost += pc.maintenance_cost
+
         for index, sub_area in sub_area_cost.items():
             pc = sub_area["project"]
             self.investment_cost += pc.investment_cost
@@ -1108,6 +1209,13 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         self.investment_cost_2015 = 0
         for index, sub_area in sub_area_cost.items():
             pc = sub_area["project"]
+            self.investment_cost_2015 = pc.investment_cost
+            self.cost_2015 += pc.planned_total_cost
+            self.capital_service_cost_2015 += pc.capital_service_cost
+            self.maintenance_cost_2015 += pc.maintenance_cost
+            self.planning_cost_2015 += pc.planning_cost
+
+        for pc in small_charging_projects:
             self.investment_cost_2015 = pc.investment_cost
             self.cost_2015 += pc.planned_total_cost
             self.capital_service_cost_2015 += pc.capital_service_cost
@@ -1169,7 +1277,6 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         :param sub_area_cost:
         :return:
         """
-
         """
         Remove the electrification for the sub area and calculate the cost for electrification and for battery
         """
@@ -1239,7 +1346,8 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         infrastructure_cost = sub_area.calculate_infrastructure_cost(
             traction=traction,
             infra_version=self.infra_version,
-            overwrite=True
+            overwrite=True,
+            battery_electrify_start_ocps=False
         )
         cost = cost_traction + infrastructure_cost.planned_total_cost
         return cost, infrastructure_cost

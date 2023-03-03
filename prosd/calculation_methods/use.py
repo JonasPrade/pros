@@ -166,6 +166,7 @@ class BvwpUse(BaseCalculation):
             debt_service = self.debt_service(vehicle_pattern)
             maintenance_cost = self.maintenance_cost(vehicle_pattern)
             energy_cost, co2_energy_cost, pollutants_cost, primary_energy_cost, co2 = self.energy_cost(vehicle_pattern)
+            emission_vehicle_production_cost = None  # because not implementable for bvwp
 
             debt_service_sum += debt_service
             maintenance_cost_sum += maintenance_cost
@@ -177,10 +178,10 @@ class BvwpUse(BaseCalculation):
 
             use += debt_service + maintenance_cost + energy_cost + co2_energy_cost + pollutants_cost + primary_energy_cost
 
-        return use, debt_service_sum, maintenance_cost_sum, energy_cost_sum, co2_energy_cost_sum, pollutants_cost_sum, primary_energy_cost_sum, co2_sum
+        return use, debt_service_sum, maintenance_cost_sum, energy_cost_sum, co2_energy_cost_sum, pollutants_cost_sum, primary_energy_cost_sum, co2_sum, emission_vehicle_production_cost
 
     def calc_barwert(self, use, debt_service_sum, maintenance_cost_sum, energy_cost_sum, co2_energy_cost_sum,
-                     pollutants_cost_sum, primary_energy_cost_sum, start_year, duration):
+                     pollutants_cost_sum, primary_energy_cost_sum, start_year, duration, emission_vehicle_production_cost=None):
         """
 
         :param duration:
@@ -203,8 +204,13 @@ class BvwpUse(BaseCalculation):
                                                            cost=pollutants_cost_sum)
         primary_energy_cost_base_year = super().cost_base_year(start_year=start_year, duration=duration,
                                                                cost=primary_energy_cost_sum)
+        if emission_vehicle_production_cost is not None:
+            emission_vehicle_production_cost_base_year = super().cost_base_year(start_year=start_year, duration=duration,
+                                                                      cost=emission_vehicle_production_cost)
+        else:
+            emission_vehicle_production_cost_base_year = None
 
-        return use_base_year, debt_service_base_year, maintenance_cost_base_year, energy_cost_base_year, co2_energy_cost_base_year, pollutants_cost_base_year, primary_energy_cost_base_year
+        return use_base_year, debt_service_base_year, maintenance_cost_base_year, energy_cost_base_year, co2_energy_cost_base_year, pollutants_cost_base_year, primary_energy_cost_base_year, emission_vehicle_production_cost_base_year
 
     def _vehicle_pattern_by_traction(self, vehicle):
         """
@@ -278,10 +284,10 @@ class BvwpSgv(BvwpUse):
             self.loko = self.vehicles[1]
             self.waggon = self.vehicles[0]
 
-        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum = super().calc_use(
+        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum, self.emission_vehicle_production_cost = super().calc_use(
             vehicles_list=[self.loko])
 
-        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year, self.emission_vehicle_production_cost_base_year = super().calc_barwert(
             start_year=start_year_operation,
             duration=duration_operation,
             use=self.use,
@@ -311,9 +317,9 @@ class BvwpSpfv(BvwpUse):
         super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spfv', infra_version=infra_version)
 
         # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
-        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum = super().calc_use(
+        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum, self.emission_vehicle_production_cost = super().calc_use(
             vehicles_list=self.vehicles)
-        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year, self.emission_vehicle_production_cost_base_year = super().calc_barwert(
             start_year=start_year_operation,
             duration=duration_operation,
             use=self.use,
@@ -348,9 +354,9 @@ class BvwpSpnv(BvwpUse):
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
         super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
 
-        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum = super().calc_use(
+        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum, self.emission_vehicle_production_cost = super().calc_use(
             vehicles_list=self.vehicles)
-        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year, self.emission_vehicle_production_cost_base_year = super().calc_barwert(
             start_year=start_year_operation,
             duration=duration_operation,
             use=self.use,
@@ -375,8 +381,8 @@ class StandiSpnv(BvwpUse):
         super().__init__(model=trainline, tg_or_tl='tl', formation=formation, traction=traction, transport_mode='spnv', infra_version=infra_version)
         self.train_cycles = len(self.trainline.get_train_cycles(wait_time=parameter.WAIT_TIME))
 
-        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum = self.calc_use()
-        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year = super().calc_barwert(
+        self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum, self.emission_vehicle_production_cost = self.calc_use()
+        self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year, self.emission_vehicle_production_cost_base_year = super().calc_barwert(
             start_year=start_year_operation,
             duration=duration_operation,
             use=self.use,
@@ -385,7 +391,8 @@ class StandiSpnv(BvwpUse):
             energy_cost_sum=self.energy_cost_sum,
             co2_energy_cost_sum=self.co2_energy_cost_sum,
             pollutants_cost_sum=self.pollutants_cost_sum,
-            primary_energy_cost_sum=self.primary_energy_cost_sum
+            primary_energy_cost_sum=self.primary_energy_cost_sum,
+            emission_vehicle_production_cost=self.emission_vehicle_production_cost
         )
 
     def calc_use(self):
@@ -393,6 +400,7 @@ class StandiSpnv(BvwpUse):
 
         debt_service = self.debt_service()
         maintenance_cost_time = self.maintenance_cost_time()
+        emission_vehicle_production_cost = self.emission_vehicle_production()
 
         energy_cost_sum = 0
         co2_energy_cost_sum = 0
@@ -424,8 +432,9 @@ class StandiSpnv(BvwpUse):
         use += co2_energy_cost_sum
         use += pollutants_cost_sum
         use += primary_energy_cost_sum
+        use += emission_vehicle_production_cost
 
-        return use, debt_service, maintenance_cost_sum, energy_cost_sum, co2_energy_cost_sum, pollutants_cost_sum, primary_energy_cost_sum, co2_sum
+        return use, debt_service, maintenance_cost_sum, energy_cost_sum, co2_energy_cost_sum, pollutants_cost_sum, primary_energy_cost_sum, co2_sum, emission_vehicle_production_cost
 
     def debt_service(self):
         debt_service_vehicles = 0
@@ -456,6 +465,18 @@ class StandiSpnv(BvwpUse):
         maintenance_cost_time = count_formations * maintenance_cost_time_vehicles / 1000
 
         return maintenance_cost_time
+
+    def emission_vehicle_production(self):
+        emission_vehicle_production_cost = 0
+        for vehicle in self.vehicles:
+            vehicle_pattern = super()._vehicle_pattern_by_traction(vehicle=vehicle)
+            emission_vehicle_production_cost += vehicle_pattern.emission_production_vehicle_calc * parameter.CO2_COST
+
+        count_formations = self.train_cycles
+
+        emission_vehicle_production_cost = count_formations * emission_vehicle_production_cost / 1000
+
+        return emission_vehicle_production_cost
 
     def energy_cost(self, vehicle_pattern, traingroup):
 

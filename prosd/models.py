@@ -277,7 +277,7 @@ class RailwayLine(db.Model):
     electrified = db.Column(db.String(20))  # Add allowed values: Oberleitung, nicht elektrifiziert, Stromschiene
     catenary = db.Column(db.Boolean, default=False)
     conductor_rail = db.Column(db.Boolean, default=False)
-    voltage = db.Column(db.Float, default=None)
+    voltage = db.Column(db.Float, default=None, comment="[kV]")
     dc_ac = db.Column(db.String(3), default=None)
     number_tracks = db.Column(db.String(100))  # eingleisig, zweigleisig
     vmax = db.Column(db.String(20))
@@ -711,6 +711,7 @@ class RailwayStation(db.Model):
     db_kuerzel = db.Column(db.String(6), unique=True)
     type = db.Column(db.String(10))
     charging_station = db.Column(db.Boolean, default=False)
+    small_charging_station = db.Column(db.Boolean, default=False)
 
     railway_points = db.relationship("RailwayPoint", lazy="dynamic", backref="station")
     railway_nodes = db.relationship("RailwayNodes",
@@ -1265,6 +1266,7 @@ class ProjectContent(db.Model):
     abs = db.Column(db.Boolean, nullable=False, default=False)
     elektrification = db.Column(db.Boolean, nullable=False, default=False)
     charging_station = db.Column(db.Boolean, default=False)
+    small_charging_station = db.Column(db.Boolean, default=False)
     second_track = db.Column(db.Boolean, nullable=False, default=False)
     third_track = db.Column(db.Boolean, nullable=False, default=False)
     fourth_track = db.Column(db.Boolean, nullable=False, default=False)
@@ -1584,7 +1586,7 @@ class VehiclePattern(db.Model):
     emission_km = db.Column(db.Float, comment="€/km")
     emission_stop = db.Column(db.Float, comment="€/stop")
     project_group = db.Column(db.Integer, db.ForeignKey('project_groups.id'))
-    battery_capacity = db.Column(db.Float, default = None)  # TODO: Ask Patrick for the correct values
+    battery_capacity = db.Column(db.Float, default=None)
 
     vehicle_pattern_id_electrical = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
     vehicle_pattern_id_h2 = db.Column(db.Integer, db.ForeignKey('vehicles_pattern.id'))
@@ -1698,6 +1700,8 @@ class TimetableTrainCost(db.Model):
     pollutants_cost = db.Column(db.Integer)
     primary_energy_cost = db.Column(db.Integer)
     co2_emission = db.Column(db.Integer)
+    energy = db.Column(db.Float)
+    thg_vehicle_production_cost = db.Column(db.Integer)
 
     traingroup = db.relationship('TimetableTrainGroup', backref='train_costs')
 
@@ -1735,6 +1739,7 @@ class TimetableTrainCost(db.Model):
             obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum
             obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum
             obj_attributes["co2_emission"] = utility.co2_sum
+            obj_attributes["thg_vehicle_production_cost"] = utility.emission_vehicle_production_cost
 
         elif calculation_method == 'standi':
             trainline = traingroup.traingroup_lines
@@ -1756,6 +1761,7 @@ class TimetableTrainCost(db.Model):
             obj_attributes["pollutants_cost"] = utility.pollutants_cost_sum/len(trainline.train_groups)
             obj_attributes["primary_energy_cost"] = utility.primary_energy_cost_sum/len(trainline.train_groups)
             obj_attributes["co2_emission"] = utility.co2_sum/len(trainline.train_groups)
+            obj_attributes["thg_vehicle_production_cost"] = utility.emission_vehicle_production_cost/len(trainline.train_groups)
 
         obj = cls(
             **obj_attributes
@@ -2559,7 +2565,7 @@ class Budget(db.Model):
     next_years_891_91 = db.Column(db.Integer)
 
     finve = db.relationship("FinVe", backref=db.backref("budgets"))
-
+    db.Index('budgets_year_and_finve_uindex', budget_year, fin_ve, unique=True)
 
 class FinVe(db.Model):
     """
@@ -3145,9 +3151,10 @@ class MasterArea(db.Model):
 
         return ttc_list
 
-    def calculate_infrastructure_cost(self, traction, infra_version, overwrite):
+    def calculate_infrastructure_cost(self, traction, infra_version, overwrite, battery_electrify_start_ocps=True):
         """
         Calculates the cost for the infrastructure
+        :param battery_electrify_start_ocps:
         :param traction:
         :param infra_version:
         :param overwrite:
@@ -3194,7 +3201,8 @@ class MasterArea(db.Model):
             infrastructure_cost = BvwpProjectBattery(
                 start_year_planning=start_year_planning,
                 area=self,
-                infra_version=infra_version
+                infra_version=infra_version,
+                battery_electrify_start_ocps=battery_electrify_start_ocps
             )
             pc_data["battery"] = True
 
@@ -3375,7 +3383,7 @@ class TractionOptimisedElectrification(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     traingroup_id = db.Column(db.String(255), db.ForeignKey('timetable_train_groups.id'), nullable=False)
-    master_area_id = db.Column(db.Integer, db.ForeignKey('master_areas.id'), nullable=False)
+    master_area_id = db.Column(db.Integer, db.ForeignKey('master_areas.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     traction = db.Column(db.String(50), nullable=False)
 
     traingroup = db.relationship("TimetableTrainGroup", backref=db.backref('traction_optimised_electrification'))
@@ -3468,3 +3476,4 @@ class BlacklistToken(db.Model):
             return True
         else:
             return False
+

@@ -110,6 +110,7 @@ class Version:
                     self.infra["railway_stations"].railway_station_id != station.id]
 
                 rs_changed = self._add_charging_station(project_content=pc, railway_station=rs_changed)
+                rs_changed = self._add_small_charging_station(project_content=pc, railway_station=rs_changed)
                 if sqlalchemy.inspect(rs_changed).detached is False:
                     db.session.expunge(rs_changed)
                 # Here can be added some more
@@ -210,5 +211,11 @@ class Version:
     def _add_charging_station(self, project_content, railway_station):
         if project_content.charging_station:
             railway_station.charging_station = True
+
+        return railway_station
+
+    def _add_small_charging_station(self, project_content, railway_station):
+        if project_content.small_charging_station:
+            railway_station.small_charging_station = True
 
         return railway_station
