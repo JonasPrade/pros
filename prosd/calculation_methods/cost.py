@@ -475,7 +475,7 @@ class BvwpProjectBattery(BvwpCost):
 
                 # calculate the energy used by running for this group
                 if section["catenary"] == False:
-                    additional_battery = vehicle_pattern.additional_energy_without_overhead*(train.train_group.length_line_no_catenary(self.infra_version)/train.train_group.length_line(self.infra_version))
+                    additional_battery = vehicle_pattern.additional_energy_without_overhead*(train.train_group.length_line_no_catenary(self.infra_version)/train.train_group.length_line(self.infra_version.scenario.id))
                 else:
                     additional_battery = 0
 
@@ -509,7 +509,7 @@ class BvwpProjectBattery(BvwpCost):
         try:
             reference_speed = 3.6 / (vehicle_pattern.energy_stop_a * segments) * (intermediate_1 - math.sqrt(
                 intermediate_1 ** 2 - 2 * vehicle_pattern.energy_stop_a * segments * (
-                            train_group.length_line(self.infra_version) * 1000)))
+                            train_group.length_line(self.infra_version.scenario.id) * 1000)))
         except ValueError:
             logging.info(
                 f'Could not calculate reference speed for train_group {train_group}. More information on page 197 Verfahrensanleitung Standardisierte Bewertung')
@@ -571,7 +571,7 @@ class BvwpProjectBattery(BvwpCost):
                 # length of line) is smaller then the travel_time_proportion
                 start_km_group = 0  # because the groups just contain the relative length, the start_position must be added
                 for group in line_groups:
-                    proportion_km = (start_km_group + group["length"] / 1000) / length_line(self.infra_version)
+                    proportion_km = (start_km_group + group["length"] / 1000) / length_line(self.infra_version.scenario.id)
 
                     if travel_time_proportion > proportion_km:
                         start_km_group += group["length"] / 1000
@@ -859,7 +859,7 @@ class BvwpProjectBattery(BvwpCost):
         # PART 3
         # calculate the duration while running on that line
         lines_to_electrify = set()
-        average_speed = tt_line.length_line(self.infra_version) / (tt_line.running_time.seconds/3600)
+        average_speed = tt_line.length_line(self.self.infra_version.scenario.id) / (tt_line.running_time.seconds/3600)
         while lines_connected_to_electrification:
             line = lines_connected_to_electrification.pop()
             # get the lines that are used most and electrify that
@@ -1145,7 +1145,7 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
     def _sort_sub_areas_by_usage(self):
         sub_area_by_length = dict()
         for sub_area in self.sub_areas:
-            running_km_day = sum([traingroup.running_km_day(self.infra_version) for traingroup in sub_area.traingroups])
+            running_km_day = sum([traingroup.running_km_day(self.infra_version.scenario.id) for traingroup in sub_area.traingroups])
             sub_area_by_length[sub_area] = running_km_day
         return sub_area_by_length
 

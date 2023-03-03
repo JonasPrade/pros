@@ -7,7 +7,7 @@ from prosd.calculation_methods.cost import BvwpProjectBattery, BvwpProjectOptimi
 tt_id = 1720
 
 def get_infra_version():
-    scenario_id = 3
+    scenario_id = 4
     scenario = MasterScenario.query.get(scenario_id)
     scenario_infra = Version(scenario=scenario)
 
@@ -63,7 +63,7 @@ class TestCostBattery(BaseTestCase):
         self.assertTrue(infrastructure_cost.cost_2015 == 0)
 
     def test_cost_battery_testcase4(self):
-        area_id = 76
+        area_id = 3107
         infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 
