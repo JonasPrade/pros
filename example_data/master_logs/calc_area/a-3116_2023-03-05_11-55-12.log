@@ -1,0 +1,3 @@
+INFO:root:finished calculation electrification 3116 (duration 1.2457940578460693s)
+INFO:root:finished calculation efuel 3116 (duration 0.3564872741699219s)
+INFO:root:finished calculation battery 3116 (duration 256.12003207206726s)

@@ -2865,26 +2865,47 @@ class MasterScenario(db.Model):
     @property
     def parameters(self):
         parameters = dict()
-        cost_effective_traction = {traction: {"area":0, "infra_km": 0, "running_km":0} for traction in parameter.TRACTIONS}
-        cost_effective_traction_no_optimised = {traction: {"area":0, "infra_km": 0, "running_km":0} for traction in parameter.TRACTIONS}
+        cost_effective_traction = {traction: {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
+        cost_effective_traction_no_optimised = {traction: {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
+        cost_effective_traction_no_optimised.pop('optimised_electrification', None)
 
-        cost_effective_traction["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0}
-        cost_effective_traction_no_optimised["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0}
+        cost_effective_traction["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0}
+        cost_effective_traction_no_optimised["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0}
 
         for area in self.master_areas:
             if area.superior_master_id is None:
                 cost_master_area = area.cost_overview
                 effective_traction = cost_master_area["minimal_cost"]
-                cost_effective_traction[effective_traction]["area"] += 1
-                cost_effective_traction_no_optimised[effective_traction]["area"] += 1
+                running_km_traingroups = area.running_km_traingroups
 
-                cost_effective_traction[effective_traction]["infra_km"] = area.length/1000
+                cost_effective_traction[effective_traction]["area"] += 1
+                cost_effective_traction[effective_traction]["infra_km"] += area.length/1000
+                cost_effective_traction[effective_traction]["running_km"] += sum(running_km_traingroups.values())
+                cost_effective_traction[effective_traction]["infrastructure_cost"] += cost_master_area["infrastructure_cost"][effective_traction]
+                cost_effective_traction[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][effective_traction]
+
                 if effective_traction == 'optimised_electrification':
-                    proportion_traction_by_km = area.proportion_traction_optimised_electrification
+                    proportion_traction_by_km = area.proportion_traction_optimised_electrification["infrastructure_kilometer"]
                     for key, value in proportion_traction_by_km.items():
                         cost_effective_traction_no_optimised[key]["infra_km"] += value
+
+                    for key, value in area.proportion_traction_optimised_electrification["infrastructure_cost"].items():
+                        cost_effective_traction_no_optimised[key]["infrastructure_cost"] += value
+
+                    traction_optimised_traingroups = area.traction_optimised_traingroups
+
+                    for key, traction in traction_optimised_traingroups.items():
+                        cost_effective_traction[value]["running_km"] += running_km_traingroups[key]
+
                 else:
+                    cost_effective_traction_no_optimised[effective_traction]["area"] += 1
+                    cost_effective_traction_no_optimised[effective_traction]["running_km"] = sum(running_km_traingroups.values())
                     cost_effective_traction_no_optimised[effective_traction]["infra_km"] += area.length/1000
+                    cost_effective_traction_no_optimised[effective_traction]["infrastructure_cost"] += \
+                    cost_master_area["infrastructure_cost"][effective_traction]
+                    cost_effective_traction_no_optimised[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][
+                        effective_traction]
+
 
         parameters["cost_effective_traction"] = cost_effective_traction
         parameters["cost_effective_traction_no_optimised"] = cost_effective_traction_no_optimised
@@ -3108,11 +3129,22 @@ class MasterArea(db.Model):
             'battery': 0,
             'electrification': 0
         }
+        proportion_infrastructure_cost = {
+            'battery': 0,
+            'electrification': 0
+        }
+
         for area in self.sub_master_areas:
             effective_traction = area.cost_effective_traction
             proportion_traction_by_km[effective_traction] += area.length/1000
+            proportion_infrastructure_cost[effective_traction] += area.infrastructure_cost_all_tractions[effective_traction]
 
-        return proportion_traction_by_km
+        proportion_traction = {
+            "infrastructure_kilometer": proportion_traction_by_km,
+            "infrastructure_cost": proportion_infrastructure_cost
+        }
+
+        return proportion_traction
 
     def calc_operating_cost(self, traction, infra_version, order_calculation_methods=None, traingroup_to_traction=None, overwrite=False):
         """

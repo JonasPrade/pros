@@ -63,7 +63,7 @@ class TestCostBattery(BaseTestCase):
         self.assertTrue(infrastructure_cost.cost_2015 == 0)
 
     def test_cost_battery_testcase4(self):
-        area_id = 3107
+        area_id = 3116
         infra_version = get_infra_version()
         area = MasterArea.query.get(area_id)
 

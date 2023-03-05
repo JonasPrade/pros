@@ -615,7 +615,7 @@ class BvwpProjectBattery(BvwpCost):
                 intermediate_1 ** 2 - 2 * vehicle_pattern.energy_stop_a * segments * (
                             train_group.length_line(self.infra_version.scenario.id) * 1000)))
         except ValueError:
-            logging.info(
+            logging.debug(
                 f'Could not calculate reference speed for train_group {train_group}. More information on page 197 Verfahrensanleitung Standardisierte Bewertung')
             reference_speed = 160
         energy_per_stop = vehicle_pattern.energy_stop_b * (reference_speed ** 2) * vehicle_pattern.weight * (10 ** (-6))
@@ -773,6 +773,9 @@ class BvwpProjectBattery(BvwpCost):
         additional_charge_one_cycle_problem = 0
         battery_capacity = self._calc_battery_capacity(trains)
         if one_cycle_problem is True:
+            """
+            Calculate the needed energy
+            """
             forward = False
             backwards = False
             forward_energy_needed = 0
@@ -786,6 +789,10 @@ class BvwpProjectBattery(BvwpCost):
                     backwards = True
                     backward_energy_needed = max(backward_energy_needed, abs(empty["battery_status"]))
 
+            """
+            if the problem is on backwards -> add charging infrastructure at endpoint
+            """
+            missing_charge = 0
             if backwards is True:
                 pc, possible_charge = self._create_infrastructure_point(cycle_sections[0][-1], battery_capacity)
                 if pc is not None:
@@ -796,18 +803,22 @@ class BvwpProjectBattery(BvwpCost):
                     for section in cycle_sections[1]:
                         section["battery_after_group"] = min(battery_capacity, section["battery_after_group"] + additional_charge)
                         if section["battery_after_group"] < 0:
+                            missing_charge = min(missing_charge, section["battery_after_group"])
                             backwards = True
-
-            if forward is True:
+            """ 
+            if forward problem or backwards still exists -> try adding catenary
+            """
+            if forward is True or backwards is True:
+                energy_need = forward_energy_needed + abs(missing_charge)
                 possible_lines_id = []
                 for section_index, section in enumerate(cycle_sections[0]):
                     forward = False
                     backwards = False
                     possible_lines_id.extend([line.id for line in section["railway_lines"]])
-                    if section["battery_after_group"] > 0:
+                    if section["battery_after_group"] > 0 and cycle_sections[1][section_index]["battery_after_group"] > 0:
                         continue
-                    pc, charge_needed = self._electrify_additional_railwaylines(tt_line, rw_lines, forward_energy_needed, possible_lines_id, battery_capacity)
-                    energy_possible = forward_energy_needed - charge_needed
+                    pc, charge_needed = self._electrify_additional_railwaylines(tt_line, rw_lines, energy_need, possible_lines_id, battery_capacity)
+                    energy_possible = energy_need - charge_needed
                     additional_charge_one_cycle_problem += energy_possible
                     for segment_index, segment in enumerate(cycle_sections):
                         for section in segment:
@@ -994,7 +1005,7 @@ class BvwpProjectBattery(BvwpCost):
                 try:
                     lines_connected_to_usage[line] = rw_line_after_usage[line]
                 except KeyError:
-                    logging.info(f"Railway_Line {line} not part of route for train_line {tt_line}")
+                    logging.debug(f"railway_line {line} not part of route for train_line {tt_line}")
 
         # If that is not enough: Find next package of lines if that is not enough
 

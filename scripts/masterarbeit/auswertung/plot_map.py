@@ -63,13 +63,14 @@ def plot_map(scenario_id, filepath_image_directory, areas):
     )
     return filepath
 
+
 if __name__ == '__main__':
     scenario_id = 4
     scenario = MasterScenario.query.get(scenario_id)
     areas = scenario.master_areas
     plot_map(
         scenario_id=scenario_id,
-        filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/s-{scenario_id}_deutschland_map',
+        filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
         areas=areas
     )
 

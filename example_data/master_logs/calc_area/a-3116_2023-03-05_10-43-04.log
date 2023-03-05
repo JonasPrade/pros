@@ -1,0 +1,8 @@
+INFO:root:finished calculation electrification 3116 (duration 1.7684080600738525s)
+INFO:root:finished calculation efuel 3116 (duration 0.412661075592041s)
+ERROR:root:For TimetableLine 1422 NW57.1_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation battery 3116 (duration 237.00160717964172s)
+INFO:root:finished calculation optimised_electrification 3116 (duration 738.666775226593s)
+INFO:root:finished calculation diesel 3116 (duration 0.4194371700286865s)
+INFO:root:finished calculation efuel 3116 (duration 0.44281506538391113s)
+INFO:root:finished calculation h2 3116 (duration 0.401400089263916s)
