@@ -329,9 +329,9 @@ class RailwayLine(db.Model):
 
         return stations
 
-    @classmethod
-    def geojson(self, obj):
-        coords = geoalchemy2.shape.to_shape(obj.coordinates)
+    @property
+    def geojson(self):
+        coords = geoalchemy2.shape.to_shape(self.coordinates)
         xy = coords.xy
         x_array = xy[0]
         y_array = xy[1]
@@ -2647,6 +2647,18 @@ class MasterScenario(db.Model):
 
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
 
+    @property
+    def main_areas(self):
+        """
+        returns all areas that are no subarea
+        :return:
+        """
+        areas = MasterArea.query.filter(
+            MasterArea.scenario_id == self.id,
+            MasterArea.superior_master_id == None
+        ).all()
+        return areas
+
     def create_areas(self, infra_version):
         """
         Create the areas for one scenario. One Area consists of all lines in an scope, that drive on infrastructure
@@ -2851,22 +2863,33 @@ class MasterScenario(db.Model):
             )
 
     @property
-    def cost_effective_traction(self):
+    def parameters(self):
+        parameters = dict()
         cost_effective_traction = {traction: {"area":0, "infra_km": 0, "running_km":0} for traction in parameter.TRACTIONS}
+        cost_effective_traction_no_optimised = {traction: {"area":0, "infra_km": 0, "running_km":0} for traction in parameter.TRACTIONS}
+
         cost_effective_traction["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0}
+        cost_effective_traction_no_optimised["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0}
+
         for area in self.master_areas:
             if area.superior_master_id is None:
-                effective_traction = area.cost_effective_traction
+                cost_master_area = area.cost_overview
+                effective_traction = cost_master_area["minimal_cost"]
                 cost_effective_traction[effective_traction]["area"] += 1
+                cost_effective_traction_no_optimised[effective_traction]["area"] += 1
 
+                cost_effective_traction[effective_traction]["infra_km"] = area.length/1000
                 if effective_traction == 'optimised_electrification':
                     proportion_traction_by_km = area.proportion_traction_optimised_electrification
                     for key, value in proportion_traction_by_km.items():
-                        cost_effective_traction[key]["infra_km"] += value
+                        cost_effective_traction_no_optimised[key]["infra_km"] += value
                 else:
-                    cost_effective_traction[effective_traction]["infra_km"] += area.length/1000
+                    cost_effective_traction_no_optimised[effective_traction]["infra_km"] += area.length/1000
 
-        return cost_effective_traction
+        parameters["cost_effective_traction"] = cost_effective_traction
+        parameters["cost_effective_traction_no_optimised"] = cost_effective_traction_no_optimised
+
+        return parameters
 
 
 class MasterArea(db.Model):

@@ -1,0 +1,41 @@
+\subsection{\VAR{scenario_name}}
+
+\subsubsection{Kenngrößen Szenario}
+
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_scenario} Basiskenngrößen Szenario \VAR{scenario_id}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | X } Kenngröße & Wert \\
+	\hline
+	Anzahl Untersuchungsgebiete & \num{\VAR{count_master_area}} \\
+	Summe Streckenkilometer & \SI{\VAR{length_scenario|round}}{\km}
+	\end{tabularx}
+\end{center}
+
+\subsubsection{Kenngrößen Untersuchungsgebiete}
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete} Kenngrößen Untersuchungsgebiete Szenario \VAR{scenario_id}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer \\
+	\hline
+    \BLOCK{ for key in cost_effective_traction }
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round}}{\km}\\
+    \BLOCK{ endfor }
+	\end{tabularx}
+\end{center}
+
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete_no_optimised} Kenngrößen Untersuchungsgebiete (Optimierte Elektrifizierung aufgeteilt) Szenario \VAR{scenario_id}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer \\
+	\hline
+    \BLOCK{ for key in cost_effective_traction_no_optimised }
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round}}{\km}\\
+    \BLOCK{ endfor }
+	\end{tabularx}
+\end{center}
+In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, bei denen die optimierte Elektrifizierung am wirtschaftlichsten war, auf die Traktionen Elektrifizierung und Batterie aufgeteilt (je nachdem, bei welchem Teiluntersuchungsgebiet welche Traktion am wirtschaftlichsten war)
+
+\begin{center}
+	\begin{figure}[!h]
+	\includegraphics[height=0.8\paperheight]{\VAR{filepath_d_map}}
+	\caption{\label{fig_s_\VAR{scenario_id}_d_map} Karte Deutschland bevorzugte Traktion Untersuchungsgebiete Szenario \VAR{scenario_id}}
+	\end{figure}
+\end{center}

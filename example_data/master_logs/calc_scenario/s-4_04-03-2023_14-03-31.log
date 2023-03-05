@@ -1,0 +1,820 @@
+INFO:root:calculation <MasterArea 3098> started
+INFO:root:finished calculation electrification 3098 (duration 0.46673011779785156s)
+INFO:root:finished calculation efuel 3098 (duration 0.2550230026245117s)
+INFO:root:finished calculation battery 3098 (duration 74.62555813789368s)
+INFO:root:finished calculation optimised_electrification 3098 (duration 112.97456479072571s)
+INFO:root:finished calculation diesel 3098 (duration 0.2490842342376709s)
+INFO:root:finished calculation efuel 3098 (duration 0.24504780769348145s)
+INFO:root:finished calculation h2 3098 (duration 0.24016809463500977s)
+INFO:root:calculation <MasterArea 3099> started
+INFO:root:finished calculation electrification 3099 (duration 0.2309260368347168s)
+INFO:root:finished calculation efuel 3099 (duration 0.2097630500793457s)
+INFO:root:finished calculation battery 3099 (duration 6.587110757827759s)
+INFO:root:finished calculation optimised_electrification 3099 (duration 7.487069129943848s)
+INFO:root:finished calculation diesel 3099 (duration 0.19952392578125s)
+INFO:root:finished calculation efuel 3099 (duration 0.22124385833740234s)
+INFO:root:finished calculation h2 3099 (duration 0.20652389526367188s)
+INFO:root:calculation <MasterArea 3100> started
+INFO:root:finished calculation electrification 3100 (duration 0.2436542510986328s)
+INFO:root:finished calculation efuel 3100 (duration 0.22465896606445312s)
+INFO:root:finished calculation battery 3100 (duration 19.34251618385315s)
+INFO:root:finished calculation optimised_electrification 3100 (duration 20.21471095085144s)
+INFO:root:finished calculation diesel 3100 (duration 0.23578381538391113s)
+INFO:root:finished calculation efuel 3100 (duration 0.22702693939208984s)
+INFO:root:finished calculation h2 3100 (duration 0.22764897346496582s)
+INFO:root:calculation <MasterArea 3101> started
+INFO:root:finished calculation electrification 3101 (duration 0.28398990631103516s)
+INFO:root:finished calculation efuel 3101 (duration 0.2670860290527344s)
+INFO:root:finished calculation battery 3101 (duration 25.556903839111328s)
+INFO:root:finished calculation optimised_electrification 3101 (duration 71.71490406990051s)
+INFO:root:finished calculation diesel 3101 (duration 0.26974010467529297s)
+INFO:root:finished calculation efuel 3101 (duration 0.2569880485534668s)
+INFO:root:finished calculation h2 3101 (duration 0.24795222282409668s)
+INFO:root:calculation <MasterArea 3102> started
+INFO:root:finished calculation electrification 3102 (duration 1.779472827911377s)
+INFO:root:finished calculation efuel 3102 (duration 1.100066900253296s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12201_30921 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12202_30872 N 12 Norderstedt MitteKaltenkirchen - Neumünster (Express). More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12102_29425 AKN 12 Norderstedt MitteKaltenkirchen - Neumünster. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH12_AKN_x0020_12101_28883 AKN 12 Neumünster - KaltenkirchenNorderstedt Mitte. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Catenary in Preetz for 22701 is too long 1474m
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_SH17_N_x0020_17002_6807 N 17 Preetz - Raisdorf - Kiel Hbf. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 3102 (duration 1645.6537637710571s)
+INFO:root:finished calculation diesel 3102 (duration 0.9208989143371582s)
+INFO:root:finished calculation efuel 3102 (duration 0.8803539276123047s)
+INFO:root:calculation <MasterArea 3103> started
+INFO:root:finished calculation electrification 3103 (duration 0.2702670097351074s)
+INFO:root:finished calculation efuel 3103 (duration 0.23387384414672852s)
+INFO:root:finished calculation battery 3103 (duration 17.058100938796997s)
+INFO:root:finished calculation optimised_electrification 3103 (duration 18.067678928375244s)
+INFO:root:finished calculation diesel 3103 (duration 0.23851418495178223s)
+INFO:root:finished calculation efuel 3103 (duration 0.24503517150878906s)
+INFO:root:finished calculation h2 3103 (duration 0.23525500297546387s)
+INFO:root:calculation <MasterArea 3104> started
+INFO:root:finished calculation electrification 3104 (duration 1.4752228260040283s)
+INFO:root:finished calculation efuel 3104 (duration 0.5292768478393555s)
+INFO:root:finished calculation battery 3104 (duration 399.1981770992279s)
+INFO:root:finished calculation optimised_electrification 3104 (duration 1480.4476280212402s)
+INFO:root:finished calculation diesel 3104 (duration 0.578812837600708s)
+INFO:root:finished calculation efuel 3104 (duration 0.559088945388794s)
+INFO:root:finished calculation h2 3104 (duration 0.5909371376037598s)
+INFO:root:calculation <MasterArea 3105> started
+INFO:root:finished calculation electrification 3105 (duration 2.096702814102173s)
+INFO:root:finished calculation efuel 3105 (duration 0.9477858543395996s)
+INFO:root:Railway_Line <RailwayLine 11153> not part of route for train_line TimetableLine 2409 FR2 H
+INFO:root:Railway_Line <RailwayLine 19404> not part of route for train_line TimetableLine 2409 FR2 H
+INFO:root:finished calculation optimised_electrification 3105 (duration 1290.7777752876282s)
+INFO:root:finished calculation diesel 3105 (duration 0.9515702724456787s)
+INFO:root:finished calculation efuel 3105 (duration 0.9922239780426025s)
+INFO:root:calculation <MasterArea 3106> started
+INFO:root:finished calculation electrification 3106 (duration 0.3691699504852295s)
+INFO:root:finished calculation efuel 3106 (duration 0.2680089473724365s)
+INFO:root:finished calculation battery 3106 (duration 134.8689239025116s)
+INFO:root:finished calculation optimised_electrification 3106 (duration 264.5011088848114s)
+INFO:root:finished calculation diesel 3106 (duration 0.2423398494720459s)
+INFO:root:finished calculation efuel 3106 (duration 0.25188589096069336s)
+INFO:root:finished calculation h2 3106 (duration 0.27306604385375977s)
+INFO:root:calculation <MasterArea 3107> started
+INFO:root:finished calculation electrification 3107 (duration 0.23327183723449707s)
+INFO:root:finished calculation efuel 3107 (duration 0.19741201400756836s)
+INFO:root:finished calculation battery 3107 (duration 13.477295160293579s)
+INFO:root:finished calculation optimised_electrification 3107 (duration 14.503457069396973s)
+INFO:root:finished calculation diesel 3107 (duration 0.20230484008789062s)
+INFO:root:finished calculation efuel 3107 (duration 0.21326708793640137s)
+INFO:root:finished calculation h2 3107 (duration 0.21560025215148926s)
+INFO:root:calculation <MasterArea 3108> started
+INFO:root:finished calculation electrification 3108 (duration 0.2542281150817871s)
+INFO:root:finished calculation efuel 3108 (duration 0.22376012802124023s)
+INFO:root:finished calculation optimised_electrification 3108 (duration 1.3375210762023926s)
+INFO:root:finished calculation diesel 3108 (duration 0.2520790100097656s)
+INFO:root:finished calculation efuel 3108 (duration 0.24183297157287598s)
+INFO:root:calculation <MasterArea 3109> started
+INFO:root:finished calculation electrification 3109 (duration 0.27013111114501953s)
+INFO:root:finished calculation efuel 3109 (duration 0.23045706748962402s)
+INFO:root:finished calculation optimised_electrification 3109 (duration 13.757493019104004s)
+INFO:root:finished calculation diesel 3109 (duration 0.24991679191589355s)
+INFO:root:finished calculation efuel 3109 (duration 0.2620210647583008s)
+INFO:root:calculation <MasterArea 3110> started
+INFO:root:finished calculation electrification 3110 (duration 1.120102882385254s)
+INFO:root:finished calculation efuel 3110 (duration 0.47668004035949707s)
+WARNING:root:For TimetableLine 1723 TH17.a_N too much elecitrification -119.50039411776234kWh
+WARNING:root:For TimetableLine 1713 TH17.b_N too much elecitrification -339.90603799963753kWh
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13962> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 43927> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13963> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13962> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13964> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 22268> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 43927> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:finished calculation battery 3110 (duration 288.54243993759155s)
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13962> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 43927> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13963> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13962> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 13964> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39937> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39935> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39936> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39934> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39933> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39934> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 18986> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39935> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39933> not part of route for train_line TimetableLine 2307 BY4.1_X
+INFO:root:Railway_Line <RailwayLine 39839> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 18992> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 39838> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 8830> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 39838> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 39837> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 39839> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 18992> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 9043> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 8830> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 18993> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 19016> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 13394> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 18993> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 40033> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 19017> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 13399> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 43594> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 20103> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 13962> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 43927> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 13963> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:Railway_Line <RailwayLine 43926> not part of route for train_line TimetableLine 1734 TH16.1_N
+INFO:root:finished calculation optimised_electrification 3110 (duration 1175.5982320308685s)
+INFO:root:finished calculation diesel 3110 (duration 0.4355030059814453s)
+INFO:root:finished calculation efuel 3110 (duration 0.4132099151611328s)
+INFO:root:finished calculation h2 3110 (duration 0.33642005920410156s)
+INFO:root:calculation <MasterArea 3111> started
+INFO:root:finished calculation electrification 3111 (duration 0.2354428768157959s)
+INFO:root:finished calculation efuel 3111 (duration 0.24797701835632324s)
+INFO:root:finished calculation battery 3111 (duration 71.75612807273865s)
+INFO:root:Catenary in Usingen for 22730 is too long 17273m
+INFO:root:finished calculation optimised_electrification 3111 (duration 119.57422733306885s)
+INFO:root:finished calculation diesel 3111 (duration 0.23593688011169434s)
+INFO:root:finished calculation efuel 3111 (duration 0.2463390827178955s)
+INFO:root:finished calculation h2 3111 (duration 0.24180984497070312s)
+INFO:root:calculation <MasterArea 3112> started
+INFO:root:finished calculation electrification 3112 (duration 0.9978981018066406s)
+INFO:root:finished calculation efuel 3112 (duration 0.3730010986328125s)
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 46141> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4488> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 46141> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4488> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1584 RP12_X
+INFO:root:Railway_Line <RailwayLine 17600> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17600> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17599> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17601> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17599> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17933> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36218> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4527> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46225> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46141> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4526> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4488> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46226> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36218> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46225> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4527> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17933> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4526> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46141> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46226> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 35000> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 35000> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 35000> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 35000> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 35000> not part of route for train_line TimetableLine 1688 NW22_X
+ERROR:root:For TimetableLine 1771 NW15.a_S there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation battery 3112 (duration 311.8022711277008s)
+INFO:root:Railway_Line <RailwayLine 17600> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17598> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17600> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17599> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 22078> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17601> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17599> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17933> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36218> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4527> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 46225> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 1688 NW22_X
+INFO:root:Railway_Line <RailwayLine 3284> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 34932> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17933> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 3263> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 46224> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 36218> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17930> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 4527> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17922> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 46225> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 36217> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17923> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 17931> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:Railway_Line <RailwayLine 4486> not part of route for train_line TimetableLine 2298 RP83_N
+INFO:root:finished calculation optimised_electrification 3112 (duration 1066.208328962326s)
+INFO:root:finished calculation diesel 3112 (duration 0.3369920253753662s)
+INFO:root:finished calculation efuel 3112 (duration 0.31122493743896484s)
+INFO:root:finished calculation h2 3112 (duration 0.32111692428588867s)
+INFO:root:calculation <MasterArea 3113> started
+INFO:root:finished calculation electrification 3113 (duration 0.41164588928222656s)
+INFO:root:finished calculation efuel 3113 (duration 0.2703988552093506s)
+INFO:root:finished calculation battery 3113 (duration 88.43613696098328s)
+INFO:root:finished calculation optimised_electrification 3113 (duration 256.5558750629425s)
+INFO:root:finished calculation diesel 3113 (duration 0.26117706298828125s)
+INFO:root:finished calculation efuel 3113 (duration 0.3443598747253418s)
+INFO:root:finished calculation h2 3113 (duration 0.3297390937805176s)
+INFO:root:calculation <MasterArea 3114> started
+INFO:root:finished calculation electrification 3114 (duration 1.303292989730835s)
+INFO:root:finished calculation efuel 3114 (duration 0.35709500312805176s)
+INFO:root:finished calculation battery 3114 (duration 218.13115286827087s)
+INFO:root:finished calculation optimised_electrification 3114 (duration 627.4135980606079s)
+INFO:root:finished calculation diesel 3114 (duration 0.357957124710083s)
+INFO:root:finished calculation efuel 3114 (duration 0.366365909576416s)
+INFO:root:finished calculation h2 3114 (duration 0.3734591007232666s)
+INFO:root:calculation <MasterArea 3115> started
+INFO:root:finished calculation electrification 3115 (duration 0.26404404640197754s)
+INFO:root:finished calculation efuel 3115 (duration 0.18922996520996094s)
+INFO:root:finished calculation battery 3115 (duration 9.739567756652832s)
+INFO:root:finished calculation optimised_electrification 3115 (duration 10.58958101272583s)
+INFO:root:finished calculation diesel 3115 (duration 0.1954500675201416s)
+INFO:root:finished calculation efuel 3115 (duration 0.19876980781555176s)
+INFO:root:finished calculation h2 3115 (duration 0.18806695938110352s)
+INFO:root:calculation <MasterArea 3116> started
+INFO:root:finished calculation electrification 3116 (duration 1.225281000137329s)
+INFO:root:finished calculation efuel 3116 (duration 0.36014604568481445s)
+ERROR:root:For TimetableLine 1422 NW57.1_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation battery 3116 (duration 260.22748708724976s)
+INFO:root:Railway_Line <RailwayLine 17440> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 3802> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34584> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34584> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 17428> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2854> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 17429> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2855> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 6809> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34618> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34597> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 22383> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 17440> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 3802> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34584> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2835> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 22390> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 22383> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 22389> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 17440> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 3802> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34584> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 35587> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34584> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 17428> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2854> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 6809> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 34618> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2855> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:Railway_Line <RailwayLine 2907> not part of route for train_line TimetableLine 1777 NW17_X
+INFO:root:finished calculation optimised_electrification 3116 (duration 759.7339000701904s)
+INFO:root:finished calculation diesel 3116 (duration 0.39151597023010254s)
+INFO:root:finished calculation efuel 3116 (duration 0.3916611671447754s)
+INFO:root:finished calculation h2 3116 (duration 0.3774290084838867s)
+INFO:root:calculation <MasterArea 3117> started
+INFO:root:finished calculation electrification 3117 (duration 0.2194981575012207s)
+INFO:root:finished calculation efuel 3117 (duration 0.19724082946777344s)
+INFO:root:finished calculation battery 3117 (duration 3.497062921524048s)
+INFO:root:finished calculation optimised_electrification 3117 (duration 4.8334901332855225s)
+INFO:root:finished calculation diesel 3117 (duration 0.19796419143676758s)
+INFO:root:finished calculation efuel 3117 (duration 0.20030713081359863s)
+INFO:root:finished calculation h2 3117 (duration 0.2093961238861084s)
+INFO:root:calculation <MasterArea 3118> started
+INFO:root:finished calculation electrification 3118 (duration 0.520240306854248s)
+INFO:root:finished calculation efuel 3118 (duration 0.3374636173248291s)
+INFO:root:Railway_Line <RailwayLine 43032> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43032> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43032> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:finished calculation battery 3118 (duration 134.77087497711182s)
+ERROR:root:For TimetableLine 1320 BB6_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:Railway_Line <RailwayLine 43034> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43032> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16076> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16077> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16076> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16311> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 90> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42495> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 91> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42496> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 12050> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43022> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42496> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 12050> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16310> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 90> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42495> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42497> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 16311> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 91> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 42497> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 12051> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 19934> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 12659> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 19934> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43034> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43033> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 12659> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43033> not part of route for train_line TimetableLine 1320 BB6_X
+INFO:root:Railway_Line <RailwayLine 43035> not part of route for train_line TimetableLine 1320 BB6_X
+ERROR:root:For TimetableLine 1320 BB6_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:finished calculation optimised_electrification 3118 (duration 370.59814500808716s)
+INFO:root:finished calculation diesel 3118 (duration 0.38112902641296387s)
+INFO:root:finished calculation efuel 3118 (duration 0.29268479347229004s)
+INFO:root:finished calculation h2 3118 (duration 0.3861558437347412s)
+INFO:root:calculation <MasterArea 3119> started
+INFO:root:finished calculation electrification 3119 (duration 0.38631677627563477s)
+INFO:root:finished calculation efuel 3119 (duration 0.25632786750793457s)
+INFO:root:finished calculation battery 3119 (duration 73.94370102882385s)
+INFO:root:finished calculation optimised_electrification 3119 (duration 253.34601664543152s)
+INFO:root:finished calculation diesel 3119 (duration 0.24888086318969727s)
+INFO:root:finished calculation efuel 3119 (duration 0.2387251853942871s)
+INFO:root:finished calculation h2 3119 (duration 0.2332310676574707s)
+INFO:root:calculation <MasterArea 3120> started
+INFO:root:finished calculation electrification 3120 (duration 0.2389078140258789s)
+INFO:root:finished calculation efuel 3120 (duration 0.29296422004699707s)
+INFO:root:finished calculation battery 3120 (duration 95.48924827575684s)
+INFO:root:finished calculation optimised_electrification 3120 (duration 97.80790996551514s)
+INFO:root:finished calculation diesel 3120 (duration 0.23801684379577637s)
+INFO:root:finished calculation efuel 3120 (duration 0.24018001556396484s)
+INFO:root:finished calculation h2 3120 (duration 0.23947811126708984s)
+INFO:root:calculation <MasterArea 3121> started
+INFO:root:finished calculation electrification 3121 (duration 0.584003210067749s)
+INFO:root:finished calculation efuel 3121 (duration 0.31435203552246094s)
+INFO:root:finished calculation battery 3121 (duration 135.0322241783142s)
+INFO:root:Catenary in Mayen Ost for 36157 is too long 1430m
+INFO:root:finished calculation optimised_electrification 3121 (duration 315.53585982322693s)
+INFO:root:finished calculation diesel 3121 (duration 0.2913930416107178s)
+INFO:root:finished calculation efuel 3121 (duration 0.32416415214538574s)
+INFO:root:finished calculation h2 3121 (duration 0.29347896575927734s)
+INFO:root:calculation <MasterArea 3122> started
+INFO:root:finished calculation electrification 3122 (duration 1.2622227668762207s)
+INFO:root:finished calculation efuel 3122 (duration 0.5563602447509766s)
+INFO:root:Railway_Line <RailwayLine 10605> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 19301> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 19302> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 10591> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 19272> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 41269> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 19303> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 41259> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 22537> not part of route for train_line TimetableLine 1429 BY57_N
+ERROR:root:For TimetableLine 1429 BY57_N there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:Railway_Line <RailwayLine 19301> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:Railway_Line <RailwayLine 10605> not part of route for train_line TimetableLine 1429 BY57_N
+INFO:root:finished calculation optimised_electrification 3122 (duration 316.7537348270416s)
+INFO:root:finished calculation diesel 3122 (duration 0.8662500381469727s)
+INFO:root:finished calculation efuel 3122 (duration 0.7246701717376709s)
+INFO:root:calculation <MasterArea 3123> started
+INFO:root:finished calculation electrification 3123 (duration 0.2913670539855957s)
+INFO:root:finished calculation efuel 3123 (duration 0.18776822090148926s)
+INFO:root:finished calculation battery 3123 (duration 15.859336137771606s)
+INFO:root:finished calculation optimised_electrification 3123 (duration 17.096821069717407s)
+INFO:root:finished calculation diesel 3123 (duration 0.19176697731018066s)
+INFO:root:finished calculation efuel 3123 (duration 0.2064199447631836s)
+INFO:root:finished calculation h2 3123 (duration 0.2718238830566406s)
+INFO:root:calculation <MasterArea 3124> started
+INFO:root:finished calculation electrification 3124 (duration 0.27478504180908203s)
+INFO:root:finished calculation efuel 3124 (duration 0.22299790382385254s)
+INFO:root:finished calculation optimised_electrification 3124 (duration 58.31917095184326s)
+INFO:root:finished calculation diesel 3124 (duration 0.23553466796875s)
+INFO:root:finished calculation efuel 3124 (duration 0.2590038776397705s)
+INFO:root:calculation <MasterArea 3125> started
+INFO:root:finished calculation electrification 3125 (duration 1.3984920978546143s)
+INFO:root:finished calculation efuel 3125 (duration 0.6047868728637695s)
+INFO:root:Railway_Line <RailwayLine 40129> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 19047> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 40130> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 40129> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 9174> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 19042> not part of route for train_line TimetableLine 1757 BY31_X
+ERROR:root:For TimetableLine 1757 BY31_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:Railway_Line <RailwayLine 9348> not part of route for train_line TimetableLine 1757 BY31_X
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 9348> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 40139> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 40138> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19043> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 40129> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19047> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 40130> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 40129> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 9174> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19042> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 9179> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 19083> not part of route for train_line TimetableLine 1769 BY30_X
+INFO:root:Railway_Line <RailwayLine 9348> not part of route for train_line TimetableLine 1769 BY30_X
+ERROR:root:For TimetableLine 1769 BY30_X there is a one_cycle_problem on the backward path which can't be solved yet
+ERROR:root:For TimetableLine 1683 BY24_X there is a one_cycle_problem on the backward path which can't be solved yet
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1683 BY24_X
+INFO:root:Railway_Line <RailwayLine 9348> not part of route for train_line TimetableLine 1683 BY24_X
+INFO:root:Railway_Line <RailwayLine 19083> not part of route for train_line TimetableLine 1683 BY24_X
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 9348> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 19083> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 40552> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 40551> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 40553> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 40555> not part of route for train_line TimetableLine 1647 BY29.1_X
+INFO:root:Railway_Line <RailwayLine 19077> not part of route for train_line TimetableLine 1830 BY76_N
+INFO:root:Railway_Line <RailwayLine 18842> not part of route for train_line TimetableLine 1830 BY76_N
+INFO:root:Railway_Line <RailwayLine 40125> not part of route for train_line TimetableLine 1830 BY76_N
+INFO:root:Railway_Line <RailwayLine 18842> not part of route for train_line TimetableLine 1830 BY76_N
+INFO:root:finished calculation battery 3125 (duration 411.61991596221924s)
+INFO:root:finished calculation optimised_electrification 3125 (duration 1338.90238904953s)
+INFO:root:finished calculation diesel 3125 (duration 0.460770845413208s)
+INFO:root:finished calculation efuel 3125 (duration 0.4360020160675049s)
+INFO:root:finished calculation h2 3125 (duration 0.4459400177001953s)
+INFO:root:calculation <MasterArea 3126> started
+INFO:root:finished calculation electrification 3126 (duration 0.2829399108886719s)
+INFO:root:finished calculation efuel 3126 (duration 0.2002272605895996s)
+INFO:root:finished calculation battery 3126 (duration 53.3203399181366s)
+INFO:root:finished calculation optimised_electrification 3126 (duration 88.7781503200531s)
+INFO:root:finished calculation diesel 3126 (duration 0.20896506309509277s)
+INFO:root:finished calculation efuel 3126 (duration 0.2040576934814453s)
+INFO:root:finished calculation h2 3126 (duration 0.2232530117034912s)
+INFO:root:calculation <MasterArea 3127> started
+INFO:root:finished calculation electrification 3127 (duration 0.38799214363098145s)
+INFO:root:finished calculation efuel 3127 (duration 0.7262611389160156s)
+INFO:root:finished calculation battery 3127 (duration 27.958816051483154s)
+INFO:root:finished calculation optimised_electrification 3127 (duration 17.041372060775757s)
+INFO:root:finished calculation diesel 3127 (duration 0.19571876525878906s)
+INFO:root:finished calculation efuel 3127 (duration 0.21405315399169922s)
+INFO:root:finished calculation h2 3127 (duration 0.21540307998657227s)
+INFO:root:calculation <MasterArea 3128> started
+INFO:root:finished calculation electrification 3128 (duration 0.4381239414215088s)
+INFO:root:finished calculation efuel 3128 (duration 0.2672710418701172s)
+INFO:root:finished calculation battery 3128 (duration 113.16127586364746s)
+INFO:root:finished calculation optimised_electrification 3128 (duration 246.48584389686584s)
+INFO:root:finished calculation diesel 3128 (duration 0.31561994552612305s)
+INFO:root:finished calculation efuel 3128 (duration 0.38376402854919434s)
+INFO:root:finished calculation h2 3128 (duration 0.30550599098205566s)
+INFO:root:calculation <MasterArea 3129> started
+INFO:root:finished calculation electrification 3129 (duration 0.26830482482910156s)
+INFO:root:finished calculation efuel 3129 (duration 0.20715808868408203s)
+INFO:root:finished calculation battery 3129 (duration 15.020344972610474s)
+INFO:root:finished calculation optimised_electrification 3129 (duration 31.533538103103638s)
+INFO:root:finished calculation diesel 3129 (duration 0.2033078670501709s)
+INFO:root:finished calculation efuel 3129 (duration 0.19867181777954102s)
+INFO:root:finished calculation h2 3129 (duration 0.20119976997375488s)
+INFO:root:calculation <MasterArea 3130> started
+INFO:root:finished calculation electrification 3130 (duration 0.7939009666442871s)
+INFO:root:finished calculation efuel 3130 (duration 0.33531999588012695s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Railway_Line <RailwayLine 7910> not part of route for train_line TimetableLine 2162 BW33_X
+INFO:root:Railway_Line <RailwayLine 7911> not part of route for train_line TimetableLine 2162 BW33_X
+INFO:root:finished calculation battery 3130 (duration 300.6008448600769s)
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46001_67065 N 46 Gammertingen - Sigmaringen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:Could not calculate reference speed for train_group TrainGroup tg_BW46_N_x0020_46002_66279 N 46 Sigmaringen - Gammertingen. More information on page 197 Verfahrensanleitung Standardisierte Bewertung
+INFO:root:finished calculation optimised_electrification 3130 (duration 1299.3642678260803s)
+INFO:root:finished calculation diesel 3130 (duration 0.3736708164215088s)
+INFO:root:finished calculation efuel 3130 (duration 0.3521237373352051s)
+INFO:root:finished calculation h2 3130 (duration 0.430523157119751s)
+INFO:root:calculation <MasterArea 3131> started
+INFO:root:finished calculation electrification 3131 (duration 0.36092424392700195s)
+INFO:root:finished calculation efuel 3131 (duration 0.27722883224487305s)
+INFO:root:finished calculation battery 3131 (duration 19.609101057052612s)
+INFO:root:finished calculation optimised_electrification 3131 (duration 20.194316864013672s)
+INFO:root:finished calculation diesel 3131 (duration 0.29343724250793457s)
+INFO:root:finished calculation efuel 3131 (duration 0.41147327423095703s)
+INFO:root:finished calculation h2 3131 (duration 0.27760791778564453s)
+INFO:root:calculation <MasterArea 3132> started
+INFO:root:finished calculation electrification 3132 (duration 0.25728583335876465s)
+INFO:root:finished calculation efuel 3132 (duration 0.2082200050354004s)
+INFO:root:finished calculation battery 3132 (duration 27.704758882522583s)
+INFO:root:finished calculation optimised_electrification 3132 (duration 25.051650047302246s)
+INFO:root:finished calculation diesel 3132 (duration 0.21070003509521484s)
+INFO:root:finished calculation efuel 3132 (duration 0.23009014129638672s)
+INFO:root:finished calculation h2 3132 (duration 0.2261970043182373s)
+INFO:root:calculation <MasterArea 3133> started
+INFO:root:finished calculation electrification 3133 (duration 0.3430330753326416s)
+INFO:root:finished calculation efuel 3133 (duration 0.25867486000061035s)
+INFO:root:finished calculation optimised_electrification 3133 (duration 77.87416887283325s)
+INFO:root:finished calculation diesel 3133 (duration 0.29681396484375s)
+INFO:root:finished calculation efuel 3133 (duration 0.30530285835266113s)
+INFO:root:calculation <MasterArea 3134> started
+INFO:root:finished calculation electrification 3134 (duration 0.22373604774475098s)
+INFO:root:finished calculation efuel 3134 (duration 0.20225882530212402s)
+INFO:root:finished calculation battery 3134 (duration 12.15471601486206s)
+INFO:root:finished calculation optimised_electrification 3134 (duration 9.98624300956726s)
+INFO:root:finished calculation diesel 3134 (duration 0.19422316551208496s)
+INFO:root:finished calculation efuel 3134 (duration 0.2161719799041748s)
+INFO:root:finished calculation h2 3134 (duration 0.19951701164245605s)
+INFO:root:calculation <MasterArea 3135> started
+INFO:root:finished calculation electrification 3135 (duration 0.21129393577575684s)
+INFO:root:finished calculation efuel 3135 (duration 0.21229314804077148s)
+INFO:root:finished calculation battery 3135 (duration 20.078150033950806s)
+INFO:root:finished calculation optimised_electrification 3135 (duration 23.884999990463257s)
+INFO:root:finished calculation diesel 3135 (duration 0.20288872718811035s)
+INFO:root:finished calculation efuel 3135 (duration 0.21228599548339844s)
+INFO:root:finished calculation h2 3135 (duration 0.21522212028503418s)
+INFO:root:calculation <MasterArea 3136> started
+INFO:root:finished calculation electrification 3136 (duration 0.7382609844207764s)
+INFO:root:finished calculation efuel 3136 (duration 0.8515923023223877s)
+INFO:root:finished calculation battery 3136 (duration 222.46180200576782s)
+INFO:root:finished calculation optimised_electrification 3136 (duration 397.29330611228943s)
+INFO:root:finished calculation diesel 3136 (duration 0.29239606857299805s)
+INFO:root:finished calculation efuel 3136 (duration 0.2950170040130615s)
+INFO:root:finished calculation h2 3136 (duration 0.3148221969604492s)
+INFO:root:calculation <MasterArea 3137> started
+INFO:root:finished calculation electrification 3137 (duration 0.30803823471069336s)
+INFO:root:finished calculation efuel 3137 (duration 0.2207489013671875s)
+INFO:root:finished calculation battery 3137 (duration 89.32498812675476s)
+INFO:root:finished calculation optimised_electrification 3137 (duration 118.27549123764038s)
+INFO:root:finished calculation diesel 3137 (duration 0.20977401733398438s)
+INFO:root:finished calculation efuel 3137 (duration 0.20914888381958008s)
+INFO:root:finished calculation h2 3137 (duration 0.20552611351013184s)
+INFO:root:calculation <MasterArea 3138> started
+INFO:root:finished calculation electrification 3138 (duration 0.2758340835571289s)
+INFO:root:finished calculation efuel 3138 (duration 0.19627022743225098s)
+INFO:root:finished calculation battery 3138 (duration 28.074087858200073s)
+INFO:root:finished calculation optimised_electrification 3138 (duration 48.118252754211426s)
+INFO:root:finished calculation diesel 3138 (duration 0.2096860408782959s)
+INFO:root:finished calculation efuel 3138 (duration 0.2224888801574707s)
+INFO:root:finished calculation h2 3138 (duration 0.22925710678100586s)
+INFO:root:calculation <MasterArea 3139> started
+INFO:root:finished calculation electrification 3139 (duration 0.2959022521972656s)
+INFO:root:finished calculation efuel 3139 (duration 0.24774408340454102s)
+INFO:root:finished calculation battery 3139 (duration 45.68187594413757s)
+INFO:root:finished calculation optimised_electrification 3139 (duration 75.7352180480957s)
+INFO:root:finished calculation diesel 3139 (duration 0.2652420997619629s)
+INFO:root:finished calculation efuel 3139 (duration 0.26413893699645996s)
+INFO:root:finished calculation h2 3139 (duration 0.2563488483428955s)
+INFO:root:calculation <MasterArea 3140> started
+INFO:root:finished calculation electrification 3140 (duration 0.22227025032043457s)
+INFO:root:finished calculation efuel 3140 (duration 0.22426581382751465s)
+INFO:root:finished calculation battery 3140 (duration 11.199144124984741s)
+INFO:root:finished calculation optimised_electrification 3140 (duration 12.827107906341553s)
+INFO:root:finished calculation diesel 3140 (duration 0.1954810619354248s)
+INFO:root:finished calculation efuel 3140 (duration 0.2181107997894287s)
+INFO:root:finished calculation h2 3140 (duration 0.20737886428833008s)
+INFO:root:calculation <MasterArea 3141> started
+INFO:root:finished calculation electrification 3141 (duration 0.22289490699768066s)
+INFO:root:finished calculation efuel 3141 (duration 0.19945096969604492s)
+INFO:root:finished calculation battery 3141 (duration 29.57993197441101s)
+INFO:root:finished calculation optimised_electrification 3141 (duration 23.710751056671143s)
+INFO:root:finished calculation diesel 3141 (duration 0.18496084213256836s)
+INFO:root:finished calculation efuel 3141 (duration 0.18636417388916016s)
+INFO:root:finished calculation h2 3141 (duration 0.20611286163330078s)
+INFO:root:calculation <MasterArea 3142> started
+INFO:root:finished calculation electrification 3142 (duration 0.22242212295532227s)
+INFO:root:finished calculation efuel 3142 (duration 0.20339083671569824s)
+INFO:root:finished calculation battery 3142 (duration 9.425902843475342s)
+INFO:root:finished calculation optimised_electrification 3142 (duration 12.648645162582397s)
+INFO:root:finished calculation diesel 3142 (duration 0.1925358772277832s)
+INFO:root:finished calculation efuel 3142 (duration 0.19407391548156738s)
+INFO:root:finished calculation h2 3142 (duration 0.20591402053833008s)
+INFO:root:calculation <MasterArea 3143> started
+INFO:root:finished calculation electrification 3143 (duration 1.975342035293579s)
+INFO:root:finished calculation efuel 3143 (duration 0.61832594871521s)
+INFO:root:finished calculation optimised_electrification 3143 (duration 1354.7127780914307s)
+INFO:root:finished calculation diesel 3143 (duration 0.8804891109466553s)
+INFO:root:finished calculation efuel 3143 (duration 0.7382018566131592s)
+INFO:root:calculation <MasterArea 3144> started
+INFO:root:finished calculation electrification 3144 (duration 0.26257777214050293s)
+INFO:root:finished calculation efuel 3144 (duration 0.19210004806518555s)
+INFO:root:finished calculation battery 3144 (duration 6.558748960494995s)
+INFO:root:finished calculation optimised_electrification 3144 (duration 7.498205184936523s)
+INFO:root:finished calculation diesel 3144 (duration 0.18179583549499512s)
+INFO:root:finished calculation efuel 3144 (duration 0.19835376739501953s)
+INFO:root:finished calculation h2 3144 (duration 0.2067568302154541s)
+INFO:root:calculation <MasterArea 3145> started
+INFO:root:finished calculation electrification 3145 (duration 0.2646949291229248s)
+INFO:root:finished calculation efuel 3145 (duration 0.182081937789917s)
+INFO:root:finished calculation battery 3145 (duration 33.87641429901123s)
+INFO:root:finished calculation optimised_electrification 3145 (duration 35.20672798156738s)
+INFO:root:finished calculation diesel 3145 (duration 0.1937098503112793s)
+INFO:root:finished calculation efuel 3145 (duration 0.20867705345153809s)
+INFO:root:finished calculation h2 3145 (duration 0.20439887046813965s)
+INFO:root:calculation <MasterArea 3146> started
+INFO:root:finished calculation electrification 3146 (duration 0.28751516342163086s)
+INFO:root:finished calculation efuel 3146 (duration 0.2164459228515625s)
+INFO:root:finished calculation battery 3146 (duration 71.56137704849243s)
+INFO:root:finished calculation optimised_electrification 3146 (duration 105.39898419380188s)
+INFO:root:finished calculation diesel 3146 (duration 0.18792295455932617s)
+INFO:root:finished calculation efuel 3146 (duration 0.19114184379577637s)
+INFO:root:finished calculation h2 3146 (duration 0.1902318000793457s)
+INFO:root:calculation <MasterArea 3147> started
+INFO:root:finished calculation electrification 3147 (duration 0.23458528518676758s)
+INFO:root:finished calculation efuel 3147 (duration 0.20981383323669434s)
+INFO:root:finished calculation battery 3147 (duration 52.63874697685242s)
+INFO:root:finished calculation optimised_electrification 3147 (duration 89.6969530582428s)
+INFO:root:finished calculation diesel 3147 (duration 0.23588824272155762s)
+INFO:root:finished calculation efuel 3147 (duration 0.22455501556396484s)
+INFO:root:finished calculation h2 3147 (duration 0.21989679336547852s)
+INFO:root:calculation <MasterArea 3148> started
+INFO:root:finished calculation electrification 3148 (duration 0.2954411506652832s)
+INFO:root:finished calculation efuel 3148 (duration 0.26081013679504395s)
+INFO:root:finished calculation battery 3148 (duration 90.7578649520874s)
+INFO:root:finished calculation optimised_electrification 3148 (duration 109.4240357875824s)
+INFO:root:finished calculation diesel 3148 (duration 0.2711062431335449s)
+INFO:root:finished calculation efuel 3148 (duration 0.34268999099731445s)
+INFO:root:finished calculation h2 3148 (duration 0.28202080726623535s)
+INFO:root:calculation <MasterArea 3149> started
+INFO:root:finished calculation electrification 3149 (duration 0.3580360412597656s)
+INFO:root:finished calculation efuel 3149 (duration 0.2348930835723877s)
+INFO:root:finished calculation battery 3149 (duration 32.313278913497925s)
+INFO:root:finished calculation optimised_electrification 3149 (duration 53.34917211532593s)
+INFO:root:finished calculation diesel 3149 (duration 0.21684908866882324s)
+INFO:root:finished calculation efuel 3149 (duration 0.2132887840270996s)
+INFO:root:finished calculation h2 3149 (duration 0.2131330966949463s)
+INFO:root:calculation <MasterArea 3150> started
+INFO:root:finished calculation electrification 3150 (duration 0.2694709300994873s)
+INFO:root:finished calculation efuel 3150 (duration 0.19785022735595703s)
+INFO:root:finished calculation battery 3150 (duration 12.165672779083252s)
+INFO:root:finished calculation optimised_electrification 3150 (duration 16.939263343811035s)
+INFO:root:finished calculation diesel 3150 (duration 0.19828128814697266s)
+INFO:root:finished calculation efuel 3150 (duration 0.2157120704650879s)
+INFO:root:finished calculation h2 3150 (duration 0.2235429286956787s)
+INFO:root:calculation <MasterArea 3151> started
+INFO:root:finished calculation electrification 3151 (duration 0.21741795539855957s)
+INFO:root:finished calculation efuel 3151 (duration 0.21345996856689453s)
+INFO:root:finished calculation battery 3151 (duration 38.24931502342224s)
+INFO:root:finished calculation optimised_electrification 3151 (duration 41.2788610458374s)
+INFO:root:finished calculation diesel 3151 (duration 0.19896483421325684s)
+INFO:root:finished calculation efuel 3151 (duration 0.2153620719909668s)
+INFO:root:finished calculation h2 3151 (duration 0.21818327903747559s)
+INFO:root:calculation <MasterArea 3152> started
+INFO:root:finished calculation electrification 3152 (duration 0.23721098899841309s)
+INFO:root:finished calculation efuel 3152 (duration 0.21089506149291992s)
+INFO:root:finished calculation battery 3152 (duration 14.908499002456665s)
+INFO:root:finished calculation optimised_electrification 3152 (duration 25.6286039352417s)
+INFO:root:finished calculation diesel 3152 (duration 0.21018600463867188s)
+INFO:root:finished calculation efuel 3152 (duration 0.2124958038330078s)
+INFO:root:finished calculation h2 3152 (duration 0.21217823028564453s)
+INFO:root:calculation <MasterArea 3153> started
+INFO:root:finished calculation electrification 3153 (duration 0.3060441017150879s)
+INFO:root:finished calculation efuel 3153 (duration 0.21500802040100098s)
+INFO:root:finished calculation battery 3153 (duration 31.414828062057495s)
+INFO:root:finished calculation optimised_electrification 3153 (duration 46.34174203872681s)
+INFO:root:finished calculation diesel 3153 (duration 0.2169489860534668s)
+INFO:root:finished calculation efuel 3153 (duration 0.22992682456970215s)
+INFO:root:finished calculation h2 3153 (duration 0.23090577125549316s)
+INFO:root:calculation <MasterArea 3154> started
+INFO:root:finished calculation electrification 3154 (duration 0.3251981735229492s)
+INFO:root:finished calculation efuel 3154 (duration 0.22459912300109863s)

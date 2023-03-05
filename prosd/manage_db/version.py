@@ -48,20 +48,24 @@ class Version:
         return project_content
 
     def prepare_commit_pc_stations(self, stations):
+        db.session.autoflush = False
         old_stations = []
         for station in stations:
             old_station = RailwayStation.query.get(station.id)
             old_stations.append(old_station)
 
+        db.session.autoflush = True
         return old_stations
 
     def prepare_commit_pc_railway_lines(self, lines):
+        db.session.autoflush = False
         old_lines = []
         for line in lines:
             line_id = line.id
             old_line = RailwayLine.query.get(line_id)
             old_lines.append(old_line)
 
+        db.session.autoflush = True
         return old_lines
 
     def _create_railway_df(self):

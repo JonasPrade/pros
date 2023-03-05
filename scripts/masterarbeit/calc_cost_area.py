@@ -11,7 +11,7 @@ logging.basicConfig(encoding='utf-8', level=logging.INFO)
 
 if __name__ == '__main__':
     scenario_id = 4
-    master_area_id = 3112
+    master_area_id = 3261
 
     scenario = MasterScenario.query.get(scenario_id)
     scenario_infra = Version(scenario=scenario)

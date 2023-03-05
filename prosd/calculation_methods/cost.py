@@ -33,6 +33,11 @@ class BatteryCapacityError(Exception):
         super().__init__(message)
 
 
+class LineNotInRoutError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 class BvwpCost(BaseCalculation):
     def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs"):
         # TODO: Change the calculation of that in sepeart funcitons, that is no __init__
@@ -528,11 +533,13 @@ class BvwpProjectBattery(BvwpCost):
         :return:
         """
         tg_id = train.train_group.id
+        db.session.autoflush=False  # to protect changes
         order_railway_lines_tuple = db.session.query(RailwayLine.id, RouteTraingroup.section).join(
             RouteTraingroup).filter(
                 RouteTraingroup.traingroup_id == tg_id,
                 RouteTraingroup.master_scenario_id == self.infra_version.scenario.id
             ).order_by(RouteTraingroup.section).all()
+        db.session.autoflush = True
         order_railway_lines = []
 
         line_to_sequence = dict()
@@ -928,15 +935,18 @@ class BvwpProjectBattery(BvwpCost):
         ).group_by(RailwayLine).order_by(sqlalchemy.func.count(RouteTraingroup.id).desc(), RailwayLine.length.asc()).all()
 
         count_traingroup_max = rw_line_after_usage[0][1]
-        lines_most_usage = set()
+        rw_line_after_usage = {row[0]:row[1] for row in rw_line_after_usage}
+        lines_most_usage = dict()
 
         # PART 2
-        lines_connected_to_electrification = set()
-        for line in rw_line_after_usage:
+        # lines_connected_to_electrification = set()
+        lines_connected_to_usage = dict()
+        for line, count_traingroup in rw_line_after_usage.items():
             add_line = False
-            line_infra_version = self.infra_version.get_railwayline_model(line[0].id)
-            if line[1] == count_traingroup_max:
-                lines_most_usage.add(line_infra_version)
+            line_infra_version = self.infra_version.get_railwayline_model(line.id)
+            count_traingroup_line = count_traingroup
+            if count_traingroup == count_traingroup_max:
+                lines_most_usage[line_infra_version] = count_traingroup_max
             # check if a station of that line has a charging possibility or if any line in the station has a catenary
             for station in line_infra_version.stations:
                 station_version = self.infra_version.get_railwaystation_model(station.id)
@@ -947,33 +957,44 @@ class BvwpProjectBattery(BvwpCost):
                 add_line = self._check_if_neighbour_line_has_catenary(line_infra_version)
 
             if add_line is True:
-                lines_connected_to_electrification.add(line_infra_version)
+                # lines_connected_to_electrification.add(line_infra_version)
+                lines_connected_to_usage[line_infra_version] = count_traingroup_line
 
         # If lines_most_usage is empty, take the rw_line_after as lines_most_usage
-        if len(lines_connected_to_electrification) == 0:
-            lines_connected_to_electrification = lines_most_usage
+        if len(lines_connected_to_usage) == 0:
+            lines_connected_to_usage = lines_most_usage
+            # lines_connected_to_electrification = list(lines_connected_to_electrification)
 
         # PART 3
         # calculate the duration while running on that line
         lines_to_electrify = set()
         average_speed = tt_line.length_line(self.infra_version.scenario.id) / (tt_line.running_time.seconds/3600)
-        while lines_connected_to_electrification:
-            line = lines_connected_to_electrification.pop()
+        while lines_connected_to_usage:
+            line = max(lines_connected_to_usage, key=lines_connected_to_usage.get)
+            lines_connected_to_usage.pop(line, None)
             # get the lines that are used most and electrify that
             running_time = datetime.timedelta(seconds=((line.length/1000) / average_speed)*3600)
             charge_possible = min((running_time.seconds/3600) * parameter.CHARGE, battery_capacity)
             lines_to_electrify.add(line)
             charge_needed = charge_needed - charge_possible
             if charge_needed < 0:
-                if charge_needed < 100:
+                if charge_needed < -100:
                     logging.warning(f'For {tt_line} too much elecitrification {charge_needed}kWh')
                 break
 
             # check if the neighbour lines are also in the most used list. If yes -> add that to lines_connect_to_electrification
-            sequence_in_rw_lines = rw_lines[rw_lines["railway_line_id"] == line.id].sequence.tolist()[0]
+            try:
+                sequence_in_rw_lines = rw_lines[rw_lines["railway_line_id"] == line.id].sequence.tolist()[0]
+            except IndexError:
+                raise LineNotInRoutError(
+                    f"{line.id} not found in the route of train_line {tt_line}. Try reroute"
+                )
             neighbour_lines = self._get_neighbour_lines_of_traingroup(sequence_in_rw_lines, rw_lines)
-            lines_connected_to_electrification.update(neighbour_lines)
-            lines_connected_to_electrification = lines_connected_to_electrification.difference(lines_to_electrify)
+            for line in neighbour_lines:
+                try:
+                    lines_connected_to_usage[line] = rw_line_after_usage[line]
+                except KeyError:
+                    logging.info(f"Railway_Line {line} not part of route for train_line {tt_line}")
 
         # If that is not enough: Find next package of lines if that is not enough
 

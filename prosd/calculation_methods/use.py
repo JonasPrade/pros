@@ -540,7 +540,7 @@ class StandiSpnv(BvwpUse):
             reference_speed = 3.6 / (vehicle_pattern.energy_stop_a * segments) * (intermediate_1 - math.sqrt(
                 intermediate_1 ** 2 - 2 * vehicle_pattern.energy_stop_a * segments * (traingroup.length_line(self.infra_version.scenario.id) * 1000)))
         except ValueError:
-            logging.info(
+            logging.debug(
                 f'Could not calculate reference speed for line {self.trainline}. More information on page 197 Verfahrensanleitung Standardisierte Bewertung')
             reference_speed = 160
         energy_per_stop = vehicle_pattern.energy_stop_b * (reference_speed ** 2) * vehicle_pattern.weight * (10 ** (-6))
