@@ -1,0 +1,7 @@
+INFO:root:finished calculation electrification 3125 (duration 1.0472900867462158s)
+INFO:root:finished calculation efuel 3125 (duration 0.595573902130127s)
+INFO:root:finished calculation battery 3125 (duration 362.2680969238281s)
+INFO:root:finished calculation optimised_electrification 3125 (duration 1292.1974720954895s)
+INFO:root:finished calculation diesel 3125 (duration 0.5294070243835449s)
+INFO:root:finished calculation efuel 3125 (duration 0.6188960075378418s)
+INFO:root:finished calculation h2 3125 (duration 0.6170003414154053s)

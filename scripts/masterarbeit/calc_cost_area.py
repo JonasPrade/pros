@@ -8,7 +8,7 @@ from prosd.manage_db.version import Version
 from prosd.graph import railgraph, routing
 
 scenario_id = 4
-master_area_id = 3116
+master_area_id = 3125
 
 filepath_logging = f"../../example_data/master_logs/calc_area/a-{master_area_id}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
 logging.basicConfig(filename=filepath_logging, encoding='utf-8', level=logging.INFO)

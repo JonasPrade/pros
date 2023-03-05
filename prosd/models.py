@@ -2872,6 +2872,8 @@ class MasterScenario(db.Model):
         cost_effective_traction["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0}
         cost_effective_traction_no_optimised["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0}
 
+        cost_sum_infrastructure = 0
+        cost_sum_operating = 0
         for area in self.master_areas:
             if area.superior_master_id is None:
                 cost_master_area = area.cost_overview
@@ -2884,18 +2886,26 @@ class MasterScenario(db.Model):
                 cost_effective_traction[effective_traction]["infrastructure_cost"] += cost_master_area["infrastructure_cost"][effective_traction]
                 cost_effective_traction[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][effective_traction]
 
+                cost_sum_infrastructure += cost_master_area["infrastructure_cost"][effective_traction]
+                cost_sum_operating += cost_master_area["operating_cost"][effective_traction]
                 if effective_traction == 'optimised_electrification':
+                    # infra_km
                     proportion_traction_by_km = area.proportion_traction_optimised_electrification["infrastructure_kilometer"]
                     for key, value in proportion_traction_by_km.items():
                         cost_effective_traction_no_optimised[key]["infra_km"] += value
 
+                    # infrastructure_cost
                     for key, value in area.proportion_traction_optimised_electrification["infrastructure_cost"].items():
                         cost_effective_traction_no_optimised[key]["infrastructure_cost"] += value
 
+                    # running_km
                     traction_optimised_traingroups = area.traction_optimised_traingroups
-
                     for key, traction in traction_optimised_traingroups.items():
-                        cost_effective_traction[value]["running_km"] += running_km_traingroups[key]
+                        cost_effective_traction[traction]["running_km"] += running_km_traingroups[key]
+
+                    # operating cost
+                    # for key, traction in traction_optimised_traingroups.items():
+                    #     cost_effective_traction[value]["running_km"] +=
 
                 else:
                     cost_effective_traction_no_optimised[effective_traction]["area"] += 1
@@ -2906,9 +2916,10 @@ class MasterScenario(db.Model):
                     cost_effective_traction_no_optimised[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][
                         effective_traction]
 
-
         parameters["cost_effective_traction"] = cost_effective_traction
         parameters["cost_effective_traction_no_optimised"] = cost_effective_traction_no_optimised
+        parameters["sum_infrastructure"] = cost_sum_infrastructure
+        parameters["sum_operating_cost"] = cost_sum_operating
 
         return parameters
 

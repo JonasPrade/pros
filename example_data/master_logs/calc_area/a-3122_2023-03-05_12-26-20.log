@@ -1,0 +1,5 @@
+INFO:root:finished calculation electrification 3122 (duration 1.044201135635376s)
+INFO:root:finished calculation efuel 3122 (duration 0.394881010055542s)
+INFO:root:finished calculation optimised_electrification 3122 (duration 300.74798583984375s)
+INFO:root:finished calculation diesel 3122 (duration 0.5573298931121826s)
+INFO:root:finished calculation efuel 3122 (duration 0.6180260181427002s)

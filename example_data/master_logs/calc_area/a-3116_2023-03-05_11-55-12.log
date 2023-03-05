@@ -1,3 +1,7 @@
 INFO:root:finished calculation electrification 3116 (duration 1.2457940578460693s)
 INFO:root:finished calculation efuel 3116 (duration 0.3564872741699219s)
 INFO:root:finished calculation battery 3116 (duration 256.12003207206726s)
+INFO:root:finished calculation optimised_electrification 3116 (duration 802.6180531978607s)
+INFO:root:finished calculation diesel 3116 (duration 0.6319880485534668s)
+INFO:root:finished calculation efuel 3116 (duration 0.4164109230041504s)
+INFO:root:finished calculation h2 3116 (duration 0.3655719757080078s)

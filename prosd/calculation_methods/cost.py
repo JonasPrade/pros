@@ -815,7 +815,10 @@ class BvwpProjectBattery(BvwpCost):
                     forward = False
                     backwards = False
                     possible_lines_id.extend([line.id for line in section["railway_lines"]])
-                    if section["battery_after_group"] > 0 and cycle_sections[1][section_index]["battery_after_group"] > 0:
+                    try:
+                        if section["battery_after_group"] > 0 and cycle_sections[1][section_index]["battery_after_group"] > 0:
+                            continue
+                    except IndexError:
                         continue
                     pc, charge_needed = self._electrify_additional_railwaylines(tt_line, rw_lines, energy_need, possible_lines_id, battery_capacity)
                     energy_possible = energy_need - charge_needed

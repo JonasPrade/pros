@@ -1,59 +1,67 @@
-\subsection{Referenzszenario aktualisierte Kostensätze}
+\subsection{Referenzszenario aktualisierte Kostensätze - 4}
 
 \subsubsection{Kenngrößen Szenario}
 
 \captionof{table}{\label{table_4_kenngrößen_scenario} Basiskenngrößen Szenario 4}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X } Kenngröße & Wert \\
+	\begin{tabularx}{\textwidth}{l | X } Kenngröße & Wert \\
 	\hline
 	Anzahl Untersuchungsgebiete & \num{154} \\
-	Summe Streckenkilometer & \SI{13490.0}{\km}
+	Summe Streckenkilometer & \SI{13490}{\km}
 	\end{tabularx}
 \end{center}
 
 \subsubsection{Kenngrößen Untersuchungsgebiete}
 \captionof{table}{\label{table_4_kenngrößen_untersuchungsgebiete} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion 4}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
 	\hline
-            electrification & \num{26} &  \SI{373.0}{\km}\\
-            efuel & \num{0} &  \SI{0}{\km}\\
-            battery & \num{102} &  \SI{6489.0}{\km}\\
-            optimised electrification & \num{26} &  \SI{6629.0}{\km}\\
-            diesel & \num{0} &  \SI{0}{\km}\\
-            h2 & \num{0} &  \SI{0}{\km}\\
-            no calculated cost & \num{0} &  \SI{0}{\km}\\
+            electrification & \num{26} &  \SI{373}{\km} & \SI{16912296}{\km}\\
+            efuel & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            battery & \num{102} &  \SI{6489}{\km} & \SI{18926708}{\km}\\
+            optimised electrification & \num{26} &  \SI{6629}{\km} & \SI{19906356}{\km}\\
+            diesel & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            h2 & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            no calculated cost & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
     	\end{tabularx}
 \end{center}
 
 \captionof{table}{\label{table_4_kenngrößen_untersuchungsgebiete_no_optimised} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion (Optimierte Elektrifizierung aufgeteilt) Szenario 4}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
 	\hline
-            electrification & \num{26} &  \SI{3305.0}{\km}\\
-            efuel & \num{0} &  \SI{0}{\km}\\
-            battery & \num{102} &  \SI{10185.0}{\km}\\
-            optimised electrification & \num{26} &  \SI{0}{\km}\\
-            diesel & \num{0} &  \SI{0}{\km}\\
-            h2 & \num{0} &  \SI{0}{\km}\\
-            no calculated cost & \num{0} &  \SI{0}{\km}\\
+            electrification & \num{26} &  \SI{3305}{\km} & \SI{54768}{\km}\\
+            efuel & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            battery & \num{102} &  \SI{10185}{\km} & \SI{95064}{\km}\\
+            diesel & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            h2 & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
+            no calculated cost & \num{0} &  \SI{0}{\km} & \SI{0}{\km}\\
     	\end{tabularx}
 \end{center}
 In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, bei denen die optimierte Elektrifizierung am wirtschaftlichsten war, auf die Traktionen Elektrifizierung und Batterie aufgeteilt (je nachdem, bei welchem Teiluntersuchungsgebiet welche Traktion am wirtschaftlichsten war)
 
 \subsubsection{Kenngrößen Kosten}
 
-\captionof{table}{\label{table_4_kenngrößen_untersuchungsgebiete_no_optimised} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario 4}
+\captionof{table}{\label{table_4_kenngrößen_investition} Basiskenngrößen Kosten 4}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Kosten Infrastruktur [Tsd. € Barwert] & Betriebskosten [Tsd. € Barwert]\\
+	\begin{tabularx}{\textwidth}{X | r } Kenngröße & Kosten [Barwert] \\
 	\hline
-            electrification & \num{673314.0} &  \num{3515738.0}\\
-            efuel & \num{0} &  \num{0}\\
-            battery & \num{294200.0} &  \num{13887867.0}\\
-            optimised electrification & \num{5834282.0} &  \num{23542479.0}\\
-            diesel & \num{0} &  \num{0}\\
-            h2 & \num{0} &  \num{0}\\
-            no calculated cost & \num{0} &  \num{0}\\
+	Investitionskosten & \num{6815712} Tsd. €\\
+	Betriebskosten & \num{40946083} Tsd. €
+	\end{tabularx}
+\end{center}
+
+\captionof{table}{\label{table_4_kenngrößen_investition_cost_by_traction} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario 4}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | r | r} Traktion & Kosten Infrastruktur Barwert & Betriebskosten Barwert\\
+	\hline
+            electrification & \num{673314} Tsd. € &  \num{3515738} Tsd. €\\
+            efuel & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            battery & \num{309624} Tsd. € &  \num{13887867} Tsd. €\\
+            optimised electrification & \num{5832775} Tsd. € &  \num{23542479} Tsd. €\\
+            diesel & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            h2 & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            no calculated cost & \num{0} Tsd. € &  \num{0} Tsd. €\\
     	\end{tabularx}
 \end{center}
 

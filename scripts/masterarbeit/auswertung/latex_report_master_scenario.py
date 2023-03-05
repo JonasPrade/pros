@@ -2,7 +2,7 @@ import jinja2
 from jinja2 import Template
 import os
 from prosd.models import MasterScenario
-from plot_map import plot_map
+from plot_map_areas_traction import plot_map_traction
 
 SCENARIO_ID = 4
 template_file = 'report_template.tex'
@@ -46,11 +46,7 @@ length_scenario = sum(length_areas)
 parameters = scenario.parameters
 cost_effective_traction = parameters["cost_effective_traction"]
 
-plot_map(
-    scenario_id=scenario.id,
-    filepath_image_directory=filepath_images,
-    areas=main_areas
-)
+plot_map_traction(filepath_image_directory=filepath_images, areas=main_areas)
 filepath_map = f'../report_scenarios/s_{scenario.id}/files/deutschland_map.png'
 
 data = {
@@ -60,7 +56,9 @@ data = {
     "length_scenario": length_scenario,
     "cost_effective_traction": cost_effective_traction,
     "cost_effective_traction_no_optimised": parameters["cost_effective_traction_no_optimised"],
-    "filepath_d_map": filepath_map
+    "filepath_d_map": filepath_map,
+    "sum_cost_infrastructure": parameters["sum_infrastructure"],
+    "sum_cost_operating": parameters["sum_operating_cost"]
 }
 
 create_file()

@@ -1,33 +1,33 @@
-\subsection{\VAR{scenario_name}}
+\subsection{\VAR{scenario_name} - \VAR{scenario_id}}
 
 \subsubsection{Kenngrößen Szenario}
 
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_scenario} Basiskenngrößen Szenario \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X } Kenngröße & Wert \\
+	\begin{tabularx}{\textwidth}{l | X } Kenngröße & Wert \\
 	\hline
 	Anzahl Untersuchungsgebiete & \num{\VAR{count_master_area}} \\
-	Summe Streckenkilometer & \SI{\VAR{length_scenario|round}}{\km}
+	Summe Streckenkilometer & \SI{\VAR{length_scenario|round|int}}{\km}
 	\end{tabularx}
 \end{center}
 
 \subsubsection{Kenngrößen Untersuchungsgebiete}
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
 	\hline
     \BLOCK{ for key in cost_effective_traction }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km'])|round}}{\km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km'])|round}}{\km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
 
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete_no_optimised} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion (Optimierte Elektrifizierung aufgeteilt) Szenario \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Anzahl & Kilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
 	\hline
     \BLOCK{ for key in cost_effective_traction_no_optimised }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km'])|round}}{\km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km'])|round}}{\km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
@@ -35,12 +35,21 @@ In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, be
 
 \subsubsection{Kenngrößen Kosten}
 
-\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete_no_optimised} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario \VAR{scenario_id}}
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_investition} Basiskenngrößen Kosten \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | X | X} Traktion & Kosten Infrastruktur [Tsd. € Barwert] & Betriebskosten [Tsd. € Barwert]\\
+	\begin{tabularx}{\textwidth}{X | r } Kenngröße & Kosten [Barwert] \\
+	\hline
+	Investitionskosten & \num{\VAR{sum_cost_infrastructure|round|int}} Tsd. €\\
+	Betriebskosten & \num{\VAR{sum_cost_operating|round|int}} Tsd. €
+	\end{tabularx}
+\end{center}
+
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_investition_cost_by_traction} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario \VAR{scenario_id}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | r | r} Traktion & Kosten Infrastruktur Barwert & Betriebskosten Barwert\\
 	\hline
     \BLOCK{ for key in cost_effective_traction }
-        \VAR{key | replace("_", " ")} & \num{\VAR{(cost_effective_traction[key]['infrastructure_cost'])|round}} &  \num{\VAR{(cost_effective_traction[key]['operating_cost'])|round}}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{(cost_effective_traction[key]['infrastructure_cost'])|round|int}} Tsd. € &  \num{\VAR{(cost_effective_traction[key]['operating_cost'])|round|int}} Tsd. €\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
