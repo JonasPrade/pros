@@ -1112,7 +1112,7 @@ class ProjectContent(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id', onupdate='SET NULL', ondelete='SET NULL', name='projects_contents_project_id_fkey'))
     project_number = db.Column(
-        db.String(50))  # string because calculation_methods uses strings vor numbering projects, don't ask
+        db.String(50))  # string because bvwp uses strings vor numbering projects, don't ask
     superior_project_content_id = db.Column(db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE', ondelete='CASCADE'))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, default=None)
@@ -1465,7 +1465,7 @@ class ProjectContent(db.Model):
         pc = ProjectContent.query.get(pc_id)
         for line_id in lines:
             line = RailwayLine.query.get(line_id)
-            pc.projectcontent_railway_lines.append(line)
+            pc.railway_lines.append(line)
 
         db.session.add(pc)
         db.session.commit()
@@ -1883,7 +1883,7 @@ class TimetableTrainGroup(db.Model):
     def running_km_day(self, scenario_id):
         running_km_day = self.length_line(scenario_id) * len(self.trains)
 
-        return running_km_day
+        return running_km_day  # in km
 
     @hybrid_method
     def running_km_day_abs(self, infra_version):
@@ -1918,7 +1918,7 @@ class TimetableTrainGroup(db.Model):
     @hybrid_method
     def running_km_year(self, scenario_id):
         running_km_year = self.running_km_day(scenario_id) * 365 / 1000
-        return running_km_year
+        return running_km_year  # in Tsd. km
 
     @hybrid_method
     def running_km_year_abs(self, infra_version):
@@ -2271,6 +2271,7 @@ class TrainCycle(db.Model):
             TrainCycle.wait_time == wait_time
         ).delete()
 
+
 class TrainCycleElement(db.Model):
     __tablename__ = 'train_cycle_elements'
 
@@ -2367,6 +2368,7 @@ class RouteTraingroup(db.Model):
 
     traingroup = db.relationship(TimetableTrainGroup, back_populates='railway_lines')
     railway_line = db.relationship(RailwayLine, back_populates='traingroups')
+    master_scenario = db.relationship("MasterScenario", backref=db.backref("routes"))
 
 
 class TimetableLine(db.Model):
@@ -2607,7 +2609,14 @@ class States(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     name_short_2 = db.Column(db.String, nullable=False)
-    polygon = db.Column(geoalchemy2.Geometry(geometry_type='POLYGON', srid=4326), nullable=True)
+    polygon = db.Column(geoalchemy2.Geometry(geometry_type='MULTIPOLYGON', srid=4326), nullable=True)
+
+    @property
+    def polygon_as_geojson(self):
+        polygon = shapely.wkb.loads(self.polygon.desc, hex=True)
+        polygon_transformed = shapely.geometry.mapping(polygon)["coordinates"]
+        polygon_json = geojson.MultiPolygon(polygon_transformed)
+        return polygon_json
 
 
 class Counties(db.Model):
@@ -2646,6 +2655,7 @@ class MasterScenario(db.Model):
     operation_duration = db.Column(db.Integer, default=30)
 
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
+    train_costs = db.relationship("TimetableTrainCost", cascade="all, delete", backref=db.backref('master_scenario'))
 
     @property
     def main_areas(self):
@@ -2862,6 +2872,15 @@ class MasterScenario(db.Model):
                 overwrite=overwrite_operating_cost
             )
 
+    def calc_infrastructure_cost_one_traction(self, traction, infra_version, overwrite=parameter.OVERWRITE_INFRASTRUCTURE):
+        areas = self.main_areas
+        for area in areas:
+            if 'sgv' in area.categories and (traction == 'battery' or traction == 'h2'):
+                continue
+            area.calculate_infrastructure_cost(
+                traction=traction, infra_version=infra_version, overwrite=overwrite
+            )
+
     @property
     def parameters(self):
         parameters = dict()
@@ -2874,20 +2893,33 @@ class MasterScenario(db.Model):
 
         cost_sum_infrastructure = 0
         cost_sum_operating = 0
+        sum_running_km = 0
+        co2_diesel = 0
+        co2_new = 0
+
+        running_km_by_transport_mode = {
+            "spnv": {"battery": 0, "electrification": 0, "diesel": 0, "efuel": 0, "h2": 0},
+            "spfv": {"battery": 0, "electrification": 0, "diesel": 0, "efuel": 0, "h2": 0},
+            "sgv": {"battery": 0, "electrification": 0, "diesel": 0, "efuel": 0, "h2": 0},
+            "all": {"battery": 0, "electrification": 0, "diesel": 0, "efuel": 0, "h2": 0}
+        }
+
         for area in self.master_areas:
             if area.superior_master_id is None:
                 cost_master_area = area.cost_overview
                 effective_traction = cost_master_area["minimal_cost"]
-                running_km_traingroups = area.running_km_traingroups
+                area_running_km_traingroups_by_transport_mode = area.running_km_traingroups_by_transport_mode
 
                 cost_effective_traction[effective_traction]["area"] += 1
                 cost_effective_traction[effective_traction]["infra_km"] += area.length/1000
-                cost_effective_traction[effective_traction]["running_km"] += sum(running_km_traingroups.values())
+                cost_effective_traction[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
                 cost_effective_traction[effective_traction]["infrastructure_cost"] += cost_master_area["infrastructure_cost"][effective_traction]
                 cost_effective_traction[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][effective_traction]
 
                 cost_sum_infrastructure += cost_master_area["infrastructure_cost"][effective_traction]
                 cost_sum_operating += cost_master_area["operating_cost"][effective_traction]
+                sum_running_km += area_running_km_traingroups_by_transport_mode["all"]
+
                 if effective_traction == 'optimised_electrification':
                     # infra_km
                     proportion_traction_by_km = area.proportion_traction_optimised_electrification["infrastructure_kilometer"]
@@ -2901,25 +2933,42 @@ class MasterScenario(db.Model):
                     # running_km
                     traction_optimised_traingroups = area.traction_optimised_traingroups
                     for key, traction in traction_optimised_traingroups.items():
-                        cost_effective_traction[traction]["running_km"] += running_km_traingroups[key]
+                        tg = TimetableTrainGroup.query.get(key)
+                        train_category = tg.category.transport_mode
+                        cost_effective_traction_no_optimised[traction]["running_km"] += tg.running_km_day(self.id)
+                        co2_new += TimetableTrainCost.query.filter(
+                            TimetableTrainCost.traingroup_id == key,
+                            TimetableTrainCost.master_scenario_id == self.id,
+                            TimetableTrainCost.traction == traction
+                        ).scalar().co2_emission
+                        co2_diesel += TimetableTrainCost.query.filter(
+                            TimetableTrainCost.traingroup_id == key,
+                            TimetableTrainCost.master_scenario_id == self.id,
+                            TimetableTrainCost.traction == 'diesel'
+                        ).scalar().co2_emission
 
-                    # operating cost
-                    # for key, traction in traction_optimised_traingroups.items():
-                    #     cost_effective_traction[value]["running_km"] +=
+                        running_km_by_transport_mode[train_category][traction] += tg.running_km_day(self.id)
+                        running_km_by_transport_mode["all"][traction] += tg.running_km_day(self.id)
 
                 else:
                     cost_effective_traction_no_optimised[effective_traction]["area"] += 1
-                    cost_effective_traction_no_optimised[effective_traction]["running_km"] = sum(running_km_traingroups.values())
+                    cost_effective_traction_no_optimised[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
                     cost_effective_traction_no_optimised[effective_traction]["infra_km"] += area.length/1000
                     cost_effective_traction_no_optimised[effective_traction]["infrastructure_cost"] += \
                     cost_master_area["infrastructure_cost"][effective_traction]
                     cost_effective_traction_no_optimised[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][
                         effective_traction]
+                    co2_new += area.get_co2_for_traction[effective_traction]
+                    for transport_mode in ["spnv", "sgv", "spfv", "all"]:
+                        running_km_by_transport_mode[transport_mode][effective_traction] += area_running_km_traingroups_by_transport_mode[transport_mode]
 
         parameters["cost_effective_traction"] = cost_effective_traction
         parameters["cost_effective_traction_no_optimised"] = cost_effective_traction_no_optimised
         parameters["sum_infrastructure"] = cost_sum_infrastructure
         parameters["sum_operating_cost"] = cost_sum_operating
+        parameters["running_km_by_transport_mode"] = running_km_by_transport_mode  # Zug-km pro Tag
+        parameters["co2_old"] = co2_diesel
+        parameters["co2_new"] = co2_new
 
         return parameters
 
@@ -2967,22 +3016,20 @@ class MasterArea(db.Model):
         return traction_optimised_traingroups
 
     @property
-    def running_km_traingroups(self):
-        result = db.session.execute(
-            """SELECT ttg.id, sum(rl.length)/1000 as length_tg, count(distinct tt.id) as count_trains, sum(rl.length)/1000 * count(distinct tt.id) as running_km_day
-        FROM timetable_train_groups ttg
-        JOIN tg_to_masterareas ttm on ttg.id = ttm.traingroup_id
-        JOIN master_areas ma on ttm.masterarea_id = ma.id
-        JOIN route_traingroups rt on ttg.id = rt.traingroup_id
-        JOIN railway_lines rl on rt.railway_line_id = rl.id
-        JOIN timetable_train tt on ttg.id = tt.train_group_id
-        WHERE
-            rt.master_scenario_id = :scenario_id and
-            ttm.masterarea_id = :masterarea_id
-        GROUP BY ttg.id""", {'scenario_id': self.scenario_id, 'masterarea_id': self.id}
-        )
-        running_km_traingroups = {row[0]:row[3] for row in result}
-        return running_km_traingroups
+    def running_km_traingroups_by_transport_mode(self):
+        running_km_traingroups_by_transport_mode = {
+            "sgv": 0,
+            "spnv": 0,
+            "spfv": 0,
+            "all": 0
+        }
+
+        for tg in self.traingroups:
+            transport_mode = tg.category.transport_mode
+            running_km_traingroups_by_transport_mode[transport_mode] += tg.running_km_day(self.scenario_id)
+            running_km_traingroups_by_transport_mode["all"] += tg.running_km_day(self.scenario_id)
+
+        return running_km_traingroups_by_transport_mode
 
     @hybrid_method
     def get_operating_cost_traction(self, traction):
@@ -3102,6 +3149,94 @@ class MasterArea(db.Model):
         return cost_tractions
 
     @property
+    def get_co2_for_traction(self):
+        values = db.session.query(TimetableTrainCost.traction, sqlalchemy.func.sum(TimetableTrainCost.co2_emission)).filter(
+            TimetableTrainCost.traingroup_id.in_([tg.id for tg in self.traingroups]),
+            TimetableTrainCost.master_scenario_id == self.scenario_id
+        ).group_by(TimetableTrainCost.traction).all()
+        co2_tractions = {value[0]:value[1] for value in values}
+        return co2_tractions
+
+    @property
+    def get_operating_cost_categories_by_transport_mode(self):
+        transport_modes = {
+            'sgv': ['sgv'],
+            'spfv': ['spfv'],
+            'spnv': ['spnv'],
+            'all': ['sgv', 'spfv', 'spnv']
+        }
+        train_costs_transport_mode = dict()
+
+        for name_transport_mode, transport_mode in transport_modes.items():
+            train_costs_traction = dict()
+            traingroups = TimetableTrainGroup.query.join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                TimetableTrainGroup.id.in_([tg.id for tg in self.traingroups]),
+                TimetableCategory.transport_mode.in_(transport_mode)
+            ).all()
+
+            if len(traingroups) == 0:
+                continue
+
+            train_costs = db.session.query(TimetableTrainCost.traction.label('traction'), sqlalchemy.func.sum(TimetableTrainCost.cost).label('train_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.debt_service).label('debt_service'),
+                             sqlalchemy.func.sum(TimetableTrainCost.maintenance_cost).label('maintenance_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.energy_cost).label('energy_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.co2_cost).label('co2_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.pollutants_cost).label('pollutants_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.primary_energy_cost).label('primary_energy_cost'),
+                             sqlalchemy.func.sum(TimetableTrainCost.co2_emission).label('co2_emission'),
+                             sqlalchemy.func.sum(TimetableTrainCost.thg_vehicle_production_cost).label('thg_vehicle_production_cost')).filter(
+                TimetableTrainCost.traingroup_id.in_([tg.id for tg in traingroups]),
+                TimetableTrainCost.master_scenario_id == self.scenario_id
+            ).group_by(TimetableTrainCost.traction).all()
+
+            for row in train_costs:
+                mapped_row = row._mapping
+                traction = mapped_row['traction']
+                row_as_dict = dict(row._mapping)
+                if row_as_dict["thg_vehicle_production_cost"] is None:
+                    row_as_dict["thg_vehicle_production_cost"] = 0
+                row_as_dict.pop('traction')
+                train_costs_traction[traction] = row_as_dict
+
+            train_costs_traction["optimised_electrification"] = {}
+            for tg_id, traction in self.traction_optimised_traingroups.items():
+                if TimetableTrainGroup.query.get(tg_id).category.transport_mode not in transport_mode:
+                    continue
+                train_costs = db.session.query(TimetableTrainCost.cost.label('train_cost'),
+                                               TimetableTrainCost.debt_service.label('debt_service'),
+                                               TimetableTrainCost.maintenance_cost.label(
+                                                   'maintenance_cost'),
+                                               TimetableTrainCost.energy_cost.label('energy_cost'),
+                                               TimetableTrainCost.co2_cost.label('co2_cost'),
+                                               TimetableTrainCost.pollutants_cost.label(
+                                                   'pollutants_cost'),
+                                               TimetableTrainCost.primary_energy_cost.label(
+                                                   'primary_energy_cost'),
+                                               TimetableTrainCost.co2_emission.label('co2_emission'),
+                                               TimetableTrainCost.thg_vehicle_production_cost.label(
+                                                   'thg_vehicle_production_cost')).filter(
+                                                TimetableTrainCost.traingroup_id == tg_id,
+                                                TimetableTrainCost.traction == traction,
+                                                TimetableTrainCost.master_scenario_id == self.scenario_id,
+                                                ).all()
+
+                row_as_dict = dict(train_costs[0]._mapping)
+                for key, value in row_as_dict.items():
+                    if value is None:
+                        logging.debug(f"For area {self.id} operational cost factor {key} for traction {traction} for {tg_id} has value {value}. Value is set to 0")  # normal for sgv
+                        value = 0
+                    if key in train_costs_traction["optimised_electrification"]:
+                        train_costs_traction["optimised_electrification"][key] += value
+                    else:
+                        train_costs_traction["optimised_electrification"][key] = value
+
+            train_costs_transport_mode[name_transport_mode] = train_costs_traction
+
+        return train_costs_transport_mode
+
+
+    @property
     def cost_overview(self):
         """
         collects all that stuff in one dict -> better for api
@@ -3111,12 +3246,27 @@ class MasterArea(db.Model):
         cost_dict["infrastructure_cost"] = self.infrastructure_cost_all_tractions
         cost_dict["operating_cost"] = self.operating_cost_all_tractions
 
+        cost_dict["co2"] = {}
         cost_dict["sum_cost"] = {}
         for traction in parameter.TRACTIONS:
             try:
                 cost_dict["sum_cost"][traction] = cost_dict["infrastructure_cost"][traction] + cost_dict["operating_cost"][traction]
+
             except KeyError as e:
                 logging.info(f"No infrastructure cost or train_cost for {self.id} {e}")
+
+            if traction == 'optimised_electrification':
+                cost_dict["co2"]["optimised_electrification"] = 0
+                for key, traction in self.traction_optimised_traingroups.items():
+                    cost_dict["co2"]["optimised_electrification"] += TimetableTrainCost.query.filter(
+                        TimetableTrainCost.traingroup_id == key,
+                        TimetableTrainCost.master_scenario_id == self.scenario_id,
+                        TimetableTrainCost.traction == traction
+                    ).scalar().co2_emission
+            else:
+                if 'sgv' in self.categories and (traction == 'battery' or traction == 'h2'):
+                    continue
+                cost_dict["co2"][traction] = self.get_co2_for_traction[traction]
 
         minimal_cost_traction = min(cost_dict["sum_cost"], key=cost_dict["sum_cost"].get)
         cost_dict["minimal_cost"] = minimal_cost_traction
@@ -3233,7 +3383,18 @@ class MasterArea(db.Model):
         If it exists and overwrite not active, it will return the project and returns
         otherwise the project will be deleted and the new calculation will begin.
         """
-        pc = ProjectContent.query.filter(ProjectContent.name == name).scalar()
+        pc_attribute = {
+            'electrification': 'elektrification',
+            'battery': 'battery',
+            'optimised_electrification': 'optimised_electrification',
+            'diesel': 'filling_stations_diesel',
+            'h2': 'h2',
+            'efuel': 'efuel'
+        }
+        pc = ProjectContent.query.filter(
+            ProjectContent.master_areas.contains(self),
+            ProjectContent.name.like(f'{pc_attribute[traction]}%')
+        ).scalar()
         if pc and overwrite is False:
             return pc
         elif pc and overwrite is True:

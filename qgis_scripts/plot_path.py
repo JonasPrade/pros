@@ -3,8 +3,9 @@ NAME_LAYER = 'railway_lines'
 import json
 import os
 # TODO: Add the relevant stadions
-
-filepath = os.path.abspath("/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths/SKZtoSKU B.json")
+from_station = 'ERHD'
+to_station = 'ETIE'
+filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths/{from_station}to{to_station}.json")
 print(filepath)
 
 with open(filepath, 'r') as f:

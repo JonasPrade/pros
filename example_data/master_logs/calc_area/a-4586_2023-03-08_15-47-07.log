@@ -1,0 +1,3 @@
+INFO:root:finished calculation electrification 4586 (duration 0.15633416175842285s)
+INFO:root:finished calculation efuel 4586 (duration 995.436717748642s)
+INFO:root:finished calculation battery 4586 (duration 12.530014038085938s)

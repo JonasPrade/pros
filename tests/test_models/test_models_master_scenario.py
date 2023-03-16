@@ -3,7 +3,7 @@ from tests.base import BaseTestCase
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-scenario_id = 3
+scenario_id = 4
 
 def get_infra_version():
     scenario = MasterScenario.query.get(scenario_id)
@@ -26,3 +26,8 @@ class TestMasterScenario(BaseTestCase):
         scenario = MasterScenario.query.get(scenario_id)
         cost_effective_traction = scenario.cost_effective_traction
         self.assertTrue(len(cost_effective_traction) > 0)
+
+    def test_parameters(self):
+        scenario = MasterScenario.query.get(scenario_id)
+        parameters = scenario.parameters
+        self.assertTrue(len(parameters) > 0)

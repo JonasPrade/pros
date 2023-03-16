@@ -1,14 +1,14 @@
 import datetime
 
 ## CALCUATION PARAMETER
-REROUTE_TRAINGROUP = True
-DELETE_AREAS = True
-CREATE_AREAS = True
+REROUTE_TRAINGROUP = False
+DELETE_AREAS = False
+CREATE_AREAS = False
 OVERWRITE_INFRASTRUCTURE = True
 
 ## H2
-KILOMETER_PER_STATION_H2 = 80
-COST_STATION_H2 = 3000 # Tausend Euro
+KILOMETER_PER_STATION_H2 = 60
+COST_STATION_H2 = 6000  # Tausend Euro
 
 ## Diesel
 KILOMETER_PER_STATION_DIESEL = 40
@@ -28,8 +28,8 @@ ANUALITY_FACTOR = 0.0428
 START_YEAR = 2030
 START_MONTH = 1
 START_DATE = 1
-TRACTIONS = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "efuel", "h2"]
-SPFV_STANDI_METHOD = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "efuel", "h2"]
+TRACTIONS = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "h2"]
+SPFV_STANDI_METHOD = ["electrification", "efuel", "battery", "optimised_electrification", "diesel", "h2"]
 
 ### COST FACTORS
 CO2_COST = 670
@@ -46,7 +46,7 @@ ENERGY_COST_ELECTRO_CASUAL = 0.12
 ENERGY_COST_ELECTRO_RENEWABLE = 0.14
 ENERGY_COST_DIESEL = 0.75
 ENERGY_COST_EFUEL = 2.5
-ENERGY_COST_H2 = 3
+ENERGY_COST_H2 = 5
 
 ENERGY_CO2_ELECTRO_CASUAL = 414
 ENERGY_CO2_ELECTRO_RENEWABLE = 21

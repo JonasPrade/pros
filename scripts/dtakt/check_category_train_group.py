@@ -17,8 +17,8 @@ def check_traingroup_same_way(tgs):
         first_ocp_tg = set()
         last_ocp_tg = set()
         for train in tg.trains:
-            first_ocp_tg.add(train.train_part.first_ocp.ocp.id)
-            last_ocp_tg.add(train.train_part.last_ocp.ocp.id)
+            first_ocp_tg.add(train.train_part.first_ocp.blocked_ocp.id)
+            last_ocp_tg.add(train.train_part.last_ocp.blocked_ocp.id)
 
         if len(first_ocp_tg) != 1:
             logging.warning("TrainGroup " + str(tg.id) + " has multiple first_ocp " + str(first_ocp_tg))

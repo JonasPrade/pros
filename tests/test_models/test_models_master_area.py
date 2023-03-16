@@ -3,7 +3,7 @@ from tests.base import BaseTestCase
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-area_id = 3107
+area_id = 4614
 scenario_id = 4
 
 
@@ -28,6 +28,21 @@ class TestMasterAreaProperties(BaseTestCase):
         area = MasterArea.query.get(area_id)
         cost_dict = area.total_cost_and_infra_and_operating_cost
         self.assertTrue(len(cost_dict) > 0)
+
+    def test_cost_overview(self):
+        area = MasterArea.query.get(area_id)
+        cost_overview = area.cost_overview
+        self.assertTrue(len(cost_overview) > 0)
+
+    def test_get_train_costs_for_area(self):
+        area = MasterArea.query.get(area_id)
+        train_costs = area.get_operating_cost_categories_by_transport_mode
+        self.assertTrue(len(train_costs)>0)
+
+    def test_running_km_by_transport_mode(self):
+        area = MasterArea.query.get(area_id)
+        running_km_traingroups = area.running_km_traingroups_by_transport_mode
+        self.assertTrue(len(running_km_traingroups) > 0)
 
 
 class TestMasterAreaSubAreas(BaseTestCase):

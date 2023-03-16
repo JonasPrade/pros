@@ -1,0 +1,4 @@
+INFO:root:finished calculation electrification 4853 (duration 0.1601102352142334s)
+INFO:root:finished calculation efuel 4853 (duration 0.10891103744506836s)
+INFO:root:finished calculation optimised_electrification 4853 (duration 2.597883701324463s)
+INFO:root:finished calculation diesel 4853 (duration 0.0847628116607666s)

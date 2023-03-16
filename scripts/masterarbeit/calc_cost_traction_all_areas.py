@@ -1,11 +1,8 @@
 import logging
-from datetime import datetime
 
-from prosd import db, parameter
-from prosd.models import ProjectContent, MasterArea, RouteTraingroup, TimetableTrainCost, MasterScenario, TimetableTrainGroup
-from prosd.calculation_methods import use, cost, base
+from prosd.models import MasterScenario
+
 from prosd.manage_db.version import Version
-from prosd.graph import railgraph, routing
 
 scenario_id = 4
 traction = 'electrification'

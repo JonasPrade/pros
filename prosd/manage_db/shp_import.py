@@ -2,6 +2,8 @@ import pandas
 import geopandas
 import geoalchemy2
 import logging
+from shapely.geometry.multipolygon import MultiPolygon
+from shapely import wkt
 
 import prosd.models
 from prosd import db
@@ -35,6 +37,28 @@ class DBManager:
             )
             db.session.add(county_input)
             db.session.commit()
+
+        logging.info('finished import shp_to_counties')
+
+    def shp_to_states(self, filepath_shp, model, overwrite=False):
+        if overwrite:
+            db.session.query(model).delete()
+            db.session.commit()
+
+        shp_data = geopandas.read_file(filepath_shp, encoding='utf-8')
+
+        shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
+        shp_data.drop('geometry', 1, inplace=True)
+
+        states = model.query.all()
+        for state in states:
+            geo = shp_data[shp_data["GEN"]==state.name].geo.iloc[0]
+            if wkt.loads(geo.data).geom_type == 'Polygon':
+                geo=wkt.dumps(MultiPolygon([wkt.loads(geo.data)]))
+            state.polygon = geo
+
+        db.session.bulk_save_objects(states)
+        db.session.commit()
 
         logging.info('finished import shp_to_counties')
 
@@ -131,7 +155,7 @@ class DBManager:
             db.session.query(model).delete()
             db.session.commit()
 
-        shp_data = geopandas.read_file(filepath_shp, encoding='ISO-8859-1')
+        shp_data = geopandas.read_file(filepath_shp, encoding='UTF-8')
 
         shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
         shp_data.drop('geometry', 1, inplace=True)
@@ -226,9 +250,13 @@ class DBManager:
 
 
 if __name__ == '__main__':
-    RailwayTunnel = prosd.models.RailwayTunnel
-    filepath_shp = '/Users/jonas/PycharmProjects/pros/example_data/bridges_data/2019/bruecken_gross_polyline.shp'
+    States = prosd.models.States
+    filepath_shp = '/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/import/states/vg2500_bld.shp'
 
     DbInput = DBManager()
 
-    DbInput.shp_to_bridges(filepath_shp=filepath_shp, overwrite=True)
+    DbInput.shp_to_states(
+        filepath_shp=filepath_shp,
+        model=States,
+        overwrite=False
+    )

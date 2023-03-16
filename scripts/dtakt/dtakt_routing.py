@@ -11,16 +11,16 @@ FORCE_RECALCULATION = True
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-scenarios = [MasterScenario.query.get(4)]
+scenarios = [MasterScenario.query.get(7)]
 # scenarios = MasterScenario.query.all()
 
 
 # tgs = TimetableTrainGroup.query.join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
 #     TimetableCategory.transport_mode=='spfv').all()
 
-# tgs = TimetableTrainGroup.query.all()
+tgs = TimetableTrainGroup.query.all()
 
-tgs = [TimetableTrainGroup.query.get('tg_RP83_N_x0020_83002_x00A7__51849')]
+# tgs = [TimetableTrainGroup.query.get('tg_100_x0020_G_x0020_2500_113810')]
 
 logging.basicConfig(filename='../../example_data/railgraph/dtakt_routing.log', encoding='utf-8', level=logging.WARNING)
 

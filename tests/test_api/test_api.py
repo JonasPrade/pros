@@ -3,10 +3,10 @@ from tests.base import BaseTestCase
 
 project_id = 4
 traingroup_id = "tg_BY15_X_x0020_15001_4393"
-station_id = 2
+station_id = 7
 railwaypoint_id = 45819
 masterarea_id = 2382
-masterscenario_id = 3
+masterscenario_id = 7
 #
 # api_key_headers = Headers({
 #             'x-api-key': 'TEST-API-KEY'

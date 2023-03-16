@@ -174,7 +174,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
     projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
-    projectcontent_railway_lines = ma.Nested(RailwayLinesShortSchema, many=True)
+    railway_lines = ma.Nested(RailwayLinesShortSchema, many=True)
     class Meta:
         model = models.ProjectContent
         include_fk = True
@@ -236,6 +236,18 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     effects_passenger_long_rail = auto_field()
     effects_passenger_local_rail = auto_field()
     effects_cargo_rail = auto_field()
+
+    coords = fields.Method('create_one_geojson')
+
+    def create_one_geojson(self, obj):
+        coord_list = list()
+        for line in obj.railway_lines:
+            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
+
+        coord_multistring = geojson.MultiLineString(coord_list)
+
+        return coord_multistring
 
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):

@@ -870,9 +870,7 @@ class BvwpProjectBattery(BvwpCost):
                 new_projects.append(project)
 
             if energy_needed_multi_cycle > 0:
-                raise BatteryCapacityError(
-                    f"For {tt_line} there couldn't be installed enough infrastructure for multi_cycle_problem"
-                )
+                logging.error(f"For {tt_line} there couldn't be installed enough infrastructure for multi_cycle_problem")
 
         return new_projects
 

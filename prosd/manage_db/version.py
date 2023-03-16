@@ -194,7 +194,7 @@ class Version:
 
     def _add_electrification(self, railway_line):
         railway_line.electrified = True
-        railway_line.catenary = True
+        railway_line.catenary = False
         railway_line.voltage = 15
         railway_line.dc_ac = 'ac'
 

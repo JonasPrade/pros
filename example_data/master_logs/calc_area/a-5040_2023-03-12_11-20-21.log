@@ -1,0 +1,4 @@
+INFO:root:finished calculation electrification 5040 (duration 0.1665191650390625s)
+INFO:root:finished calculation efuel 5040 (duration 0.24436402320861816s)
+INFO:root:finished calculation optimised_electrification 5040 (duration 0.694080114364624s)
+INFO:root:finished calculation diesel 5040 (duration 0.08765387535095215s)

@@ -1,0 +1,93 @@
+\subsubsection{Ausgewählte Untersuchungsgebiete für \VAR{scenario.name} (Nr. \VAR{scenario.id})}\label{chap_scenario_\VAR{scenario.id}_ausgewählte_untersuchungsgebiete}
+Alle Untersuchungsgebiete, in denen Zügen der folgenden Kategorie(n) verkehren (siehe auch Abbildung \ref{fig_s_\VAR{scenario.id}_ausgewählte_untersuchungsgebiete}):
+\begin{itemize}
+\BLOCK{ for transport_mode in transport_modes }
+    \item \acrlong{\VAR{transport_mode}}
+\BLOCK{ endfor }
+\end{itemize}
+
+Hinweis: Für Gebiete mit \acrshort{sgv} werden die Traktionsfälle Batterie und Wasserstoff nicht gerechnet.
+
+\begin{center}
+	\begin{figure}[p]
+	\includegraphics[height=0.85\textheight]{\VAR{filepath_master_areas_sgv}}
+	\caption{\label{fig_s_\VAR{scenario.id}_ausgewählte_untersuchungsgebiete} Ausgewählte Untersuchungsgebiete für Szenario \VAR{scenario.id}}
+	\end{figure}
+\end{center}
+
+
+\begin{center}
+\captionof{table}{\label{table_\VAR{scenario.id}_übersicht_untersuchungsgebiet_\VAR{scenario.id}} Übersicht ausgewählte Untersuchungsgebiete Szenrio \VAR{scenario.id}}
+\begin{tabularx}{\textwidth}{l | X | X | X | X} Nummer & kosteneffizienteste Traktion & Gesamtkosten kosteneffizienteste Traktion & Gesamtkosten e-Fuel & Gesamtkosten Diesel \\
+\hline
+\BLOCK{ for area in areas }
+\VAR{area_numbers[area.id]} &\VAR{area.cost_overview["minimal_cost"] | replace("_", " ")} &
+\SI{\VAR{area.cost_overview["sum_cost"][area.cost_overview["minimal_cost"]]|round|int}}{Tsd. \EUR} &
+\SI{\VAR{area.cost_overview["sum_cost"]["efuel"] |round|int}}{Tsd. \EUR} &
+\SI{\VAR{area.cost_overview["sum_cost"]["diesel"] |round|int}}{Tsd. \EUR} \\
+\BLOCK{ endfor }
+\end{tabularx}
+\end{center}
+
+
+
+\BLOCK{ for area in areas }
+	\paragraph*{Untersuchungsgebiet \VAR{area_numbers[area.id]}}\mbox{} \\
+	\captionof{table}{\label{table_\VAR{scenario.id}_kenngrößen_untersuchungsgebiet_\VAR{area.id}} Basiskenngrößen Untersuchungsgebiet \VAR{area_numbers[area.id]}}
+	\begin{center}
+		\begin{tabularx}{\textwidth}{X | r } Kenngröße & Wert \\
+		\hline
+		Länge & \SI{\VAR{area.length/1000|round|int}}{\km} \\
+		gewählte Traktion & \VAR{area.cost_overview["minimal_cost"] | replace("_", " ")} \\
+		Infrastrukturkosten gewählte Traktion (Barwert) & \SI{\VAR{area.cost_overview["infrastructure_cost"][area.cost_overview["minimal_cost"]]|round|int}}{Tsd. \EUR} \\
+		Betriebskosten gewählte Traktion (Barwert) & \SI{\VAR{area.cost_overview["operating_cost"][area.cost_overview["minimal_cost"]]|round|int}}{Tsd. \EUR}\\
+		Gesamtkosten gewählte Traktion (Barwert) & \SI{\VAR{area.cost_overview["sum_cost"][area.cost_overview["minimal_cost"]]|round|int}}{Tsd. \EUR} \\
+		\ce{CO2}-Jahresbilanz Ausgangssituation & \SI{\VAR{area.get_operating_cost_categories_by_traction["all"]["diesel"]["co2_emission"]}}{\tonne} \ce{CO2} \\
+		\ce{CO2}-Jahresbilanz Szenario & \SI{\VAR{area.get_operating_cost_categories_by_traction["all"][area.cost_overview["minimal_cost"]]["co2_emission"]}}{\tonne} \ce{CO2} \\
+		\end{tabularx}
+	\end{center}
+
+	\captionof{table}{\label{table_\VAR{scenario.id}_kosten_untersuchungsgebiet_\VAR{area.id}} Kosten Untersuchungsgebiet verschiedene Traktionen \VAR{area_numbers[area.id]}}
+	\begin{center}
+		\begin{tabularx}{\textwidth}{X | X | X | X} Traktion & Infrastrukturkosten & Betriebskosten & Gesamtkosten\\
+		\hline
+		\BLOCK{ for traction in tractions }
+			\BLOCK{ if traction in area.cost_overview["infrastructure_cost"].keys()}
+				\VAR{traction | replace("_", " ")} & \SI{\VAR{area.cost_overview["infrastructure_cost"][traction]|round|int}}{Tsd. \EUR} & \SI{\VAR{area.cost_overview["operating_cost"][traction]|round|int}}{Tsd. \EUR} & \SI{\VAR{area.cost_overview["sum_cost"][traction]|round|int}}{Tsd. \EUR}\\
+			\BLOCK{ endif }
+		\BLOCK{ endfor }
+		\end{tabularx}
+	\end{center}
+	\bigskip
+
+	\BLOCK{ for transport_mode in area.get_operating_cost_categories_by_traction }
+	\captionof{table}{\label{tfig_\VAR{scenario.id}_betriebskosten_untersuchungsgebiet_\VAR{area.id}_transportmode_\VAR{key}} jährliche Betriebskosten Untersuchungsgebiet \VAR{area_numbers[area.id]} für Zugkategorie \uppercase{\VAR{transport_mode}}}
+	\begin{center}
+		\begin{tabularx}{\textwidth}{X | X | X | X | X } Traktion & Gesamtkosten & Kapitaldienst & Instandhaltungs- kosten & Energiekosten\\
+		\hline
+		\BLOCK{ for traction in area.get_operating_cost_categories_by_traction[transport_mode] }
+			\VAR{traction|replace("_", " ")} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["train_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["debt_service"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["maintenance_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["energy_cost"]}}{Tsd. \EUR} \\
+		\BLOCK{ endfor }
+		\end{tabularx}
+		\smallskip
+		\begin{tabularx}{\textwidth}{X | X | X | X | X | X } Traktion &  \ce{CO2}-Kosten & Schadstoff- kosten & Primärenergie- kosten & THG-Emissionen Herstellung & CO2-Emissionen\\
+		\hline
+		\BLOCK{ for traction in area.get_operating_cost_categories_by_traction[transport_mode] }
+			\VAR{traction|replace("_", " ")} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["co2_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["pollutants_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["primary_energy_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["thg_vehicle_production_cost"]}}{Tsd. \EUR} &
+			\SI{\VAR{area.get_operating_cost_categories_by_traction[transport_mode][traction]["co2_emission"]}}{\tonne} \ce{CO2} \\
+		\BLOCK{ endfor }
+		\end{tabularx}
+		\medskip
+	\end{center}
+	\BLOCK{ endfor }
+
+\textit{Untersuchungsgebiet ID in Datenbank \VAR{area.id}}
+\BLOCK{ endfor }

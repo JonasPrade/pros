@@ -1,48 +1,69 @@
-\subsection{\VAR{scenario_name} - \VAR{scenario_id}}
+\subsection{\VAR{scenario_name} - Szenarionummer \VAR{scenario_id}}\label{chap_kenngrößen_s_\VAR{scenario_id}}
+
+\subsubsection{Kenngrößen Ausgangssituation}
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_ausgangsszenario_infrastrukturkilometer} Kenngrößen Ausgangszenario genutzte Infrastruktur jeweils für \acrshort{spnv}, \acrshort{spfv} und \acrshort{sgv} sowie insgesamt}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | X | X | X} & Infrastruktur & Infrastruktur (nicht elektrifiziert) & Anteil nicht elektrifizierte Infrastruktur \\
+	\hline
+	\acrshort{sgv} & \SI{\VAR{parameter_ausgangszenario["infra_km_sgv_all"]}}{\km} & \SI{\VAR{parameter_ausgangszenario["infra_km_sgv_no_catenary"]}}{\km} & \num{\VAR{parameter_ausgangszenario["infra_relativ_sgv"]}} \% \\
+	\acrshort{spfv} & \SI{\VAR{parameter_ausgangszenario["infra_km_spfv_all"]}}{\km} & \SI{\VAR{parameter_ausgangszenario["infra_km_spfv_no_catenary"]}}{\km} & \num{\VAR{parameter_ausgangszenario["infra_relativ_spfv"]}} \% \\
+	\acrshort{spnv} & \SI{\VAR{parameter_ausgangszenario["infra_km_spnv_all"]}}{\km} & \SI{\VAR{parameter_ausgangszenario["infra_km_spnv_no_catenary"]}}{\km} & \num{\VAR{parameter_ausgangszenario["infra_relativ_spnv"]}} \% \\
+	\hline
+	Insgesamt & \SI{\VAR{parameter_ausgangszenario["infra_km_all"]}}{\km} & \SI{\VAR{parameter_ausgangszenario["infra_km_all_no_catenary"]}}{\km} & \\
+	\end{tabularx}
+\end{center}
+\hspace{2em}
+Hinweis: Länge der Infrastruktur weicht von bekannten Länge der Infrastruktur ab, da z.T. parallele Strecken aufgrund des Routing-Algorithmus nicht mitgerechnet werden können.
+
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_ausgangsszenario_betriebskilometer} Kenngrößen Ausgangszenario Zugkilometer jeweils für \acrshort{spnv}, \acrshort{spfv} und \acrshort{sgv} sowie insgesamt}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | X | X | X} & Zugkilometer gesamt (Tag) & Zugkilometer nicht elektrisch (Tag) & Anteil nicht elektrische Betriebslänge \\
+	\hline
+	\acrshort{sgv} & \SI{\VAR{parameter_ausgangszenario["running_km_sgv_all"]}}{Tsd. \km} & \SI{\VAR{parameter_ausgangszenario["running_km_sgv_no_catenary"]}}{Tsd. \km} & \num{\VAR{parameter_ausgangszenario["running_relativ_sgv"]}}  \% \\
+	\acrshort{spfv} & \SI{\VAR{parameter_ausgangszenario["running_km_spfv_all"]}}{Tsd. \km} & \SI{\VAR{parameter_ausgangszenario["running_km_spfv_no_catenary"]}}{Tsd. \km} & \num{\VAR{parameter_ausgangszenario["running_relativ_spfv"]}} \% \\
+	\acrshort{spnv} & \SI{\VAR{parameter_ausgangszenario["running_km_spnv_all"]}}{Tsd. \km} & \SI{\VAR{parameter_ausgangszenario["running_km_spnv_no_catenary"]}}{Tsd. \km} & \num{\VAR{parameter_ausgangszenario["running_relativ_spnv"]}} \% \\
+	\hline
+	Insgesamt & \SI{\VAR{parameter_ausgangszenario["running_km_all"]}}{Tsd. \km} & \SI{\VAR{parameter_ausgangszenario["running_km_all_no_catenary"]}}{Tsd. \km} & \\
+	\end{tabularx}
+\end{center}
+
 
 \subsubsection{Kenngrößen Szenario}
-
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_scenario} Basiskenngrößen Szenario \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{l | X } Kenngröße & Wert \\
+	\begin{tabularx}{\textwidth}{l | r } Kenngröße & Wert \\
 	\hline
 	Anzahl Untersuchungsgebiete & \num{\VAR{count_master_area}} \\
-	Summe Streckenkilometer & \SI{\VAR{length_scenario|round|int}}{\km}
+	Summe Streckenkilometer & \SI{\VAR{parameter_ausgangszenario["infra_km_all_no_catenary"]}}{\km} \\
+	Summe Zugkilometer (Tag) & \SI{\VAR{parameter_ausgangszenario["running_km_all_no_catenary"]}}{Tsd. \km} \\
+	\ce{CO2}-Jahresbilanz Ausgangssituation & \SI{\VAR{co2_old|round|int}}{\tonne} \ce{CO2} \\
+	\ce{CO2}-Jahresbilanz Szenario \VAR{scenario_id} & \SI{\VAR{co2_new|round|int}}{\tonne} \ce{CO2}\\
 	\end{tabularx}
 \end{center}
 
 \subsubsection{Kenngrößen Untersuchungsgebiete}
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
 	\hline
     \BLOCK{ for key in cost_effective_traction }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km'])|round}}{\km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km'])/1000|round}}{Tsd. \km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
 
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_untersuchungsgebiete_no_optimised} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion (Optimierte Elektrifizierung aufgeteilt) Szenario \VAR{scenario_id}}
 \begin{center}
-	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Betriebskilometer \\
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
 	\hline
     \BLOCK{ for key in cost_effective_traction_no_optimised }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km'])|round}}{\km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km'])/1000|round}}{Tsd. \km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
 In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, bei denen die optimierte Elektrifizierung am wirtschaftlichsten war, auf die Traktionen Elektrifizierung und Batterie aufgeteilt (je nachdem, bei welchem Teiluntersuchungsgebiet welche Traktion am wirtschaftlichsten war)
 
 \subsubsection{Kenngrößen Kosten}
-
-\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_investition} Basiskenngrößen Kosten \VAR{scenario_id}}
-\begin{center}
-	\begin{tabularx}{\textwidth}{X | r } Kenngröße & Kosten [Barwert] \\
-	\hline
-	Investitionskosten & \num{\VAR{sum_cost_infrastructure|round|int}} Tsd. €\\
-	Betriebskosten & \num{\VAR{sum_cost_operating|round|int}} Tsd. €
-	\end{tabularx}
-\end{center}
 
 \captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_investition_cost_by_traction} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario \VAR{scenario_id}}
 \begin{center}
@@ -51,12 +72,38 @@ In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, be
     \BLOCK{ for key in cost_effective_traction }
         \VAR{key | replace("_", " ")} & \num{\VAR{(cost_effective_traction[key]['infrastructure_cost'])|round|int}} Tsd. € &  \num{\VAR{(cost_effective_traction[key]['operating_cost'])|round|int}} Tsd. €\\
     \BLOCK{ endfor }
+	\hline
+		Summe & \num{\VAR{sum_cost_infrastructure|round|int}} Tsd. € & \num{\VAR{sum_cost_operating|round|int}} Tsd. €
 	\end{tabularx}
 \end{center}
 
 \begin{center}
-	\begin{figure}[!h]
-	\includegraphics[height=0.8\paperheight]{\VAR{filepath_d_map}}
-	\caption{\label{fig_s_\VAR{scenario_id}_d_map} Karte Deutschland bevorzugte Traktion Untersuchungsgebiete Szenario \VAR{scenario_id}}
+	\begin{figure}[p]
+	\includegraphics[height=0.8\textheight]{\VAR{filepath_d_map}}
+	\caption{\label{fig_s_\VAR{scenario_id}_d_map} Karte Deutschland bevorzugte Traktion Untersuchungsgebiete Szenario \VAR{scenario_name}}
 	\end{figure}
 \end{center}
+
+\subsubsection{Kenngrößen Güter-, Fern- und Nahverkehr}
+\captionof{table}{\label{table_\VAR{scenario_id}_kenngrößen_sgv} Zugkilometer Güter-, Fern- und Nahverkehr Szenario \VAR{scenario_id} für Linien mit nicht elektrifizierten Abschnitten im Bezugsfall}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X|X|X|X|X} & Zkm elektrisch & Zkm Batterie & Zkm Wasserstoff & Zkm Diesel & Zkm E-Fuel \\
+	\hline
+\BLOCK{ for key in running_km_by_transport_mode_by_traction }
+	\uppercase{\VAR{key}} &
+	\SI{\VAR{running_km_by_transport_mode_by_traction[key]["electrification"]|round|int}}{\km} &
+	\SI{\VAR{running_km_by_transport_mode_by_traction[key]["battery"]|round|int}}{\km} &
+	\SI{\VAR{running_km_by_transport_mode_by_traction[key]["h2"]|round|int}}{\km} &
+	\SI{\VAR{running_km_by_transport_mode_by_traction[key]["diesel"]|round|int}}{\km} &
+	\SI{\VAR{running_km_by_transport_mode_by_traction[key]["efuel"]|round|int}}{\km} \\
+\BLOCK{ endfor }
+\end{tabularx}
+\end{center}
+
+
+%\begin{center}
+%	\begin{tabularx}{\textwidth}{X | X } Kenngröße & Wert \\
+%	\hline
+%	Betriebsleistung \acrshort{sgv} (Linien mit Abschnitten ohne Oberleitung) & \SI{\VAR{sum_running_km_traingroups_no_catenary/1000|round|int}}{Tsd. \km}
+%	\end{tabularx}
+%\end{center}

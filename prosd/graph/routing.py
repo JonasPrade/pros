@@ -25,11 +25,13 @@ class GraphRoute:
         with open(self.filepath_ignore_ocp, 'r') as fp:
             self.ignore_ocp_lines = json.load(fp)
 
-    def line(self, traingroup, save_route=True, force_recalculation=False):
+    def line(self, traingroup, save_route=True, force_recalculation=False, ignore_ocps=None):
         """
 
         :return:
         """
+        if ignore_ocps is None:
+            ignore_ocps = set()
         if force_recalculation:
             old_routes = RouteTraingroup.query.filter(sqlalchemy.and_(RouteTraingroup.traingroup_id == traingroup.id, RouteTraingroup.master_scenario_id == self.infra_version.scenario.id)).all()
             for route in old_routes:
@@ -38,7 +40,7 @@ class GraphRoute:
 
         train = traingroup.trains[0]
 
-        ignore_ocp = self.ignore_ocp_lines.get(traingroup.id, [])
+        ignore_ocps.update(self.ignore_ocp_lines.get(traingroup.id, []))
 
         # find first ocp
         try:
@@ -58,7 +60,7 @@ class GraphRoute:
         via = []
         for tt_ocp in train.train_part.timetable_ocps[1:-1]:
             try:
-                if tt_ocp.ocp.code not in ignore_ocp:
+                if tt_ocp.ocp.code not in ignore_ocps:
                     station = tt_ocp.ocp.station.db_kuerzel
                     via.append(station)
                 else:
@@ -72,7 +74,7 @@ class GraphRoute:
         try:
             # path = rg.shortest_path_between_stations(graph=graph, station_from=first_ocp, station_to=last_ocp,
             #                                          stations_via=via)
-            path = self.route_line(station_from=first_ocp, station_to=last_ocp, stations_via=via)
+            path = self.route_line(station_from=first_ocp, station_to=last_ocp, stations_via=via, save_route=save_route)
         except networkx.exception.NetworkXNoPath as e:
             logging.error(
                 "No path found for traingroup " + str(traingroup.id) + " from " + str(first_ocp) + " to " + str(last_ocp) + " - " + str(e))

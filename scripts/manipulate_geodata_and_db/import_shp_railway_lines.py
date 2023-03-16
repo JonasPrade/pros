@@ -5,7 +5,7 @@ from prosd import db
 from prosd.models import RailwayLine
 from prosd.graph.railgraph import RailGraph
 
-route_number = 6620
+route_number = 6426
 FILEPATH = '../../example_data/import/shp_railway_lines/{route_number}.shp'.format(route_number=route_number)
 
 shp = geopandas.read_file(FILEPATH)
