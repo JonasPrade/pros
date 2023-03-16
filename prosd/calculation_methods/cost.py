@@ -900,6 +900,8 @@ class BvwpProjectBattery(BvwpCost):
         project_load = None
         possible_charge = 0
         ocp_last_section = section["last_station"]
+        if ocp_last_section is None:
+            return None, 0
         if section["catenary"] is False and (
                 ocp_last_section["station_charging_point"] is None or ocp_last_section[
             "station_charging_point"] is False):
