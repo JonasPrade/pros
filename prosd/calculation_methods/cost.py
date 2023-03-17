@@ -825,7 +825,7 @@ class BvwpProjectBattery(BvwpCost):
                     additional_charge_one_cycle_problem += energy_possible
                     for segment_index, segment in enumerate(cycle_sections):
                         for section in segment:
-                            if segment_index == 0 and section_index > section["group_id"]:
+                            if segment_index == 0 and section_index > section["group_id"]:  # electrification is after that segment
                                 continue
                             section["battery_after_group"] = min(battery_capacity, section["battery_after_group"] + energy_possible)
                             if section["battery_after_group"] < 0:
@@ -836,6 +836,7 @@ class BvwpProjectBattery(BvwpCost):
                     new_projects.append(pc)
                     if forward is False and backwards is False:
                         break
+
             if forward is True:
                 logging.error(f"For {tt_line} there is not enough infrastructure for the first way. Therefore there is actually no solution programmed.")
 
@@ -943,13 +944,13 @@ class BvwpProjectBattery(BvwpCost):
         """
         # PART 1: get lines for electrification
         # try to electrify additional railway_lines
-        rw_line_after_usage = db.session.query(RailwayLine, sqlalchemy.func.count(RouteTraingroup.id)).join(RouteTraingroup).filter(
+        rw_line_after_usage_tuple = db.session.query(RailwayLine, sqlalchemy.func.count(RouteTraingroup.id)).join(RouteTraingroup).filter(
             RailwayLine.id.in_(possible_lines_id),
             RouteTraingroup.master_scenario_id == self.infra_version.scenario.id
         ).group_by(RailwayLine).order_by(sqlalchemy.func.count(RouteTraingroup.id).desc(), RailwayLine.length.asc()).all()
 
-        count_traingroup_max = rw_line_after_usage[0][1]
-        rw_line_after_usage = {row[0]:row[1] for row in rw_line_after_usage}
+        count_traingroup_max = rw_line_after_usage_tuple[0][1]
+        rw_line_after_usage = {row[0]:row[1] for row in rw_line_after_usage_tuple}
         lines_most_usage = dict()
 
         # PART 2
@@ -1000,13 +1001,12 @@ class BvwpProjectBattery(BvwpCost):
             try:
                 sequence_in_rw_lines = rw_lines[rw_lines["railway_line_id"] == line.id].sequence.tolist()[0]
             except IndexError:
-                raise LineNotInRoutError(
-                    f"{line.id} not found in the route of train_line {tt_line}. Try reroute"
-                )
+                logging.error(f"{line.id} not found in the route of train_line {tt_line}. Try reroute")
+
             neighbour_lines = self._get_neighbour_lines_of_traingroup(sequence_in_rw_lines, rw_lines)
-            for line in neighbour_lines:
+            for n_line in neighbour_lines:
                 try:
-                    lines_connected_to_usage[line] = rw_line_after_usage[line]
+                    lines_connected_to_usage[n_line] = rw_line_after_usage[RailwayLine.query.get(n_line.id)]  # need to request the RailwayLine again because the db doesnt recognise the n_line corectly. Dont know why
                 except KeyError:
                     logging.debug(f"railway_line {line} not part of route for train_line {tt_line}")
 
@@ -1015,6 +1015,7 @@ class BvwpProjectBattery(BvwpCost):
         pc = self.create_electrification(lines=list(lines_to_electrify))
 
         return pc, charge_needed
+
 
     def _get_neighbour_lines_of_traingroup(self, sequence_in_rw_lines, rw_lines):
         lines = []
@@ -1195,7 +1196,7 @@ class BvwpProjectOptimisedElectrification(BvwpCost):
         self.maintenance_cost = []
 
         if len(self.sub_areas) == 0:
-            self.logging(f"No subareas found for {area}. Start calculating subareas")
+            logging.info(f"No subareas found for {area}. Start calculating subareas")
             self.area.create_sub_areas()
             self.sub_areas = self.area.sub_master_areas
 
