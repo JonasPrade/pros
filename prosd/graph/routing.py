@@ -25,11 +25,15 @@ class GraphRoute:
         with open(self.filepath_ignore_ocp, 'r') as fp:
             self.ignore_ocp_lines = json.load(fp)
 
-    def line(self, traingroup, save_route=True, force_recalculation=False, ignore_ocps=None):
+    def line(self, traingroup, save_route=True, force_recalculation=False, ignore_ocps=None, following_ocps=None):
         """
 
+        :type ignore_ocps: list of db_staiton_kuerzel strings that gets ignore for routing
+        :type following_ocp: dict adds a ocp to route to after the ocp
         :return:
         """
+        if following_ocps is None:
+            following_ocps = dict()
         if ignore_ocps is None:
             ignore_ocps = set()
         if force_recalculation:
@@ -63,6 +67,9 @@ class GraphRoute:
                 if tt_ocp.ocp.code not in ignore_ocps:
                     station = tt_ocp.ocp.station.db_kuerzel
                     via.append(station)
+                    if tt_ocp.ocp.code in following_ocps.keys():
+                        following_station = following_ocps[tt_ocp.ocp.code]
+                        via.extend(following_station)
                 else:
                     continue
             except AttributeError:

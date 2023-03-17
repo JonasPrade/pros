@@ -7,8 +7,8 @@ COPY_TRAIN_COST = 4 # set to scenario_id or if not needed to False
 COPY_ROUTING = 4
 
 scenario = MasterScenario(
-    id = 40,
-    name = 'Kontrolle Betriebskosten Batterie',
+    id = 41,
+    name = 'Batterie geringere Ladegeschwindigkeit',
     start_year = 2030,
     operation_duration = 30
 )
