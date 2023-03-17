@@ -127,10 +127,7 @@ class BvwpCostElectrification(BvwpCost):
         self.railway_lines_scope = railway_lines_scope
         self.infra_version = infra_version
         self.MAINTENANCE_FACTOR = parameter.MAINTENANCE_FACTOR  # factor from standardisierte Bewertung Tabelle B-19
-        self.COST_OVERHEAD_SINGLE_TRACK = parameter.COST_OVERHEAD_ONE_TRACK  # in thousand Euro
-        self.COST_OVERHEAD_DOUBLE_TRACK = parameter.COST_OVERHEAD_TWO_TRACKS
         self.infrastructure_type = 'electrification'
-        # TODO: Add costs for engineering buildungs (tunnels)
 
         self.cost_overhead, self.length = self.calc_cost_unelectrified_railway_lines()
         self.cost_substation = 0
@@ -148,23 +145,31 @@ class BvwpCostElectrification(BvwpCost):
         :return:
         """
         cost = 0
+        cost_per_kilometer = self.calc_cost_per_kilometer()
         length_no_catenary = 0
         for line in self.railway_lines_scope:
             line_id = line.id
-            cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
             factor_length = 1
             line_infraversion = self.infra_version.get_railwayline_model(railwayline_id = line_id)
 
             if line_infraversion.catenary == False:
                 if line_infraversion.number_tracks == 'zweigleisig':
-                    cost_factor = self.COST_OVERHEAD_DOUBLE_TRACK
+                    cost_factor = cost_per_kilometer*2
                     factor_length = 2
                 else:
-                    cost_factor = self.COST_OVERHEAD_SINGLE_TRACK
+                    cost_factor = cost_per_kilometer
                 cost += line_infraversion.length * cost_factor / 1000
                 length_no_catenary += line_infraversion.length * factor_length / 1000
 
         return cost, length_no_catenary
+
+    def calc_cost_per_kilometer(self):
+        cost_per_kilometer = 0
+        cost_per_kilometer += parameter.COST_CIVIL_ENGINEERING_CONSTRUCTION
+        cost_per_kilometer += parameter.COST_TRACTION_POWER_SUPPLY
+        cost_per_kilometer += parameter.COST_LAND_AQUISITOIN
+        cost_per_kilometer += parameter.COST_CATENARY * (parameter.LIFETIME_CATENARY/parameter.DURATION_OPERATION)
+        return cost_per_kilometer
 
 
 class BvwpProjectChargingStation(BvwpCost):

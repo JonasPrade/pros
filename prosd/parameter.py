@@ -35,11 +35,16 @@ SPFV_STANDI_METHOD = ["electrification", "efuel", "battery", "optimised_electrif
 CO2_COST = 670
 
 FACTOR_PLANNING = 0.18
-MAINTENANCE_FACTOR = 0.014  # electrification   # TODO: Do i have to change maintenance factor??
+MAINTENANCE_FACTOR = 0.014  # electrification
 MAINTENANCE_FACTOR_FILLING_STATION = 0.03
-COST_OVERHEAD_ONE_TRACK = 1141  # Tausend Euro
-COST_OVERHEAD_TWO_TRACKS = 2282  # Tausend Euro
-COST_CHARGING_STATION = 2582  # Tausend Euro  TODO Find correct value
+# COST_OVERHEAD_ONE_TRACK = 1141  # Tausend Euro pro Kilometer
+# COST_OVERHEAD_TWO_TRACKS = 2282  # Tausend Euro pro Kilometer
+COST_CATENARY = 737  # Tausend Euro pro Kilometer
+COST_TRACTION_POWER_SUPPLY = 200 # Tausend Euro pro Kilometer
+COST_CIVIL_ENGINEERING_CONSTRUCTION = 200  # Tausend Euro pro Kilometer
+COST_LAND_AQUISITOIN = 5  # Tausend Euro pro Kilometer
+LIFETIME_CATENARY = 60  # Jahre
+COST_CHARGING_STATION = 2582  # Tausend Euro
 COST_SMALL_CHARGING_STATION = 1200  # Tausend Euro
 
 ENERGY_COST_ELECTRO_CASUAL = 0.12
