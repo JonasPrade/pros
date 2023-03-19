@@ -1,6 +1,7 @@
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
+from prosd.models import MasterScenario, MasterArea, TimetableTrain, TimetableTrainGroup, TimetableTrainPart, TimetableCategory, traingroups_to_masterareas
 
 def german_border():
     german_border_file = '../../../../example_data/import/border_germany/border_germany.geojson'

@@ -2177,6 +2177,7 @@ class TimetableTrainGroup(db.Model):
     def train_provision_cost_day(self):
         """
         train provision cost for a day in thousend euro
+
         :return:
         """
         count_wagons = self.count_wagons

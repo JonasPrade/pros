@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from prosd.models import MasterArea
 
-master_area_id = 4589
-transport_mode = 'sgv'
+master_area_id = 17096
+transport_mode = 'spnv'
 operating_cost = MasterArea.query.get(master_area_id).get_operating_cost_categories_by_transport_mode
 filepath = f"../../../../example_data/report_scenarios/operating_cost/{master_area_id}_transportmode_{transport_mode}"
 
@@ -34,7 +34,7 @@ for key, value in operating_cost_categorie_values.items():
 box = ax.get_position()
 fig.autofmt_xdate(rotation=45)
 ax.set_title(f"Zusammensetzung Betriebskosten für Untersuchungsgebiet {master_area_id}")
-ax.legend(loc="upper right")
+ax.legend(loc="upper center")
 ax.set(ylabel='Tsd. € pro Jahr')
 # plt.show()
 plt.savefig(

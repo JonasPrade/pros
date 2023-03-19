@@ -6,7 +6,7 @@ from prosd.manage_db.version import Version
 from plot_maps_report_master_areas import plot_areas
 from prosd import parameter
 
-SCENARIO_ID = 4
+SCENARIO_ID = 1
 export_file_path = f'../../../../example_data/report_scenarios/s_{SCENARIO_ID}/'
 filepath_images = export_file_path + 'files/'
 categories = ['sgv']
@@ -49,12 +49,12 @@ if __name__ == '__main__':
 
     filepath_map_areas = f'../report_scenarios/s_{scenario.id}/files/master_areas_sgv'
 
-    # plot_areas(
-    #     areas=areas,
-    #     filepath_image_directory=filepath_images,
-    #     scenario_name=scenario.name,
-    #     area_numbers=area_numbers
-    # )
+    plot_areas(
+        areas=areas,
+        filepath_image_directory=filepath_images,
+        scenario_name=scenario.name,
+        area_numbers=area_numbers
+    )
 
     data = {
         "scenario": scenario,

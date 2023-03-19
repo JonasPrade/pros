@@ -48,7 +48,7 @@ Hinweis: Länge der Infrastruktur weicht von bekannter Länge der Infrastruktur 
 	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
 	\hline
     \BLOCK{ for key in cost_effective_traction }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km'])/1000|round|int}}{Tsd. \km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction[key]['area']}} &  \SI{\VAR{(cost_effective_traction[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction[key]['running_km']/1000)|round|int}}{Tsd. \km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}
@@ -58,7 +58,7 @@ Hinweis: Länge der Infrastruktur weicht von bekannter Länge der Infrastruktur 
 	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
 	\hline
     \BLOCK{ for key in cost_effective_traction_no_optimised }
-        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km'])/1000|round|int}}{Tsd. \km}\\
+        \VAR{key | replace("_", " ")} & \num{\VAR{cost_effective_traction_no_optimised[key]['area']}} &  \SI{\VAR{(cost_effective_traction_no_optimised[key]['infra_km'])|round|int}}{\km} & \SI{\VAR{(cost_effective_traction_no_optimised[key]['running_km']/1000)|round|int}}{Tsd. \km}\\
     \BLOCK{ endfor }
 	\end{tabularx}
 \end{center}

@@ -531,13 +531,13 @@ def plot_route_train(tg_id, scenario_id):
 
 
 if __name__ == '__main__':
-    scenario_id = 4
+    scenario_id = 1
     scenario = MasterScenario.query.get(scenario_id)
     areas = scenario.main_areas
-    plot_map_traction_without_optimised_electrificaton(
-        filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
-        areas=areas
-    )
+    # plot_map_traction_without_optimised_electrificaton(
+    #     filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
+    #     areas=areas
+    # )
 
     # traingroups = [area.traingroups for area in areas]
     # plot_sgv_map(

@@ -44,6 +44,13 @@ def plot_optimised_electrification(area, filepath_image_directory, station_list)
     filepath = filepath_image_directory + f"map_{area.id}_optimised_electrification.png"
     linestrings = dict()
 
+    # to plot some stations for orientation -> get the starting ocps for the spnv area
+    station_list = set()
+    for tg in area.traingroups:
+        if tg.category.transport_mode == 'spnv':
+            station_list.add(tg.first_ocp.ocp.station.db_kuerzel)
+            station_list.add(tg.last_ocp.ocp.station.db_kuerzel)
+
     for sub_area in area.sub_master_areas:
         traction = sub_area.cost_effective_traction
         for index, rw_lines in enumerate(sub_area.railway_lines):
@@ -95,7 +102,7 @@ def plot_optimised_electrification(area, filepath_image_directory, station_list)
 
 if __name__ == '__main__':
     filepath_image_directory = '../../../../example_data/report_scenarios/maps_optimised_electrification/'
-    area_id = 4614
+    area_id = 17656
     area = MasterArea.query.get(area_id)
     station_list = [
         "MMF",
