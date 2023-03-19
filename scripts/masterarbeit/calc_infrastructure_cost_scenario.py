@@ -2,7 +2,7 @@ from prosd.models import TimetableTrainCost, TimetableTrainGroup, MasterScenario
 from prosd.manage_db.version import Version
 
 if __name__ == '__main__':
-    tractions = ['electrification', 'optimised_electrification']
+    tractions = ['optimised_electrification']
     for traction in tractions:
         scenario_id = 42
         scenario = MasterScenario.query.get(scenario_id)

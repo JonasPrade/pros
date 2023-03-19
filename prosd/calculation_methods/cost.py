@@ -168,7 +168,7 @@ class BvwpCostElectrification(BvwpCost):
         cost_per_kilometer += parameter.COST_CIVIL_ENGINEERING_CONSTRUCTION
         cost_per_kilometer += parameter.COST_TRACTION_POWER_SUPPLY
         cost_per_kilometer += parameter.COST_LAND_AQUISITOIN
-        cost_per_kilometer += parameter.COST_CATENARY * (parameter.LIFETIME_CATENARY/parameter.DURATION_OPERATION)
+        cost_per_kilometer += parameter.COST_CATENARY * (parameter.DURATION_OPERATION/parameter.LIFETIME_CATENARY)
         return cost_per_kilometer
 
 

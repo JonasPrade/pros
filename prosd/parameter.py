@@ -79,5 +79,25 @@ DURATION_PLANNING = 5
 DURATION_BUILDING = 5
 DURATION_OPERATION = 30
 
+### cost road transport 40t Lkw
+ROAD_ENERGY_ELECTRO_RENWEABLE_COST = 17.5  # €/100km
+ROAD_PERSONAL_COST = 25.18  # €/100km angenommene Reisegeschwindigkeit 80 km/h
+ROAD_CAPITAL_COST = 11.73  # €/100km
+ROAD_MAINTENANCE_COST = 25.72  # €/100km
+ROAD_CO2_ELECTRO_RENEWABLE_COST = 1.8  # €/100km
+ROAD_PRIMARY_ENERGIE_ELECTRO_RENEWABLE_COST = 7.8  # €/100km
+ROAD_EMISSION_ELECTRO_RENEWABLE_COST = 0.1  # €/100km nur Energiebereitstellung, keine Emissionen durch Radabrieb etc
+PAYLOAD_TRUCK = 25  # t Nutzlast für Lkw. Damit angenommen: Zusätzliches Gewicht Batterie wird nicht negativ auf Nutzlast angerechnet
+
+### wagon cargo rail
+LENGTH_CONTAINER_WAGON = 19.7  # m
+DEAD_WEIGHT_CONTAINER_WAGON = 20  # t
+PAYLOAD_CONTAINER_WAGON = 70 # t
+AVERAGE_SPEED_RESILIENCE = 60  # km/h für Ausweichrouten
+COST_CONTAINER_WAGON = 1.06  # € pro Wagen-h
+COST_TRAIN_DRIVER = 57  # € pro Stunde
+TRAIN_PROVISION_COST_PER_WAGGON = 23  # € pro Wagen
+DISTURBANCE_PERCENTAGE = 0.0463  # proportion of time where infrastructure is disturbed
+#
 ##
-CHARGE = 1000  # kWh
+CHARGE = 1200  # kWh

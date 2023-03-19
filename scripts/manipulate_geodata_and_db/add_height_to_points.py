@@ -7,14 +7,14 @@ import logging
 
 from prosd import db
 from prosd.models import RailwayPoint
+from prosd.conf import Config
 
 """
 Gets the height from openrouteservice and add them to the railway_point in th db.
 """
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO)
-
-api_key = "5b3ce3597851110001cf62484dc7d242a69d43098e6f2991ffd6511f"
+api_key = Config.API_KEY_OPENROUTESERVICE
 client = openrouteservice.Client(api_key)
 
 points = RailwayPoint.query.filter(RailwayPoint.height_ors == None).all()

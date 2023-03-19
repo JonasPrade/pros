@@ -1,5 +1,6 @@
 from prosd import parameter
 
+
 class BaseCalculation:
     # base methods for the use-cost-calculation of the calculation_methods
     def __init__(self):

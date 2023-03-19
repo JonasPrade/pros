@@ -2093,6 +2093,98 @@ class TimetableTrainGroup(db.Model):
         travel_speed = self.length_line(infra_version.scenario.id)/(self.travel_time.seconds/3600)
         return travel_speed
 
+    def calc_cost_road_transport(self):
+        from prosd.graph.road import RoadDistances
+        road_cost_per_100_km = sum(
+            [parameter.ROAD_ENERGY_ELECTRO_RENWEABLE_COST,
+            parameter.ROAD_PERSONAL_COST,
+            parameter.ROAD_CAPITAL_COST,
+            parameter.ROAD_MAINTENANCE_COST,
+            parameter.ROAD_CO2_ELECTRO_RENEWABLE_COST,
+            parameter.ROAD_PRIMARY_ENERGIE_ELECTRO_RENEWABLE_COST,
+            parameter.ROAD_EMISSION_ELECTRO_RENEWABLE_COST]
+        )/1000 # Tsd. Euro pro 100 km
+
+        count_trucks = len(self.trains)*math.ceil(self.payload_train/parameter.PAYLOAD_TRUCK)
+        rd = RoadDistances()
+        road_km = rd.get_distance(
+            from_ocp=self.first_ocp.ocp.code,
+            to_ocp=self.last_ocp.ocp.code
+        )/100  # in 100 km
+
+        road_cost = count_trucks * road_km
+        return road_cost  # Tsd. € per day
+
+    @property
+    def get_wagon_sgv(self):
+        """
+        gets the wagon vehicle
+        only works for sgv
+        :return:
+        """
+        formation = self.trains[0].train_part.formation
+        for vehicle in formation.vehicles:
+            if vehicle.wagon is True:
+                return vehicle
+
+        return None
+
+    @property
+    def count_wagons(self):
+        """
+        calculate the count of wagons of the train
+        condition: container train
+        only works for sgv
+        :return:
+        """
+        vehicle = self.get_wagon_sgv
+        count_wagons_weight = math.ceil(vehicle.brutto_weight/(parameter.DEAD_WEIGHT_CONTAINER_WAGON + parameter.PAYLOAD_CONTAINER_WAGON))
+        count_wagons_length = math.floor(vehicle.length/parameter.LENGTH_CONTAINER_WAGON)
+        count_wagons = min(count_wagons_length, count_wagons_weight)
+        return count_wagons
+
+    @property
+    def payload_train(self):
+        """
+        calculate the payload of sgv train
+        :return:
+        """
+        payload_train = self.count_wagons * parameter.PAYLOAD_CONTAINER_WAGON
+
+        return payload_train
+
+    def wagon_cost_per_day(self, scenario_id):
+        """
+        the cost of the usage for wagons (including maintenance) for the traingroup for one day in thousand Euros
+        :param scenario_id:
+        :return:
+        """
+        usage_day = self.running_km_day(scenario_id)/parameter.AVERAGE_SPEED_RESILIENCE  # running_hours not used because timetable may not right at resilience case
+        cost_wagons = parameter.COST_CONTAINER_WAGON * self.count_wagons * usage_day / 1000
+        return cost_wagons
+
+    def personnel_cost_per_day(self, scenario_id):
+        """
+        personell cost for a day in thousend euro
+        :param scenario_id:
+        :return:
+        """
+        personnel_hours_day = self.running_km_day(scenario_id)/parameter.AVERAGE_SPEED_RESILIENCE
+        personnel_cost = personnel_hours_day * parameter.COST_TRAIN_DRIVER / 1000
+        return personnel_cost
+
+    @property
+    def train_provision_cost_day(self):
+        """
+        train provision cost for a day in thousend euro
+        :return:
+        """
+        count_wagons = self.count_wagons
+        wagons_traingroup = count_wagons * len(self.trains)
+        train_provision_cost = wagons_traingroup * parameter.TRAIN_PROVISION_COST_PER_WAGGON / 1000
+
+        return train_provision_cost
+
 
 class TimetableTrain(db.Model):
 
@@ -3123,7 +3215,7 @@ class MasterArea(db.Model):
     @hybrid_method
     def cost_traction(self, traction):
         """
-        get infrastructure cost and cost of trains for one traction
+        get infrastructure cost and operating cost for one traction
         """
         cost_traction = self.get_operating_cost_traction(traction) + self.infrastructure_cost_all_tractions[traction]
 
@@ -3234,7 +3326,6 @@ class MasterArea(db.Model):
             train_costs_transport_mode[name_transport_mode] = train_costs_traction
 
         return train_costs_transport_mode
-
 
     @property
     def cost_overview(self):
@@ -3383,23 +3474,32 @@ class MasterArea(db.Model):
         If it exists and overwrite not active, it will return the project and returns
         otherwise the project will be deleted and the new calculation will begin.
         """
-        pc_attribute = {
-            'electrification': 'elektrification',
-            'battery': 'battery',
-            'optimised_electrification': 'optimised_electrification',
-            'diesel': 'filling_stations_diesel',
-            'h2': 'h2',
-            'efuel': 'efuel'
-        }
-        pc = ProjectContent.query.filter(
+        try:
+            pc = ProjectContent.query.filter(
             ProjectContent.master_areas.contains(self),
-            ProjectContent.name.like(f'{pc_attribute[traction]}%')
-        ).scalar()
+            ProjectContent.name.like(f'{traction}%')
+            ).scalar()
+        except sqlalchemy.exc.MultipleResultsFound:  # if that happens, there is a residual of an old error in the db -> cleans it up and continues
+            pcs = ProjectContent.query.filter(
+                ProjectContent.master_areas.contains(self),
+                ProjectContent.name.like(f'{traction}%')
+            ).all()
+            for pc_delete in pcs:
+                pc_delete.master_areas = []
+                db.session.delete(pc_delete)
+            pc = None
+
         if pc and overwrite is False:
             return pc
         elif pc and overwrite is True:
             db.session.delete(pc)
             db.session.commit()  # and calculate a new project_content
+
+        if traction == 'optimised_electrification' and (overwrite is True or pc is None):
+            for sub_area in self.sub_master_areas:
+                for sub_pc in sub_area.project_contents:
+                    sub_pc.master_areas = []
+                    db.session.delete(sub_pc)
 
         """
         if the traction is optimised electrification -> check if sub areas are created and if not, recreate thenm
@@ -3542,7 +3642,7 @@ class MasterArea(db.Model):
 
         return pc
 
-    def calculate_cost(self, infra_version, overwrite_infrastructure):
+    def calculate_cost(self, infra_version, overwrite_infrastructure, overwrite_operating_cost=False):
         """
         calculate infrastructure and operating cost for one area
         :return:
@@ -3554,7 +3654,7 @@ class MasterArea(db.Model):
             else:
                 start_time = time.time()
                 self.calculate_infrastructure_cost(traction=traction, infra_version=infra_version, overwrite=overwrite_infrastructure)
-                self.calc_operating_cost(traction=traction, infra_version=infra_version)
+                self.calc_operating_cost(traction=traction, infra_version=infra_version, overwrite=overwrite_operating_cost)
                 end_time = time.time()
                 logging.info(f"finished calculation {traction} {self.id} (duration {end_time - start_time}s)")
 

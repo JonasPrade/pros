@@ -300,7 +300,7 @@ class BvwpSgv(BvwpUse):
         )
 
     def energy_electro(self, vehicle_pattern):
-        # factor 1000 to get the value in [l]
+        # factor 1000 to get the value in [kWh]
         energy = 1.08 * (self.waggon.brutto_weight ** (-0.62)) * self.tg.running_km_year(self.infra_version.scenario.id) * 1000
         return energy
 

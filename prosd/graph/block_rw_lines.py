@@ -2,14 +2,16 @@ import json
 import os
 
 from prosd.graph import railgraph, routing
-from prosd.models import MasterScenario, RailwayLine, TimetableTrainGroup, RouteTraingroup, ProjectContent, TimetableTrain, RailwayStation, TimetableTrainPart, TimetableCategory
+from prosd.models import MasterScenario, MasterArea, RailwayLine, TimetableTrainGroup, RouteTraingroup, ProjectContent, TimetableTrain, RailwayStation, TimetableTrainPart, TimetableCategory, TimetableTrainCost
 from prosd.manage_db import version
 from prosd import db
-
+from prosd import parameter
+from prosd.calculation_methods.base import BaseCalculation
 
 class BlockRailwayLines:
-    def __init__(self, scenario_id):
+    def __init__(self, scenario_id, reference_scenario_id):
         self.scenario = MasterScenario.query.get(scenario_id)
+        self.reference_scenario_id = reference_scenario_id
         self.rg = railgraph.RailGraph()
         self.graph = self.rg.load_graph(self.rg.filepath_save_with_station_and_parallel_connections)
         self.filepath_block = f'../../example_data/railgraph/blocked_scenarios/s-{scenario_id}.json'
@@ -116,6 +118,142 @@ class BlockRailwayLines:
         db.session.delete(pc)
         db.session.commit()
 
+    def compare_cost_for_project(self, pc_id):
+        pc = ProjectContent.query.get(pc_id)
+        additional_data_all = self._read_additional_project_info()
+        additional_data_pc = additional_data_all[str(pc_id)]
+        traingroups = [TimetableTrainGroup.query.get(tg) for tg in additional_data_pc["traingroups_to_reroute"]]
+
+        disturbance_time_proportion = (365 * parameter.DISTURBANCE_PERCENTAGE)/365
+
+        # route the traingroups
+        self._reroute_traingroup(
+            pc=pc,
+            tgs=traingroups,
+            additional_data=additional_data_pc
+        )
+
+        road_cost = 0
+        wagon_cost = 0
+        personnel_cost_train = 0
+        train_provision_cost = 0
+        areas_resilience_scenario = set()
+        areas_reference_scenario = set()
+        for tg in traingroups:
+            road_cost += tg.calc_cost_road_transport()
+            wagon_cost += tg.wagon_cost_per_day(scenario_id=self.scenario.id)
+            personnel_cost_train += tg.personnel_cost_per_day(scenario_id=self.scenario.id)
+            train_provision_cost += tg.train_provision_cost_day
+            areas = self.get_areas_for_tg(tg)
+            areas_resilience_scenario.update(areas["resilience_scenario"])
+            areas_reference_scenario.update(areas["reference_scenario"])
+            for area in areas["resilience_scenario"]:
+                if tg not in area.traingroups:
+                    area.traingroups.append(tg)
+
+        db.session.add_all(areas_resilience_scenario)
+        db.session.commit()
+        additional_train_costs = wagon_cost + personnel_cost_train + train_provision_cost
+
+        infra_version = version.Version(scenario=self.scenario)
+        areas_cost = 0
+        for area in areas_resilience_scenario:
+            for traction in ['electrification', 'optimised_electrification']:
+                area.calculate_infrastructure_cost(
+                    traction=traction,
+                    infra_version=infra_version,
+                    overwrite=True
+                )
+
+            for tg in traingroups:
+                for traction in ['electrification', 'diesel', 'efuel']:
+                    TimetableTrainCost.query.filter(
+                        TimetableTrainCost.traingroup_id == tg.id,
+                        TimetableTrainCost.master_scenario_id == self.scenario.id,
+                        TimetableTrainCost.calculation_method == 'bvwp',  # because sgv
+                        TimetableTrainCost.traction == traction  # because sgv uses electrification
+                    ).delete()
+
+                    TimetableTrainCost.create(
+                        traingroup=tg,
+                        master_scenario_id=self.scenario.id,
+                        traction=traction,
+                        infra_version=infra_version
+                    )
+
+            area_cost = area.cost_all_tractions
+            areas_cost += area_cost[area.cost_effective_traction]
+
+        # in the area cost, the sgv costs are included. But they use that infrastructure only at disturbance time
+        # so this train costs are subtracted
+        operating_cost_traingroups_sgv = 0
+        for tg in traingroups:
+            operating_cost_traingroups_sgv += TimetableTrainCost.query.filter(
+                TimetableTrainCost.traingroup_id == tg.id,
+                TimetableTrainCost.master_scenario_id == self.scenario.id,
+                TimetableTrainCost.calculation_method == 'bvwp',  # because sgv
+                TimetableTrainCost.traction == 'electrification'  # because sgv uses electrification
+            ).one().cost
+
+        # operating_cost_traingroup, additional_train_cost and road_coast are yearly costs -> calculate sum over duration for price level 2016
+        base_calc = BaseCalculation()
+        deductible_operating_expenses = base_calc.cost_base_year(
+            start_year=parameter.START_YEAR,
+            duration=parameter.DURATION_OPERATION,
+            cost=operating_cost_traingroups_sgv,
+            cost_is_sum=False
+        )
+        traincost_sgv_day = operating_cost_traingroups_sgv/365 + additional_train_costs
+        operating_cost_sgv_resilience_sum = base_calc.cost_base_year(
+            start_year=parameter.START_YEAR,
+            duration=parameter.DURATION_OPERATION,
+            cost=traincost_sgv_day*disturbance_time_proportion*365,
+            cost_is_sum=False
+        )
+        road_cost_sum = base_calc.cost_base_year(
+            start_year=parameter.START_YEAR,
+            duration=parameter.DURATION_OPERATION,
+            cost=road_cost * disturbance_time_proportion*365,  # road cost Tsd. € pro Tag
+            cost_is_sum=False
+        )
+
+        areas_cost = areas_cost - deductible_operating_expenses
+        cost_resilience = areas_cost + operating_cost_sgv_resilience_sum
+
+        area_cost_reference = 0
+        for area in areas_reference_scenario:
+            area_cost_reference += area.cost_all_tractions[area.cost_effective_traction]
+
+        cost_road_case = area_cost_reference + road_cost_sum
+
+        if cost_resilience <= cost_road_case:
+            print('Resilience wins')
+            return areas_resilience_scenario, road_cost, operating_cost_traingroups_sgv*disturbance_time_proportion
+        else:
+            return areas_reference_scenario, road_cost, operating_cost_traingroups_sgv*disturbance_time_proportion
+
+    def get_areas_for_tg(self, tg):
+        """
+        search master_areas where tg runs through
+        :param tg:
+        :return:
+        """
+        areas = dict()
+        rw_lines = tg.railway_lines_scenario(scenario_id=self.scenario.id)
+        areas["resilience_scenario"] = MasterArea.query.filter(
+            MasterArea.scenario_id == self.scenario.id,
+            MasterArea.superior_master_id == None,
+            MasterArea.railway_lines.any(RailwayLine.id.in_([rw.id for rw in rw_lines]))
+        ).all()
+        areas["reference_scenario"] = MasterArea.query.filter(
+            MasterArea.scenario_id == self.reference_scenario_id,
+            MasterArea.superior_master_id == None,
+            MasterArea.railway_lines.any(RailwayLine.id.in_([rw.id for rw in rw_lines]))
+        ).all()
+
+        return areas
+
+
     def reroute_traingroups(self):
         infra_version = version.Version(scenario=self.scenario)
         route = routing.GraphRoute(graph=self.graph, infra_version=infra_version)
@@ -125,22 +263,27 @@ class BlockRailwayLines:
         blocked_ocps = []
         traingroups = []
         following_ocps = dict()
-        for key, value in data.items():
-            blocked_ocps = []
-
+        for key, additional_data_pc in data.items():
             pc = ProjectContent.query.get(key)
-            infra_version.add_projectcontents_to_version_temporary(
-                pc_list=[pc],
-                update_infra=True,
-                use_subprojects=False
-            )
-            blocked_ocps.extend([station.db_kuerzel for station in pc.railway_stations])
-            blocked_ocps.extend(value["additional_ignore_ocp"])
-            traingroups.extend([TimetableTrainGroup.query.get(tg) for tg in value["traingroups_to_reroute"]])
-            following_ocps.update(value["following_ocps"])
+            tgs = [TimetableTrainGroup.query.get(tg) for tg in additional_data_pc["traingroups_to_reroute"]]
+            self._reroute_traingroup(pc, tgs, additional_data_pc)
 
-        traingroups = list(set(traingroups))
-        for tg in traingroups:
+    def _reroute_traingroup(self, pc, tgs, additional_data):
+        infra_version = version.Version(scenario=self.scenario)
+        route = routing.GraphRoute(graph=self.graph, infra_version=infra_version)
+        blocked_ocps = []
+
+        infra_version.add_projectcontents_to_version_temporary(
+            pc_list=[pc],
+            update_infra=True,
+            use_subprojects=False
+        )
+        blocked_ocps.extend([station.db_kuerzel for station in pc.railway_stations])
+        blocked_ocps.extend(additional_data["additional_ignore_ocp"])
+
+        following_ocps = additional_data["following_ocps"]
+
+        for tg in tgs:
             route.line(
                 traingroup=tg,
                 save_route=True,
@@ -148,6 +291,7 @@ class BlockRailwayLines:
                 ignore_ocps=set(blocked_ocps),
                 following_ocps=following_ocps
             )
+
 
     def reroute_traingroups_without_blocked_lines(self):
         infra_version = version.Version(scenario=self.scenario)

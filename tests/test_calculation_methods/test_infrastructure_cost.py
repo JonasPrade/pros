@@ -2,7 +2,7 @@ from tests.base import BaseTestCase
 from prosd import parameter
 from prosd.manage_db.version import Version
 from prosd.models import MasterScenario, MasterArea, TimetableLine
-from prosd.calculation_methods.cost import BvwpProjectBattery, BvwpProjectOptimisedElectrification, BvwpH2InfrastructureCost
+from prosd.calculation_methods.cost import BvwpProjectBattery, BvwpProjectOptimisedElectrification, BvwpCostElectrification, BvwpH2InfrastructureCost
 
 tt_id = 1720
 area_id = 12338
@@ -59,3 +59,16 @@ class TestInfrastructureCostH2(BaseTestCase):
         )
 
         self.assertTrue(project_h2.cost_2015 > 0)
+
+class TestInfrastructureCostElectrification(BaseTestCase):
+    def test_infrastructure_cost_electrification(self):
+        area_id = 16349
+        infra_version = get_infra_version()
+        area = MasterArea.query.get(area_id)
+
+        project_electrification = BvwpCostElectrification(
+            start_year_planning=parameter.START_YEAR,
+            railway_lines_scope=area.railway_lines,
+            infra_version=infra_version
+        )
+

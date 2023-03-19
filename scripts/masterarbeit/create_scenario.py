@@ -10,7 +10,7 @@ scenario = MasterScenario(
     id = 42,
     name = 'Elektrifizierung mit Restwertmethode',
     start_year = 2030,
-    operation_duration = 30
+    operation_duration = 300
 )
 
 project_content_ids = [

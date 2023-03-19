@@ -7,7 +7,7 @@ from prosd import db
 from prosd.manage_db.version import Version
 from sgv_no_catenary import running_km_no_catenary, running_km_all
 
-SCENARIO_ID = 40
+SCENARIO_ID = 42
 template_file = 'report_template.tex'
 export_file_path = f'../../../example_data/report_scenarios/s_{SCENARIO_ID}/'
 filepath_images = export_file_path + 'files/'
