@@ -13,13 +13,15 @@ areas = MasterArea.query.join(traingroups_to_masterareas).join(TimetableTrainGro
 
 area_numbers = {area.id:index for index, area in enumerate(areas)}
 
-prioritization= {}
+prioritization= {
+    "Infrastrukturkosten": [],
+    "Betriebskosten": [],
+    "Verhältnis": []
+}
 for area in areas:
-    prioritization[area_numbers[area.id]] = {}
-    prioritization[area_numbers[area.id]]["area_number"] = area_numbers[area.id]
-    prioritization[area_numbers[area.id]]["operating_cost"] = area.operating_cost_all_tractions[area.cost_effective_traction]
-    prioritization[area_numbers[area.id]]["infrastructure_cost"] = area.infrastructure_cost_all_tractions[area.cost_effective_traction]
-    prioritization[area_numbers[area.id]]["proportion"] = area.infrastructure_cost_all_tractions[area.cost_effective_traction]/area.operating_cost_all_tractions[area.cost_effective_traction]
+    prioritization["Betriebskosten"].append(round(area.operating_cost_all_tractions[area.cost_effective_traction]))
+    prioritization["Infrastrukturkosten"].append(round(area.infrastructure_cost_all_tractions[area.cost_effective_traction]))
+    prioritization["Verhältnis"].append(format(area.infrastructure_cost_all_tractions[area.cost_effective_traction]/area.operating_cost_all_tractions[area.cost_effective_traction], '.2f'))
 
 df = pandas.DataFrame.from_dict(prioritization)
-df.to_latex(filepath, index=False)
+df.to_latex(filepath, index=True)

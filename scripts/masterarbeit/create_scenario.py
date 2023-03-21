@@ -7,8 +7,8 @@ COPY_TRAIN_COST = 1 # set to scenario_id or if not needed to False
 COPY_ROUTING = 1
 
 scenario = MasterScenario(
-    id = 21,
-    name = 'e-Fuel günstiger (1€/l)',
+    id = 22,
+    name = 'e-Fuel (0,75€/kg)',
     start_year = 2030,
     operation_duration = 30
 )
