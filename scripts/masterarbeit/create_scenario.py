@@ -2,15 +2,15 @@ from prosd.models import MasterScenario, ProjectContent, TimetableTrainCost, Mas
 from prosd import db
 import sqlalchemy
 
-COPY_AREAS = 42  # set to scenario_id or if not needed to False
-COPY_TRAIN_COST = 42 # set to scenario_id or if not needed to False
-COPY_ROUTING = 42
+COPY_AREAS = 1  # set to scenario_id or if not needed to False
+COPY_TRAIN_COST = 1 # set to scenario_id or if not needed to False
+COPY_ROUTING = 1
 
 scenario = MasterScenario(
-    id = 1,
-    name = 'Referenzszenario',
+    id = 21,
+    name = 'e-Fuel günstiger (1€/l)',
     start_year = 2030,
-    operation_duration = 300
+    operation_duration = 30
 )
 
 project_content_ids = [

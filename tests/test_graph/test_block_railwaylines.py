@@ -11,13 +11,13 @@ traingroup_id = "tg_677_x0020_G_x0020_2501_112538"
 class TestBlockRailwayLines(BaseTestCase):
     def test_create_project(self):
         from_ocp = 'RSD'
-        to_ocp = 'RGE'
-        stations_via = []
-        additional_ignore_ocp = ["RGE", "YRRHH", "RRHH", "RPB", "RGN"]
+        to_ocp = 'SKL'
+        stations_via = ["RNBO", "SKL", "SHO"]
+        additional_ignore_ocp = ["RLSM", "RL", "RLUM", "RLUR", "RLI", "RSD", "SKL", "SHO"]
         reroute_train_categories = ['sgv']
-        project_content_name = "Sperrung Schifferstedt – Germersheim"
+        project_content_name = "Sperrung Ludwigshafen – Neunkirchen"
         following_ocps = {
-            "RSD": ["RN", "RLA", "RWND"]
+            "RM": ["FWOR", "FMWG", "FGAL", "SNBR"]
         }
 
         block_rw_lines = BlockRailwayLines(scenario_id=scenario_id, reference_scenario_id=reference_scenario_id)
@@ -45,7 +45,7 @@ class TestBlockRailwayLines(BaseTestCase):
         block_rw_lines.reroute_traingroups_without_blocked_lines()
 
     def test_delete_blocking_project(self):
-        pc_id = 55497
+        pc_id = 72637
         block_rw_lines = BlockRailwayLines(scenario_id=scenario_id, reference_scenario_id=reference_scenario_id)
         block_rw_lines.delete_blocking_project(pc_id=pc_id)
 

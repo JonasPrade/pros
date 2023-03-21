@@ -9,7 +9,7 @@ def preparation():
     start_year = parameter.START_YEAR
     duration_operation = parameter.DURATION_OPERATION
 
-    scenario_id = 2
+    scenario_id = 1
     scenario = MasterScenario.query.get(scenario_id)
     scenario_infra = Version(scenario=scenario)
 
@@ -20,7 +20,7 @@ class TestCostSgv(BaseTestCase):
     def test_cost_electrification_sgv(self):
         start_year, duration_operation, scenario_infra = preparation()
 
-        traingroup_id = 'tg_SH_AS_x0020_09903_132927'
+        traingroup_id = 'tg_323_x0020_G_x0020_4002_122463'
         traingroup = TimetableTrainGroup.query.get(traingroup_id)
         print(traingroup.category.transport_mode)
 

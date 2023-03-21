@@ -15,8 +15,8 @@ def get_cmap(n, name='hsv'):
     return plt.cm.get_cmap(name, n)
 
 
-def plot_areas(areas, filepath_image_directory, scenario_name, area_numbers):
-    filepath = filepath_image_directory + "master_areas_sgv.png"
+def plot_areas(areas, filepath_image_directory, title_plot, area_numbers, filename):
+    filepath = filepath_image_directory + filename
     linestrings = dict()
 
     for index_area, area in enumerate(areas):
@@ -60,7 +60,7 @@ def plot_areas(areas, filepath_image_directory, scenario_name, area_numbers):
     german_border_df = german_border()
     german_border_df.plot(ax=ax, color='#BFC0C0', alpha=0.2)
     ax.legend(loc='upper left', prop={'size': 12})
-    ax.set(title=f'Untersuchungsgebiete SGV {scenario_name}')
+    ax.set(title=title_plot)
     ax.set_axis_off()
     # plt.show()
     plt.savefig(
@@ -70,3 +70,22 @@ def plot_areas(areas, filepath_image_directory, scenario_name, area_numbers):
         dpi=400
     )
 
+
+if __name__ == '__main__':
+    scenario_id = 1
+    categories = ['spfv']
+    areas = MasterArea.query.join(traingroups_to_masterareas).join(TimetableTrainGroup).join(TimetableTrain).join(
+        TimetableTrainPart).join(TimetableCategory).filter(
+        MasterArea.scenario_id == scenario_id,
+        MasterArea.superior_master_id == None,
+        TimetableCategory.transport_mode.in_(categories)
+    ).all()
+    filepath_image_directory = '../../../../example_data/report_scenarios/common_maps/'
+    area_numbers = {area.id:index for index, area in enumerate(areas)}
+    plot_areas(
+        areas=areas,
+        filepath_image_directory=filepath_image_directory,
+        title_plot=f'Untersuchungsgebiete SPFV Szenario 1',
+        filename='master_areas_spfv.png',
+        area_numbers=area_numbers
+    )

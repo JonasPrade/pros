@@ -52,8 +52,9 @@ if __name__ == '__main__':
     plot_areas(
         areas=areas,
         filepath_image_directory=filepath_images,
-        scenario_name=scenario.name,
-        area_numbers=area_numbers
+        title_plot=f'Untersuchungsgebiete SGV {scenario.name}',
+        area_numbers=area_numbers,
+        filename="master_areas_sgv.png"
     )
 
     data = {

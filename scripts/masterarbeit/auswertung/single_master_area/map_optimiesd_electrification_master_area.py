@@ -40,7 +40,7 @@ def german_cities(station_id_list):
     return stations_df
 
 
-def plot_optimised_electrification(area, filepath_image_directory, station_list):
+def plot_optimised_electrification(area, filepath_image_directory, station_ignore_list):
     filepath = filepath_image_directory + f"map_{area.id}_optimised_electrification.png"
     linestrings = dict()
 
@@ -50,6 +50,8 @@ def plot_optimised_electrification(area, filepath_image_directory, station_list)
         if tg.category.transport_mode == 'spnv':
             station_list.add(tg.first_ocp.ocp.station.db_kuerzel)
             station_list.add(tg.last_ocp.ocp.station.db_kuerzel)
+
+    station_list = station_list - station_ignore_list
 
     for sub_area in area.sub_master_areas:
         traction = sub_area.cost_effective_traction
@@ -88,7 +90,7 @@ def plot_optimised_electrification(area, filepath_image_directory, station_list)
     for idx, row in german_cities_df.iterrows():
         plt.annotate(text=row["name"], xy=(row.geometry.x, row.geometry.y))
 
-    ax.legend(loc='upper left', prop={'size': 12})
+    ax.legend(loc='upper right', prop={'size': 12})
     ax.set(title=f'Untersuchungsgebiet {area.id} Optimierte Elektrifizierung')
     ax.set_axis_off()
     # plt.show()
@@ -102,27 +104,17 @@ def plot_optimised_electrification(area, filepath_image_directory, station_list)
 
 if __name__ == '__main__':
     filepath_image_directory = '../../../../example_data/report_scenarios/maps_optimised_electrification/'
-    area_id = 17656
+    area_id = 17760
     area = MasterArea.query.get(area_id)
-    station_list = [
-        "MMF",
-        "MSB",
-        "MRO",
-        "NPA",
-        "MLA",
-        "MXS",
-        "MBUH",
-        "MFL",
-        "MWSB",
-        "MEG",
-        "MTS",
-        "MGA",
-        "MTRT",
-        "MNR"
-    ]
+    station_ignore_list = {
+        "NHR",
+        "NHAN",
+        "NSS",
+        "DH"
+    }
 
     plot_optimised_electrification(
         area=area,
         filepath_image_directory=filepath_image_directory,
-        station_list=station_list
+        station_ignore_list=station_ignore_list
     )

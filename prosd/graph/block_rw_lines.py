@@ -8,6 +8,7 @@ from prosd import db
 from prosd import parameter
 from prosd.calculation_methods.base import BaseCalculation
 
+
 class BlockRailwayLines:
     def __init__(self, scenario_id, reference_scenario_id):
         self.scenario = MasterScenario.query.get(scenario_id)
@@ -97,6 +98,8 @@ class BlockRailwayLines:
         tgs_ids = [tg.id for tg in tgs]
         self._save_additional_project_info(pc=pc, additional_ignore_ocp=additional_ignore_ocp, traingroups_to_reroute=tgs_ids, following_ocps=following_ocps)
 
+        return pc
+
     def delete_blocking_project(self, pc_id):
         infra_version = version.Version(scenario=self.scenario)
         route = routing.GraphRoute(graph=self.graph, infra_version=infra_version)
@@ -139,6 +142,7 @@ class BlockRailwayLines:
         train_provision_cost = 0
         areas_resilience_scenario = set()
         areas_reference_scenario = set()
+        areas_traingroups_without_sgv = dict()
         for tg in traingroups:
             road_cost += tg.calc_cost_road_transport()
             wagon_cost += tg.wagon_cost_per_day(scenario_id=self.scenario.id)
@@ -148,6 +152,7 @@ class BlockRailwayLines:
             areas_resilience_scenario.update(areas["resilience_scenario"])
             areas_reference_scenario.update(areas["reference_scenario"])
             for area in areas["resilience_scenario"]:
+                areas_traingroups_without_sgv[area.id] = area.traingroups.copy()
                 if tg not in area.traingroups:
                     area.traingroups.append(tg)
 
@@ -226,11 +231,19 @@ class BlockRailwayLines:
 
         cost_road_case = area_cost_reference + road_cost_sum
 
-        if cost_resilience <= cost_road_case:
-            print('Resilience wins')
-            return areas_resilience_scenario, road_cost, operating_cost_traingroups_sgv*disturbance_time_proportion
-        else:
-            return areas_reference_scenario, road_cost, operating_cost_traingroups_sgv*disturbance_time_proportion
+        answer = {}
+
+        answer["road_cost_day"] = road_cost
+        answer["road_coast_operation_duration"] = road_cost_sum
+        answer["operating_cost_sgv_resilience_day"] = traincost_sgv_day
+        answer["operating_cost_sgv_resilience_sum"] = operating_cost_sgv_resilience_sum
+        answer["cost_road_case"] = cost_road_case
+        answer["cost_resilience"] = cost_resilience
+
+        for area in areas["resilience_scenario"]:
+            area.traingroups = areas_traingroups_without_sgv[area.id]
+
+        return answer
 
     def get_areas_for_tg(self, tg):
         """
@@ -252,7 +265,6 @@ class BlockRailwayLines:
         ).all()
 
         return areas
-
 
     def reroute_traingroups(self):
         infra_version = version.Version(scenario=self.scenario)
@@ -291,7 +303,6 @@ class BlockRailwayLines:
                 ignore_ocps=set(blocked_ocps),
                 following_ocps=following_ocps
             )
-
 
     def reroute_traingroups_without_blocked_lines(self):
         infra_version = version.Version(scenario=self.scenario)
