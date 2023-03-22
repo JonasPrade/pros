@@ -394,7 +394,7 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
         model = models.MasterArea
         include_fk = True
 
-    cost_overview = fields.Dict()
+    parameters = fields.Dict()
     categories = fields.List(fields.Str())
 
 
@@ -409,7 +409,7 @@ class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
     cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
     proportion_traction_optimised_electrification = fields.Dict()
-    running_km_traingroups = fields.Dict()
+    running_km_traingroups_by_transport_mode = fields.Dict()
     traction_optimised_traingroups = fields.Dict()
 
 

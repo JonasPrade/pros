@@ -1,0 +1,137 @@
+\subsection{e-Fuel (0,75€/kg) - Szenarionummer 22}\label{chap_kenngrößen_s_22}
+
+\subsubsection{Kenngrößen Ausgangssituation}
+\captionof{table}{\label{table_22_kenngrößen_ausgangsszenario_infrastrukturkilometer} Kenngrößen Ausgangszenario genutzte Infrastruktur jeweils für \acrshort{spnv}, \acrshort{spfv} und \acrshort{sgv} sowie insgesamt}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | X | X | X} & Infrastruktur & Infrastruktur (nicht elektrifiziert) & Anteil nicht elektrifizierte Infrastruktur \\
+	\hline
+	\acrshort{sgv} & \SI{11211}{\km} & \SI{1152}{\km} & \num{10.28} \% \\
+	\acrshort{spfv} & \SI{12989}{\km} & \SI{908}{\km} & \num{6.99} \% \\
+	\acrshort{spnv} & \SI{22806}{\km} & \SI{10037}{\km} & \num{44.01} \% \\
+	\hline
+	Insgesamt & \SI{28739}{\km} & \SI{10191}{\km} & \\
+	\end{tabularx}
+\end{center}
+\hspace{2em}
+
+Hinweis: Länge der Infrastruktur weicht von bekannter Länge der Infrastruktur ab, da z.T. parallele Strecken aufgrund des Routing-Algorithmus nicht mitgerechnet werden können.
+
+\captionof{table}{\label{table_22_kenngrößen_ausgangsszenario_betriebskilometer} Kenngrößen Ausgangszenario Zugkilometer jeweils für \acrshort{spnv}, \acrshort{spfv} und \acrshort{sgv} sowie insgesamt}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | X | X | X} & Zugkilometer gesamt (Tag) & Zugkilometer nicht elektrisch (Tag) & Anteil nicht elektrische Betriebslänge \\
+	\hline
+	\acrshort{sgv} & \SI{1395.49}{Tsd. \km} & \SI{59.916}{Tsd. \km} & \num{4.29}  \% \\
+	\acrshort{spfv} & \SI{985.608}{Tsd. \km} & \SI{29.964}{Tsd. \km} & \num{3.04} \% \\
+	\acrshort{spnv} & \SI{2272.498}{Tsd. \km} & \SI{712.496}{Tsd. \km} & \num{31.35} \% \\
+	\hline
+	Insgesamt & \SI{4653.596}{Tsd. \km} & \SI{802.376}{Tsd. \km} & \\
+	\end{tabularx}
+\end{center}
+
+
+\subsubsection{Kenngrößen Szenario}
+\captionof{table}{\label{table_22_kenngrößen_scenario} Basiskenngrößen Szenario 22}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | r } Kenngröße & Wert \\
+	\hline
+	Anzahl Untersuchungsgebiete & \num{155} \\
+	Summe Streckenkilometer & \SI{10191}{\km} \\
+	Summe Zugkilometer (Tag) & \SI{802.376}{Tsd. \km} \\
+	\ce{CO2}-Jahresbilanz Ausgangssituation & \SI{2264868}{\tonne} \ce{CO2} \\
+	\ce{CO2}-Jahresbilanz Szenario 22 & \SI{78198}{\tonne} \ce{CO2}\\
+	\end{tabularx}
+\end{center}
+
+\subsubsection{Kenngrößen Untersuchungsgebiete}
+\captionof{table}{\label{table_22_kenngrößen_untersuchungsgebiete} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion Szenario 22}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
+	\hline
+            electrification & \num{47} &  \SI{1305}{\km} & \SI{294}{Tsd. \km}\\
+            efuel & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            battery & \num{87} &  \SI{5637}{\km} & \SI{476}{Tsd. \km}\\
+            optimised electrification & \num{21} &  \SI{6548}{\km} & \SI{834}{Tsd. \km}\\
+            diesel & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            h2 & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            no calculated cost & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+    	\end{tabularx}
+\end{center}
+
+\captionof{table}{\label{table_22_kenngrößen_untersuchungsgebiete_no_optimised} Anzahl Untersuchungsgebiete sowie Kilometer nach Traktion (Optimierte Elektrifizierung aufgeteilt) Szenario 22}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | r | r | r} Traktion & Anzahl & Kilometer Infrastruktur & Zugkilometer (Tag) \\
+	\hline
+            electrification & \num{47} &  \SI{4572}{\km} & \SI{900}{Tsd. \km}\\
+            efuel & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            battery & \num{87} &  \SI{8918}{\km} & \SI{704}{Tsd. \km}\\
+            diesel & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            h2 & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+            no calculated cost & \num{0} &  \SI{0}{\km} & \SI{0}{Tsd. \km}\\
+    	\end{tabularx}
+\end{center}
+In dieser Tabelle wurden die Infrastrukturkilometer der Untersuchungsgebiete, bei denen die optimierte Elektrifizierung am wirtschaftlichsten war, auf die Traktionen Elektrifizierung und Batterie aufgeteilt (je nachdem, bei welchem Teiluntersuchungsgebiet welche Traktion am wirtschaftlichsten war)
+
+\subsubsection{Kenngrößen Kosten}
+
+\captionof{table}{\label{table_22_kenngrößen_investition_cost_by_traction} Investitionsvolumen sowie Betriebskosten (Barwert Preisstand 2016) Szenario 22}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | r | r} Traktion & Kosten Infrastruktur Barwert & Betriebskosten Barwert\\
+	\hline
+            electrification & \num{1457783} Tsd. € &  \num{7664375} Tsd. €\\
+            efuel & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            battery & \num{411738} Tsd. € &  \num{10909179} Tsd. €\\
+            optimised electrification & \num{4407128} Tsd. € &  \num{19391065} Tsd. €\\
+            diesel & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            h2 & \num{0} Tsd. € &  \num{0} Tsd. €\\
+            no calculated cost & \num{0} Tsd. € &  \num{0} Tsd. €\\
+    	\hline
+		Summe & \num{6276649} Tsd. € & \num{37964619} Tsd. €
+	\end{tabularx}
+\end{center}
+
+\begin{center}
+	\begin{figure}[p]
+	\includegraphics[height=0.8\textheight]{../report_scenarios/s_22/files/deutschland_map}
+	\caption{\label{fig_s_22_d_map} Karte Deutschland bevorzugte Traktion Untersuchungsgebiete Szenario e-Fuel (0,75€/kg)}
+	\end{figure}
+\end{center}
+
+\subsubsection{Kenngrößen Güter-, Fern- und Nahverkehr}
+\captionof{table}{\label{table_22_kenngrößen_sgv} Zugkilometer Güter-, Fern- und Nahverkehr Szenario 22 für Linien mit nicht elektrifizierten Abschnitten im Bezugsfall}
+\begin{center}
+\begin{tabularx}{\textwidth}{l|X|X|X|X|X} & Zkm elektrisch & Zkm Batterie & Zkm Wasserstoff & Zkm Diesel & Zkm E-Fuel \\
+	\hline
+	\uppercase{spnv} &
+	\SI{665297}{\km} &
+	\SI{686945}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} \\
+	\uppercase{spfv} &
+	\SI{103220}{\km} &
+	\SI{17544}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} \\
+	\uppercase{sgv} &
+	\SI{130993}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} \\
+	\uppercase{all} &
+	\SI{899510}{\km} &
+	\SI{704488}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} &
+	\SI{0}{\km} \\
+\end{tabularx}
+\end{center}
+
+
+%\begin{center}
+%	\begin{tabularx}{\textwidth}{X | X } Kenngröße & Wert \\
+%	\hline
+%	Betriebsleistung \acrshort{sgv} (Linien mit Abschnitten ohne Oberleitung) & \SI{143.19073199999994}{Tsd. \km}
+%	\end{tabularx}
+%\end{center}
