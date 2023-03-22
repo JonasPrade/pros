@@ -4,10 +4,17 @@ from openrouteservice.directions import directions
 from prosd.conf import Config
 import geoalchemy2
 import logging
+import os
+
+
+class CouldNotFoundRoadError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 class RoadDistances:
     def __init__(self):
-        self.filepath_road_distances_csv = '../../example_data/railgraph/road_distances.csv'
+        dirname = os.path.dirname(__file__)
+        self.filepath_road_distances_csv = os.path.realpath(os.path.join(dirname, '../../example_data/railgraph/road_distances.csv'))
         self.distances = self.read_road_distances_csv()
 
     def read_road_distances_csv(self):
@@ -57,7 +64,13 @@ class RoadDistances:
         from_station = geoalchemy2.shape.to_shape(RailMlOcp.query.filter(RailMlOcp.code == from_ocp).scalar().station.coordinate_centroid)
         to_station = geoalchemy2.shape.to_shape(RailMlOcp.query.filter(RailMlOcp.code == to_ocp).scalar().station.coordinate_centroid)
         coords = ((from_station.x, from_station.y), (to_station.x, to_station.y))
-        route = directions(client, coords)
+        try:
+            route = directions(client, coords)
+        except openrouteservice.exceptions.ApiError:
+            raise CouldNotFoundRoadError(
+                f"For RailMlOcps {from_ocp} - {to_ocp} no result from openrouteservice because one of the points could not be connected to street. Add that entry manual"
+            )
+
         distance = route["routes"][0]["summary"]["distance"]/1000
 
         logging.info(f"used openrouteservice to get distance {from_ocp} to {to_ocp} (distance {distance})")

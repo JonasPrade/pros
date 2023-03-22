@@ -3,8 +3,8 @@ from prosd.models import MasterScenario
 from prosd.manage_db import version
 import networkx
 
-station_from = "TEST3"
-station_to = "WVE"
+station_from = "SHY"
+station_to = "SNK"
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)

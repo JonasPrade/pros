@@ -13,6 +13,7 @@ export_file_path = f'../../../example_data/report_scenarios/s_{SCENARIO_ID}/'
 filepath_images = export_file_path + 'files/'
 AUSGANGSZENARIO = True
 
+
 def create_file(data):
     latex_jinja_env = jinja2.Environment(
         block_start_string='\BLOCK{',

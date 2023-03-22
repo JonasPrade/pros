@@ -29,7 +29,7 @@ class GraphRoute:
         """
 
         :type ignore_ocps: list of db_staiton_kuerzel strings that gets ignore for routing
-        :type following_ocp: dict adds a ocp to route to after the ocp
+        :type following_ocp: dict adds a ocp to route to after the ocp. First key is the start ocp from where its valid than comes the route ocps
         :return:
         """
         if following_ocps is None:
@@ -62,13 +62,18 @@ class GraphRoute:
 
         # find the via stations (check if they exist)
         via = []
+        start_ocp = train.train_part.first_ocp.ocp.station.db_kuerzel
+        if start_ocp in following_ocps.keys():
+            alternative_routes = following_ocps[start_ocp]
+        else:
+            alternative_routes = {}
         for tt_ocp in train.train_part.timetable_ocps[1:-1]:
             try:
                 if tt_ocp.ocp.code not in ignore_ocps:
                     station = tt_ocp.ocp.station.db_kuerzel
                     via.append(station)
-                    if tt_ocp.ocp.code in following_ocps.keys():
-                        following_station = following_ocps[tt_ocp.ocp.code]
+                    if tt_ocp.ocp.code in alternative_routes.keys():
+                        following_station = alternative_routes[tt_ocp.ocp.code]
                         via.extend(following_station)
                 else:
                     continue

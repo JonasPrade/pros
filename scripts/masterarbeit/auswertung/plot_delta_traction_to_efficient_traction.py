@@ -35,7 +35,7 @@ def plot_delta_to_efficient_traction(filepath_image_directory, areas, traction):
                 delta_traction_group = "1.5-2"
             elif 2 <= delta_traction:
                 delta_traction_group = ">2"
-            elif 1 >= delta_traction:
+            elif 1 == delta_traction:
                 delta_traction_group = "<1"
 
             for index, line in enumerate(area.railway_lines):
@@ -82,12 +82,12 @@ def plot_delta_to_efficient_traction(filepath_image_directory, areas, traction):
 
 
 if __name__ == '__main__':
-    scenario_id = 1
+    scenario_id = 12
     scenario = MasterScenario.query.get(scenario_id)
     areas = scenario.main_areas
 
     filepath_directory_image = f'../../../example_data/report_scenarios/s_{scenario_id}/files/'
-    traction = 'efuel'
+    traction = 'h2'
 
     plot_delta_to_efficient_traction(
         filepath_image_directory=filepath_directory_image,

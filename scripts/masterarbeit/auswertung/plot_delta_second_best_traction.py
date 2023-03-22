@@ -8,6 +8,7 @@ colors = {
         "battery": '#0a8754',
         "optimised_electrification": '#dc0073',
         "h2": "#008bf8",
+        "efuel": "#b134eb",
         "elektrifiziert": "#0A8754",
         "nicht elektrifiziert": "#DC0073",
         "BVWP 2030": "#0a8754",
@@ -74,7 +75,7 @@ def plot_delta_to_efficient_traction(filepath_image_directory, areas, scenario_i
 
 
 if __name__ == '__main__':
-    scenario_id = 11
+    scenario_id = 22
     scenario = MasterScenario.query.get(scenario_id)
     areas = scenario.main_areas
 

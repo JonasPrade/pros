@@ -2112,7 +2112,7 @@ class TimetableTrainGroup(db.Model):
             to_ocp=self.last_ocp.ocp.code
         )/100  # in 100 km
 
-        road_cost = count_trucks * road_km
+        road_cost = count_trucks * road_km * road_cost_per_100_km
         return road_cost  # Tsd. € per day
 
     @property

@@ -15,9 +15,11 @@ class BlockRailwayLines:
         self.reference_scenario_id = reference_scenario_id
         self.rg = railgraph.RailGraph()
         self.graph = self.rg.load_graph(self.rg.filepath_save_with_station_and_parallel_connections)
-        self.filepath_block = f'../../example_data/railgraph/blocked_scenarios/s-{scenario_id}.json'
 
-    def _save_additional_project_info(self, pc, additional_ignore_ocp, traingroups_to_reroute, following_ocps):
+        dirname = os.path.dirname(__file__)
+        self.filepath_block = os.path.realpath(os.path.join(dirname, f'../../example_data/railgraph/blocked_scenarios/s-{scenario_id}.json'))
+
+    def _save_additional_project_info(self, pc, additional_ignore_ocp, traingroups_to_reroute, following_ocps, endpoints_closure):
         """
 
         :param pc:
@@ -33,7 +35,8 @@ class BlockRailwayLines:
         geojson_data[pc.id] = {
             "additional_ignore_ocp": additional_ignore_ocp,
             "traingroups_to_reroute": traingroups_to_reroute,
-            "following_ocps": following_ocps
+            "following_ocps": following_ocps,
+            "endpoints_closure": endpoints_closure
         }
 
         with open(self.filepath_block, 'w') as outfile:
@@ -96,7 +99,8 @@ class BlockRailwayLines:
         ).all()
 
         tgs_ids = [tg.id for tg in tgs]
-        self._save_additional_project_info(pc=pc, additional_ignore_ocp=additional_ignore_ocp, traingroups_to_reroute=tgs_ids, following_ocps=following_ocps)
+        endpoints_closure = [from_ocp, to_ocp]
+        self._save_additional_project_info(pc=pc, additional_ignore_ocp=additional_ignore_ocp, traingroups_to_reroute=tgs_ids, following_ocps=following_ocps, endpoints_closure=endpoints_closure)
 
         return pc
 
@@ -319,3 +323,10 @@ class BlockRailwayLines:
                 save_route=True,
                 force_recalculation=True
             )
+
+    def add_closed_rw_lines_to_scenario(self):
+        """
+        For routing it can be helpful to block rw_lines for the scenario, that should not be used
+        :return:
+        """
+        pass

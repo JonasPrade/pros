@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from prosd.models import MasterArea
 
-master_area_id = 17656
-transport_mode = 'spfv'
+master_area_id = 21585
+transport_mode = 'spnv'
 operating_cost = MasterArea.query.get(master_area_id).get_operating_cost_categories_by_transport_mode
 filepath = f"../../../../example_data/report_scenarios/operating_cost/{master_area_id}_transportmode_{transport_mode}"
 
