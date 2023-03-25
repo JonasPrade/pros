@@ -8,6 +8,6 @@ block_rw = BlockRailwayLines(
     reference_scenario_id=reference_scenario_id
 )
 
-pc_id = 91762
+pc_id = 91895
 block_rw_lines = BlockRailwayLines(scenario_id=scenario_id, reference_scenario_id=reference_scenario_id)
 block_rw_lines.delete_blocking_project(pc_id=pc_id)

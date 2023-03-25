@@ -83,7 +83,7 @@ DURATION_OPERATION = 30
 ROAD_ENERGY_ELECTRO_RENWEABLE_COST = 17.5  # €/100km
 ROAD_PERSONAL_COST = 25.18  # €/100km angenommene Reisegeschwindigkeit 80 km/h
 ROAD_CAPITAL_COST = 22  # €/100km
-ROAD_MAINTENANCE_COST = 21.86  # €/100km
+ROAD_MAINTENANCE_COST = 12.86  # €/100km
 ROAD_CO2_ELECTRO_RENEWABLE_COST = 1.8  # €/100km
 ROAD_PRIMARY_ENERGIE_ELECTRO_RENEWABLE_COST = 7.8  # €/100km
 ROAD_EMISSION_ELECTRO_RENEWABLE_COST = 0.1  # €/100km nur Energiebereitstellung, keine Emissionen durch Radabrieb etc
@@ -92,7 +92,7 @@ PAYLOAD_TRUCK = 25  # t Nutzlast für Lkw. Damit angenommen: Zusätzliches Gewic
 ### wagon cargo rail
 LENGTH_CONTAINER_WAGON = 19.7  # m
 DEAD_WEIGHT_CONTAINER_WAGON = 20  # t
-PAYLOAD_CONTAINER_WAGON = 70  # t
+PAYLOAD_CONTAINER_WAGON = 50  # t
 AVERAGE_SPEED_RESILIENCE = 60  # km/h für Ausweichrouten
 COST_CONTAINER_WAGON = 1.06  # € pro Wagen-h
 COST_TRAIN_DRIVER = 57  # € pro Stunde

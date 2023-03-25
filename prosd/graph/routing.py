@@ -65,6 +65,8 @@ class GraphRoute:
         start_ocp = train.train_part.first_ocp.ocp.station.db_kuerzel
         if start_ocp in following_ocps.keys():
             alternative_routes = following_ocps[start_ocp]
+            if start_ocp in alternative_routes.keys():
+                via.extend(alternative_routes[start_ocp])
         else:
             alternative_routes = {}
         for tt_ocp in train.train_part.timetable_ocps[1:-1]:

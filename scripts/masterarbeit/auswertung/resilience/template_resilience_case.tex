@@ -1,3 +1,37 @@
-\subsubsection{pc.name}
+\subsubsection{\VAR{pc.name}}\label{chap_resilience_\VAR{pc.id}}
+Bevorzugtes Szenario: \VAR{preferred_scenario}
 
+\captionof{table}{\label{table_resilience_\VAR{pc.id}} Kenngrößen \VAR{pc.name}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{l | X } Kenngröße & Wert \\
+		\hline
+		Sperrung & \VAR{additional_data["endpoints_closure"][0]} – \VAR{additional_data["endpoints_closure"][1]} \\
+		Anzahl Güterzüge pro Tag & \VAR{count_trains} \\
+		Zugkilometer Referenzszenario pro Tag & \num{\VAR{running_km_day_reference_scenario|round|int}} \\
+		Zugkilometer Resilienzszenario pro Tag & \num{\VAR{running_km_day_resilience_scenario|round|int}} \\
+		Streckenlänge nicht elektrifiziert [km] & \num{\VAR{length_new_rw_lines|round|int}} \\
+		Störungshäufigkeit & \VAR{parameter.DISTURBANCE_PERCENTAGE}
+	\end{tabularx}
+\end{center}
+\hspace{2em}
+
+\captionof{table}{\label{table_resilience_cost_\VAR{pc.id}} Kostenvergleich \VAR{pc.name}}
+\begin{center}
+	\begin{tabularx}{\textwidth}{X | X | X} Kenngröße & Variante Straße & Variante Umfahrung Schiene \\ \hline
+		Gesamtkosten Betrachtungszeitraum [Tsd. €] & \num{\VAR{cost["cost_road_case"]|round|int}} & \num{\VAR{cost["cost_resilience"]|round|int}} \\
+		Kosten Untersuchungsgebiete Betrachtungszeitraum [Tsd. €] & \num{\VAR{cost["areas_ref_scenario"]|round|int}} & \num{\VAR{cost["areas_res_scenario"]|round|int}} \\
+		Veränderung Betriebskosten Betrachtungszeitraum [Tsd. €] & \num{\VAR{cost["road_coast_operation_duration"]|round|int}} & \num{\VAR{cost["operating_cost_sgv_resilience_sum"]|round|int}} \\
+		Veränderung Betriebskosten Tag [Tsd. €] & \num{\VAR{cost["road_cost_day"]|round|int}} & \num{\VAR{cost['operating_cost_sgv_resilience_day']|round|int}}
+	\end{tabularx}
+\end{center}
+\hspace{2em}
+
+\begin{center}
+	\begin{figure}[p]
+	\centering
+	\includegraphics[height=\textheight, width=\textwidth, keepaspectratio]{\VAR{filepath_map}}
+	\caption{\label{fig_pc_\VAR{pc.id}} Karte Resilienszenario \VAR{pc.name}}
+	\textit{In blau die gesperrte Strecke. Die befahrene Strecken für den Güterverkehr im Umleitungsfall in rot (davor nicht elektrifiziert) und grün (davor bereits elektrifiziert), in Dicke die Anzahl der Fahrten}
+	\end{figure}
+\end{center}
 

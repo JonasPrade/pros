@@ -8,14 +8,14 @@ block_rw = BlockRailwayLines(
     reference_scenario_id=reference_scenario_id
 )
 
-from_ocp = 'RSD'
-to_ocp = 'SKL'
-stations_via = ["RNBO", "SKL", "SHO"]
-additional_ignore_ocp = ["RLSM", "RL", "RLUM", "RLUR", "RLI", "RSD", "SKL", "SHO"]
-reroute_train_categories = ['sgv']
-project_content_name = "Sperrung Ludwigshafen – Neunkirchen"
+from_ocp = "MLEF"
+to_ocp = "MBU"
+stations_via = []
+additional_ignore_ocp = ["MPGO", "MPG", "MP", "MLEF"]
+reroute_train_categories = ['sgv', 'spfv']
+project_content_name = "Sperrung München – Buchloe"
 following_ocps = {
-    "RM": ["FWOR", "FMWG", "FGAL", "SNBR"]
+
 }
 
 pc = block_rw.create_blocking_project(

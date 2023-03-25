@@ -3459,7 +3459,7 @@ class MasterArea(db.Model):
 
         return ttc_list
 
-    def calculate_infrastructure_cost(self, traction, infra_version, overwrite, battery_electrify_start_ocps=True):
+    def calculate_infrastructure_cost(self, traction, infra_version, overwrite, battery_electrify_start_ocps=True, recalc_sub_areas=False):
         """
         Calculates the cost for the infrastructure
         :param battery_electrify_start_ocps:
@@ -3505,6 +3505,11 @@ class MasterArea(db.Model):
         """
         if the traction is optimised electrification -> check if sub areas are created and if not, recreate thenm
         """
+        if recalc_sub_areas is True and traction == 'optimised_electrification':
+            for sub_area in self.sub_master_areas:
+                db.session.delete(sub_area)
+            self.create_sub_areas()
+
         if traction == 'optimised_electrification' and len(self.sub_master_areas) == 0:
             self.create_sub_areas()
 

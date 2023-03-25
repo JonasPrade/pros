@@ -3,8 +3,9 @@ from prosd.models import MasterScenario
 from prosd.manage_db import version
 import networkx
 
-station_from = "SHY"
-station_to = "SNK"
+station_from = "FBGK"
+station_to = "RL"
+stations_via = ["FMZ", "FOPP", "RLO"]
 
 rg = railgraph.RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
@@ -13,6 +14,6 @@ version = version.Version(scenario=scenario)
 
 route = routing.GraphRoute(graph=graph, infra_version=version)
 
-path = route.route_line(station_from=station_from, station_to=station_to, stations_via=[], save_route=True)
+path = route.route_line(station_from=station_from, station_to=station_to, stations_via=stations_via, save_route=True)
 
 print(path)

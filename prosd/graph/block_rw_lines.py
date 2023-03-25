@@ -16,8 +16,9 @@ class BlockRailwayLines:
         self.rg = railgraph.RailGraph()
         self.graph = self.rg.load_graph(self.rg.filepath_save_with_station_and_parallel_connections)
 
+        self.filepath_block_template = f'../../example_data/railgraph/blocked_scenarios/s-{scenario_id}.json'
         dirname = os.path.dirname(__file__)
-        self.filepath_block = os.path.realpath(os.path.join(dirname, f'../../example_data/railgraph/blocked_scenarios/s-{scenario_id}.json'))
+        self.filepath_block = os.path.realpath(os.path.join(dirname, self.filepath_block_template))
 
     def _save_additional_project_info(self, pc, additional_ignore_ocp, traingroups_to_reroute, following_ocps, endpoints_closure):
         """
@@ -165,13 +166,14 @@ class BlockRailwayLines:
         additional_train_costs = wagon_cost + personnel_cost_train + train_provision_cost
 
         infra_version = version.Version(scenario=self.scenario)
-        areas_cost = 0
+        areas_res_cost = 0
         for area in areas_resilience_scenario:
             for traction in ['electrification', 'optimised_electrification']:
                 area.calculate_infrastructure_cost(
                     traction=traction,
                     infra_version=infra_version,
-                    overwrite=True
+                    overwrite=True,
+                    recalc_sub_areas=True,
                 )
 
             for tg in traingroups:
@@ -191,7 +193,7 @@ class BlockRailwayLines:
                     )
 
             area_cost = area.cost_all_tractions
-            areas_cost += area_cost[area.cost_effective_traction]
+            areas_res_cost += area_cost[area.cost_effective_traction]
 
         # in the area cost, the sgv costs are included. But they use that infrastructure only at disturbance time
         # so this train costs are subtracted
@@ -226,8 +228,8 @@ class BlockRailwayLines:
             cost_is_sum=False
         )
 
-        areas_cost = areas_cost - deductible_operating_expenses
-        cost_resilience = areas_cost + operating_cost_sgv_resilience_sum
+        areas_res_cost = areas_res_cost - deductible_operating_expenses
+        cost_resilience = areas_res_cost + operating_cost_sgv_resilience_sum
 
         area_cost_reference = 0
         for area in areas_reference_scenario:
@@ -243,6 +245,8 @@ class BlockRailwayLines:
         answer["operating_cost_sgv_resilience_sum"] = operating_cost_sgv_resilience_sum
         answer["cost_road_case"] = cost_road_case
         answer["cost_resilience"] = cost_resilience
+        answer["areas_ref_scenario"] = area_cost_reference
+        answer["areas_res_scenario"] = areas_res_cost
 
         for area in areas["resilience_scenario"]:
             area.traingroups = areas_traingroups_without_sgv[area.id]

@@ -394,7 +394,7 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
         model = models.MasterArea
         include_fk = True
 
-    parameters = fields.Dict()
+    cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
 
 

@@ -71,7 +71,7 @@ def plot_resilience_map(filepath_dir, pc, additional_info, tgs, scenario_id):
     geo_df.set_crs(epsg=4326, inplace=True)
 
     f, ax = plt.subplots(1, figsize=(15, 18))
-    plt.rcParams['figure.dpi'] = 400
+    plt.rcParams['figure.dpi'] = 300
     for ctype, data in geo_df.groupby('closed'):
         color = colors[ctype]
         data.plot(
@@ -89,7 +89,7 @@ def plot_resilience_map(filepath_dir, pc, additional_info, tgs, scenario_id):
     german_cities_df = german_cities(station_kuerzel_list)
     german_cities_df.plot(ax=ax, color='#dc0073')
     for idx, row in german_cities_df.iterrows():
-        plt.annotate(text=row["name"], xy=(row.geometry.x, row.geometry.y))
+        plt.annotate(text=row["name"], xy=(row.geometry.x, row.geometry.y), fontsize=14)
 
     linestrings = dict()
     for tg in tgs:
@@ -141,14 +141,14 @@ def plot_resilience_map(filepath_dir, pc, additional_info, tgs, scenario_id):
             linewidth=count_usage
         )
 
-    ax.legend(loc='upper left', prop={'size':12})
-    ax.set(title=f'{pc.name}')
+    ax.legend(loc='upper right', prop={'size':14})
+    # ax.set(title=f'{pc.name}')
     ax.set_axis_off()
     # plt.show()
     plt.savefig(
         filepath,
         bbox_inches='tight',
         pad_inches=0.5,
-        dpi=400
+        dpi=300
     )
 

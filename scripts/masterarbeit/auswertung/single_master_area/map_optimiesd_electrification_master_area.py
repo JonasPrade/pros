@@ -110,7 +110,11 @@ if __name__ == '__main__':
         "NHR",
         "NHAN",
         "NSS",
-        "DH"
+        "DH",
+        "WR",
+        "AAN",
+        "YARSM",
+        "AEU"
     }
 
     plot_optimised_electrification(
