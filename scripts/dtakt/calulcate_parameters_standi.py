@@ -31,6 +31,7 @@ PERSONAL_COST = 46
 #     energy_cost_per_km = vp.energy_per_tkm*weight
 #     thg_emission_production = vp.emission_production_vehicle*weight*(1/1000)
 
+
 def calculate_debt_service():
     vehicles = VehiclePattern.query.filter(VehiclePattern.project_group == 3).all()
     updates = []
