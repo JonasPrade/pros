@@ -20,3 +20,6 @@ class Config(object):
     BCRYPT_LOG_ROUNDS = 
     DEBUG = False
     API_KEY_OPENROUTESERVICE = 
+```
++ Setup a Postgresql DB with Postgis add-on
++ the required python libraries are in the requirements.txt
