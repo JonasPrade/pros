@@ -14,7 +14,6 @@ from prosd import parameter
 
 
 def add_geojson_catenary_too_long(line_id, station_id):
-    # TODO: Filepath like graph
     dirname = os.path.realpath(__file__)
     filepath_catenary_too_long = os.path.realpath(
         os.path.join(dirname, '../../../example_data/railgraph/catenary_too_long.json'))
@@ -40,7 +39,6 @@ class LineNotInRoutError(Exception):
 
 class BvwpCost(BaseCalculation):
     def __init__(self, investment_cost, maintenance_cost, start_year_planning, abs_nbs="abs"):
-        # TODO: Change the calculation of that in sepeart funcitons, that is no __init__
         super().__init__()
         self.cost_2015 = None
         self.capital_service_cost_2015 = None
@@ -56,7 +54,7 @@ class BvwpCost(BaseCalculation):
 
         self.infrastructure_type = None
 
-        self.duration_build = parameter.DURATION_BUILDING  # TODO That can be rethought
+        self.duration_build = parameter.DURATION_BUILDING  #
         self.start_year_planning = start_year_planning
         self.start_year_building = self.start_year_planning + self.DURATION_PLANNING
         self.start_year_operation = self.start_year_building + self.duration_build
@@ -100,7 +98,6 @@ class BvwpCost(BaseCalculation):
         :param investment_cost_2015:
         :return:
         """
-        # TODO: Calculate capital service infrastructure
         capital_service_infrastructure = investment_cost_2015 * self.ANUALITY_FACTOR
 
         return capital_service_infrastructure
@@ -114,7 +111,6 @@ class BvwpCost(BaseCalculation):
 
 
 class BvwpCostElectrification(BvwpCost):
-    # TODO: Think of cost of substation, maybe there is a more specific calculation possible
     def __init__(self, start_year_planning, railway_lines_scope, infra_version, abs_nbs='abs'):
         """
         calculates the cost of a building a catenary for all railway_lines_scope that has no catenary.
@@ -468,7 +464,6 @@ class BvwpProjectBattery(BvwpCost):
 
         if next_train is None:  # in this case there are only two trains in one cycle
             # use a standard value
-            # TODO: Find better solution
             stop_duration = datetime.timedelta(hours=1)
         else:
             next_train = next_train.train
@@ -486,7 +481,6 @@ class BvwpProjectBattery(BvwpCost):
         sections = add_section_to_sections(group=section, rw_lines_grouped=sections, last_station=station_information)
 
         # Add the group_id to the railway_lines
-        # TODO: That must be m:n
         rw_lines["section_id"] = rw_lines["railway_line_id"].map(sections_to_lines)
         rw_lines = rw_lines.sort_values(by=["sequence"])
 
@@ -742,7 +736,7 @@ class BvwpProjectBattery(BvwpCost):
             if segment[-1]["catenary"] is True or segment[-1]["last_station"]["station_charging_point"] is True:  # this is the latest line_group of the segment
                 charge = CHARGE * (stand_time.seconds / 60) + battery_status
                 battery_status = min(battery_capacity, charge)
-                # TODO: Add that to information to the cycle_lines_grouped
+
 
         # check if the energy is enough for on cycle
         if len(battery_empty) > 0:
@@ -1150,7 +1144,7 @@ class BvwpProjectBattery(BvwpCost):
         battery_capacity = 0
         for vehicle in vehicles:
             vehicle_pattern = VehiclePattern.query.get(vehicle.vehicle_pattern.vehicle_pattern_id_battery)
-            battery_capacity += vehicle_pattern.battery_capacity  # TODO: Add correct battery_capacity to battery vehicle patterns
+            battery_capacity += vehicle_pattern.battery_capacity
 
         return battery_capacity
 
@@ -1436,10 +1430,10 @@ class BvwpH2InfrastructureCost(BvwpFillingStation):
 
 
 # class BvwpCostH2(BvwpCost):
-#     # TODO: Algorithm for caluclating cost of h2 infrastructure
+
 #     def __init__(self, start_year_planning, railway_lines, abs_nbs='abs'):
 #         self.MAINTENANCE_FACTOR_H2 = 0.03
-#         self.investment_cost = 1000000000  # TODO: find a algorithm to calculate necessary infrastructure
+#         self.investment_cost = 1000000000
 #         # wasserstofftankstelle wohl 1.000.000 (1 Mio. €)
 #         self.maintenace_cost = self.investment_cost * self.MAINTENANCE_FACTOR_H2
 #         super().__init__(investment_cost=self.investment_cost, maintenance_cost=self.maintenace_cost,

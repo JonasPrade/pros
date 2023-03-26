@@ -256,7 +256,6 @@ class BvwpUse(BaseCalculation):
         :param vehicle:
         :return:
         """
-        # TODO: Change that so no querry is needed
         match self.transport_mode:
             case 'spfv':
                 vehicle_pattern_transportmode = vehicle.vehicle_pattern_spfv
@@ -316,7 +315,6 @@ class BvwpSpfv(BvwpUse):
         formation = get_formation_calculation_bvwp(tg.trains[0].train_part.formation)
         super().__init__(model=tg, tg_or_tl='tg', formation=formation, traction=traction, transport_mode='spfv', infra_version=infra_version)
 
-        # TODO: Add co2_energy_cost, pollutants_cost, primary_energy_cost
         self.use, self.debt_service_sum, self.maintenance_cost_sum, self.energy_cost_sum, self.co2_energy_cost_sum, self.pollutants_cost_sum, self.primary_energy_cost_sum, self.co2_sum, self.emission_vehicle_production_cost = super().calc_use(
             vehicles_list=self.vehicles)
         self.use_base_year, self.debt_service_base_year, self.maintenance_cost_base_year, self.energy_cost_base_year, self.co2_energy_cost_base_year, self.pollutants_cost_base_year, self.primary_energy_cost_base_year, self.emission_vehicle_production_cost_base_year = super().calc_barwert(

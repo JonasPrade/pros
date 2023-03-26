@@ -198,7 +198,7 @@ class BvwpRail(Bvwp):
             # because Bvwp class only works with id
             self.title = self.soup.find_all('table')[tbl_nr].contents[3].contents[1].text
             self.content = self.soup.find_all('table')[tbl_nr].contents[7].contents[
-                1].text  # TODO: Add algorithmus to get the important project content (electrification, vmax, nbs, etc for the bools)
+                1].text
             self.length = self._convert(self.soup.find_all('table')[tbl_nr].contents[9].contents[1].text[:-3].replace(',', '.'))
             add_dict = {
                 "name": self.title,
@@ -1201,9 +1201,6 @@ class BvwpRail(Bvwp):
         :param all_constituencies: get the model of the DB Table Constituencies
         :return:
         """
-
-        # TODO: Fill the properties of project out of project description (or manual)
-        # TODO: Next: sonstige Nutzen
 
         dict_project_content = self.dict_project_content
 

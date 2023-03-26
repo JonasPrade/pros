@@ -130,7 +130,6 @@ class GraphRoute:
             last_path = self._shortest_path(start_station=last_source, target_station=station_to)
             # last_path = super().shortest_path(graph=graph, source=last_source, target=station_sink)
             pathes.extend(last_path)
-            # TODO: Iterate through paths and create one list for nodes and edges
             path = pathes
 
         else:
@@ -296,7 +295,6 @@ class GraphRoute:
 
             catenary = line.catenary
 
-            # TODO: Change that to Stromschiene if s-bahn berlin or hamburg!
             if catenary is True:
                 weight = weight * FACTOR_ELECTRIFICATION
 

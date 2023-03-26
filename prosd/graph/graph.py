@@ -18,6 +18,5 @@ class GraphBasic:
         :param path:
         :return:
         """
-        # TODO: Remove that, is not used
         networkx.draw_networkx(G=graph, pos=nodes_pos)
         plt.show()

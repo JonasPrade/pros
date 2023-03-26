@@ -2,7 +2,6 @@ import pandas
 from prosd.models import TimetableTrainGroup, VehiclePattern
 from prosd import db
 
-#TODO transfert that to a class in prosd
 
 # tg_id = "tg_NI7.a2_X_x0020_7302_18711"
 # tg = TimetableTrainGroup.query.get(tg_id)
@@ -25,7 +24,6 @@ PERSONAL_COST = 46
 #     if vp.debt_service is None:
 #         debt_service = investment_cost * ANNUITY_FACTOR
 #
-#     # TODO: Calculate that directly in vehicle_patterns
 #     maintenance_cost_time = vp.maintenance_cost_duration_t*weight
 #     maintenance_cost_km = vp.maintenance_cost_length_t*weight*(1/1000)
 #     energy_cost_per_km = vp.energy_per_tkm*weight

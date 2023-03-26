@@ -27,7 +27,6 @@ class TestRailGraph(BaseTestCase):
 
     def test_save_and_load_graph(self):
         # not correct any more
-        # TODO: Correct this test
         filepath_base = '../example_data/test_save_and_load/{route_number}/{route_number}_{graph_number}.pickle'
         route = RailwayRoute.query.filter(RailwayRoute.number == 4950).one()
         filepath = filepath_base.format(route_number=str(route.number))

@@ -63,10 +63,6 @@ def add_project_content(pd, project_group_id, update=False):
     db.session.add(pc)
     db.session.commit()
 
-    # TODO: railway_lines
-    # TODO: constituencies
-    # TODO: counties
-    # TODO: states
 
 
 filename = '../../example_data/import/project_contents/fbq_sub_projects.xlsx'

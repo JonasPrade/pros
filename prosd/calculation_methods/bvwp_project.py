@@ -21,10 +21,8 @@ class Project:
         # battery
         # h2
         # eFuel
-        # TODO: Think of an mixed variant electrification and battery
         self.railway_lines = railway_lines_df["railway_line_model"].to_list()
 
-        # TODO: Change that railway_lines is an dataframe -> so we can manipulat the railway_lines before!
         self.infrastructure_cost_base_year, self.start_year_operation, self.duration_operation = self.infrastructure_cost(
             traction_type=traction_type,
             start_year_planning=start_year_planning,
@@ -104,7 +102,6 @@ class Project:
         duration = infrastructure.DURATION_OPERATION
         infrastructure_cost_base_year = infrastructure.cost_2015
 
-        # TODO: Implement Zuschlagfaktoren?
 
         return infrastructure_cost_base_year, start_year_operation, duration
 

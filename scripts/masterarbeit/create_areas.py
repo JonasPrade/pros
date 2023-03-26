@@ -41,9 +41,6 @@ sgv_lines = db.session.query(TimetableTrainGroup).join(TimetableTrain).join(Time
     RouteTraingroup.master_scenario_id == scenario_id,
 )).all()
 
-# TODO: Need system to remove all used traingroups
-# TODO: Have to use a version of lines, not the lines itself!
-
 # a list that contains the collected traingroups
 area_objects = []
 

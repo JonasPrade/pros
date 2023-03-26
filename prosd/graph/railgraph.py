@@ -274,7 +274,7 @@ class RailGraph(GraphBasic):
             self._check_all_stations_have_nodes(route=route)
             db.session.refresh(route)
 
-            self._check_end_nodes_other_lines(route=route)  # TODO: This function does not recognize all endpoints!
+            self._check_end_nodes_other_lines(route=route)
             db.session.refresh(route)
 
             G, remaining_lines = self._build_graph_railway_line(lines, route)
@@ -582,7 +582,6 @@ class RailGraph(GraphBasic):
         :param direction: int 0 or 1
         :return:
         """
-        # TODO: Change all creation of subnodes_id to this function
         subnode_id = int(str(node_id) + str(line_id) + str(direction))
         return subnode_id
 
@@ -670,38 +669,11 @@ class RailGraph(GraphBasic):
                 logging.warning(
                     "For " + str(node_id) + " on route " + str(route.number) + " is not the start or end point.")
 
-        # TODO add the stations to the manipulate_geodata_and_db
         # self._add_stations_to_route_graph(manipulate_geodata_and_db=G, route=route)
 
         self._check_existing_connection_route(end_nodes=end_nodes, route=route, graph=G)
 
         return G, remaining_lines
-
-    # def _add_stations_to_route_graph(self, manipulate_geodata_and_db, route):
-    #     """
-    #     ad the stations of a route to the manipulate_geodata_and_db of that route
-    #     :param manipulate_geodata_and_db:
-    #     :return:
-    #     """
-    #     # TODO: Maybe not used anymore
-    #     Nodes = models.RailwayNodes
-    #     Lines = models.RailwayLine
-    #     points = route.railway_points
-    #     for point in points:
-    #         # check if station has a node
-    #         node = Nodes.check_if_nodes_exists_for_coordinate(point.coordinates)
-    #         if not node:
-    #             node = Nodes.add_node(point.coordinates)
-    #             old_line = models.RailwayPoint.get_line_of_route_that_intersects_point(node.coordinate, route.number)
-    #             newline_1, newline_2 = Lines.split_railwayline(old_line_id=old_line.id, blade_point=node.coordinate)
-    #             self._remove_line_from_graph(G=manipulate_geodata_and_db, line=old_line)
-    #             self._add_line_to_graph(G=manipulate_geodata_and_db, line=newline_1)
-    #             self._add_line_to_graph(G=manipulate_geodata_and_db, line=newline_2)
-    #
-    #         point.node_id = node.id
-    #         node = None
-    #
-    #     return manipulate_geodata_and_db
 
     def _check_all_stations_have_nodes(self, route):
         """
@@ -729,7 +701,6 @@ class RailGraph(GraphBasic):
         :param end_nodes:
         :return:
         """
-        # TODO: Write test for this function
         connections = []
         possible_routes = []
         Line = models.RailwayLine
@@ -768,31 +739,6 @@ class RailGraph(GraphBasic):
 
         return possible_routes
 
-    # def _connect_end_node_to_line(self, G_of_node, G_continuing_line, node, line_of_node):
-    #     """
-    #
-    #     :return:
-    #     """
-    #     # TODO: Write test for this method
-    #     # TODO check if this method is still in use
-    #     # get the line which intersects the endpoint
-    #     line = models.RailwayLine.get_line_that_intersects_point(coordinate=node.coordinate, from_line=line_of_node)
-    #
-    #     G_continuing_line = self._remove_line_from_graph(G=G_continuing_line, line=line)
-    #
-    #     # split the line which intersects the endpoint
-    #
-    #     newline1, newline2 = models.RailwayLine.split_railwayline(old_line_id=line.id, blade_point=node.coordinate)
-    #
-    #     G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline1)
-    #     G_continuing_line = self._add_line_to_graph(G=G_continuing_line, line=newline2)
-    #
-    #     # connect the graphes together
-    #     G_continuing_line.update(G_of_node)
-    #     G_continuing_line = self.__find_and_connect_allowed_connections(G=G_continuing_line, node=node)
-    #
-    #     return G_continuing_line
-
     def _check_nodes_exists(self, coord, nodes_list, Model, commit_list, idlist):
         """
         Checks if a node already exists based on a list of new nodes
@@ -802,7 +748,6 @@ class RailGraph(GraphBasic):
         :commit_list: a list of open commits
         :return:
         """
-        # TODO: Remove Model
         if coord in nodes_list:
             node = nodes_list[coord]
         else:
@@ -942,7 +887,6 @@ class RailGraph(GraphBasic):
             last_source = stations_via[-1] + "_out"
             last_path = super().shortest_path(graph=graph, source=last_source, target=station_sink)
             pathes.extend(last_path)
-            # TODO: Iterate through passess and create one list for nodes and edges
             path = pathes
             # lines = []
 
@@ -1009,8 +953,6 @@ class RailGraph(GraphBasic):
 
         :return:
         """
-
-        # TODO: Calculation of positions in separate function
         nodes_pos = dict()
         for subnode in graph.nodes:
             if isinstance(subnode, int):

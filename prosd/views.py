@@ -85,7 +85,6 @@ class RailwayLinesShortSchema(ma.SQLAlchemySchema):
     coordinates = fields.Method('geom_to_geojson')
 
     def geom_to_geojson(self, obj):
-        # TODO: No dopple use of this function
         coords = geoalchemy2.shape.to_shape(obj.coordinates)
         xy = coords.xy
         x_array = xy[0]
@@ -110,7 +109,6 @@ class RailwayPointsSchema(ma.SQLAlchemyAutoSchema):
     coordinates = fields.Method('geom_to_geojson')
 
     def geom_to_geojson(self, obj):
-        # TODO: No dopple use of this function
         coords = geoalchemy2.shape.to_shape(obj.coordinates)
         xy = coords.xy
         x_array = xy[0]
@@ -164,7 +162,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
                 coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
 
             coord_multistring = geojson.MultiLineString(coord_list)
-            coord_multstring_wkt = shapely.geometry.shape(coord_multistring)  # TODO: Opose that multiestring also, so als geojson as on (no iteration in browser needed)
+            coord_multstring_wkt = shapely.geometry.shape(coord_multistring)
             centroid = coord_multstring_wkt.centroid
             centroid = shapely.geometry.mapping(centroid)
             return centroid
@@ -261,7 +259,6 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
     first_project_content = fields.Method('get_first_project_content')
 
     def get_first_project_content(self, obj):
-        # TODO: function is doubled
         if obj.project_contents:
             first_project_content = obj.project_contents[0].id
         else:
@@ -270,7 +267,6 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
         # first_project_content = obj.project_contents[0]
         return first_project_content
 
-    # TODO: Add a bounds field which searches the bounds of all geo combinded
     '''
     bounds_of_geo = fields.Method('bounds_geo')
 

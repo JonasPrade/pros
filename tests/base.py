@@ -32,7 +32,6 @@ def create_backup_from_prod():
             stdout=f
         )
         popen.communicate()
-        # TODO: Load that in a .gz file for more compact backup
 
     return FILE
 
@@ -60,7 +59,6 @@ def restore_to_test(file):
 
 class BaseTestCase(TestCase):
     """ Base Tests """
-    # TODO: Write function that loads a test db
 
     def create_app(self):
         app.config.from_object('prosd.conf.TestingConfig')
@@ -71,7 +69,6 @@ class BaseTestCase(TestCase):
     #     db.session.commit()
     #     file = create_backup_from_prod()
     #     restore_to_test(file)
-    #     # TODO: Load data from prosd-prod
 
     # def tearDown(self):
     #     db.session.remove()

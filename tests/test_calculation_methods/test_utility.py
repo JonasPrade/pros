@@ -81,7 +81,6 @@ class TestCostSgv(BaseTestCase):
         )
         self.assertTrue(cost.use_base_year > 0)
 
-    # TODO: Check if bvwp diesel spfv can be possible to calculate
     # def test_cost_diesel_spfv_bvwp(self):
     #     start_year, duration_operation, scenario_infra = preparation()
     #

@@ -112,8 +112,7 @@ class DBManager:
         column_names_reversed = {v: k for k, v in column_names.items()}
         columns_old = shp_data.columns
         columns_new = list()
-        # TODO: Add a try and throw exception if a key misses - error key not found please check input dictionary and
-        #  naming of input file
+
         for column in columns_old:
             columns_new.append(column_names_reversed[column])
         shp_data.columns = columns_new
@@ -160,7 +159,6 @@ class DBManager:
         shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
         shp_data.drop('geometry', 1, inplace=True)
 
-        # TODO: finish dict
         objects = []
         for index, row in shp_data.iterrows():
             railway_point = model(
@@ -191,7 +189,6 @@ class DBManager:
         shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
         shp_data.drop('geometry', 1, inplace=True)
 
-        # TODO: finish dict
         objects = []
         for index, row in shp_data.iterrows():
             railway_point = model(
@@ -228,7 +225,6 @@ class DBManager:
         shp_data['geo'] = shp_data['geometry'].apply(lambda x: geoalchemy2.WKTElement(x.wkt, srid=4326))
         shp_data.drop('geometry', 1, inplace=True)
 
-        # TODO: finish dict
         objects = []
         for index, row in shp_data.iterrows():
             railway_point = model(

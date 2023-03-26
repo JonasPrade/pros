@@ -152,16 +152,12 @@ class NoTrainCostError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
-# TODO: Table railway_line to projects
-
-# allowed_values_type_of_station = conf.allowed_values_type_of_station  # TODO: Add enum to type of station
 
 # be careful: no index of geo-coordinates of states and counties
 
 # m:n tables
 
 # project to group
-# TODO: Change that to projectcontent
 projectcontent_to_group = db.Table('projectcontent_to_group',
                                    db.Column('projectcontent_id', db.Integer,
                                              db.ForeignKey('projects_contents.id', onupdate='CASCADE',
@@ -469,7 +465,6 @@ class RailwayLine(db.Model):
                 )
             ).all()
 
-            # TODO: add coordinate 1 und 2 to one coordinate
 
         if len(coordinates) < 2 or len(coordinates) > 3:
             raise NoSplitPossibleError(
@@ -496,8 +491,6 @@ class RailwayLine(db.Model):
                 )
             ).scalar()
             coordinates_newline_2 = coordinates[2][0]
-
-        # TODO: Throw error if there is a third linestring in the geometry collection
 
         project_contents = old_line.project_content
         masterareas = old_line.master_areas.copy()
@@ -559,7 +552,6 @@ class RailwayLine(db.Model):
         :param line:
         :return:
         """
-        # TODO: Change that, so it can be called as attribute of an RailwayLine instance
         line_nodes = line.nodes
         line_nodes.remove(node1_id)
         node2_id = line_nodes[0]
@@ -663,8 +655,6 @@ class RailwayPoint(db.Model):
     # projects_end = db.relationship('Project', backref='project_ends', lazy=True)
 
     @classmethod
-    # TODO: Write test
-    # TODO: Move that to an class that inherits point, node and station
     def get_line_of_route_that_intersects_point(self, coordinate, route_number, allowed_distance_in_node=1 / 2220000):
         """
 
@@ -813,8 +803,6 @@ class RailwayNodes(db.Model):
         if isinstance(coordinate, shapely.geometry.Point):
             coordinate = shapely.wkb.dumps(coordinate)
 
-        # TODO: Move that to models.RailwayNode
-        # TODO: Check why this is necessary
         # if not isinstance(coordinate, str):
         #     coordinate = db.session.execute(
         #         db.session.query(
@@ -954,9 +942,6 @@ class RailwayRoute(db.Model):
                                      backref=db.backref('railway_route_ending', lazy=True))
 
     railway_points = db.relationship("RailwayPoint", lazy=True)
-
-    # TODO: m:n Project_Contents to RailwayRoutes
-
     @hybrid_property
     def coordinates(self):
 
@@ -1002,8 +987,6 @@ class RailwayInfrastructureCompany(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name_short = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
-
-    # TODO: Set all to DB Netz that are not to some company else.
 
 
 class RailwayElectricityStation(db.Model):
@@ -1091,7 +1074,7 @@ class Project(db.Model):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     superior_project_content_id = db.Column(db.Integer, db.ForeignKey(
-        'projects_contents.id', onupdate='SET NULL', ondelete='SET NULL'))  # TODO: Change that to project_content
+        'projects_contents.id', onupdate='SET NULL', ondelete='SET NULL'))
 
     # references
     project_contents = db.relationship('ProjectContent', backref='project', lazy=True,
@@ -1273,9 +1256,9 @@ class ProjectContent(db.Model):
     curve = db.Column(db.Boolean, nullable=False, default=False)  # Neue Verbindungskurve
     platform = db.Column(db.Boolean, nullable=False, default=False)  # Neuer Bahnsteig
     junction_station = db.Column(db.Boolean, nullable=False, default=False)
-    number_junction_station = db.Column(db.Integer)  # TODO: Set it minimum 1 if junction_station is true
+    number_junction_station = db.Column(db.Integer)
     overtaking_station = db.Column(db.Boolean, nullable=False, default=False)
-    number_overtaking_station = db.Column(db.Integer)  # TODO: Set it minimum 1 if junction_station is true
+    number_overtaking_station = db.Column(db.Integer)
     double_occupancy = db.Column(db.Boolean, nullable=False, default=False)
     block_increase = db.Column(db.Boolean, nullable=False, default=False)
     flying_junction = db.Column(db.Boolean, nullable=False, default=False)
@@ -1963,7 +1946,6 @@ class TimetableTrainGroup(db.Model):
         arrival_last_time = train.train_part.last_ocp.times.filter(TimetableTime.scope == "scheduled").one().arrival
         departure_first = datetime.datetime.combine(datetime.date.today(), departure_first_time)
         arrival_last = datetime.datetime.combine(datetime.date.today(), arrival_last_time)
-        # TODO: Check for arrival after midnight
         travel_time = arrival_last - departure_first
 
         return travel_time
@@ -1991,7 +1973,6 @@ class TimetableTrainGroup(db.Model):
         count of stops (with passenger exchange for passenger trains)
         :return:
         """
-        # TODO: make that just the length of def stops()
         count_stops = 0
         train = self.trains[0]
         ocps = train.train_part.timetable_ocps
@@ -2446,7 +2427,7 @@ class TimetableSection(db.Model):
     timetable_ocp_id = db.Column(db.Integer, db.ForeignKey('timetable_ocps.id', ondelete='CASCADE', onupdate='CASCADE'))
     section = db.Column(db.String(255))
     line = db.Column(db.String(255))
-    track_id = db.Column(db.String(510))  # TODO: Could be a foreign key if necessary
+    track_id = db.Column(db.String(510))
     direction = db.Column(db.String(15))
     minimal_run_time = db.Column(db.Time)
 
@@ -3413,7 +3394,6 @@ class MasterArea(db.Model):
 
         ttc_list = []
         for tg in self.traingroups:
-            # TODO: Traction for traingroup_to_traction (not via input but for finished infrastructure calculation
             if traction == 'optimised_electrification':
                 traction_optimised_electrification = TractionOptimisedElectrification.query.filter(
                     TractionOptimisedElectrification.master_area_id == self.id,
@@ -3517,7 +3497,7 @@ class MasterArea(db.Model):
         Calculate the infrastructure cost
         """
         from prosd.calculation_methods.cost import BvwpCostElectrification, BvwpProjectBattery, BvwpProjectOptimisedElectrification, BvwpFillingStation
-        start_year_planning = parameter.START_YEAR - (parameter.DURATION_PLANNING + parameter.DURATION_BUILDING)  # TODO: get start_year_planning and start_year of operation united
+        start_year_planning = parameter.START_YEAR - (parameter.DURATION_PLANNING + parameter.DURATION_BUILDING)
 
         pc_data = dict()
         if traction == "electrification":
@@ -3598,7 +3578,6 @@ class MasterArea(db.Model):
 
         pc_data["name"] = name
         pc_data["master_areas"] = [self]
-        # TODO: Add description
 
         if 'spfv' in self.categories:
             pc_data["effects_passenger_long_rail"] = True
