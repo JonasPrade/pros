@@ -1847,11 +1847,12 @@ class TimetableTrainGroup(db.Model):
 
     @hybrid_method
     def length_line(self, scenario_id):
-        km = 0
-        for rw_line in self.railway_lines_scenario(scenario_id):
-            km += rw_line.length / 1000
-
-        return km
+        length_m = db.session.query(sqlalchemy.func.sum(RailwayLine.length)).join(RouteTraingroup).filter(
+            RouteTraingroup.master_scenario_id == scenario_id,
+            RouteTraingroup.traingroup_id == self.id
+        ).one()
+        length_km = length_m[0] / 1000
+        return length_km
 
     @hybrid_method
     def length_line_no_catenary(self, infra_version):

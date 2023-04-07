@@ -1,10 +1,14 @@
 from tests.base import BaseTestCase
+import time
+import logging
 
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
 area_id = 17800
 scenario_id = 1
+
+logging.basicConfig(encoding='utf-8', level=logging.INFO)
 
 
 def get_infra_version():
@@ -41,7 +45,10 @@ class TestMasterAreaProperties(BaseTestCase):
 
     def test_running_km_by_transport_mode(self):
         area = MasterArea.query.get(area_id)
+        start_time = time.time()
         running_km_traingroups = area.running_km_traingroups_by_transport_mode
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.running_km_by_transport_mode runs in {time_needed}')
         self.assertTrue(len(running_km_traingroups) > 0)
 
 
