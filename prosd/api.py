@@ -10,8 +10,8 @@ from prosd.auth import views as auth
 
 allowed_ip = 'http://localhost:3000'
 
-
 # Have in mind that the user login and authorization process is in /auth/views.py
+
 
 def token_required(f):
     @wraps(f)

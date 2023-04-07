@@ -423,8 +423,7 @@ class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
         model = models.MasterScenario
         include_fk = True
 
-    # cost_effective_traction = fields.Dict()
-    # master_areas_without_subareas = fields.Dict()
+    parameters = fields.Dict()
 
 
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):

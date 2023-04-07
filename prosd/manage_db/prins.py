@@ -1181,7 +1181,6 @@ class BvwpRail(Bvwp):
             logging.warning('No spatial significance found')
             self.sp_sig_overall_result = self._sp_sig.text
 
-
         element_nm = ("Ergänzende Betrachtungen", "Ergänzende Betrachtungen")
         try:
             self.complementary_consideration = self._list_to_string(self._get_all_elements_to_next_same(element_start_tag='h1', element_end_tag='h1',element_text=element_nm[1]))

@@ -2978,63 +2978,62 @@ class MasterScenario(db.Model):
             "all": {"battery": 0, "electrification": 0, "diesel": 0, "efuel": 0, "h2": 0}
         }
 
-        for area in self.master_areas:
-            if area.superior_master_id is None:
-                cost_master_area = area.cost_overview
-                effective_traction = cost_master_area["minimal_cost"]
-                area_running_km_traingroups_by_transport_mode = area.running_km_traingroups_by_transport_mode
+        for area in self.main_areas:
+            cost_master_area = area.cost_overview
+            effective_traction = cost_master_area["minimal_cost"]
+            area_running_km_traingroups_by_transport_mode = area.running_km_traingroups_by_transport_mode
 
-                cost_effective_traction[effective_traction]["area"] += 1
-                cost_effective_traction[effective_traction]["infra_km"] += area.length/1000
-                cost_effective_traction[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
-                cost_effective_traction[effective_traction]["infrastructure_cost"] += cost_master_area["infrastructure_cost"][effective_traction]
-                cost_effective_traction[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][effective_traction]
+            cost_effective_traction[effective_traction]["area"] += 1
+            cost_effective_traction[effective_traction]["infra_km"] += area.length/1000
+            cost_effective_traction[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
+            cost_effective_traction[effective_traction]["infrastructure_cost"] += cost_master_area["infrastructure_cost"][effective_traction]
+            cost_effective_traction[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][effective_traction]
 
-                cost_sum_infrastructure += cost_master_area["infrastructure_cost"][effective_traction]
-                cost_sum_operating += cost_master_area["operating_cost"][effective_traction]
-                sum_running_km += area_running_km_traingroups_by_transport_mode["all"]
+            cost_sum_infrastructure += cost_master_area["infrastructure_cost"][effective_traction]
+            cost_sum_operating += cost_master_area["operating_cost"][effective_traction]
+            sum_running_km += area_running_km_traingroups_by_transport_mode["all"]
 
-                if effective_traction == 'optimised_electrification':
-                    # infra_km
-                    proportion_traction_by_km = area.proportion_traction_optimised_electrification["infrastructure_kilometer"]
-                    for key, value in proportion_traction_by_km.items():
-                        cost_effective_traction_no_optimised[key]["infra_km"] += value
+            if effective_traction == 'optimised_electrification':
+                # infra_km
+                proportion_traction_by_km = area.proportion_traction_optimised_electrification["infrastructure_kilometer"]
+                for key, value in proportion_traction_by_km.items():
+                    cost_effective_traction_no_optimised[key]["infra_km"] += value
 
-                    # infrastructure_cost
-                    for key, value in area.proportion_traction_optimised_electrification["infrastructure_cost"].items():
-                        cost_effective_traction_no_optimised[key]["infrastructure_cost"] += value
+                # infrastructure_cost
+                for key, value in area.proportion_traction_optimised_electrification["infrastructure_cost"].items():
+                    cost_effective_traction_no_optimised[key]["infrastructure_cost"] += value
 
-                    # running_km
-                    traction_optimised_traingroups = area.traction_optimised_traingroups
-                    for key, traction in traction_optimised_traingroups.items():
-                        tg = TimetableTrainGroup.query.get(key)
-                        train_category = tg.category.transport_mode
-                        cost_effective_traction_no_optimised[traction]["running_km"] += tg.running_km_day(self.id)
-                        co2_new += TimetableTrainCost.query.filter(
-                            TimetableTrainCost.traingroup_id == key,
-                            TimetableTrainCost.master_scenario_id == self.id,
-                            TimetableTrainCost.traction == traction
-                        ).scalar().co2_emission
-                        co2_diesel += TimetableTrainCost.query.filter(
-                            TimetableTrainCost.traingroup_id == key,
-                            TimetableTrainCost.master_scenario_id == self.id,
-                            TimetableTrainCost.traction == 'diesel'
-                        ).scalar().co2_emission
+                # running_km
+                traction_optimised_traingroups = area.traction_optimised_traingroups
+                for key, traction in traction_optimised_traingroups.items():
+                    tg = TimetableTrainGroup.query.get(key)
+                    train_category = tg.category.transport_mode
+                    cost_effective_traction_no_optimised[traction]["running_km"] += tg.running_km_day(self.id)
+                    co2_new += TimetableTrainCost.query.filter(
+                        TimetableTrainCost.traingroup_id == key,
+                        TimetableTrainCost.master_scenario_id == self.id,
+                        TimetableTrainCost.traction == traction
+                    ).scalar().co2_emission
+                    co2_diesel += TimetableTrainCost.query.filter(
+                        TimetableTrainCost.traingroup_id == key,
+                        TimetableTrainCost.master_scenario_id == self.id,
+                        TimetableTrainCost.traction == 'diesel'
+                    ).scalar().co2_emission
 
-                        running_km_by_transport_mode[train_category][traction] += tg.running_km_day(self.id)
-                        running_km_by_transport_mode["all"][traction] += tg.running_km_day(self.id)
+                    running_km_by_transport_mode[train_category][traction] += tg.running_km_day(self.id)
+                    running_km_by_transport_mode["all"][traction] += tg.running_km_day(self.id)
 
-                else:
-                    cost_effective_traction_no_optimised[effective_traction]["area"] += 1
-                    cost_effective_traction_no_optimised[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
-                    cost_effective_traction_no_optimised[effective_traction]["infra_km"] += area.length/1000
-                    cost_effective_traction_no_optimised[effective_traction]["infrastructure_cost"] += \
-                    cost_master_area["infrastructure_cost"][effective_traction]
-                    cost_effective_traction_no_optimised[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][
-                        effective_traction]
-                    co2_new += area.get_co2_for_traction[effective_traction]
-                    for transport_mode in ["spnv", "sgv", "spfv", "all"]:
-                        running_km_by_transport_mode[transport_mode][effective_traction] += area_running_km_traingroups_by_transport_mode[transport_mode]
+            else:
+                cost_effective_traction_no_optimised[effective_traction]["area"] += 1
+                cost_effective_traction_no_optimised[effective_traction]["running_km"] += area_running_km_traingroups_by_transport_mode["all"]
+                cost_effective_traction_no_optimised[effective_traction]["infra_km"] += area.length/1000
+                cost_effective_traction_no_optimised[effective_traction]["infrastructure_cost"] += \
+                cost_master_area["infrastructure_cost"][effective_traction]
+                cost_effective_traction_no_optimised[effective_traction]["operating_cost"] += cost_master_area["operating_cost"][
+                    effective_traction]
+                co2_new += area.get_co2_for_traction[effective_traction]
+                for transport_mode in ["spnv", "sgv", "spfv", "all"]:
+                    running_km_by_transport_mode[transport_mode][effective_traction] += area_running_km_traingroups_by_transport_mode[transport_mode]
 
         parameters["cost_effective_traction"] = cost_effective_traction
         parameters["cost_effective_traction_no_optimised"] = cost_effective_traction_no_optimised
@@ -3099,9 +3098,9 @@ class MasterArea(db.Model):
         }
 
         for tg in self.traingroups:
-            transport_mode = tg.category.transport_mode
-            running_km_traingroups_by_transport_mode[transport_mode] += tg.running_km_day(self.scenario_id)
-            running_km_traingroups_by_transport_mode["all"] += tg.running_km_day(self.scenario_id)
+            running_km_traingroup = tg.running_km_day(self.scenario_id)
+            running_km_traingroups_by_transport_mode[tg.category.transport_mode] += running_km_traingroup
+            running_km_traingroups_by_transport_mode["all"] += running_km_traingroup
 
         return running_km_traingroups_by_transport_mode
 

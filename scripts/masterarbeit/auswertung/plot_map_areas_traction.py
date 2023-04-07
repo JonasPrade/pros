@@ -160,7 +160,7 @@ def plot_map_traction_without_optimised_electrificaton(filepath_image_directory,
     return filepath
 
 
-def plot_sgv_map(scenario_id, filepath_image_directory, areas):
+def plot_sgv_map(scenario_id, filepath_image_directory, areas, titlename):
     filepath = filepath_image_directory + "sgv_map.png"
     linestrings = dict()
     scenario = MasterScenario.query.get(scenario_id)
@@ -223,7 +223,7 @@ def plot_sgv_map(scenario_id, filepath_image_directory, areas):
     german_border_df = german_border()
     german_border_df.plot(ax=ax, color='#BFC0C0', alpha=0.15)
     ax.legend(loc='upper left', prop={'size': 12})
-    ax.set(title='Ausgangssituation Strecken mit Schienengüterverkehr')
+    ax.set(title=titlename)
     ax.set_axis_off()
     # plt.show()
     plt.savefig(
@@ -234,8 +234,8 @@ def plot_sgv_map(scenario_id, filepath_image_directory, areas):
     )
 
 
-def plot_all_sgv_map(scenario_id, filepath_image_directory):
-    filepath = '../../../example_data/report_scenarios/common_maps/all_sgv_ausgangsszenario.png'
+def plot_all_sgv_map(scenario_id):
+    filepath = '../../../example_data/report_scenarios/common_maps/all_spfv_ausgangsszenario.png'
     linestrings = dict()
     scenario = MasterScenario.query.get(scenario_id)
     infra_version = Version(scenario=scenario)
@@ -243,7 +243,7 @@ def plot_all_sgv_map(scenario_id, filepath_image_directory):
     traingroups = TimetableTrainGroup.query.all()
 
     for index, tg in enumerate(traingroups):
-        if tg.category.transport_mode == 'sgv':
+        if tg.category.transport_mode == 'spfv':
             rw_lines = tg.railway_lines_scenario(scenario_id)
             for line in rw_lines:
                 line_infra_version = infra_version.get_railwayline_model(line.id)
@@ -297,7 +297,7 @@ def plot_all_sgv_map(scenario_id, filepath_image_directory):
     german_border_df = german_border()
     german_border_df.plot(ax=ax, color='#BFC0C0', alpha=0.15)
     ax.legend(loc='upper left', prop={'size': 12})
-    ax.set(title='Ausgangssituation Strecken mit Schienengüterverkehr')
+    ax.set(title='Ausgangssituation Strecken mit Schienenpersonenfernverkehr')
     ax.set_axis_off()
     # plt.show()
     plt.savefig(
@@ -531,13 +531,13 @@ def plot_route_train(tg_id, scenario_id):
 
 
 if __name__ == '__main__':
-    scenario_id = 100
+    scenario_id = 1
     scenario = MasterScenario.query.get(scenario_id)
     areas = scenario.main_areas
-    plot_map_traction_without_optimised_electrificaton(
-        filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
-        areas=areas
-    )
+    # plot_map_traction_without_optimised_electrificaton(
+    #     filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
+    #     areas=areas
+    # )
 
     # traingroups = [area.traingroups for area in areas]
     # plot_sgv_map(
@@ -545,9 +545,9 @@ if __name__ == '__main__':
     #     filepath_image_directory=f'../../../example_data/report_scenarios/s_{scenario_id}/files/',
     #     areas=areas
     # )
-    # plot_all_sgv_map(
-    #     scenario_id=scenario_id
-    # )
+    plot_all_sgv_map(
+        scenario_id=scenario_id
+    )
     # plot_all_category_map(
     #     category_transport_mode='spnv'
     # )

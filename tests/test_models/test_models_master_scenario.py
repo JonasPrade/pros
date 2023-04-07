@@ -3,7 +3,8 @@ from tests.base import BaseTestCase
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-scenario_id = 4
+scenario_id = 1
+
 
 def get_infra_version():
     scenario = MasterScenario.query.get(scenario_id)
