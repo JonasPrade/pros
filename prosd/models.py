@@ -12,6 +12,8 @@ import logging
 import os
 import networkx
 import time
+import multiprocessing
+
 
 from prosd import db, app, bcrypt, parameter
 from prosd.postgisbasics import PostgisBasics
@@ -3098,12 +3100,25 @@ class MasterArea(db.Model):
             "all": 0
         }
 
-        for tg in self.traingroups:
-            running_km_traingroup = tg.running_km_day(self.scenario_id)
-            running_km_traingroups_by_transport_mode[tg.category.transport_mode] += running_km_traingroup
-            running_km_traingroups_by_transport_mode["all"] += running_km_traingroup
+        running_km_tgs = db.session.query(TimetableTrainGroup, sqlalchemy.func.sum(RailwayLine.length),
+                         sqlalchemy.func.count(sqlalchemy.distinct(TimetableTrain.id))).join(
+            RouteTraingroup, RouteTraingroup.railway_line_id == RailwayLine.id).join(
+            TimetableTrainGroup, TimetableTrainGroup.id == RouteTraingroup.traingroup_id).join(
+            TimetableTrain, TimetableTrain.train_group_id == TimetableTrainGroup.id).filter(
+            RouteTraingroup.traingroup_id.in_([tg.id for tg in self.traingroups]),
+            RouteTraingroup.master_scenario_id == self.scenario_id
+        ).group_by(TimetableTrainGroup.id).all()
+
+        for tg in running_km_tgs:
+            running_km_traingroups_by_transport_mode[tg[0].category.transport_mode] += tg[1]/1000
+            running_km_traingroups_by_transport_mode["all"] += tg[1]/1000
 
         return running_km_traingroups_by_transport_mode
+
+    def _calc_running_km_traingroup(self, tg):
+        running_km_traingroup = tg.running_km_day(self.scenario_id)
+        transport_mode = tg.category.transport_mode
+        return running_km_traingroup, transport_mode
 
     @hybrid_method
     def get_operating_cost_traction(self, traction):

@@ -7,9 +7,10 @@ from tests.base import BaseTestCase
 from prosd.models import MasterArea, MasterScenario, TimetableTrainGroup
 from prosd.manage_db.version import Version
 
-tg_id = 'tg_300_x0020_G_x0020_1027_126692'
+tg_id = 'tg_HE4.a_SK_x0020_4101_96162'
 scenario_id = 1
 logging.basicConfig(encoding='utf-8', level=logging.INFO)
+
 
 class TestTimetableTrainGroup(BaseTestCase):
 
