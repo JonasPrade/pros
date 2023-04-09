@@ -14,3 +14,6 @@ if __name__ == '__main__':
     scenario = MasterScenario.query.get(scenario_id)
     scenario_infra = Version(scenario=scenario)
     scenario.calc_cost_one_traction(traction=traction, infra_version=scenario_infra)
+
+    for area in scenario.main_areas:
+        area.save_parameters()

@@ -3102,7 +3102,7 @@ class MasterScenario(db.Model):
 
         return parameters
 
-    def add_parameters_to_model(self):
+    def save_parameters(self):
         """
         Calculates the parameters and adds the values to the model in the db
         :return:
@@ -3164,7 +3164,6 @@ class MasterScenario(db.Model):
 
         db.session.add(self)
         db.session.commit()
-
 
 class MasterArea(db.Model):
     """

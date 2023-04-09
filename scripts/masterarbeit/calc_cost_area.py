@@ -16,3 +16,4 @@ if __name__ == '__main__':
     scenario_infra = Version(scenario=scenario)
     area = MasterArea.query.get(master_area_id)
     area.calculate_cost(infra_version=scenario_infra, overwrite_infrastructure=parameter.OVERWRITE_INFRASTRUCTURE)
+    area.save_parameters()
