@@ -5,7 +5,7 @@ import logging
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-area_id = 17096
+area_id = 17308
 scenario_id = 1
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO)

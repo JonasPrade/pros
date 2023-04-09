@@ -3160,7 +3160,7 @@ class MasterArea(db.Model):
                 TimetableTrainCost.calculation_method == 'standi',
                 TimetableTrainCost.traction.in_(['battery', 'electrification'])
             ).all()
-            traingroups_spfv_costs = {tg[0] + '_' + tg[1]: tg[2] for tg in traingroups_spnv_costs}
+            traingroups_spfv_costs = {tg[0] + '_' + tg[1]: tg[2] for tg in traingroups_spfv_costs}
 
             traingroups_sgv_costs = db.session.query(TimetableTrainCost.traingroup_id, TimetableTrainCost.traction,
                                                       TimetableTrainCost.cost).filter(

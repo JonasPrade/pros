@@ -423,7 +423,6 @@ class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.MasterScenario
