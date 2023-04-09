@@ -52,6 +52,14 @@ class TestMasterAreaProperties(BaseTestCase):
         logging.info(f'MasterArea.operating_cost_all_tractions runs in {time_needed}')
         self.assertTrue(len(operating_cost) > 0)
 
+    def test_operating_cost_one_traction(self):
+        area = MasterArea.query.get(area_id)
+        start_time = time.time()
+        operating_cost = area.get_operating_cost_traction(traction='optimised_electrification')
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.operating_cost_all_tractions runs in {time_needed}')
+        self.assertTrue(len(operating_cost) > 0)
+
     def test_cost_overview(self):
         area = MasterArea.query.get(area_id)
         start_time = time.time()
