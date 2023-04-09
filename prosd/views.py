@@ -418,12 +418,10 @@ class MasterAreaRunningKmSchema(ma.SQLAlchemyAutoSchema):
 
 
 class MasterScenarioSchema(ma.SQLAlchemyAutoSchema):
-    # master_areas = ma.Nested(MasterAreaShortSchema, many=True)
     class Meta:
         model = models.MasterScenario
         include_fk = True
 
-    parameters = fields.Dict()
 
 
 class MasterScenarioSchemaShort(ma.SQLAlchemyAutoSchema):
