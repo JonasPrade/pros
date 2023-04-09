@@ -2961,8 +2961,8 @@ class MasterScenario(db.Model):
     @property
     def parameters(self):
         parameters = dict()
-        cost_effective_traction = {traction: {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
-        cost_effective_traction_no_optimised = {traction: {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
+        cost_effective_traction = {traction: {"area": 0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
+        cost_effective_traction_no_optimised = {traction: {"area": 0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0} for traction in parameter.TRACTIONS}
         cost_effective_traction_no_optimised.pop('optimised_electrification', None)
 
         cost_effective_traction["no calculated cost"] = {"area":0, "infra_km": 0, "running_km": 0, "infrastructure_cost": 0, "operating_cost": 0}
@@ -3011,7 +3011,8 @@ class MasterScenario(db.Model):
                 for key, traction in traction_optimised_traingroups.items():
                     tg = TimetableTrainGroup.query.get(key)
                     train_category = tg.category.transport_mode
-                    cost_effective_traction_no_optimised[traction]["running_km"] += tg.running_km_day(self.id)
+                    running_km_day = tg.running_km_day(self.id)
+                    cost_effective_traction_no_optimised[traction]["running_km"] += running_km_day
                     co2_new += TimetableTrainCost.query.filter(
                         TimetableTrainCost.traingroup_id == key,
                         TimetableTrainCost.master_scenario_id == self.id,
@@ -3023,8 +3024,8 @@ class MasterScenario(db.Model):
                         TimetableTrainCost.traction == 'diesel'
                     ).scalar().co2_emission
 
-                    running_km_by_transport_mode[train_category][traction] += tg.running_km_day(self.id)
-                    running_km_by_transport_mode["all"][traction] += tg.running_km_day(self.id)
+                    running_km_by_transport_mode[train_category][traction] += running_km_day
+                    running_km_by_transport_mode["all"][traction] += running_km_day
 
             else:
                 cost_effective_traction_no_optimised[effective_traction]["area"] += 1
@@ -3166,22 +3167,157 @@ class MasterArea(db.Model):
 
         return train_cost_base_year
 
+    @hybrid_method
+    def get_operating_cost_traction_new(self, traction):
+        """
+
+        :param traction:
+        :return:
+        """
+        train_cost = 0
+        if traction == 'optimised_electrification':
+            for tg in self.traingroups:
+                try:
+                    traction_tg = TractionOptimisedElectrification.query.filter(
+                        TractionOptimisedElectrification.traingroup_id == tg.id,
+                        TractionOptimisedElectrification.master_area_id == self.id
+                    ).one().traction
+                except sqlalchemy.orm.exc.NoResultFound:
+                    if self.superior_master_area is None:
+                        raise NoTractionFound(
+                            f"Could not find fitting traction for {traction}, tg {tg} and MasterArea {self.id}")
+                    else:
+                        continue
+
+                if 'sgv' in self.categories and (traction == "battery" or traction == "h2"):
+                    continue
+
+                calculation_method = get_calculation_method(traingroup=tg, traction=traction_tg)
+                ttc = TimetableTrainCost.query.filter(
+                    TimetableTrainCost.traingroup_id == tg.id,
+                    TimetableTrainCost.calculation_method == calculation_method,
+                    TimetableTrainCost.master_scenario_id == self.scenario_id,
+                    TimetableTrainCost.traction == traction_tg
+                ).scalar()
+
+                if ttc is None:
+                    raise NoTrainCostError(
+                        f"No TimetableTrainCost found for {tg}, traction {traction_tg}, scenario {self.scenario_id} and calculation_method {calculation_method}"
+                    )
+
+                train_cost += ttc.cost
+
+        else:
+            train_cost_spnv = db.session.query(TimetableTrainCost.traction, sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+                                    TimetableTrainCost.traingroup_id.in_(
+                                        db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                                            MasterArea.id == self.id,
+                                            TimetableCategory.transport_mode == 'spnv'
+                                        )
+                                    ),
+                                    TimetableTrainCost.master_scenario_id == self.scenario_id,
+                                    TimetableTrainCost.calculation_method == 'standi'
+                                ).group_by(TimetableTrainCost.traction).all()
+            train_cost_spnv = {traction[0]:traction[1] for traction in train_cost_spnv}
+            train_cost_sgv = db.session.query(TimetableTrainCost.traction, sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+                                    TimetableTrainCost.traingroup_id.in_(
+                                        db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                                            MasterArea.id == self.id,
+                                            TimetableCategory.transport_mode == 'sgv'
+                                        )
+                                    ),
+                                    TimetableTrainCost.master_scenario_id == self.scenario_id,
+                                    TimetableTrainCost.calculation_method == 'bvwp'
+                                ).group_by(TimetableTrainCost.traction).all()
+            train_cost_sgv = {traction[0]: traction[1] for traction in train_cost_sgv}
+            train_cost_spfv = db.session.query(TimetableTrainCost.traction,
+                                              sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+                TimetableTrainCost.traingroup_id.in_(
+                    db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(
+                        TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                        MasterArea.id == self.id,
+                        TimetableCategory.transport_mode == 'spfv'
+                    )
+                ),
+                TimetableTrainCost.master_scenario_id == self.scenario_id,
+                TimetableTrainCost.calculation_method == 'standi'
+            ).group_by(TimetableTrainCost.traction).all()
+            train_cost_spfv = {traction[0]: traction[1] for traction in train_cost_spfv}
+
+
+
+
+        train_cost_base_year = BaseCalculation().cost_base_year(start_year=parameter.START_YEAR,
+                                                                duration=parameter.DURATION_OPERATION, cost=train_cost,
+                                                                cost_is_sum=False)
+
+        return train_cost_base_year
+
+
     @property
     def operating_cost_all_tractions(self):
         """
         Get the operating cost for all tractions
         :return:
         """
-        tractions = parameter.TRACTIONS
+        train_cost_spnv = db.session.query(TimetableTrainCost.traction,
+                                           sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+            TimetableTrainCost.traingroup_id.in_(
+                db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(
+                    TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                    MasterArea.id == self.id,
+                    TimetableCategory.transport_mode == 'spnv'
+                )
+            ),
+            TimetableTrainCost.master_scenario_id == self.scenario_id,
+            TimetableTrainCost.calculation_method == 'standi'
+        ).group_by(TimetableTrainCost.traction).all()
+        train_cost_spnv = {traction[0]: traction[1] for traction in train_cost_spnv}
+        train_cost_sgv = db.session.query(TimetableTrainCost.traction,
+                                          sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+            TimetableTrainCost.traingroup_id.in_(
+                db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(
+                    TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                    MasterArea.id == self.id,
+                    TimetableCategory.transport_mode == 'sgv'
+                )
+            ),
+            TimetableTrainCost.master_scenario_id == self.scenario_id,
+            TimetableTrainCost.calculation_method == 'bvwp'
+        ).group_by(TimetableTrainCost.traction).all()
+        train_cost_sgv = {traction[0]: traction[1] for traction in train_cost_sgv}
+        train_cost_spfv = db.session.query(TimetableTrainCost.traction,
+                                           sqlalchemy.func.sum(TimetableTrainCost.cost)).filter(
+            TimetableTrainCost.traingroup_id.in_(
+                db.session.query(TimetableTrainGroup.id).join(traingroups_to_masterareas).join(MasterArea).join(
+                    TimetableTrain).join(TimetableTrainPart).join(TimetableCategory).filter(
+                    MasterArea.id == self.id,
+                    TimetableCategory.transport_mode == 'spfv'
+                )
+            ),
+            TimetableTrainCost.master_scenario_id == self.scenario_id,
+            TimetableTrainCost.calculation_method == 'standi'
+        ).group_by(TimetableTrainCost.traction).all()
+        train_cost_spfv = {traction[0]: traction[1] for traction in train_cost_spfv}
+
         train_costs = dict()
-        for traction in tractions:
+        for traction in parameter.TRACTIONS:
             if 'sgv' in self.categories and (traction == "battery" or traction == "h2"):
                 continue
-            try:
-                costs = self.get_operating_cost_traction(traction)
-                train_costs[traction] = costs
-            except (NoTractionFound, NoTrainCostError) as e:
-                logging.error(f"Error at calulacting operating cost {e}")
+            if traction == 'optimised_electrification':
+                train_costs[traction] = self.get_operating_cost_traction(traction='optimised_electrification')
+            else:
+                train_cost_traction_year = 0
+                if traction in train_cost_spnv.keys():
+                    train_cost_traction_year += train_cost_spnv[traction]
+                if traction in train_cost_sgv.keys():
+                    train_cost_traction_year += train_cost_sgv[traction]
+                if traction in train_cost_spfv.keys():
+                    train_cost_traction_year += train_cost_spfv[traction]
+
+                train_costs[traction] = BaseCalculation().cost_base_year(start_year=parameter.START_YEAR,
+                                                                duration=parameter.DURATION_OPERATION, cost=train_cost_traction_year,
+                                                                cost_is_sum=False)
 
         return train_costs
 

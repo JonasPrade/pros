@@ -5,7 +5,7 @@ import logging
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-area_id = 17800
+area_id = 17096
 scenario_id = 1
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO)
@@ -25,7 +25,10 @@ class TestMasterAreaProperties(BaseTestCase):
 
     def test_proportion_traction_optimised_electrification(self):
         area = MasterArea.query.get(area_id)
+        start_time = time.time()
         proportion_traction_optimised_electrification = area.proportion_traction_optimised_electrification
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.proportion_traction_optimised_electrification runs in {time_needed}')
         self.assertTrue(len(proportion_traction_optimised_electrification) > 0)
 
     def test_total_cost_and_infra_and_operating_cost(self):
@@ -33,9 +36,28 @@ class TestMasterAreaProperties(BaseTestCase):
         cost_dict = area.total_cost_and_infra_and_operating_cost
         self.assertTrue(len(cost_dict) > 0)
 
+    def test_infrastructure_cost_all_tractions(self):
+        area = MasterArea.query.get(area_id)
+        start_time = time.time()
+        infrastructure_cost = area.infrastructure_cost_all_tractions
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.infrastructure_cost_all_tractions runs in {time_needed}')
+        self.assertTrue(len(infrastructure_cost) > 0)
+
+    def test_operating_cost_all_tractions(self):
+        area = MasterArea.query.get(area_id)
+        start_time = time.time()
+        operating_cost = area.operating_cost_all_tractions
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.operating_cost_all_tractions runs in {time_needed}')
+        self.assertTrue(len(operating_cost) > 0)
+
     def test_cost_overview(self):
         area = MasterArea.query.get(area_id)
+        start_time = time.time()
         cost_overview = area.cost_overview
+        time_needed = time.time() - start_time
+        logging.info(f'MasterArea.cost_overview runs in {time_needed}')
         self.assertTrue(len(cost_overview) > 0)
 
     def test_get_train_costs_for_area(self):
