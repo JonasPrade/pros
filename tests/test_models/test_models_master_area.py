@@ -5,7 +5,7 @@ import logging
 from prosd.models import MasterArea, MasterScenario
 from prosd.manage_db.version import Version
 
-area_id = 17308
+area_id = 17096
 scenario_id = 1
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO)
@@ -22,6 +22,11 @@ class TestMasterAreaProperties(BaseTestCase):
         area = MasterArea.query.get(area_id)
         categories = area.categories
         self.assertTrue(len(categories) > 0)
+
+    def test_length(self):
+        area = MasterArea.query.get(area_id)
+        length = area.length
+        self.assertTrue(length > 0)
 
     def test_proportion_traction_optimised_electrification(self):
         area = MasterArea.query.get(area_id)
@@ -59,6 +64,11 @@ class TestMasterAreaProperties(BaseTestCase):
         time_needed = time.time() - start_time
         logging.info(f'MasterArea.operating_cost_all_tractions runs in {time_needed}')
         self.assertTrue(len(operating_cost) > 0)
+
+    def test_co2_values(self):
+        area = MasterArea.query.get(area_id)
+        co2 = area.get_co2_for_traction
+        self.assertTrue(len(co2) > 0)
 
     def test_cost_overview(self):
         area = MasterArea.query.get(area_id)

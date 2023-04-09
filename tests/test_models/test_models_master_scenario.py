@@ -27,12 +27,19 @@ class TestMasterScenario(BaseTestCase):
         scenario = MasterScenario.query.get(scenario_id)
         scenario.delete_areas()
 
+    def test_calc_cost_all_tractions(self):
+        scenario = MasterScenario.query.get(scenario_id)
+        infra_version = get_infra_version()
+        calc_cost_all_tractions = scenario.calc_cost_all_tractions(infra_version)
+        self.assertTrue(calc_cost_all_tractions > 0)
+
     def test_cost_effective_traction(self):
         scenario = MasterScenario.query.get(scenario_id)
         cost_effective_traction = scenario.cost_effective_traction
         self.assertTrue(len(cost_effective_traction) > 0)
 
-    def test_parameters(self):
+
+def test_parameters(self):
         scenario = MasterScenario.query.get(scenario_id)
         start_time = time.time()
         parameters = scenario.parameters

@@ -402,11 +402,11 @@ class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
     length = fields.Float()
-    cost_overview = fields.Dict()
-    categories = fields.List(fields.Str())
-    proportion_traction_optimised_electrification = fields.Dict()
-    running_km_traingroups_by_transport_mode = fields.Dict()
-    traction_optimised_traingroups = fields.Dict()
+    # cost_overview = fields.Dict()
+    # categories = fields.List(fields.Str())
+    # proportion_traction_optimised_electrification = fields.Dict()
+    # running_km_traingroups_by_transport_mode = fields.Dict()
+    # traction_optimised_traingroups = fields.Dict()
 
 
 class MasterAreaRunningKmSchema(ma.SQLAlchemyAutoSchema):

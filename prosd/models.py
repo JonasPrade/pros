@@ -2731,6 +2731,59 @@ class MasterScenario(db.Model):
     start_year = db.Column(db.Integer, default=2030)
     operation_duration = db.Column(db.Integer, default=30)
 
+    count_area_sum = db.Column(db.Integer)
+    count_area_diesel = db.Column(db.Integer)
+    count_area_efuel = db.Column(db.Integer)
+    count_area_h2 = db.Column(db.Integer)
+    count_area_battery = db.Column(db.Integer)
+    count_area_electrification = db.Column(db.Integer)
+    count_area_optimised_electrification = db.Column(db.Integer)
+    count_area_oe_to_battery = db.Column(db.Integer)
+    count_area_oe_to_electrification = db.Column(db.Integer)
+
+    infrastructure_km_sum = db.Column(db.Integer)
+    infrastructure_km_diesel = db.Column(db.Integer)
+    infrastructure_km_efuel = db.Column(db.Integer)
+    infrastructure_km_h2 = db.Column(db.Integer)
+    infrastructure_km_battery = db.Column(db.Integer)
+    infrastructure_km_electrification = db.Column(db.Integer)
+    infrastructure_km_optimised_electrification = db.Column(db.Integer)
+    infrastructure_km_oe_to_battery = db.Column(db.Integer)
+    infrastructure_km_oe_to_electrification = db.Column(db.Integer)
+
+    running_km_sum = db.Column(db.Integer)
+    running_km_diesel = db.Column(db.Integer)
+    running_km_efuel = db.Column(db.Integer)
+    running_km_h2 = db.Column(db.Integer)
+    running_km_battery = db.Column(db.Integer)
+    running_km_electrification = db.Column(db.Integer)
+    running_km_optimised_electrification = db.Column(db.Integer)
+    running_km_oe_to_battery = db.Column(db.Integer)
+    running_km_oe_to_electrification = db.Column(db.Integer)
+
+    infrastructure_cost_sum = db.Column(db.Integer)
+    infrastructure_cost_diesel = db.Column(db.Integer)
+    infrastructure_cost_efuel = db.Column(db.Integer)
+    infrastructure_cost_h2 = db.Column(db.Integer)
+    infrastructure_cost_battery = db.Column(db.Integer)
+    infrastructure_cost_electrification = db.Column(db.Integer)
+    infrastructure_cost_optimsed_electrification = db.Column(db.Integer)
+    infrastructure_cost_oe_to_battery = db.Column(db.Integer)
+    infrastructure_cost_oe_to_electrification = db.Column(db.Integer)
+
+    operating_cost_sum = db.Column(db.Integer)
+    operating_cost_diesel = db.Column(db.Integer)
+    operating_cost_efuel = db.Column(db.Integer)
+    operating_cost_h2 = db.Column(db.Integer)
+    operating_cost_battery = db.Column(db.Integer)
+    operating_cost_electrification = db.Column(db.Integer)
+    operating_cost_optimised_electrification = db.Column(db.Integer)
+    operating_cost_oe_to_battery = db.Column(db.Integer)
+    operating_cost_oe_to_electrification = db.Column(db.Integer)
+
+    co2_new = db.Column(db.Integer)
+    co2_diesel = db.Column(db.Integer)
+
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterscenario, backref=db.backref('master_scenario'))
     train_costs = db.relationship("TimetableTrainCost", cascade="all, delete", backref=db.backref('master_scenario'))
 
@@ -2970,7 +3023,7 @@ class MasterScenario(db.Model):
 
         cost_sum_infrastructure = 0
         cost_sum_operating = 0
-        sum_running_km = 0
+        running_km_sum = 0
         co2_diesel = 0
         co2_new = 0
 
@@ -2994,7 +3047,7 @@ class MasterScenario(db.Model):
 
             cost_sum_infrastructure += cost_master_area["infrastructure_cost"][effective_traction]
             cost_sum_operating += cost_master_area["operating_cost"][effective_traction]
-            sum_running_km += area_running_km_traingroups_by_transport_mode["all"]
+            running_km_sum += area_running_km_traingroups_by_transport_mode["all"]
 
             if effective_traction == 'optimised_electrification':
                 # infra_km
@@ -3049,6 +3102,69 @@ class MasterScenario(db.Model):
 
         return parameters
 
+    def add_parameters_to_model(self):
+        """
+        Calculates the parameters and adds the values to the model in the db
+        :return:
+        """
+        parameters = self.parameters
+
+        self.count_area_diesel = parameters["cost_effective_traction"]["diesel"]["area"]
+        self.count_area_efuel = parameters["cost_effective_traction"]["efuel"]["area"]
+        self.count_area_h2 = parameters["cost_effective_traction"]["h2"]["area"]
+        self.count_area_battery = parameters["cost_effective_traction"]["battery"]["area"]
+        self.count_area_electrification = parameters["cost_effective_traction"]["electrification"]["area"]
+        self.count_area_optimised_electrification = parameters["cost_effective_traction"]["optimised_electrification"]["area"]
+        self.count_area_oe_to_battery = parameters["cost_effective_traction_no_optimised"]["battery"]["area"] - parameters["cost_effective_traction"]["battery"]["area"]
+        self.count_area_oe_to_electrification = parameters["cost_effective_traction_no_optimised"]["electrification"]["area"] - parameters["cost_effective_traction"]["electrification"]["area"]
+        self.count_area_sum = self.count_area_diesel + self.count_area_efuel + self.count_area_h2 + self.count_area_battery + self.count_area_electrification + self.count_area_optimised_electrification
+
+        self.infrastructure_km_diesel = parameters["cost_effective_traction"]["diesel"]["infra_km"]
+        self.infrastructure_km_efuel = parameters["cost_effective_traction"]["efuel"]["infra_km"]
+        self.infrastructure_km_h2 = parameters["cost_effective_traction"]["h2"]["infra_km"]
+        self.infrastructure_km_battery = parameters["cost_effective_traction"]["battery"]["infra_km"]
+        self.infrastructure_km_electrification = parameters["cost_effective_traction"]["electrification"]["infra_km"]
+        self.infrastructure_km_optimised_electrification = parameters["cost_effective_traction"]["optimised_electrification"]["infra_km"]
+        self.infrastructure_km_oe_to_battery = parameters["cost_effective_traction_no_optimised"]["battery"]["infra_km"] - parameters["cost_effective_traction"]["battery"]["infra_km"]
+        self.infrastructure_km_oe_to_electrification = parameters["cost_effective_traction_no_optimised"]["electrification"]["infra_km"] - parameters["cost_effective_traction"]["electrification"]["infra_km"]
+        self.infrastructure_km_sum = self.infrastructure_km_diesel + self.infrastructure_km_efuel + self.infrastructure_km_h2 + self.infrastructure_km_battery + self.infrastructure_km_electrification + self.infrastructure_km_optimised_electrification
+
+        self.running_km_diesel = parameters["cost_effective_traction"]["diesel"]["running_km"]
+        self.running_km_efuel = parameters["cost_effective_traction"]["efuel"]["running_km"]
+        self.running_km_h2 = parameters["cost_effective_traction"]["h2"]["running_km"]
+        self.running_km_battery = parameters["cost_effective_traction"]["battery"]["running_km"]
+        self.running_km_electrification = parameters["cost_effective_traction"]["electrification"]["running_km"]
+        self.running_km_optimised_electrification = parameters["cost_effective_traction"]["optimised_electrification"]["running_km"]
+        self.running_km_oe_to_battery = parameters["cost_effective_traction_no_optimised"]["battery"]["running_km"] - parameters["cost_effective_traction"]["battery"]["running_km"]
+        self.running_km_oe_to_electrification = parameters["cost_effective_traction_no_optimised"]["electrification"]["running_km"] - parameters["cost_effective_traction"]["electrification"]["running_km"]
+        self.running_km_sum = self.running_km_diesel + self.running_km_efuel + self.running_km_h2 + self.running_km_battery + self.running_km_electrification + self.running_km_optimised_electrification
+
+        self.infrastructure_cost_diesel = parameters["cost_effective_traction"]["diesel"]["infrastructure_cost"]
+        self.infrastructure_cost_efuel = parameters["cost_effective_traction"]["efuel"]["infrastructure_cost"]
+        self.infrastructure_cost_h2 = parameters["cost_effective_traction"]["h2"]["infrastructure_cost"]
+        self.infrastructure_cost_battery = parameters["cost_effective_traction"]["battery"]["infrastructure_cost"]
+        self.infrastructure_cost_electrification = parameters["cost_effective_traction"]["electrification"]["infrastructure_cost"]
+        self.infrastructure_cost_optimsed_electrification = parameters["cost_effective_traction"]["optimised_electrification"]["infrastructure_cost"]
+        self.infrastructure_cost_oe_to_battery = parameters["cost_effective_traction_no_optimised"]["battery"]["infrastructure_cost"] - parameters["cost_effective_traction"]["battery"]["infrastructure_cost"]
+        self.infrastructure_cost_oe_to_electrification = parameters["cost_effective_traction_no_optimised"]["electrification"]["infrastructure_cost"] - parameters["cost_effective_traction"]["electrification"]["infrastructure_cost"]
+        self.infrastructure_cost_sum = parameters["sum_infrastructure"]
+
+        self.operating_cost_diesel = parameters["cost_effective_traction"]["diesel"]["operating_cost"]
+        self.operating_cost_efuel = parameters["cost_effective_traction"]["efuel"]["operating_cost"]
+        self.operating_cost_h2 = parameters["cost_effective_traction"]["h2"]["operating_cost"]
+        self.operating_cost_battery = parameters["cost_effective_traction"]["battery"]["operating_cost"]
+        self.operating_cost_electrification = parameters["cost_effective_traction"]["electrification"]["operating_cost"]
+        self.operating_cost_optimised_electrification = parameters["cost_effective_traction"]["optimised_electrification"]["operating_cost"]
+        self.operating_cost_oe_to_battery = parameters["cost_effective_traction_no_optimised"]["battery"]["operating_cost"] - parameters["cost_effective_traction"]["battery"]["operating_cost"]
+        self.operating_cost_oe_to_electrification = parameters["cost_effective_traction_no_optimised"]["electrification"]["operating_cost"] - parameters["cost_effective_traction"]["electrification"]["operating_cost"]
+        self.operating_cost_sum = parameters["sum_operating_cost"]
+
+        self.co2_new = parameters["co2_new"]
+        self.co2_diesel = parameters["co2_old"]
+
+        db.session.add(self)
+        db.session.commit()
+
 
 class MasterArea(db.Model):
     """
@@ -3059,6 +3175,33 @@ class MasterArea(db.Model):
     scenario_id = db.Column(db.Integer, db.ForeignKey('master_scenarios.id', onupdate='CASCADE', ondelete='CASCADE'))
     superior_master_id = db.Column(db.Integer, db.ForeignKey('master_areas.id', onupdate='CASCADE', ondelete='CASCADE'))
 
+    traction_minimal_cost = db.Column(db.String(255))
+
+    cost_efuel = db.Column(db.Integer)
+    cost_diesel = db.Column(db.Integer)
+    cost_h2 = db.Column(db.Integer)
+    cost_battery = db.Column(db.Integer)
+    cost_electrification = db.Column(db.Integer)
+    cost_optimised_electrification = db.Column(db.Integer)
+
+    operating_cost_efuel = db.Column(db.Integer)
+    operating_cost_diesel = db.Column(db.Integer)
+    operating_cost_h2 = db.Column(db.Integer)
+    operating_cost_battery = db.Column(db.Integer)
+    operating_cost_electrification = db.Column(db.Integer)
+    operating_cost_optimised_electrification = db.Column(db.Integer)
+
+    infrastructure_cost_efuel = db.Column(db.Integer)
+    infrastructure_cost_diesel = db.Column(db.Integer)
+    infrastructure_cost_h2 = db.Column(db.Integer)
+    infrastructure_cost_battery = db.Column(db.Integer)
+    infrastructure_cost_electrification = db.Column(db.Integer)
+    infrastructure_cost_optimised_electrification = db.Column(db.Integer)
+
+    sgv = db.Column(db.Boolean, default=False)
+    spnv = db.Column(db.Boolean, default=False)
+    spfv = db.Column(db.Boolean, default=False)
+
     traingroups = db.relationship("TimetableTrainGroup", secondary=traingroups_to_masterareas, backref=db.backref('master_areas', lazy=True))
     railway_lines = db.relationship("RailwayLine", secondary=railwaylines_to_masterareas, backref=db.backref('master_areas', lazy=True))
     project_contents = db.relationship("ProjectContent", secondary=projectcontents_to_masterareas, backref=db.backref('master_areas'))
@@ -3068,11 +3211,9 @@ class MasterArea(db.Model):
 
     @property
     def categories(self):
-        categories = set()
-        categories.update([tg.category.transport_mode for tg in self.traingroups])
-        # for tg in self.traingroups:
-        #     categories.add(tg.category.transport_mode)
-        categories = list(categories)
+        categories = db.session.query(TimetableCategory.transport_mode).join(TimetableTrainPart).join(TimetableTrain).join(TimetableTrainGroup).join(traingroups_to_masterareas).join(MasterArea).filter(MasterArea.id == self.id).group_by(TimetableCategory.transport_mode).all()
+        categories = [category[0] for category in categories]
+
         return categories
 
     @property
@@ -3083,7 +3224,6 @@ class MasterArea(db.Model):
 
     @property
     def traction_optimised_traingroups(self):
-
         tractions = TractionOptimisedElectrification.query.filter(
             TractionOptimisedElectrification.master_area_id == self.id
         ).all()
@@ -3124,16 +3264,13 @@ class MasterArea(db.Model):
     @hybrid_method
     def get_operating_cost_traction(self, traction):
         """
-
+        get the operating cost for one traction
         :param traction:
         :return:
         """
         train_cost = 0
         if traction == 'optimised_electrification':
-            traingroup_traction = db.session.query(TractionOptimisedElectrification.traingroup_id, TractionOptimisedElectrification.traction).filter(
-                                    TractionOptimisedElectrification.master_area_id == self.id
-                                ).all()
-            traingroup_traction = {tg[0]:tg[1] for tg in traingroup_traction}
+            traingroup_traction = self.traction_optimised_traingroups
 
             traingroups_spnv_costs = db.session.query(TimetableTrainCost.traingroup_id, TimetableTrainCost.traction, TimetableTrainCost.cost).filter(
                 TimetableTrainCost.traingroup_id.in_(
@@ -3354,6 +3491,21 @@ class MasterArea(db.Model):
             TimetableTrainCost.master_scenario_id == self.scenario_id
         ).group_by(TimetableTrainCost.traction).all()
         co2_tractions = {value[0]:value[1] for value in values}
+
+        # optimised electrification gets calculated separated
+        co2_optimised_electrification = 0
+        traction_optimised_traingroups = self.traction_optimised_traingroups
+        train_emissions = db.session.query(TimetableTrainCost.traingroup_id, TimetableTrainCost.traction, TimetableTrainCost.co2_emission).filter(
+            TimetableTrainCost.traingroup_id.in_([tg.id for tg in self.traingroups]),
+            TimetableTrainCost.master_scenario_id == self.scenario_id,
+            TimetableTrainCost.traction.in_(['battery','electrification'])
+        ).all()
+        train_emissions = {tg[0]+'_'+tg[1]:tg[2] for tg in train_emissions}
+        for tg, traction in traction_optimised_traingroups.items():
+            co2_optimised_electrification+=train_emissions[tg+'_'+traction]
+
+        co2_tractions["optimised_electrification"] = co2_optimised_electrification
+
         return co2_tractions
 
     @property
@@ -3446,6 +3598,8 @@ class MasterArea(db.Model):
 
         cost_dict["co2"] = {}
         cost_dict["sum_cost"] = {}
+
+        # calculate the sum_cost
         for traction in parameter.TRACTIONS:
             try:
                 cost_dict["sum_cost"][traction] = cost_dict["infrastructure_cost"][traction] + cost_dict["operating_cost"][traction]
@@ -3453,23 +3607,69 @@ class MasterArea(db.Model):
             except KeyError as e:
                 logging.info(f"No infrastructure cost or train_cost for {self.id} {e}")
 
-            if traction == 'optimised_electrification':
-                cost_dict["co2"]["optimised_electrification"] = 0
-                for key, traction in self.traction_optimised_traingroups.items():
-                    cost_dict["co2"]["optimised_electrification"] += TimetableTrainCost.query.filter(
-                        TimetableTrainCost.traingroup_id == key,
-                        TimetableTrainCost.master_scenario_id == self.scenario_id,
-                        TimetableTrainCost.traction == traction
-                    ).scalar().co2_emission
-            else:
-                if 'sgv' in self.categories and (traction == 'battery' or traction == 'h2'):
-                    continue
-                cost_dict["co2"][traction] = self.get_co2_for_traction[traction]
+        # calculate the co2
+        co2_traction = self.get_co2_for_traction
+        if 'sgv' in self.categories:
+            if 'h2' in co2_traction.keys():
+                co2_traction.pop('h2')
+            if 'battery' in co2_traction.keys():
+                co2_traction.pop('battery')
+        cost_dict['co2'] = co2_traction
 
         minimal_cost_traction = min(cost_dict["sum_cost"], key=cost_dict["sum_cost"].get)
         cost_dict["minimal_cost"] = minimal_cost_traction
 
         return cost_dict
+
+    def save_parameters(self):
+        """
+        save parameters to the db for quicker usage
+        :return:
+        """
+        cost_overview = self.cost_overview
+
+        self.traction_minimal_cost = cost_overview["minimal_cost"]
+        self.cost_efuel = cost_overview["sum_cost"]["efuel"]
+        self.cost_diesel = cost_overview["sum_cost"]["diesel"]
+        self.cost_electrification = cost_overview["sum_cost"]["electrification"]
+        self.cost_optimised_electrification = cost_overview["sum_cost"]["optimised_electrification"]
+
+        self.operating_cost_efuel = cost_overview["operating_cost"]["efuel"]
+        self.operating_cost_diesel = cost_overview["operating_cost"]["diesel"]
+        self.operating_cost_electrification = cost_overview["operating_cost"]["electrification"]
+        self.operating_cost_optimised_electrification = cost_overview["operating_cost"]["optimised_electrification"]
+
+        self.infrastructure_cost_efuel = cost_overview["infrastructure_cost"]["efuel"]
+        self.infrastructure_cost_diesel = cost_overview["infrastructure_cost"]["diesel"]
+        self.infrastructure_cost_electrification = cost_overview["infrastructure_cost"]["electrification"]
+        self.infrastructure_cost_optimised_electrification = cost_overview["infrastructure_cost"]["optimised_electrification"]
+
+        categories = self.categories
+
+        if 'sgv' not in categories:
+            self.cost_h2 = cost_overview["sum_cost"]["h2"]
+            self.cost_battery = cost_overview["sum_cost"]["battery"]
+            self.operating_cost_h2 = cost_overview["operating_cost"]["h2"]
+            self.operating_cost_battery = cost_overview["operating_cost"]["battery"]
+            self.infrastructure_cost_h2 = cost_overview["infrastructure_cost"]["h2"]
+            self.infrastructure_cost_battery = cost_overview["infrastructure_cost"]["battery"]
+
+        # add categories that are used in that master area
+        if 'sgv' in categories:
+            self.sgv = True
+        else:
+            self.sgv = False
+        if 'spnv' in categories:
+            self.spnv = True
+        else:
+            self.spnv = False
+        if 'spfv' in categories:
+            self.spfv = True
+        else:
+            self.spfv = False
+
+        db.session.add(self)
+        db.session.commit()
 
     @property
     def cost_effective_traction(self):
