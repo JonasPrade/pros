@@ -86,9 +86,19 @@ def get_first_projectgroup(**kwargs):
 def get_traingroup(**kwargs):
     traingroup_id = kwargs.pop('id')
     traingroup = models.TimetableTrainGroup.query.get(traingroup_id)
-    traingroup_schema = views.TrainGroupSchema()
+    traingroup_schema = views.TimetableTrainGroupSchema()
     output = traingroup_schema.dump(traingroup)
     response = make_response({'traingroup': output})
+    return response
+
+@app.route("/trainpart/<id>", methods=['GET'])
+@cross_origin()
+def get_trainpart(**kwargs):
+    trainpart_id = kwargs.pop('id')
+    trainpart = models.TimetableTrainPart.query.get(trainpart_id)
+    trainpart_schema = views.TimetableTrainPartSchema()
+    output = trainpart_schema.dump(trainpart)
+    response = make_response({'trainpart': output})
     return response
 
 
@@ -225,6 +235,21 @@ def get_projects_by_projectgroup(**kwargs):
     project_schema = views.ProjectShortSchema(many=True)
     output = project_schema.dump(projects)
     response = make_response({"projects": output})
+    return response
+
+
+@app.route("/traingroupcostscenario/<masterscenario_id>/<traingroup_id>", methods=['GET'])
+@cross_origin()
+def train_cost_traingroup_scenario(**kwargs):
+    master_scenario_id = kwargs.pop('masterscenario_id')
+    traingroup_id = kwargs.pop('traingroup_id')
+    train_cost = models.TimetableTrainCost.query.filter(
+        models.TimetableTrainCost.master_scenario_id == master_scenario_id,
+        models.TimetableTrainCost.traingroup_id == traingroup_id
+    )
+    train_cost_schema = views.TimetableTrainCostSchema(many=True)
+    output = train_cost_schema.dump(train_cost)
+    response = make_response({'train_cost': output})
     return response
 
 

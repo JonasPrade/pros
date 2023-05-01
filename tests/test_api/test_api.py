@@ -2,11 +2,13 @@ import json
 from tests.base import BaseTestCase
 
 project_id = 4
-traingroup_id = "tg_BY15_X_x0020_15001_4393"
+traingroup_id = "tg_ST20.a_X_x0020_20102_4148"
 station_id = 7
 railwaypoint_id = 45819
 masterarea_id = 2382
 masterscenario_id = 1
+trainpart_id = 'tp_BY15_X_x0020_15001_4395'
+
 #
 # api_key_headers = Headers({
 #             'x-api-key': 'TEST-API-KEY'
@@ -77,6 +79,14 @@ class TestApi(BaseTestCase):
             self.assertTrue(len(data['traingroup']) >0)
             self.assertEqual(response.status_code, 200)
 
+    def test_get_trainpart(self):
+        with self.client:
+            api_string = f"/trainpart/{trainpart_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['trainpart']) >0)
+            self.assertEqual(response.status_code, 200)
+
     def test_get_station(self):
         with self.client:
             api_string = f"/station/{station_id}"
@@ -139,4 +149,12 @@ class TestApi(BaseTestCase):
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['master_scenario']) >0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_cost_traingroup_scenario(self):
+        with self.client:
+            api_string = f"/traingroupcostscenario/{masterscenario_id}/{traingroup_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['train_cost']) >0)
             self.assertEqual(response.status_code, 200)

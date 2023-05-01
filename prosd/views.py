@@ -308,6 +308,8 @@ class FormationSchema(ma.SQLAlchemyAutoSchema):
         model = models.Formation
         include_fk = True
 
+    vehicles_ids_composition = fields.Dict()
+
 
 class RailMlOcpSchema(ma.SQLAlchemyAutoSchema):
     station = ma.Nested(RailwayStationSchema)
@@ -322,8 +324,11 @@ class TimetableTimeSchema(ma.SQLAlchemyAutoSchema):
         model = models.TimetableTime
         include_fk = True
 
+    arrival_with_day = fields.DateTime()
+    departure_with_day = fields.DateTime()
 
-class TimetableOcpSchema(ma.SQLAlchemyAutoSchema):
+
+class TimetableOcpSchemaShort(ma.SQLAlchemyAutoSchema):
     ocp = ma.Nested(RailMlOcpSchema)
     # times = ma.Nested(TimetableTimeSchema, many=True)
 
@@ -332,17 +337,33 @@ class TimetableOcpSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-class TimetableTrainPartSchema(ma.SQLAlchemyAutoSchema):
+class TimetableOcpSchema(ma.SQLAlchemyAutoSchema):
+    ocp = ma.Nested(RailMlOcpSchema)
+    times = ma.Nested(TimetableTimeSchema, many=True)
+
+    class Meta:
+        model = models.TimetableOcp
+
+
+class TimetableTrainPartSchemaShort(ma.SQLAlchemyAutoSchema):
     formation = ma.Nested(FormationSchema)
-    timetable_ocps = ma.Nested(TimetableOcpSchema, many=True)
+    timetable_ocps = ma.Nested(TimetableOcpSchemaShort, many=True)
 
     class Meta:
         model = models.TimetableTrainPart
         include_fk = True
 
 
+class TimetableTrainPartSchema(ma.SQLAlchemyAutoSchema):
+    formation = ma.Nested(FormationSchema)
+    timetable_ocps = ma.Nested(TimetableOcpSchema, many=True)
+    class Meta:
+        model = models.TimetableTrainPart
+        include_fk = True
+
+
 class TimetableTrainSchema(ma.SQLAlchemyAutoSchema):
-    train_part = ma.Nested(TimetableTrainPartSchema)
+    train_part = ma.Nested(TimetableTrainPartSchemaShort)
 
     class Meta:
         model = models.TimetableTrain
@@ -363,7 +384,7 @@ class TimetableTrainCostSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
+class TimetableTrainGroupSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RouteTraingroupSchema, many=True)
     trains = ma.Nested(TimetableTrainSchema, many=True)
     train_costs = ma.Nested(TimetableTrainCostSchema, many=True)
@@ -373,7 +394,7 @@ class TrainGroupSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-class TrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
+class TimetableTrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.TimetableTrainGroup
         include_fk = True
@@ -382,7 +403,7 @@ class TrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
 class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     project_contents = ma.Nested(ProjectContentSchema, many=True)
-    traingroups = ma.Nested(TrainGroupShortSchema, many=True)
+    traingroups = ma.Nested(TimetableTrainGroupShortSchema, many=True)
     scenario = ma.Nested(lambda: MasterScenarioSchemaShort())
     sub_master_areas = ma.Nested(lambda: MasterAreaShortSchema(), many=True)
 
@@ -402,11 +423,6 @@ class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
     length = fields.Float()
-    # cost_overview = fields.Dict()
-    # categories = fields.List(fields.Str())
-    # proportion_traction_optimised_electrification = fields.Dict()
-    # running_km_traingroups_by_transport_mode = fields.Dict()
-    # traction_optimised_traingroups = fields.Dict()
 
 
 class MasterAreaRunningKmSchema(ma.SQLAlchemyAutoSchema):

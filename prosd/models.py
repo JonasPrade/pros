@@ -1611,7 +1611,21 @@ class Formation(db.Model):
         vehicles = []
         for row in entry:
             vehicles.append(row[0])
-        # vehicles = Vehicle.query.join(formations_to_vehicles).join(Formation).filter(Formation.id == self.id).all()
+
+        return vehicles
+
+    @property
+    def vehicles_ids_composition(self):
+        entry = db.session.query(Vehicle, formations_to_vehicles.c.id).join(formations_to_vehicles).join(
+            Formation).filter(Formation.id == self.id).all()
+        vehicles = {}
+        for row in entry:
+            vehicle = row[0]
+            if vehicle.id in vehicles.keys():
+                vehicles[vehicle.id] += 1
+            else:
+                vehicles[vehicle.id] = 1
+
         return vehicles
 
     @hybrid_property
