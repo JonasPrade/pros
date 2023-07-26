@@ -1235,7 +1235,7 @@ class ProjectContent(db.Model):
     # planning status
     ibn_planned = db.Column(db.Date)
     ibn_final = db.Column(db.Date)
-    hoai = db.Column(db.Integer, nullable=False, default=0)
+    hoai = db.Column(db.Integer, nullable=False, default=0)  # 1 LP_1/2; 3 LP_3/4; 5 LP_5/9; 10 IBN erfolgt;
     parl_befassung_planned = db.Column(db.Boolean, nullable=False, default=False)
     parl_befassung_date = db.Column(db.Date)
     ro_finished = db.Column(db.Boolean, nullable=False, default=False)  # Raumordnung
@@ -1245,6 +1245,10 @@ class ProjectContent(db.Model):
     bvwp_duration_of_outstanding_planning = db.Column(db.Float)
     bvwp_duration_of_build = db.Column(db.Float)
     bvwp_duration_operating = db.Column(db.Float)
+    lp_12 = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
+    lp_34 = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
+    bau = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
+    ibn_erfolgt = db.Column(db.Integer)
 
     # properties of project
     nbs = db.Column(db.Boolean, nullable=False, default=False)
@@ -1282,6 +1286,8 @@ class ProjectContent(db.Model):
     filling_stations_h2 = db.Column(db.Boolean, default=False)
     filling_stations_diesel = db.Column(db.Boolean, default=False)
     filling_stations_count = db.Column(db.Integer, default=0)
+    sanierung = db.Column(db.Boolean, default=False)
+    sgv740m = db.Column(db.Boolean, default=False)
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -1461,7 +1467,7 @@ class ProjectGroup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
-
+    public = db.Column(db.Boolean, default=False)
     @hybrid_property
     def projects(self):
         projects_id = set()
@@ -1480,6 +1486,14 @@ class ProjectGroup(db.Model):
                     projects_id.add(pc.project)
 
         return projects_id
+
+    @property
+    def superior_project_contents(self):
+        projects = set()
+        for pc in self.projects_content:
+            if pc.superior_project_content_id is None:
+                projects.add(pc)
+        return projects
 
 
 class Vehicle(db.Model):
@@ -2660,6 +2674,7 @@ class Budget(db.Model):
     finve = db.relationship("FinVe", backref=db.backref("budgets"))
     db.Index('budgets_year_and_finve_uindex', budget_year, fin_ve, unique=True)
 
+
 class FinVe(db.Model):
     """
     FinVe = Finanzierungsvereinbarung
@@ -2679,11 +2694,14 @@ class FinVe(db.Model):
 class Text(db.Model):
     __tablename__ = 'texts'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text)
+    header = db.Column(db.String(1000))
+    weblink = db.Column(db.String(1000))
+    text = db.Column(db.Text)
     type = db.Column(db.Integer, db.ForeignKey('text_types.id'))
+    logo_url = db.Column(db.String(1000))
 
     # relationship
-    text_type = db.relationship('TextType', backref='text_types', lazy=True)
+    text_type = db.relationship('TextType', backref='texts', lazy=True)
 
 
 class TextType(db.Model):
@@ -3179,6 +3197,7 @@ class MasterScenario(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class MasterArea(db.Model):
     """
     the areas in which the scenario is divided
@@ -3640,32 +3659,44 @@ class MasterArea(db.Model):
         :return:
         """
         cost_overview = self.cost_overview
-
-        self.traction_minimal_cost = cost_overview["minimal_cost"]
-        self.cost_efuel = cost_overview["sum_cost"]["efuel"]
-        self.cost_diesel = cost_overview["sum_cost"]["diesel"]
-        self.cost_electrification = cost_overview["sum_cost"]["electrification"]
-        self.cost_optimised_electrification = cost_overview["sum_cost"]["optimised_electrification"]
-
-        self.operating_cost_efuel = cost_overview["operating_cost"]["efuel"]
-        self.operating_cost_diesel = cost_overview["operating_cost"]["diesel"]
-        self.operating_cost_electrification = cost_overview["operating_cost"]["electrification"]
-        self.operating_cost_optimised_electrification = cost_overview["operating_cost"]["optimised_electrification"]
-
-        self.infrastructure_cost_efuel = cost_overview["infrastructure_cost"]["efuel"]
-        self.infrastructure_cost_diesel = cost_overview["infrastructure_cost"]["diesel"]
-        self.infrastructure_cost_electrification = cost_overview["infrastructure_cost"]["electrification"]
-        self.infrastructure_cost_optimised_electrification = cost_overview["infrastructure_cost"]["optimised_electrification"]
-
         categories = self.categories
 
-        if 'sgv' not in categories:
-            self.cost_h2 = cost_overview["sum_cost"]["h2"]
-            self.cost_battery = cost_overview["sum_cost"]["battery"]
-            self.operating_cost_h2 = cost_overview["operating_cost"]["h2"]
-            self.operating_cost_battery = cost_overview["operating_cost"]["battery"]
-            self.infrastructure_cost_h2 = cost_overview["infrastructure_cost"]["h2"]
-            self.infrastructure_cost_battery = cost_overview["infrastructure_cost"]["battery"]
+        if self.superior_master_area is not None:
+            self.traction_minimal_cost = cost_overview["minimal_cost"]
+            # than only electrification and battery is calculated
+            self.cost_electrification = cost_overview["sum_cost"]["electrification"]
+            self.operating_cost_electrification = cost_overview["operating_cost"]["electrification"]
+            self.infrastructure_cost_electrification = cost_overview["infrastructure_cost"]["electrification"]
+
+            if 'sgv' not in categories:
+                self.cost_battery = cost_overview["sum_cost"]["battery"]
+                self.operating_cost_battery = cost_overview["operating_cost"]["battery"]
+                self.infrastructure_cost_battery = cost_overview["infrastructure_cost"]["battery"]
+
+        else:
+            self.traction_minimal_cost = cost_overview["minimal_cost"]
+            self.cost_efuel = cost_overview["sum_cost"]["efuel"]
+            self.cost_diesel = cost_overview["sum_cost"]["diesel"]
+            self.cost_electrification = cost_overview["sum_cost"]["electrification"]
+            self.cost_optimised_electrification = cost_overview["sum_cost"]["optimised_electrification"]
+
+            self.operating_cost_efuel = cost_overview["operating_cost"]["efuel"]
+            self.operating_cost_diesel = cost_overview["operating_cost"]["diesel"]
+            self.operating_cost_electrification = cost_overview["operating_cost"]["electrification"]
+            self.operating_cost_optimised_electrification = cost_overview["operating_cost"]["optimised_electrification"]
+
+            self.infrastructure_cost_efuel = cost_overview["infrastructure_cost"]["efuel"]
+            self.infrastructure_cost_diesel = cost_overview["infrastructure_cost"]["diesel"]
+            self.infrastructure_cost_electrification = cost_overview["infrastructure_cost"]["electrification"]
+            self.infrastructure_cost_optimised_electrification = cost_overview["infrastructure_cost"]["optimised_electrification"]
+
+            if 'sgv' not in categories:
+                self.cost_h2 = cost_overview["sum_cost"]["h2"]
+                self.cost_battery = cost_overview["sum_cost"]["battery"]
+                self.operating_cost_h2 = cost_overview["operating_cost"]["h2"]
+                self.operating_cost_battery = cost_overview["operating_cost"]["battery"]
+                self.infrastructure_cost_h2 = cost_overview["infrastructure_cost"]["h2"]
+                self.infrastructure_cost_battery = cost_overview["infrastructure_cost"]["battery"]
 
         # add categories that are used in that master area
         if 'sgv' in categories:

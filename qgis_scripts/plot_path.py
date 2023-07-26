@@ -2,8 +2,8 @@ NAME_LAYER = 'railway_lines'
 
 import json
 import os
-from_station = 'FBGK'
-to_station = 'RL'
+from_station = 'NN'
+to_station = 'NXPA'
 filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths/{from_station}to{to_station}.json")
 print(filepath)
 

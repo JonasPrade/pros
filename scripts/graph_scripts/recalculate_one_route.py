@@ -4,8 +4,8 @@ import json
 from prosd.graph import railgraph
 from prosd.models import RailwayRoute
 
-
-route = RailwayRoute.query.filter(RailwayRoute.number == 6426).scalar()
+route_number = 1711
+route = RailwayRoute.query.filter(RailwayRoute.number == route_number).scalar()
 
 rg = railgraph.RailGraph()
 

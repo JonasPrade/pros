@@ -8,15 +8,9 @@ railwaypoint_id = 45819
 masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
-
-#
-# api_key_headers = Headers({
-#             'x-api-key': 'TEST-API-KEY'
-#         })
-#         headers = kwargs.pop('headers', Headers())
-#         headers.extend(api_key_headers)
-#         kwargs['headers'] = headers
-
+projectgroup_id = 6
+projectcontent_id = 95386
+texttype_id = 1
 
 def get_api(self, api_string):
     user = login_user(
@@ -157,4 +151,36 @@ class TestApi(BaseTestCase):
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['train_cost']) >0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_projectcontentsbygroup(self):
+        with self.client:
+            api_string = f"/projectcontentsbygroup/{projectgroup_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['pcs']) >0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_projectcontentshortbyid(self):
+        with self.client:
+            api_string = f"/projectcontentshort/{projectcontent_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['pc']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_get_projectcontent(self):
+        with self.client:
+            api_string = f"/projectcontent/{projectcontent_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['pc']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_textbypcandtexttype(self):
+        with self.client:
+            api_string = f"/textbypcandtexttype/{projectcontent_id}/{texttype_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['texts']) > 0)
             self.assertEqual(response.status_code, 200)

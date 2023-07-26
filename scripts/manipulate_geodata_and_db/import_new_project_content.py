@@ -22,6 +22,11 @@ def add_project_content(pd, project_group_id, update=False):
     else:
         pd["etcs_level"] = float(pd["etcs_level"])
 
+    if math.isnan(pd["superior_project_content_id"]):
+        pd["superior_project_content_id"] = None
+    else:
+        pd["superior_project_content_id"] = int(pd["superior_project_content_id"])
+
     pc = ProjectContent(
         projectcontent_groups=[project_group],
         project_number=pd["project_number"],
@@ -58,17 +63,21 @@ def add_project_content(pd, project_group_id, update=False):
         station_railroad_switches=bool(pd["station_railroad_switches"]),
         closure=bool(pd["closure"]),
         planned_total_cost=float(pd["planned_total_cost"]),
-        superior_project_content_id=int(pd["superior_project_content_id"])
+        superior_project_content_id=pd["superior_project_content_id"],
+        sanierung=bool(pd["Sanierung"])
     )
-    db.session.add(pc)
-    db.session.commit()
+    return pc
 
 
-
-filename = '../../example_data/import/project_contents/fbq_sub_projects.xlsx'
+filename = '../../example_data/import/project_contents/hochleistungskorridore.xlsx'
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 1
+PROJECT_GROUP_ID = 6
 
+pcs = []
 for index, pd in df.iterrows():
-    add_project_content(pd, project_group_id=PROJECT_GROUP_ID)
+    pc = add_project_content(pd, project_group_id=PROJECT_GROUP_ID)
+    pcs.append(pc)
+
+db.session.add_all(pcs)
+db.session.commit()

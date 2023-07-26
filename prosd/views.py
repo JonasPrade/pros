@@ -136,7 +136,8 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
     projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
     railway_stations = ma.Nested(RailwayStationSchema, many=True)
-    sub_project_contents = ma.Nested(lambda: ProjectContentSchema(), many=True)
+    sub_project_contents = ma.Nested(lambda: ProjectContentShortSchema(), many=True)
+    superior_project_content = ma.Nested(lambda: ProjectContentShortSchema())
 
     class Meta:
         model = models.ProjectContent
@@ -173,6 +174,8 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
     projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
     railway_lines = ma.Nested(RailwayLinesShortSchema, many=True)
+    railway_stations = ma.Nested(RailwayStationSchema, many=True)
+
     class Meta:
         model = models.ProjectContent
         include_fk = True
@@ -234,9 +237,12 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     effects_passenger_long_rail = auto_field()
     effects_passenger_local_rail = auto_field()
     effects_cargo_rail = auto_field()
+    lp_12 = auto_field()
+    lp_34 = auto_field()
+    bau = auto_field()
+    ibn_erfolgt = auto_field()
 
     coords = fields.Method('create_one_geojson')
-
     def create_one_geojson(self, obj):
         coord_list = list()
         for line in obj.railway_lines:
@@ -393,6 +399,19 @@ class TimetableTrainGroupSchema(ma.SQLAlchemyAutoSchema):
         model = models.TimetableTrainGroup
         include_fk = True
 
+    coords = fields.Method('create_one_geojson')
+
+    def create_one_geojson(self, obj):
+        coord_list = list()
+        for route_traingroup in obj.railway_lines:
+            line = route_traingroup.railway_line
+            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
+
+        coord_multistring = geojson.MultiLineString(coord_list)
+
+        return coord_multistring
+
 
 class TimetableTrainGroupShortSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -414,6 +433,18 @@ class MasterAreaSchema(ma.SQLAlchemyAutoSchema):
     cost_overview = fields.Dict()
     categories = fields.List(fields.Str())
 
+    coords = fields.Method('create_one_geojson')
+
+    def create_one_geojson(self, obj):
+        coord_list = list()
+        for line in obj.railway_lines:
+            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
+
+        coord_multistring = geojson.MultiLineString(coord_list)
+
+        return coord_multistring
+
 
 class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
     railway_lines = ma.Nested(RailwayLinesSchema, many=True)
@@ -423,6 +454,18 @@ class MasterAreaShortSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
     length = fields.Float()
+
+    coords = fields.Method('create_one_geojson')
+
+    def create_one_geojson(self, obj):
+        coord_list = list()
+        for line in obj.railway_lines:
+            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
+
+        coord_multistring = geojson.MultiLineString(coord_list)
+
+        return coord_multistring
 
 
 class MasterAreaRunningKmSchema(ma.SQLAlchemyAutoSchema):

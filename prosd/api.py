@@ -63,7 +63,7 @@ def project_get(user, **kwargs):
 @cross_origin()
 # @token_required
 def get_projectgroups(**kwargs):
-    project_groups = models.ProjectGroup.query.all()
+    project_groups = models.ProjectGroup.query.filter(models.ProjectGroup.public == True).all()
     project_group_schema = views.ProjectGroupSchema(many=True)
     output = project_group_schema.dump(project_groups)
     response = make_response({'projectgroups': output})
@@ -90,6 +90,7 @@ def get_traingroup(**kwargs):
     output = traingroup_schema.dump(traingroup)
     response = make_response({'traingroup': output})
     return response
+
 
 @app.route("/trainpart/<id>", methods=['GET'])
 @cross_origin()
@@ -213,6 +214,40 @@ def running_km_for_scenario(**kwargs):
     return response
 
 
+@app.route("/projectcontentsbygroup/<id>", methods=['GET'])
+@cross_origin()
+def get_projectscontent_by_projectgroup(**kwargs):
+    project_group_id = kwargs.pop('id')
+    project_group = models.ProjectGroup.query.get(project_group_id)
+    pcs = project_group.superior_project_contents
+    pc_schema = views.ProjectContentShortSchema(many=True)
+    output = pc_schema.dump(pcs)
+    response = make_response({'pcs': output})
+    return response
+
+
+@app.route("/projectcontentshort/<id>", methods=['GET'])
+@cross_origin()
+def get_projectcontentshort(**kwargs):
+    pc_id = kwargs.pop('id')
+    project_content = models.ProjectContent.query.get(pc_id)
+    pc_schema = views.ProjectContentShortSchema()
+    output = pc_schema.dump(project_content)
+    response = make_response({'pc': output})
+    return response
+
+
+@app.route("/projectcontent/<id>", methods=['GET'])
+@cross_origin()
+def get_projectcontent(**kwargs):
+    pc_id = kwargs.pop('id')
+    project_content = models.ProjectContent.query.get(pc_id)
+    pc_schema = views.ProjectContentSchema()
+    output = pc_schema.dump(project_content)
+    response = make_response({'pc': output})
+    return response
+
+
 @app.route("/projects")
 @cross_origin()
 def projects_short():
@@ -250,6 +285,21 @@ def train_cost_traingroup_scenario(**kwargs):
     train_cost_schema = views.TimetableTrainCostSchema(many=True)
     output = train_cost_schema.dump(train_cost)
     response = make_response({'train_cost': output})
+    return response
+
+
+@app.route("/textbypcandtexttype/<projectcontent_id>/<texttype_id>", methods=['GET'])
+@cross_origin()
+def textbypcandtexttype(**kwargs):
+    projectcontent_id = kwargs.pop('projectcontent_id')
+    texttype_id = kwargs.pop('texttype_id')
+    texts = models.Text.query.join(models.TextType).join(models.texts_to_project_content).join(models.ProjectContent).filter(
+        models.TextType.id == texttype_id,
+        models.ProjectContent.id == projectcontent_id
+    )
+    text_schema = views.TextSchema(many=True)
+    output = text_schema.dump(texts)
+    response = make_response({'texts': output})
     return response
 
 

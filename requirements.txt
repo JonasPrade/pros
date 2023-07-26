@@ -6,7 +6,7 @@ cffi==1.15.0
 click==8.1.2
 click-plugins==1.1.1
 cligj==0.7.2
-Fiona==1.8.21
+Fiona>=1.8.21
 Flask==2.2.2
 Flask-Bcrypt==1.0.1
 Flask-Cors==3.0.10
