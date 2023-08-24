@@ -23,6 +23,7 @@ class GeoConverter(ModelConverter):
 
 # Defining the schemas
 class ProjectGroupSchema(ma.SQLAlchemyAutoSchema):
+    projects_content = ma.Nested(lambda: ProjectContentShortSchema, many=True, exclude=("projectcontent_groups",))
     class Meta:
         model = models.ProjectGroup
         include_fk = True
@@ -139,45 +140,73 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
     sub_project_contents = ma.Nested(lambda: ProjectContentShortSchema(), many=True)
     superior_project_content = ma.Nested(lambda: ProjectContentShortSchema())
 
-    class Meta:
-        model = models.ProjectContent
-
-    coords = fields.Method('create_one_geojson')
-    coords_centroid = fields.Method('get_centroid')
-
-    def create_one_geojson(self, obj):
-        coord_list = list()
-        for line in obj.railway_lines:
-            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
-            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
-
-        coord_multistring = geojson.MultiLineString(coord_list)
-
-        return coord_multistring
-
-    def get_centroid(self, obj):
-        try:
-            coord_list = list()
-            for line in obj.railway_lines:
-                coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
-                coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
-
-            coord_multistring = geojson.MultiLineString(coord_list)
-            coord_multstring_wkt = shapely.geometry.shape(coord_multistring)
-            centroid = coord_multstring_wkt.centroid
-            centroid = shapely.geometry.mapping(centroid)
-            return centroid
-        except IndexError:
-            logging.info("Error while calculating centroid. Possibly no geo coordinates?")
+    # class Meta:
+    #     model = models.ProjectContent
+    #     model_converter = GeoConverter
+    #
+    # coords = fields.Method('create_one_geojson')
+    # coords_centroid = fields.Method('get_centroid')
+    #
+    # def create_one_geojson(self, obj):
+    #     features = []
+    #
+    #     # Add lines
+    #     for line in obj.railway_lines:
+    #         coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+    #         geometry = shapely.geometry.mapping(coord)
+    #         features.append({
+    #             "type": "Feature",
+    #             "geometry": geometry,
+    #             "properties": {
+    #                 "id": line.id,
+    #                 "projectcontent_id": obj.id
+    #             }
+    #         })
+    #
+    #     # Add railway stations
+    #     for station in obj.railway_stations:
+    #         station_centroid = shapely.wkb.loads(station.coordinate_centroid.desc, hex=True)
+    #         geometry = shapely.geometry.mapping(station_centroid)
+    #         features.append({
+    #             "type": "Feature",
+    #             "geometry": geometry,
+    #             "properties": {
+    #                 "id": station.id,
+    #                 "name": station.name,
+    #                 "projectcontent_id": obj.id
+    #             }
+    #         })
+    #
+    #     # FeatureCollection erstellen
+    #     geojson_obj = {
+    #         "type": "FeatureCollection",
+    #         "features": features
+    #     }
+    #
+    #     return geojson_obj
+    #
+    # def get_centroid(self, obj):
+    #     try:
+    #         coord_list = list()
+    #         for line in obj.railway_lines:
+    #             coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+    #             coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
+    #
+    #         coord_multistring = geojson.MultiLineString(coord_list)
+    #         coord_multstring_wkt = shapely.geometry.shape(coord_multistring)
+    #         centroid = coord_multstring_wkt.centroid
+    #         centroid = shapely.geometry.mapping(centroid)
+    #         return centroid
+    #     except IndexError:
+    #         logging.info("Error while calculating centroid. Possibly no geo coordinates?")
 
 
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
     projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
-    railway_lines = ma.Nested(RailwayLinesShortSchema, many=True)
-    railway_stations = ma.Nested(RailwayStationSchema, many=True)
 
     class Meta:
         model = models.ProjectContent
+        model_converter = GeoConverter
         include_fk = True
 
     id = auto_field()
@@ -241,17 +270,48 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     lp_34 = auto_field()
     bau = auto_field()
     ibn_erfolgt = auto_field()
+    geojson_representation = auto_field()
+    centroid = auto_field()
 
-    coords = fields.Method('create_one_geojson')
-    def create_one_geojson(self, obj):
-        coord_list = list()
-        for line in obj.railway_lines:
-            coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
-            coord_list.append(shapely.geometry.mapping(coord)["coordinates"])
-
-        coord_multistring = geojson.MultiLineString(coord_list)
-
-        return coord_multistring
+    # coords = fields.Method('create_one_geojson')
+    #
+    # def create_one_geojson(self, obj):
+    #     features = []
+    #
+    #     # Add lines
+    #     for line in obj.railway_lines:
+    #         coord = shapely.wkb.loads(line.coordinates.desc, hex=True)
+    #         geometry = shapely.geometry.mapping(coord)
+    #         features.append({
+    #             "type": "Feature",
+    #             "geometry": geometry,
+    #             "properties": {
+    #                 "id": line.id,
+    #                 "projectcontent_id": obj.id
+    #             }
+    #         })
+    #
+    #     # Add railway stations
+    #     for station in obj.railway_stations:
+    #         station_centroid = shapely.wkb.loads(station.coordinate_centroid.desc, hex=True)
+    #         geometry = shapely.geometry.mapping(station_centroid)
+    #         features.append({
+    #             "type": "Feature",
+    #             "geometry": geometry,
+    #             "properties": {
+    #                 "id": station.id,
+    #                 "name": station.name,
+    #                 "projectcontent_id": obj.id
+    #             }
+    #         })
+    #
+    #     # FeatureCollection erstellen
+    #     geojson_obj = {
+    #         "type": "FeatureCollection",
+    #         "features": features
+    #     }
+    #
+    #     return geojson_obj
 
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):

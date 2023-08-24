@@ -4,7 +4,6 @@ from flask_cors import cross_origin
 
 from prosd import app
 from prosd import models
-from prosd.models import Project
 from prosd import views
 from prosd.auth import views as auth
 
@@ -64,7 +63,7 @@ def project_get(user, **kwargs):
 # @token_required
 def get_projectgroups(**kwargs):
     project_groups = models.ProjectGroup.query.filter(models.ProjectGroup.public == True).all()
-    project_group_schema = views.ProjectGroupSchema(many=True)
+    project_group_schema = views.ProjectGroupSchemaShort(many=True)
     output = project_group_schema.dump(project_groups)
     response = make_response({'projectgroups': output})
     return response
@@ -75,9 +74,21 @@ def get_projectgroups(**kwargs):
 # @token_required
 def get_first_projectgroup(**kwargs):
     project_groups = models.ProjectGroup.query.first()
-    project_group_schema = views.ProjectGroupSchema()
+    project_group_schema = views.ProjectGroupSchemaShort()
     output = project_group_schema.dump(project_groups)
     response = make_response({'projectgroup': output})
+    return response
+
+
+@app.route("/projectgroupsbyid", methods=['GET'])
+@cross_origin()
+def getprojectroupsbyid():
+    projectgroups_id = request.args.getlist('id')
+    projectgroups_id = [int(x) for x in projectgroups_id]
+    projectgroups = models.ProjectGroup.query.filter(models.ProjectGroup.id.in_(projectgroups_id))
+    projectgroups_schema = views.ProjectGroupSchema(many=True)
+    output = projectgroups_schema.dump(projectgroups)
+    response = make_response({'projectgroups': output})
     return response
 
 
@@ -316,23 +327,4 @@ def auth_login():
 def check_token():
     response = auth.check_auth_token()
     return response
-
-
-"""
-@app.route("/projectgroups")
-def projectgroups():
-    projectgroups = models.ProjectGroup.query.all()
-    project_groups_schema = views.ProjectGroupSchema(many=True)
-    output = project_groups_schema.dump(projectgroups)
-    return jsonify({'projectgroups': output})
-"""
-
-"""
-@app.route("/projectcontent/<id>")
-def projectcontent(id):
-    projectcontent = models.ProjectContent.query.get(id)
-    projectcontent_schema = views.ProjectContentSchema()
-    output = projectcontent_schema.dump(projectcontent)
-    return jsonify({'projectcontent': output})
-"""
 

@@ -12,6 +12,7 @@ projectgroup_id = 6
 projectcontent_id = 95386
 texttype_id = 1
 
+
 def get_api(self, api_string):
     user = login_user(
         self=self,
@@ -183,4 +184,12 @@ class TestApi(BaseTestCase):
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['texts']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_projectgroupsbyid(self):
+        with self.client:
+            api_string = f"/projectgroupsbyid?id=1&id=2"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['projectgroups']) > 0)
             self.assertEqual(response.status_code, 200)

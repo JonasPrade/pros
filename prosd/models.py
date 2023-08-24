@@ -1427,6 +1427,10 @@ class ProjectContent(db.Model):
     use_energy_cost_sgv = db.Column(db.Float)
     use_change_traction_sgv = db.Column(db.Float)
 
+    # some additionale fields for Geojson and centroid to avoid anoying calculations
+    geojson_representation = db.Column(db.Text)  # storing the GeoJSON as a text field
+    centroid = db.Column(geoalchemy2.Geometry('POINT'))  # storing the centroid as a point geometry
+
     # references
     # project = db.relationship("Project", backref='project_contents', lazy=True, foreign_keys=[project_id])
     texts = db.relationship('Text', secondary=texts_to_project_content,
@@ -1461,6 +1465,73 @@ class ProjectContent(db.Model):
         db.session.add(pc)
         db.session.commit()
 
+        pc.update_geo_properties()
+
+    def generate_geojson(self):
+        features = []
+
+        # Add lines
+        for line in self.railway_lines:
+            coord = geoalchemy2.shape.to_shape(line.coordinates)  # Adjusted for GeoAlchemy
+            geometry = shapely.geometry.mapping(coord)
+            features.append({
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": {
+                    "id": line.id,
+                    "projectcontent_id": self.id
+                }
+            })
+
+        # Add railway stations
+        for station in self.railway_stations:
+            station_centroid = geoalchemy2.shape.to_shape(station.coordinate_centroid)  # Adjusted for GeoAlchemy
+            geometry = shapely.geometry.mapping(station_centroid)
+            features.append({
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": {
+                    "id": station.id,
+                    "name": station.name,
+                    "projectcontent_id": self.id
+                }
+            })
+
+        # Create FeatureCollection
+        geojson_obj = {
+            "type": "FeatureCollection",
+            "features": features
+        }
+
+        self.geojson_representation = json.dumps(geojson_obj)
+
+    def compute_centroid(self):
+        # Convert RailwayLines to Shapely LineStrings
+        line_geometries = [geoalchemy2.shape.to_shape(line.coordinates) for line in self.railway_lines]
+
+        # Convert RailwayStations to Shapely Points
+        point_geometries = [geoalchemy2.shape.to_shape(station.coordinate_centroid) for station in
+                            self.railway_stations]
+
+        # If you have both LineStrings and Points
+        if line_geometries and point_geometries:
+            combined = shapely.geometry.GeometryCollection(line_geometries + point_geometries)
+        # If you only have LineStrings
+        elif line_geometries:
+            combined = shapely.geometry.MultiLineString(line_geometries)
+        # If you only have Points
+        else:
+            combined = shapely.geometry.MultiPoint(point_geometries)
+
+        centroid = combined.centroid
+        self.centroid = geoalchemy2.WKTElement(centroid.wkt,
+                                               srid=4326)  # Assuming a default SRID of 4326. Adjust if different.
+
+    # This method can be called during creation or updating of a ProjectContent
+    def update_geo_properties(self):
+        self.generate_geojson()
+        self.compute_centroid()
+
 
 class ProjectGroup(db.Model):
     __tablename__ = 'project_groups'
@@ -1468,6 +1539,8 @@ class ProjectGroup(db.Model):
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
     public = db.Column(db.Boolean, default=False)
+    color = db.Column(db.String(10), default="#FF0000")
+
     @hybrid_property
     def projects(self):
         projects_id = set()
