@@ -5,8 +5,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def calc_update_geo_properties():
-    pcs = ProjectContent.query.all()
+def calc_update_geo_properties(id):
+    if id == "all":
+        pcs = ProjectContent.query.all()
+    else:
+        pcs = ProjectContent.query.filter_by(id=id)
     for pc in pcs:
         pc.update_geo_properties()
         logging.info(f"finished {pc.id}")
@@ -15,4 +18,6 @@ def calc_update_geo_properties():
 
 
 if __name__ == '__main__':
-    calc_update_geo_properties()
+    # namen an id or type all
+    id = 95308
+    calc_update_geo_properties(id)
