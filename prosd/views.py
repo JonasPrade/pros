@@ -234,6 +234,7 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     effects_passenger_long_rail = auto_field()
     effects_passenger_local_rail = auto_field()
     effects_cargo_rail = auto_field()
+    sgv740m = auto_field()
     lp_12 = auto_field()
     lp_34 = auto_field()
     bau = auto_field()
