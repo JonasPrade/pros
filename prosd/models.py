@@ -2777,6 +2777,9 @@ class Text(db.Model):
     type = db.Column(db.Integer, db.ForeignKey('text_types.id'))
     logo_url = db.Column(db.String(1000))
 
+    created_timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
     # relationship
     text_type = db.relationship('TextType', backref='texts', lazy=True)
 
