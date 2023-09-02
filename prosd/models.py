@@ -1288,6 +1288,10 @@ class ProjectContent(db.Model):
     filling_stations_count = db.Column(db.Integer, default=0)
     sanierung = db.Column(db.Boolean, default=False)
     sgv740m = db.Column(db.Boolean, default=False)
+    railroad_crossing = db.Column(db.Boolean, default=False)  # Änderungen an Bahnübergängen
+    new_estw = db.Column(db.Boolean, default=False)
+    new_dstw = db.Column(db.Boolean, default=False)
+    noise_barrier = db.Column(db.Boolean, default=False)  # alle Lärmschutzmaßnahmen
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
