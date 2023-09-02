@@ -2770,7 +2770,7 @@ class FinVe(db.Model):
 
 class Text(db.Model):
     __tablename__ = 'texts'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     header = db.Column(db.String(1000))
     weblink = db.Column(db.String(1000))
     text = db.Column(db.Text)

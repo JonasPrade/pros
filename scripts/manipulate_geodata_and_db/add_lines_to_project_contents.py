@@ -9,13 +9,15 @@ def add_lines_to_project_content(project_content_id, graph, from_station, to_sta
     path_lines = path["edges"]
 
     ProjectContent.add_lines_to_pc(pc_id=project_content_id, lines=path_lines)
-
+    pc = ProjectContent.query.get(project_content_id)
+    pc.generate_geojson()
+    pc.compute_centroid()
 
 rg = RailGraph()
-from_station = "KGUI"
-to_station = "KSWE"
+from_station = "LANG"
+to_station = "LGLB"
 via = []
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-project_content_id = 95456
+project_content_id = 95251
 
 add_lines_to_project_content(project_content_id, graph, from_station, to_station, via=via)
