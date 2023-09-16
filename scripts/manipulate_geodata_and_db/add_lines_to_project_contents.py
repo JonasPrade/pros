@@ -14,10 +14,10 @@ def add_lines_to_project_content(project_content_id, graph, from_station, to_sta
     pc.compute_centroid()
 
 rg = RailGraph()
-from_station = "LANG"
-to_station = "LGLB"
+from_station = "AROG"
+to_station = "HWUN"
 via = []
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-project_content_id = 95251
+project_content_id = 95419
 
 add_lines_to_project_content(project_content_id, graph, from_station, to_station, via=via)

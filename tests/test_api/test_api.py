@@ -9,7 +9,7 @@ masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
 projectgroup_id = 6
-projectcontent_id = 95386
+projectcontent_id = 95432
 texttype_id = 1
 
 

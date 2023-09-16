@@ -2,17 +2,17 @@ from prosd import db
 from prosd.models import ProjectContent, ProjectGroup, RailwayStation, Text, RailwayLine
 from prosd.graph.railgraph import RailGraph
 
-name = "ABS Uelzen – Stendal – Magdeburg – Halle (Ostkorridor Nord): Knoten Stendal"
-superior_project_id = 29
-project_number = "2-018-V01 TM8"
-description="Einbindung des zweiten Gleis (Uelzen – Stendal) in den Knoten; Anpassung und Erweiterung der Gleisanlagen; Schaffung von Überholmöglichkeiten für 740m lange Güterzüge; Anpassung des Gleisbogens in Richtung Magdeburg (von 60 km/h auf 80 km/h); Anpassung Leit- und Sicherungstechnik"
-reason_project = "Die Führung von Güterzügen zwischen dem Hamburger Hafen und Mitteldeutschland über Uelzen, Salzwedel und Stendal ist gegenüber dem alternativen Weg über Büchen und Wittenberge rd. 40 km kürzer. Im Vergleich mit der Führung über Uelzen, Celle und Braunschweig beträgt die Verkürzung sogar rd. 95 km. Da die Strecke zwischen Uelzen und Stendal jedoch nur abschnittsweise zweigleisig ausgebaut ist, sind die Nutzungsmöglichkeiten durch den Güterverkehr eingeschränkt. In den eingleisigen Abschnitten Uelzen – Wieren – Salzwedel und Hohenwulsch – Stendal stehen aufgrund des vorhandenen Bedienungsangebots im Schienenpersonennahverkehr nur sehr begrenzte Kapazitäten für Güterzüge zur Verfügung. Zur Auflösung der Engpässe ist daher ein zweigleisiger Vollausbau notwendig. So kann die Strecke die Nachfrage im Güterverkehr aufnehmen und es können die mit der Laufwegsverkürzung verbundenen Angebotsverbesserungen durch Transportkosteneinsparung erzielt werden. Im weiteren Verlauf zwischen Stendal, Magdeburg und Halle kommt es aufgrund großer Blockabstände auch heute schon zu Überlastungen. Durch Blockverdichtungen soll hier eine Besserung der Situation erzielt werden."
+name = "ABS/NBS Hamburg – Lübeck – Puttgarden: Fehmarnsundtunnel"
+superior_project_id = 18
+project_number = "2-011-V01 - Fehmarnsundtunnel"
+description="Bauabschnitt Fehmarnsundtunnel"
+reason_project = "Mit dem am 3. September 2008 unterzeichneten Staatsvertrag zwischen Deutschland und Dänemark wurde die Errichtung einer festen Fehmarnbeltquerung beschlossen. Der Staatsvertrag sieht vor, dass Dänemark die Finanzierung des Querungsbauwerkes inklusive der zugehörigen Rampen- und Anschlussbereiche übernimmt. Die Bundesrepublik Deutschland verpflichtet sich zur Finanzierung und zum Ausbau der Hinterlandanbindung auf deutscher Seite. Diese besteht aus dem zweigleisigen Ausbau und der Elektrifizierung der Strecke Lübeck – Puttgarden sowie dem Neubau der Fehmarnsundquerung. Die Überholgleise im Gesamtabschnitt Hamburg – Lübeck – Puttgarden sind dabei für Züge mit einer Länge von 835 m auszulegen. Die Erhöhung der Fahrgeschwindigkeiten auf bis zu 160 km/h führt im Personenverkehr zur Reduzierung der Fahrzeiten zwischen Hamburg und Kopenhagen. Im Güterverkehr können nach der Elektrifizierung der Strecke die aktuell über Flensburg und die Jütlandlinie geführten Verkehre in Richtung Ostdänemark und Schweden über den Fehmarnbelttunnel geführt werden. Der sich so ergebende Fahrweg über Lübeck und Puttgarden in Richtung Schweden ist gegenüber der aktuellen Route um 140 km kürzer und somit mit deutlichen Transportkosteneinsparungen verbunden."
 project_group_ids = [1, 7]
-stations = ["LS"]
+stations = []
 lines = [
     [],
 ]  # a list which contains list. They are "from", "to" and "via" (list) stations
-existing_text_ids = [11]
+existing_text_ids = [14]
 
 pc = ProjectContent(
     name=name,
@@ -28,11 +28,10 @@ pc.effects_passenger_long_rail = False
 pc.effects_cargo_rail = True
 
 # add the properties of project here
-pc.second_track = True
-pc.platform = True
-pc.sgv740m = True
-pc.increase_speed = True
-pc.new_vmax = 80
+pc.nbs = True
+
+# progress
+pc.lp_12 = 1
 
 ### no editings below this line needed ###
 projectgroups = ProjectGroup.query.filter(ProjectGroup.id.in_(project_group_ids)).all()

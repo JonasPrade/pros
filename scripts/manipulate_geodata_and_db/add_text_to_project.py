@@ -1,11 +1,11 @@
 from prosd import db
 from prosd.models import Text, TextType, ProjectContent
 
-projectcontent_id = 95252
+projectcontent_id = 95394
 type = 2
-header = "Info zu BVWP-Projekt"
+header = "Hochleistungskorridor mit Fußnote 1"
 weblink = None
-text_content = "Es wird angenommen, dass der im BVWP extra erwähnte Überholbahnhof Wulfen in diesem Planfeststellungsabschnitt umgesetzt wird."
+text_content = "In dem Dokument des BMDV zum Hochleistungskorridor Stand 14.09.2023 wird für dieses Projekt eine mögliche Verschiebung des Projekts vorgemerkt. Hierzu findet ein Austausch mit dem Land Niedersachsen statt. Dieser wird nach Informationen mit dem Projekt ABS/NBS Hamburg – Hannover im Zusammenhang stehen."
 logo_url = None
 
 text = Text(
