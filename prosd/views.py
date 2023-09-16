@@ -165,6 +165,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 
     geojson_representation = GeoJSONField()
     centroid = WKBField()
+    progress_sub_projects = fields.Dict()
 
 
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
@@ -242,8 +243,10 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     lp_34 = auto_field()
     bau = auto_field()
     ibn_erfolgt = auto_field()
+    superior_project_content_id = auto_field()
     geojson_representation = GeoJSONField()
     centroid = WKBField()
+    progress_sub_projects=fields.Dict()
 
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):
