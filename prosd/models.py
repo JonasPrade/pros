@@ -1476,7 +1476,7 @@ class ProjectContent(db.Model):
 
         # Add lines
         for line in self.railway_lines:
-            coord = geoalchemy2.shape.to_shape(line.coordinates)  # Adjusted for GeoAlchemy
+            coord = geoalchemy2.shape.to_shape(line.coordinates).simplify(0.01)  # Adjusted
             geometry = shapely.geometry.mapping(coord)
             features.append({
                 "type": "Feature",
