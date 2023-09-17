@@ -155,7 +155,7 @@ class RailwayStationSchema(ma.SQLAlchemyAutoSchema):
 class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
     budgets = ma.Nested(BudgetSchema, many=True)
     texts = ma.Nested(TextSchema, many=True)
-    projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
+    projectcontent_groups = ma.Nested(ProjectGroupSchemaShort, many=True)
     sub_project_contents = ma.Nested(lambda: ProjectContentShortSchema(), many=True)
     superior_project_content = ma.Nested(lambda: ProjectContentShortSchema())
 
@@ -168,7 +168,7 @@ class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
 
 
 class ProjectContentShortSchema(ma.SQLAlchemySchema):
-    projectcontent_groups = ma.Nested(ProjectGroupSchema, many=True)
+    projectcontent_groups = ma.Nested(ProjectGroupSchemaShort, many=True)
 
     class Meta:
         model = models.ProjectContent
