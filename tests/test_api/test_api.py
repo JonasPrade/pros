@@ -9,7 +9,7 @@ masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
 projectgroup_id = 6
-projectcontent_id = 95432
+projectcontent_id = 20
 texttype_id = 1
 
 
@@ -55,7 +55,7 @@ class TestApi(BaseTestCase):
             api_string = f"projectgroups"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['projectgroups']) >0 )
+            self.assertTrue(len(data['projectgroups']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_first_projectgroup(self):
@@ -63,7 +63,7 @@ class TestApi(BaseTestCase):
             api_string = f"/projectgroup/first"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['projectgroup']) >0 )
+            self.assertTrue(len(data['projectgroup']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_traingroup(self):
@@ -71,7 +71,7 @@ class TestApi(BaseTestCase):
             api_string = f"/traingroup/{traingroup_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['traingroup']) >0)
+            self.assertTrue(len(data['traingroup']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_trainpart(self):
@@ -79,7 +79,7 @@ class TestApi(BaseTestCase):
             api_string = f"/trainpart/{trainpart_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['trainpart']) >0)
+            self.assertTrue(len(data['trainpart']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_station(self):
@@ -87,7 +87,7 @@ class TestApi(BaseTestCase):
             api_string = f"/station/{station_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['station']) >0)
+            self.assertTrue(len(data['station']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_railway_point(self):
@@ -95,7 +95,7 @@ class TestApi(BaseTestCase):
             api_string = f"/railwaypoint/{railwaypoint_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['point']) >0)
+            self.assertTrue(len(data['point']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_masterarea(self):
@@ -103,7 +103,7 @@ class TestApi(BaseTestCase):
             api_string = f"/masterarea/{masterarea_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['master_area']) >0)
+            self.assertTrue(len(data['master_area']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_masterscenario(self):
@@ -111,7 +111,7 @@ class TestApi(BaseTestCase):
             api_string = f"/masterscenario/{masterscenario_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['master_scenario']) >0)
+            self.assertTrue(len(data['master_scenario']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_all_masterscenarios(self):
@@ -119,7 +119,7 @@ class TestApi(BaseTestCase):
             api_string = f"/masterscenarios"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['master_scenario']) >0)
+            self.assertTrue(len(data['master_scenario']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_main_masterareas_for_scenario(self):
@@ -127,7 +127,7 @@ class TestApi(BaseTestCase):
             api_string = f"/main_masterareas_for_scenario/{masterscenario_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['master_areas']) >0)
+            self.assertTrue(len(data['master_areas']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_get_traction_for_optimised_electrification(self):
@@ -135,7 +135,7 @@ class TestApi(BaseTestCase):
             api_string = f"/masterarea_optimised_traingroups/{masterarea_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['tractions']) >0)
+            self.assertTrue(len(data['tractions']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_running_km_for_master_scenario(self):
@@ -143,7 +143,7 @@ class TestApi(BaseTestCase):
             api_string = f"/traingroups-scenario/{masterscenario_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['master_scenario']) >0)
+            self.assertTrue(len(data['master_scenario']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_cost_traingroup_scenario(self):
@@ -151,7 +151,7 @@ class TestApi(BaseTestCase):
             api_string = f"/traingroupcostscenario/{masterscenario_id}/{traingroup_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['train_cost']) >0)
+            self.assertTrue(len(data['train_cost']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_projectcontentsbygroup(self):
@@ -159,7 +159,7 @@ class TestApi(BaseTestCase):
             api_string = f"/projectcontentsbygroup/{projectgroup_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
-            self.assertTrue(len(data['pcs']) >0)
+            self.assertTrue(len(data['pcs']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_projectcontentshortbyid(self):
@@ -192,4 +192,12 @@ class TestApi(BaseTestCase):
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['projectgroups']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_progress_subprojects(self):
+        with self.client:
+            api_string = f"/subprojects-progress/{projectcontent_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['progress']) > 0)
             self.assertEqual(response.status_code, 200)

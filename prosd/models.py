@@ -1536,31 +1536,6 @@ class ProjectContent(db.Model):
         self.generate_geojson()
         self.compute_centroid()
 
-    @property
-    def progress_sub_projects(self):
-        progress_sub_projects = {
-            "pending": 0,
-            "lp_12": 0,
-            "lp_34": 0,
-            "bau": 0,
-            "ibn_erfolgt": 0,
-            "not_known": 0
-        }
-        for sub_project in self.sub_project_contents:
-            if sub_project.lp_12 == 1:
-                progress_sub_projects["lp_12"] += 1
-            elif sub_project.lp_12 == 0:
-                progress_sub_projects["pending"] += 1
-            elif sub_project.lp_34 == 1:
-                progress_sub_projects["lp_34"] += 1
-            elif sub_project.bau == 1:
-                progress_sub_projects["bau"] += 1
-            elif sub_project.ibn_erfolgt == 1:
-                progress_sub_projects["ibn_erfolgt"] += 1
-            else:
-                progress_sub_projects["not_known"] += 1
-
-        return progress_sub_projects
 
 class ProjectGroup(db.Model):
     __tablename__ = 'project_groups'

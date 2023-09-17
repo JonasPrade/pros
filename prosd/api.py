@@ -46,6 +46,33 @@ def token_required(f):
     return decorated
 
 
+def calc_progress_sub_projects(project):
+    progress_sub_projects = {
+        "pending": 0,
+        "lp_12": 0,
+        "lp_34": 0,
+        "bau": 0,
+        "ibn_erfolgt": 0,
+        "not_known": 0
+    }
+    for sub_project in project.sub_project_contents:
+        if sub_project.lp_12 == 1:
+            progress_sub_projects["lp_12"] += 1
+        elif sub_project.lp_12 == 0:
+            progress_sub_projects["pending"] += 1
+        elif sub_project.lp_34 == 1:
+            progress_sub_projects["lp_34"] += 1
+        elif sub_project.bau == 1:
+            progress_sub_projects["bau"] += 1
+        elif sub_project.ibn_erfolgt == 1:
+            progress_sub_projects["ibn_erfolgt"] += 1
+        else:
+            progress_sub_projects["not_known"] += 1
+
+    return progress_sub_projects
+
+
+
 @app.route("/project/<id>", methods=['GET'])
 @cross_origin()
 @token_required
@@ -311,6 +338,16 @@ def textbypcandtexttype(**kwargs):
     text_schema = views.TextSchema(many=True)
     output = text_schema.dump(texts)
     response = make_response({'texts': output})
+    return response
+
+
+@app.route("/subprojects-progress/<int:projectcontent_id>", methods=['GET'])
+@cross_origin()
+def projectcontent_subprojects_progress(**kwargs):
+    projectcontent_id = kwargs.pop('projectcontent_id')
+    projectcontent = models.ProjectContent.query.get(projectcontent_id)
+    progress = calc_progress_sub_projects(projectcontent)
+    response = make_response({'progress': progress})
     return response
 
 
