@@ -9,7 +9,7 @@ masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
 projectgroup_id = 6
-projectcontent_id = 20
+projectcontent_id = 18
 texttype_id = 1
 
 
@@ -188,7 +188,7 @@ class TestApi(BaseTestCase):
 
     def test_projectgroupsbyid(self):
         with self.client:
-            api_string = f"/projectgroupsbyid?id=1&id=2"
+            api_string = f"/projectgroupsbyid?id=8"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['projectgroups']) > 0)

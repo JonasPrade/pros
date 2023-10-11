@@ -2,10 +2,11 @@ import pandas
 import math
 
 from prosd import db
-from prosd.models import ProjectContent, Project, ProjectGroup
+from prosd.models import ProjectContent, Project, ProjectGroup, RailwayStation, RailwayLine
+from prosd.graph.railgraph import RailGraph
 
 
-def add_project_content(pd, project_group_id, update=False):
+def add_project_content(pd, project_group_id, rg, graph, update=False):
     project_group = ProjectGroup.query.get(project_group_id)
 
     if math.isnan(pd["number_junction_station"]):
@@ -26,6 +27,11 @@ def add_project_content(pd, project_group_id, update=False):
         pd["superior_project_content_id"] = None
     else:
         pd["superior_project_content_id"] = int(pd["superior_project_content_id"])
+
+    if math.isnan(pd["planned_total_cost"]):
+        pd["planned_total_cost"] = None
+    else:
+        pd["planned_total_cost"] = float(pd["planned_total_cost"])
 
     pc = ProjectContent(
         projectcontent_groups=[project_group],
@@ -62,21 +68,45 @@ def add_project_content(pd, project_group_id, update=False):
         depot=bool(pd["depot"]),
         station_railroad_switches=bool(pd["station_railroad_switches"]),
         closure=bool(pd["closure"]),
-        planned_total_cost=float(pd["planned_total_cost"]),
         superior_project_content_id=pd["superior_project_content_id"],
-        sanierung=bool(pd["Sanierung"])
+        sanierung=bool(pd["Sanierung"]),
+        new_estw=bool(pd["new_estw"]),
+        overpass=bool(pd["overpass"]),
+        buffer_track=bool(pd["buffer_track"]),
+        simultaneous_train_entries=bool(pd["simultaneous_train_entries"]),
+        sgv740m=bool(pd["sgv740m"])
     )
+
+    from_station = pd["VON"]
+    to_station = pd["BIS"]
+
+    if isinstance(to_station, str):
+        path = rg.shortest_path_between_stations(graph=graph, station_from=from_station, station_to=to_station)
+        path_lines = path["edges"]
+        for line_id in path_lines:
+            line = RailwayLine.query.get(line_id)
+            pc.railway_lines.append(line)
+
+    else:
+        station = RailwayStation.query.filter(RailwayStation.db_kuerzel == from_station).scalar()
+        pc.railway_stations.append(station)
+
+    pc.generate_geojson()
+    pc.compute_centroid()
+
     return pc
 
 
-filename = '../../example_data/import/project_contents/hochleistungskorridore.xlsx'
+filename = '../../example_data/import/project_contents/kmmersteetappedtakt.xlsx'
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 6
+PROJECT_GROUP_ID = 9
+rg = RailGraph()
+graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 
 pcs = []
 for index, pd in df.iterrows():
-    pc = add_project_content(pd, project_group_id=PROJECT_GROUP_ID)
+    pc = add_project_content(pd, project_group_id=PROJECT_GROUP_ID, graph=graph, rg=rg)
     pcs.append(pc)
 
 db.session.add_all(pcs)

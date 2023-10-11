@@ -1292,6 +1292,9 @@ class ProjectContent(db.Model):
     new_estw = db.Column(db.Boolean, default=False)
     new_dstw = db.Column(db.Boolean, default=False)
     noise_barrier = db.Column(db.Boolean, default=False)  # alle Lärmschutzmaßnahmen
+    overpass = db.Column(db.Boolean, default=False)  # Überleitstellen
+    buffer_track = db.Column(db.Boolean, default=False)  # Puffergleis
+    simultaneous_train_entries = db.Column(db.Boolean, default=False)  # gleichzeitige Zugeinfahrten
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))
@@ -1466,10 +1469,11 @@ class ProjectContent(db.Model):
             line = RailwayLine.query.get(line_id)
             pc.railway_lines.append(line)
 
+        pc.generate_geojson()
+        pc.compute_centroid()
+
         db.session.add(pc)
         db.session.commit()
-
-        pc.update_geo_properties()
 
     def generate_geojson(self):
         features = []
