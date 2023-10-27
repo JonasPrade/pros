@@ -74,7 +74,8 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
         overpass=bool(pd["overpass"]),
         buffer_track=bool(pd["buffer_track"]),
         simultaneous_train_entries=bool(pd["simultaneous_train_entries"]),
-        sgv740m=bool(pd["sgv740m"])
+        sgv740m=bool(pd["sgv740m"]),
+        gwb=bool(pd["GWB"])
     )
 
     from_station = pd["VON"]
@@ -97,10 +98,10 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
     return pc
 
 
-filename = '../../example_data/import/project_contents/kmmersteetappedtakt.xlsx'
+filename = '../../example_data/import/project_contents/maßnahmenüls.xlsx'
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 9
+PROJECT_GROUP_ID = 10
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 

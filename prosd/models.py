@@ -1294,6 +1294,7 @@ class ProjectContent(db.Model):
     noise_barrier = db.Column(db.Boolean, default=False)  # alle Lärmschutzmaßnahmen
     overpass = db.Column(db.Boolean, default=False)  # Überleitstellen
     buffer_track = db.Column(db.Boolean, default=False)  # Puffergleis
+    gwb = db.Column(db.Boolean, default=False)  # Gleiswechselbetrieb
     simultaneous_train_entries = db.Column(db.Boolean, default=False)  # gleichzeitige Zugeinfahrten
 
     # environmental data
