@@ -496,3 +496,23 @@ class TractionOptimisedElectrificationSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.TractionOptimisedElectrification
         include_fk = True
+
+
+class BksActionSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.BksAction
+        include_fk = True
+
+
+class BksClusterSchema(ma.SQLAlchemyAutoSchema):
+    bks_action = ma.Nested(BksActionSchema, many=True)
+    class Meta:
+        model = models.BksCluster
+        include_fk = True
+
+
+class BksHandlungsfeldSchema(ma.SQLAlchemyAutoSchema):
+    cluster = ma.Nested(BksClusterSchema, many=True)
+    class Meta:
+        model = models.BksHandlungsfeld
+        include_fk = True

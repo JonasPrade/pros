@@ -3,6 +3,7 @@ import pandas
 from prosd import db
 from prosd.models import Budget, FinVe
 
+# imports a prepared excel
 
 def add_budget(budget):
     # check if finve exists (if not: create one)
@@ -30,8 +31,9 @@ def add_budget(budget):
     db.session.commit()
 
 
-filename = '../../example_data/import/budget_2023_bedarfsplan.xlsx'
+filename = '../../example_data/import/verkehrsinvestitionsbericht/2024_bedarfsplan.xlsx'
 df = pandas.read_excel(filename)
 
 for index, budget in df.iterrows():
     add_budget(budget)
+

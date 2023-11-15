@@ -201,3 +201,12 @@ class TestApi(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['progress']) > 0)
             self.assertEqual(response.status_code, 200)
+
+
+    def test_bkshandlungsfeld_all(self):
+        with self.client:
+            api_string = f"/bkshandlungsfeld-all"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['bkshandlungsfeld']) > 0)
+            self.assertEqual(response.status_code, 200)

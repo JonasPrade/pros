@@ -351,6 +351,16 @@ def projectcontent_subprojects_progress(**kwargs):
     return response
 
 
+@app.route("/bkshandlungsfeld-all", methods=['GET'])
+@cross_origin()
+def get_bks_handlungsfeld(**kwargs):
+    bks_handlungsfelds = models.BksHandlungsfeld.query.all()
+    bks_handlungsfeld_schema = views.BksHandlungsfeldSchema(many=True)
+    output = bks_handlungsfeld_schema.dump(bks_handlungsfelds)
+    response = make_response({'bks_handlungsfelder': output})
+    return response
+
+
 @app.route("/auth/login", methods=['POST'])
 @cross_origin()
 def auth_login():

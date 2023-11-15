@@ -4243,3 +4243,40 @@ class BlacklistToken(db.Model):
         else:
             return False
 
+
+class BksAction(db.Model):
+    __tablename__ = 'bks_action'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255))
+    report_text = db.Column(db.Text)
+    report_process = db.Column(db.Text)
+    review_1_start = db.Column(db.Text)
+    review_1_done = db.Column(db.Text)
+    review_1_next = db.Column(db.Text)
+    review_1_status = db.Column(db.String(255))
+    review_1_changed_aim = db.Column(db.Boolean)
+
+    cluster_number = db.Column(db.String(255), db.ForeignKey('bks_cluster.number', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
+    cluster = db.relationship("BksCluster", backref=db.backref('bks_action'))
+
+
+class BksHandlungsfeld(db.Model):
+    __tablename__ = 'bks_handlungsfeld'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    number = db.Column(db.Integer, unique=True)
+    name = db.Column(db.String(255))
+    text = db.Column(db.Text)
+
+
+class BksCluster(db.Model):
+    __tablename__ = 'bks_cluster'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    number = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
+    starting_situation = db.Column(db.Text)
+    proposed_solution = db.Column(db.Text)
+    impact_assessment = db.Column(db.Text)
+    handlungsfeld_id = db.Column(db.Integer, db.ForeignKey('bks_handlungsfeld.number', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
+    handlungsfeld = db.relationship("BksHandlungsfeld", backref=db.backref('cluster'))
+
