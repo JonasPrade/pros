@@ -1549,6 +1549,7 @@ class ProjectGroup(db.Model):
     description = db.Column(db.Text)
     public = db.Column(db.Boolean, default=False)
     color = db.Column(db.String(10), default="#FF0000")
+    plot_only_superior_projects = db.Column(db.Boolean, default=True, comment='if true, only projects that have no superior project is plotted in frontend')
 
     @hybrid_property
     def projects(self):
