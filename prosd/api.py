@@ -361,6 +361,17 @@ def get_bks_handlungsfeld(**kwargs):
     return response
 
 
+@app.route("/bksaction/<id>", methods=['GET'])
+@cross_origin()
+def get_bks_action(**kwargs):
+    bks_action_id = kwargs.pop('id')
+    bks_action = models.BksAction.query.get(bks_action_id)
+    bks_action_schema = views.BksActionSchema()
+    output = bks_action_schema.dump(bks_action)
+    response = make_response({'action': output})
+    return response
+
+
 @app.route("/auth/login", methods=['POST'])
 @cross_origin()
 def auth_login():
