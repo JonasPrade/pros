@@ -64,7 +64,7 @@ def calc_progress_sub_projects(project):
             progress_sub_projects["lp_34"] += 1
         elif sub_project.bau == 1:
             progress_sub_projects["bau"] += 1
-        elif sub_project.ibn_erfolgt == 1:
+        elif sub_project.ibn_erfolgt == 2:
             progress_sub_projects["ibn_erfolgt"] += 1
         else:
             progress_sub_projects["not_known"] += 1
