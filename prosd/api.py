@@ -53,7 +53,8 @@ def calc_progress_sub_projects(project):
         "lp_34": 0,
         "bau": 0,
         "ibn_erfolgt": 0,
-        "not_known": 0
+        "not_known": 0,
+        "has_sub_project":0
     }
     for sub_project in project.sub_project_contents:
         if sub_project.lp_12 == 1:
@@ -67,7 +68,10 @@ def calc_progress_sub_projects(project):
         elif sub_project.ibn_erfolgt == 2:
             progress_sub_projects["ibn_erfolgt"] += 1
         else:
-            progress_sub_projects["not_known"] += 1
+            if len(sub_project.sub_project_contents) >0:
+                progress_sub_projects["has_sub_project"] += 1
+            else:
+                progress_sub_projects["not_known"] += 1
 
     return progress_sub_projects
 
