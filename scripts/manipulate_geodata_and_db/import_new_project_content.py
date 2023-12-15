@@ -75,7 +75,11 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
         buffer_track=bool(pd["buffer_track"]),
         simultaneous_train_entries=bool(pd["simultaneous_train_entries"]),
         sgv740m=bool(pd["sgv740m"]),
-        gwb=bool(pd["GWB"])
+        gwb=bool(pd["GWB"]),
+        lp_12=int(pd["lp_12"]),
+        lp_34=int(pd["lp_34"]),
+        bau=int(pd["bau"]),
+        ibn_erfolgt=int(pd["ibn_erfolgt"])
     )
 
     from_station = pd["VON"]
@@ -98,10 +102,10 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
     return pc
 
 
-filename = '../../example_data/import/project_contents/maßnahmenüls.xlsx'
+filename = '../../example_data/import/project_contents/oberhausen-emmerich.xlsx'
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 10
+PROJECT_GROUP_ID = 1
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 

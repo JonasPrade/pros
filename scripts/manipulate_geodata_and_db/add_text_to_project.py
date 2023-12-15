@@ -1,11 +1,11 @@
 from prosd import db
 from prosd.models import Text, TextType, ProjectContent
 
-projectcontent_id = 19
+projectcontent_id = 95447
 type = 1
-header = "BauInfoPortal Projektwebsite"
-weblink = "https://bauprojekte.deutschebahn.com/p/luebeck-schwerin"
-text_content = "Projektwebsite Lübkeck-Schwerin"
+header = "Ergänzung des Projektumfangs im GBeschlG 2023"
+weblink = "https://dserver.bundestag.de/btd/20/068/2006879.pdf"
+text_content = "Ergänzung des fest disponierten Vorhabens ABS/NBS Dresden – Leipzig (VDE 9) um das Vorhaben einer zusätzlichen Weichenverbindung zwischen Dresden Hbf und Dresden Neustadt"
 logo_url = None
 
 text = Text(

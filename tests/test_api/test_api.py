@@ -8,9 +8,10 @@ railwaypoint_id = 45819
 masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
-projectgroup_id = 6
+projectgroup_id = 7
 projectcontent_id = 18
 texttype_id = 1
+bskaction_id = 156
 
 
 def get_api(self, api_string):
@@ -188,7 +189,7 @@ class TestApi(BaseTestCase):
 
     def test_projectgroupsbyid(self):
         with self.client:
-            api_string = f"/projectgroupsbyid?id=8"
+            api_string = f"/projectgroupsbyid?id={projectgroup_id}"
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['projectgroups']) > 0)
@@ -202,7 +203,6 @@ class TestApi(BaseTestCase):
             self.assertTrue(len(data['progress']) > 0)
             self.assertEqual(response.status_code, 200)
 
-
     def test_bkshandlungsfeld_all(self):
         with self.client:
             api_string = f"/bkshandlungsfeld-all"
@@ -210,3 +210,13 @@ class TestApi(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['bkshandlungsfeld']) > 0)
             self.assertEqual(response.status_code, 200)
+
+    def test_bksaction(self):
+        with self.client:
+            api_string= f"/bksaction/{bskaction_id}"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['action']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+

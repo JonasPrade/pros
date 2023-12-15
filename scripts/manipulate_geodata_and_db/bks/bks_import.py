@@ -71,19 +71,24 @@ def process_md_files(folder_path):
                             logging.info(f"bks action {title} has no text for Vorschlag BKS Vorgehen")
 
                         if "Startpunkt" in sections.keys():
-                            bks.report_process = sections["Startpunkt"]
+                            bks.review_1_start = sections["Startpunkt"]
                         else:
                             logging.info(f"bks action {title} has no text for Startpunkt")
 
                         if "Zurückgelegte Strecke" in sections.keys():
-                            bks.report_process = sections["Zurückgelegte Strecke"]
+                            bks.review_1_done = sections["Zurückgelegte Strecke"]
                         else:
                             logging.info(f"bks action {title} has no text for Zurückgelegte Strecke")
 
                         if "Nächster Halt" in sections.keys():
-                            bks.report_process = sections["Nächster Halt"]
+                            bks.review_1_next = sections["Nächster Halt"]
                         else:
                             logging.info(f"bks action {title} has no text for Nächster Halt")
+
+                        if "status_bks" in post.metadata.keys():
+                            bks.review_1_status = post.metadata["status_bks"]
+                        else:
+                            logging.info(f"bks action {title} has no status_bks")
 
                         cluster = BksCluster.query.filter(BksCluster.number.like(str(post.metadata["clusternummer"]))).first()
                         if cluster is None:

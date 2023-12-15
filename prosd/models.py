@@ -12,7 +12,6 @@ import logging
 import os
 import networkx
 import time
-import multiprocessing
 
 
 from prosd import db, app, bcrypt, parameter
@@ -221,7 +220,8 @@ formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
 
 finve_to_projectcontent = db.Table('finve_to_projectcontent',
                                    db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
-                                   db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id'))
+                                   db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                   sqlalchemy.PrimaryKeyConstraint('finve_id', 'pc_id')
                                    )
 
 tunnel_to_railwaylines = db.Table('rltunnel_to_rllines',
@@ -2698,6 +2698,7 @@ class Budget(db.Model):
     starting_year = db.Column(db.Integer)
     cost_estimate_original = db.Column(db.Integer)
     cost_estimate_last_year = db.Column(db.Integer)
+
     cost_estimate_actual = db.Column(db.Integer)
     cost_estimate_actual_third_parties = db.Column(db.Integer)
     cost_estimate_actual_equity = db.Column(db.Integer)  # Eigenanteil EIU
@@ -2706,6 +2707,10 @@ class Budget(db.Model):
     cost_estimate_actual_891_03 = db.Column(db.Integer)
     cost_estimate_actual_891_04 = db.Column(db.Integer)
     cost_estimate_actual_891_91 = db.Column(db.Integer)
+    cost_estimate_actual_891_72 = db.Column(db.Integer)
+    cost_estimate_actual_891_11 = db.Column(db.Integer)
+    cost_estimate_actual_891_21 = db.Column(db.Integer)
+    cost_estimate_actual_861_01 = db.Column(db.Integer)
 
     delta_previous_year = db.Column(db.Integer)
     delta_previous_year_relativ = db.Column(db.Float)
@@ -2719,6 +2724,10 @@ class Budget(db.Model):
     spent_two_years_previous_891_03 = db.Column(db.Integer)
     spent_two_years_previous_891_04 = db.Column(db.Integer)
     spent_two_years_previous_891_91 = db.Column(db.Integer)
+    spent_two_years_previous_891_72 = db.Column(db.Integer)
+    spent_two_years_previous_891_11 = db.Column(db.Integer)
+    spent_two_years_previous_891_21 = db.Column(db.Integer)
+    spent_two_years_previous_861_01 = db.Column(db.Integer)
 
     allowed_previous_year = db.Column(db.Integer)
     allowed_previous_year_third_parties = db.Column(db.Integer)
@@ -2728,6 +2737,10 @@ class Budget(db.Model):
     allowed_previous_year_891_03 = db.Column(db.Integer)
     allowed_previous_year_891_04 = db.Column(db.Integer)
     allowed_previous_year_891_91 = db.Column(db.Integer)
+    allowed_previous_year_891_72 = db.Column(db.Integer)
+    allowed_previous_year_891_11 = db.Column(db.Integer)
+    allowed_previous_year_891_21 = db.Column(db.Integer)
+    allowed_previous_year_861_01 = db.Column(db.Integer)
 
     spending_residues = db.Column(db.Integer)
     spending_residues_891_01 = db.Column(db.Integer)
@@ -2735,6 +2748,10 @@ class Budget(db.Model):
     spending_residues_891_03 = db.Column(db.Integer)
     spending_residues_891_04 = db.Column(db.Integer)
     spending_residues_891_91 = db.Column(db.Integer)
+    spending_residues_891_72 = db.Column(db.Integer)
+    spending_residues_891_11 = db.Column(db.Integer)
+    spending_residues_891_21 = db.Column(db.Integer)
+    spending_residues_861_01 = db.Column(db.Integer)
 
     year_planned = db.Column(db.Integer)
     year_planned_third_parties = db.Column(db.Integer)
@@ -2744,6 +2761,10 @@ class Budget(db.Model):
     year_planned_891_03 = db.Column(db.Integer)
     year_planned_891_04 = db.Column(db.Integer)
     year_planned_891_91 = db.Column(db.Integer)
+    year_planned_891_72 = db.Column(db.Integer)
+    year_planned_891_11 = db.Column(db.Integer)
+    year_planned_891_21 = db.Column(db.Integer)
+    year_planned_861_01 = db.Column(db.Integer)
 
     next_years = db.Column(db.Integer)
     next_years_third_parties = db.Column(db.Integer)
@@ -2753,6 +2774,10 @@ class Budget(db.Model):
     next_years_891_03 = db.Column(db.Integer)
     next_years_891_04 = db.Column(db.Integer)
     next_years_891_91 = db.Column(db.Integer)
+    next_years_891_72 = db.Column(db.Integer)
+    next_years_891_11 = db.Column(db.Integer)
+    next_years_891_21 = db.Column(db.Integer)
+    next_years_861_01 = db.Column(db.Integer)
 
     finve = db.relationship("FinVe", backref=db.backref("budgets"))
     db.Index('budgets_year_and_finve_uindex', budget_year, fin_ve, unique=True)
@@ -2765,10 +2790,11 @@ class FinVe(db.Model):
     """
     __tablename__ = 'finve'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, server_default="2000")
     name = db.Column(db.String(1000))
     starting_year = db.Column(db.Integer)
     cost_estimate_original = db.Column(db.Integer)
+    temporary_finve_number = db.Column(db.Boolean, default=False)  # if true the finve number is not known yet
 
     project_contents = db.relationship('ProjectContent', secondary=finve_to_projectcontent,
                                        backref=db.backref('finve', lazy=True))

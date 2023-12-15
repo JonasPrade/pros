@@ -13,11 +13,12 @@ def add_lines_to_project_content(project_content_id, graph, from_station, to_sta
     pc.generate_geojson()
     pc.compute_centroid()
 
+
 rg = RailGraph()
-from_station = "NWH"
-to_station = "NAN"
-via = ["NU"]
+from_station = "EWFK"
+to_station = "EPRA"
+via = []
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-project_content_id = 95664
+project_content_id = 95808
 
 add_lines_to_project_content(project_content_id, graph, from_station, to_station, via=via)
