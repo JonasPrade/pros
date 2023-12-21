@@ -42,9 +42,13 @@ def extract_markdown(markdown_text):
     return sections
 
 
-def process_md_files(folder_path):
+def process_md_files(folder_path, overwrite=True):
     files_in_folder = os.listdir(folder_path)
     bks_actions = []
+
+    if overwrite == True:
+        BksAction.query.delete()
+        db.session.commit()
 
     for file_name in files_in_folder:
         if file_name.endswith('md'):
@@ -103,9 +107,11 @@ def process_md_files(folder_path):
             except yaml.reader.ReaderError as e:
                 logging.warning(f"Error in file {file_name}: {e}")
 
+
     db.session.add_all(bks_actions)
     db.session.commit()
 
 if __name__ == '__main__':
     folder = '/Users/jonas/NextcloudGastel/Büro Gastel/80 Obsidian Beschleunigungskommission Test/Beschleunigungskommission Schiene/notes'
-    process_md_files(folder)
+    overwrite = True
+    process_md_files(folder, overwrite)
