@@ -2,12 +2,15 @@ import numpy
 import pandas
 import re
 import logging
+import sqlalchemy
+
 from prosd import db
 from prosd.models import Budget, FinVe
 
 # SETTINGS
-YEAR = 2023
+YEAR = 2022
 DROP_FIRST_ROWS = 3
+logging.basicConfig(level=logging.INFO)
 
 IGNORE_COLUMNS_VALUES = [
     "Lfd. Nr.",
@@ -45,32 +48,36 @@ translation = {
     f"Vorbehalten {YEAR+2}": "next_years"
 }
 row_templates = {
-    "cost_estimate_original": 0,
-    "cost_estimate_last_year": 0,
-    "cost_estimate_actual": 0,
-    "delta_previous_year": 0,
-    "delta_previous_year_relativ": 0.0,
-    "delta_previous_year_reasons": "",
-    "spent_two_years_previous": 0,
-    "allowed_previous_year": 0,
-    "spending_residues": 0,
-    "year_planned": 0,
-    "next_years": 0
+    "cost_estimate_original": None,
+    "cost_estimate_last_year": None,
+    "cost_estimate_actual": None,
+    "delta_previous_year": None,
+    "delta_previous_year_relativ": None,
+    "delta_previous_year_reasons": None,
+    "spent_two_years_previous": None,
+    "allowed_previous_year": None,
+    "spending_residues": None,
+    "year_planned": None,
+    "next_years": None
 }
-categories_template = {
-    "all": row_templates.copy(),
-    "Kap. 1202, Titel 891 01": row_templates.copy(),
-    "Kap. 1202, Titel 891 02": row_templates.copy(),
-    "Kap. 1202, Titel 891 03": row_templates.copy(),
-    "Kap. 1202, Titel 891 04": row_templates.copy(),
-    "Kap. 1202, Titel 861 01": row_templates.copy(),
-    "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐": row_templates.copy(),
-    "Kap. 1210 (alt), Titel 891 72 (ZIP)": row_templates.copy(),
-    "Kap. 1202, Titel 891 11 (zusätzl. Darstellg. LUFV)": row_templates.copy(),
-    "Kap. 6091 (alt), Titel 891 21‐ ITF ‐": row_templates.copy(),
-    "nachrichtlich: Beteiligung Dritter": row_templates.copy(),
-    "nachrichtlich: Eigenmittel der EIU gemäß BUV": row_templates.copy()
-}
+
+def create_category():
+    categories_template = {
+        "all": row_templates.copy(),
+        "Kap. 1202, Titel 891 01": row_templates.copy(),
+        "Kap. 1202, Titel 891 02": row_templates.copy(),
+        "Kap. 1202, Titel 891 03": row_templates.copy(),
+        "Kap. 1202, Titel 891 04": row_templates.copy(),
+        "Kap. 1202, Titel 861 01": row_templates.copy(),
+        "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐": row_templates.copy(),
+        "Kap. 1210 (alt), Titel 891 72 (ZIP)": row_templates.copy(),
+        "Kap. 1202, Titel 891 11 (zusätzl. Darstellg. LUFV)": row_templates.copy(),
+        "Kap. 6091 (alt), Titel 891 21‐ ITF ‐": row_templates.copy(),
+        "nachrichtlich: Beteiligung Dritter": row_templates.copy(),
+        "nachrichtlich: Eigenmittel der EIU gemäß BUV": row_templates.copy()
+    }
+    return categories_template
+
 translate_category_to_db = {
     "all": "",
     "Kap. 1202, Titel 891 01": "_891_01",
@@ -114,6 +121,8 @@ def translate_category_dict(categories):
 def add_budget_category_to_db(budget, categories):
     for category in categories:
         for key, value in categories[category].items():
+            if value is None:
+                continue
             if hasattr(budget, key):
                 setattr(budget, key, value)
     return budget
@@ -164,6 +173,8 @@ def create_budget(row):
 
     finve = FinVe.query.get(fin_ve)
 
+    # TODO: Add search for fitting lfd_nr -> dafür muss ich das in FinVe ergänzen
+
     if finve is None or fin_ve is numpy.nan or fin_ve is None:
         name_finve = create_name_finve(row)
         finve = FinVe.query.filter_by(name=name_finve).first()
@@ -193,6 +204,7 @@ def create_budget(row):
 
         db.session.add(finve)
         db.session.commit()
+        info.logging(f'Created new FinVe with id {finve.id} and name {finve.name} for budget {budget.lfd_nr}.')
 
     budget.fin_ve = finve.id
 
@@ -247,7 +259,7 @@ def create_element_index(row):
 
 
 def get_cash_values(row):
-    categories = categories_template.copy()
+    categories = create_category()
 
     elements_index = create_element_index(row)
 
@@ -319,8 +331,12 @@ def add_all_budgets(filename):
     for index, row in df.iterrows():
         if str(row["Lfd. Nr."]) != str(numpy.nan):
             if isinstance(budget, Budget):  # previos budget is finished
-                db.session.add(budget)
-                db.session.commit()
+                try:
+                    db.session.add(budget)
+                    db.session.commit()
+                except sqlalchemy.exc.IntegrityError as e:
+                    logging.info(f"UniqueViolation for {budget.lfd_nr}, {budget.budget_year}. continued with next budget.")
+                    db.session.rollback()
                 finished_budgets.append(budget)
 
             title_investment = row["Bezeichnung der Investitionsmaßnahme"].split("\n")
@@ -328,7 +344,7 @@ def add_all_budgets(filename):
                 # there are no investment volumes in this row. This is expected in a row below.
                 # to trigger the correct behavior in update_budget, we add the key "all" to the list at first position, because "all investments" are in the next row of a budget
                 title_investment.insert(0, "all")
-                logging.info(f"no investment volumes for lfd. nr. {row['Lfd. Nr.']}")
+                logging.debug(f"no investment volumes for lfd. nr. {row['Lfd. Nr.']}")
             budget = create_budget(row)
 
         else:
@@ -342,5 +358,5 @@ def add_all_budgets(filename):
 
 
 if __name__ == "__main__":
-    filename = '../../example_data/import/verkehrsinvestitionsbericht/2024_bedarfsplan.xlsx'
+    filename = '../../example_data/import/verkehrsinvestitionsbericht/2022/2022_table1.xlsx'
     add_all_budgets(filename)
