@@ -68,6 +68,13 @@ class BudgetSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class FinveSchema(ma.SQLAlchemyAutoSchema):
+    budgets = ma.Nested(BudgetSchema, many=True)
+    class Meta:
+        model = models.FinVe
+        include_fk = True
+
+
 class TextSchema(ma.SQLAlchemyAutoSchema):
     text_type = ma.Nested(TextTypeSchema(only=("name",)))
 
@@ -153,7 +160,7 @@ class RailwayStationSchema(ma.SQLAlchemyAutoSchema):
 
 
 class ProjectContentSchema(ma.SQLAlchemyAutoSchema):
-    budgets = ma.Nested(BudgetSchema, many=True)
+    finve = ma.Nested(FinveSchema, many=True)
     texts = ma.Nested(TextSchema, many=True)
     projectcontent_groups = ma.Nested(ProjectGroupSchemaShort, many=True)
     sub_project_contents = ma.Nested(lambda: ProjectContentShortSchema(), many=True)
