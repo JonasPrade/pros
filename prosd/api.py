@@ -1,15 +1,14 @@
-from flask import jsonify, request, Response, make_response
+from flask import jsonify, request, make_response
 from functools import wraps
 from flask_cors import cross_origin
+import sqlalchemy
 
-from prosd import app
+from prosd import app, db
 from prosd import models
 from prosd import views
 from prosd.auth import views as auth
 
-allowed_ip = 'http://localhost:3000'
-
-# Have in mind that the user login and authorization process is in /auth/views.py
+# user login and authorization process is in /auth/views.py
 
 
 def token_required(f):
@@ -46,41 +45,10 @@ def token_required(f):
     return decorated
 
 
-def calc_progress_sub_projects(project):
-    progress_sub_projects = {
-        "pending": 0,
-        "lp_12": 0,
-        "lp_34": 0,
-        "bau": 0,
-        "ibn_erfolgt": 0,
-        "not_known": 0,
-        "has_sub_project":0
-    }
-    for sub_project in project.sub_project_contents:
-        if sub_project.lp_12 == 1:
-            progress_sub_projects["lp_12"] += 1
-        elif sub_project.lp_12 == 0:
-            progress_sub_projects["pending"] += 1
-        elif sub_project.lp_34 == 1:
-            progress_sub_projects["lp_34"] += 1
-        elif sub_project.bau == 1:
-            progress_sub_projects["bau"] += 1
-        elif sub_project.ibn_erfolgt == 2:
-            progress_sub_projects["ibn_erfolgt"] += 1
-        else:
-            if len(sub_project.sub_project_contents) >0:
-                progress_sub_projects["has_sub_project"] += 1
-            else:
-                progress_sub_projects["not_known"] += 1
-
-    return progress_sub_projects
-
-
-
 @app.route("/project/<id>", methods=['GET'])
 @cross_origin()
 @token_required
-def project_get(user, **kwargs):
+def project_get(**kwargs):
     project_id = kwargs.pop('id')
     project = models.Project.query.get(project_id)
     project_schema = views.ProjectSchema()
@@ -92,8 +60,8 @@ def project_get(user, **kwargs):
 @app.route("/projectgroups", methods=['GET'])
 @cross_origin()
 # @token_required
-def get_projectgroups(**kwargs):
-    project_groups = models.ProjectGroup.query.filter(models.ProjectGroup.public == True).all()
+def get_projectgroups():
+    project_groups = models.ProjectGroup.query.filter(models.ProjectGroup.public == True).order_by(models.ProjectGroup.id).all()
     project_group_schema = views.ProjectGroupSchemaShort(many=True)
     output = project_group_schema.dump(project_groups)
     response = make_response({'projectgroups': output})
@@ -103,7 +71,7 @@ def get_projectgroups(**kwargs):
 @app.route("/projectgroup/first", methods=['GET'])
 @cross_origin()
 # @token_required
-def get_first_projectgroup(**kwargs):
+def get_first_projectgroup():
     project_groups = models.ProjectGroup.query.first()
     project_group_schema = views.ProjectGroupSchemaShort()
     output = project_group_schema.dump(project_groups)
@@ -113,7 +81,7 @@ def get_first_projectgroup(**kwargs):
 
 @app.route("/projectgroupsbyid", methods=['GET'])
 @cross_origin()
-def getprojectroupsbyid():
+def getprojectgroupsbyid():
     projectgroups_id = request.args.getlist('id')
     projectgroups_id = [int(x) for x in projectgroups_id]
     projectgroups = models.ProjectGroup.query.filter(models.ProjectGroup.id.in_(projectgroups_id))
@@ -260,8 +228,8 @@ def running_km_for_scenario(**kwargs):
 @cross_origin()
 def get_projectscontent_by_projectgroup(**kwargs):
     project_group_id = kwargs.pop('id')
-    project_group = models.ProjectGroup.query.get(project_group_id)
-    pcs = project_group.superior_project_contents
+    # project_group = models.ProjectGroup.query.get(project_group_id)
+    pcs = db.session.query(models.ProjectContent).join(models.ProjectContent.projectcontent_groups).filter(models.ProjectGroup.id == project_group_id).filter(models.ProjectContent.superior_project_content_id == None).all()
     pc_schema = views.ProjectContentShortSchema(many=True)
     output = pc_schema.dump(pcs)
     response = make_response({'pcs': output})
@@ -350,7 +318,39 @@ def textbypcandtexttype(**kwargs):
 def projectcontent_subprojects_progress(**kwargs):
     projectcontent_id = kwargs.pop('projectcontent_id')
     projectcontent = models.ProjectContent.query.get(projectcontent_id)
-    progress = calc_progress_sub_projects(projectcontent)
+    progress = projectcontent.calc_progress_sub_projects()
+    response = make_response({'progress': progress})
+    return response
+
+
+@app.route("/search/projectcontent/<string:search_string>", methods=['GET'])
+@cross_origin()
+def search_projectcontent_by_string(**kwargs):
+    # searches for the search string in ProjectContent Model and returns a list of ProjectContent objects
+    # can be limited to some ProjectGroups
+    search_string = kwargs.pop('search_string')
+    if search_string == 'null':
+        search_string = '%'  # search for all
+    projectgroups_id = [int(x) for x in request.args.getlist('projectgroup_id')]
+    projectcontents = db.session.query(models.ProjectContent).join(models.projectcontent_to_group).join(models.ProjectGroup).filter(
+        sqlalchemy.or_(
+            models.ProjectContent.name.like('%' + search_string + '%'),
+            models.ProjectContent.description.like('%' + search_string + '%')
+        ), models.ProjectGroup.id.in_(projectgroups_id)
+    ).distinct(models.ProjectContent.id).order_by(
+        models.ProjectContent.id
+    ).all()
+    output = views.ProjectContentShortSchema(many=True).dump(projectcontents)
+    response = make_response({'projects': output})
+    return response
+
+
+@app.route("/subprojects-progress/<int:projectcontent_id>", methods=['GET'])
+@cross_origin()
+def search_projectcontent(**kwargs):
+    projectcontent_id = kwargs.pop('projectcontent_id')
+    projectcontent = models.ProjectContent.query.get(projectcontent_id)
+    progress = projectcontent.calc_progress_sub_projects()
     response = make_response({'progress': progress})
     return response
 

@@ -9,9 +9,11 @@ masterarea_id = 2382
 masterscenario_id = 1
 trainpart_id = 'tp_BY15_X_x0020_15001_4395'
 projectgroup_id = 7
-projectcontent_id = 95453
+projectcontent_id = 95434
 texttype_id = 1
 bskaction_id = 156
+search_projectcontent = "null"
+projectgroup_ids = [1, 2, 3, 5, 6, 7, 8, 9, 10, 11]
 
 
 def get_api(self, api_string):
@@ -201,6 +203,14 @@ class TestApi(BaseTestCase):
             response = get_api(self, api_string)
             data = json.loads(response.data.decode())
             self.assertTrue(len(data['progress']) > 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_search_projectcontent(self):
+        with self.client:
+            api_string = f"/search/projectcontent/{search_projectcontent}?projectgroup_id=1&projectgroup_id=2&projectgroup_id=7"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['projects']) > 0)
             self.assertEqual(response.status_code, 200)
 
     def test_bkshandlungsfeld_all(self):
