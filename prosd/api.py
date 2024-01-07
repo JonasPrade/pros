@@ -329,8 +329,9 @@ def search_projectcontent_by_string(**kwargs):
     # searches for the search string in ProjectContent Model and returns a list of ProjectContent objects
     # can be limited to some ProjectGroups
     search_string = kwargs.pop('search_string')
-    if search_string == 'null':
+    if search_string == 'null' or search_string == 'all':
         search_string = '%'  # search for all
+
     projectgroups_id = [int(x) for x in request.args.getlist('projectgroup_id')]
     projectcontents = db.session.query(models.ProjectContent).join(models.projectcontent_to_group).join(models.ProjectGroup).filter(
         sqlalchemy.or_(
