@@ -61,14 +61,14 @@ def downgrade_():
     op.drop_column('budgets', 'allowed_previous_year_861_01')
     op.drop_column('budgets', 'spent_two_years_previous_861_01')
     op.drop_column('budgets', 'cost_estimate_actual_861_01')
-    op.create_table('spatial_ref_sys',
-    sa.Column('srid', sa.INTEGER(), autoincrement=False, nullable=False),
-    sa.Column('auth_name', sa.VARCHAR(length=256), autoincrement=False, nullable=True),
-    sa.Column('auth_srid', sa.INTEGER(), autoincrement=False, nullable=True),
-    sa.Column('srtext', sa.VARCHAR(length=2048), autoincrement=False, nullable=True),
-    sa.Column('proj4text', sa.VARCHAR(length=2048), autoincrement=False, nullable=True),
-    sa.CheckConstraint('(srid > 0) AND (srid <= 998999)', name='spatial_ref_sys_srid_check'),
-    sa.PrimaryKeyConstraint('srid', name='spatial_ref_sys_pkey')
-    )
+    # op.create_table('spatial_ref_sys',
+    # sa.Column('srid', sa.INTEGER(), autoincrement=False, nullable=False),
+    # sa.Column('auth_name', sa.VARCHAR(length=256), autoincrement=False, nullable=True),
+    # sa.Column('auth_srid', sa.INTEGER(), autoincrement=False, nullable=True),
+    # sa.Column('srtext', sa.VARCHAR(length=2048), autoincrement=False, nullable=True),
+    # sa.Column('proj4text', sa.VARCHAR(length=2048), autoincrement=False, nullable=True),
+    # sa.CheckConstraint('(srid > 0) AND (srid <= 998999)', name='spatial_ref_sys_srid_check'),
+    # sa.PrimaryKeyConstraint('srid', name='spatial_ref_sys_pkey')
+    # )
     # ### end Alembic commands ###
 

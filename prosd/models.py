@@ -1583,6 +1583,7 @@ class ProjectGroup(db.Model):
     __tablename__ = 'project_groups'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    short_name = db.Column(db.String(20), unique=True)
     description = db.Column(db.Text)
     public = db.Column(db.Boolean, default=False)
     color = db.Column(db.String(10), default="#FF0000")

@@ -15,10 +15,10 @@ def add_lines_to_project_content(project_content_id, graph, from_station, to_sta
 
 
 rg = RailGraph()
-from_station = "EWFK"
-to_station = "EPRA"
+from_station = "FSUE"
+to_station = "FFD"
 via = []
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
-project_content_id = 95808
+project_content_id = 95717
 
 add_lines_to_project_content(project_content_id, graph, from_station, to_station, via=via)
