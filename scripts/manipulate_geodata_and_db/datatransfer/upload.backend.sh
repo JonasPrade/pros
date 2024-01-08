@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# load config
+source config.env
+
+# variables
+SSH_USER="$SSH_USER"
+SSH_HOST="$SSH_HOST"
+BACKEND_LOCAL="$BACKEND_LOCAL"
+BACKEND_REMOTE="$BACKEND_REMOTE"
+BACKEND_DOCKER_COMPOSE_DIR="$BACKEND_DOCKER_COMPOSE_DIR"
+BACKEND_DOCKER_COMPOSE_NAME="$BACKEND_DOCKER_COMPOSE_NAME"
+
+# transfer
+PROSD_FOLDER="$BACKEND_LOCAL/prosd"
+MANAGE_PY="$BACKEND_LOCAL/manage.py"
+
+# move files to server
+scp -r "$PROSD_FOLDER"/* $SSH_USER@$SSH_HOST:$BACKEND_REMOTE/prosd
+scp "$MANAGE_PY" $SSH_USER@$SSH_HOST:$BACKEND_REMOTE/manage.py
+
+# go to server and build docker
+ssh $SSH_USER@$SSH_HOST << EOF
+  echo $BACKEND_DOCKER_COMPOSE_DIR
+  cd $BACKEND_DOCKER_COMPOSE_DIR
+  docker-compose -f $BACKEND_DOCKER_COMPOSE_NAME down
+  docker-compose -f $BACKEND_DOCKER_COMPOSE_NAME up -d --build
+EOF
