@@ -1262,7 +1262,7 @@ class ProjectContent(db.Model):
     bvwp_duration_of_outstanding_planning = db.Column(db.Float)
     bvwp_duration_of_build = db.Column(db.Float)
     bvwp_duration_operating = db.Column(db.Float)
-    lp_12 = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
+    lp_12 = db.Column(db.Integer)  # 0= nicht begonnen, -1= keine Aktivität, 1 = läuft, 2 = fertig, -2=unbekannt
     lp_34 = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
     bau = db.Column(db.Integer)  # 0= nicht begonnen, 1 = läuft, 2 = fertig
     ibn_erfolgt = db.Column(db.Integer) # 0= nicht begonnen, 1 = läuft, 2 = fertig
@@ -1313,6 +1313,7 @@ class ProjectContent(db.Model):
     buffer_track = db.Column(db.Boolean, default=False)  # Puffergleis
     gwb = db.Column(db.Boolean, default=False)  # Gleiswechselbetrieb
     simultaneous_train_entries = db.Column(db.Boolean, default=False)  # gleichzeitige Zugeinfahrten
+    tilting = db.Column(db.Boolean, default=False)
 
     # environmental data
     bvwp_environmental_impact = db.Column(db.String(200))

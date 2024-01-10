@@ -19,5 +19,5 @@ def calc_update_geo_properties(id):
 
 if __name__ == '__main__':
     # namen an id or type all
-    id = 95717
+    id = 95834
     calc_update_geo_properties(id)

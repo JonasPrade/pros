@@ -1,5 +1,6 @@
 import pandas
 import math
+import logging
 
 from prosd import db
 from prosd.models import ProjectContent, Project, ProjectGroup, RailwayStation, RailwayLine
@@ -79,7 +80,8 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
         lp_12=int(pd["lp_12"]),
         lp_34=int(pd["lp_34"]),
         bau=int(pd["bau"]),
-        ibn_erfolgt=int(pd["ibn_erfolgt"])
+        ibn_erfolgt=int(pd["ibn_erfolgt"]),
+        tilting=bool(pd["tilting"]),
     )
 
     from_station = pd["VON"]
@@ -92,9 +94,11 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
             line = RailwayLine.query.get(line_id)
             pc.railway_lines.append(line)
 
-    else:
+    elif isinstance(from_station, str):
         station = RailwayStation.query.filter(RailwayStation.db_kuerzel == from_station).scalar()
         pc.railway_stations.append(station)
+    else:
+        logging.info(f'No routing given for project content {pc.name}')
 
     pc.generate_geojson()
     pc.compute_centroid()
@@ -102,10 +106,10 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
     return pc
 
 
-filename = '../../example_data/import/project_contents/oberhausen-emmerich.xlsx'
+filename = ('../../example_data/import/project_contents/import 2024-01-10 4.xlsx')
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 1
+PROJECT_GROUP_ID = 15
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 

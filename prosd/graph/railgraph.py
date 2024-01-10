@@ -23,6 +23,10 @@ class SubnodeHasNoNodeID(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+class RouteFileNotFound(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 
 class RailGraph(GraphBasic):
     def __init__(self):
@@ -239,7 +243,10 @@ class RailGraph(GraphBasic):
         for route in railway_routes:
             filepath_graph_route = self.filepath_save_graph_route.format(str(route.number))
             if os.path.exists(filepath_graph_route) and use_saved:
-                graph = self.load_graph(filepath_graph_route)
+                try:
+                    graph = self.load_graph(filepath_graph_route)
+                except FileNotFoundError as e:
+                    raise RouteFileNotFound(f"File {filepath_graph_route} for route {route.number} not found") from e
                 if graph:
                     graph_list.append(graph)
             else:
