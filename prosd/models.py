@@ -170,46 +170,60 @@ projectcontent_to_group = db.Table('projectcontent_to_group',
 
 # project to railway Lines
 projectcontent_to_line = db.Table('projectcontent_to_lines',
-                                  db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                  db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                   )
 
 projectcontent_to_railwaystations = db.Table('projectcontent_to_railwaystations',
                                              db.Column('projectcontent_id', db.Integer,
-                                                       db.ForeignKey('projects_contents.id')),
+                                                       db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
                                              db.Column('railway_station_id', db.Integer,
-                                                       db.ForeignKey('railway_stations.id'))
+                                                       db.ForeignKey('railway_stations.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
 
                                              )
 
 texts_to_project_content = db.Table('texts_to_projects',
-                                    db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                                    db.Column('text_id', db.Integer, db.ForeignKey('texts.id'))
+                                    db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                    db.Column('text_id', db.Integer, db.ForeignKey('texts.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                     )
 
 project_contents_to_states = db.Table('projectcontent_to_states',
                                       db.Column('project_content_id', db.Integer,
-                                                db.ForeignKey('projects_contents.id')),
-                                      db.Column('states_id', db.Integer, db.ForeignKey('states.id'))
+                                                db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                      db.Column('states_id', db.Integer, db.ForeignKey('states.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                       )
 
 project_contents_to_counties = db.Table('projectcontent_to_counties',
                                         db.Column('project_content_id', db.Integer,
-                                                  db.ForeignKey('projects_contents.id')),
-                                        db.Column('counties_id', db.Integer, db.ForeignKey('counties.id'))
+                                                  db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                        db.Column('counties_id', db.Integer, db.ForeignKey('counties.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                         )
 
 project_contents_to_constituencies = db.Table('projectcontent_to_constituencies',
                                               db.Column('project_content_id', db.Integer,
-                                                        db.ForeignKey('projects_contents.id')),
+                                                        db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
                                               db.Column('constituencies_id', db.Integer,
-                                                        db.ForeignKey('constituencies.id'))
+                                                        db.ForeignKey('constituencies.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                               )
 
 railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
                                            db.Column('node_id', db.Integer,
-                                                     db.ForeignKey('railway_nodes.id', ondelete='CASCADE')),
-                                           db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id'))
+                                                     db.ForeignKey('railway_nodes.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                           db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE'))
                                            )
 
 formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
@@ -220,8 +234,10 @@ formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
 
 
 finve_to_projectcontent = db.Table('finve_to_projectcontent',
-                                   db.Column('finve_id', db.Integer, db.ForeignKey('finve.id')),
-                                   db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id')),
+                                   db.Column('finve_id', db.Integer, db.ForeignKey('finve.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
+                                   db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
+                                                           ondelete='CASCADE')),
                                    sqlalchemy.PrimaryKeyConstraint('finve_id', 'pc_id')
                                    )
 
