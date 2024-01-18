@@ -22,6 +22,7 @@ scp -r $FOLDER_SOURCE_LOCAL/* $SSH_USER@$SSH_HOST:$FRONTEND_REMOTE/src
 # go to server and build docker
 ssh $SSH_USER@$SSH_HOST << EOF
   cd $FRONTEND_REMOTE
-  docker-compose -f docker-compose.yml down
-  docker-compose -f docker-compose.yml up -d --build
+  echo $FRONTEND_REMOTE
+  docker-compose -f docker-compose.yaml down
+  docker-compose -f docker-compose.yaml up -d --build
 EOF
