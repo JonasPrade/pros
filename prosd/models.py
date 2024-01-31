@@ -165,7 +165,7 @@ projectcontent_to_group = db.Table('projectcontent_to_group',
                                                            ondelete='CASCADE')),
                                    db.Column('projectgroup_id', db.Integer,
                                              db.ForeignKey('project_groups.id', onupdate='CASCADE', ondelete='CASCADE')),
-                                   db.Index('projectcontent_to_group_index', 'projectcontent_id', 'projectgroup_id')
+                                   db.Index('projectcontent_to_group_index', 'projectcontent_id', 'projectgroup_id'),
                                    )
 
 # project to railway Lines
@@ -4361,4 +4361,250 @@ class BksCluster(db.Model):
     impact_assessment = db.Column(db.Text)
     handlungsfeld_id = db.Column(db.Integer, db.ForeignKey('bks_handlungsfeld.number', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     handlungsfeld = db.relationship("BksHandlungsfeld", backref=db.backref('cluster'))
+
+
+class Netzzustandsbericht(db.Model):
+    __tablename__= 'netzzustandsbericht'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    year = db.Column(db.Integer)
+    link = db.Column(db.String(511))
+    hlk = db.Column(db.Boolean)
+
+    sqlalchemy.UniqueConstraint(year, hlk, name='unique_netzzustand')
+
+    # wiederbeschaffungswert
+    replacement_value_all = db.Column(db.Float, comment="Wiederbeschaffungswert gesamt Mrd. €")
+    replacement_value_bridge = db.Column(db.Float, comment="Wiederbeschaffungswert Brücken Mrd. €")
+    replacement_value_tunnel = db.Column(db.Float, comment="Wiederbeschaffungswert Tunnel Mrd. €")
+    replacement_value_support_structure = db.Column(db.Float, comment="Wiederbeschaffungswert Stützbauwerke Mrd. €")
+    replacement_value_tracks = db.Column(db.Float, comment="Wiederbeschaffungswert Gleise Mrd. €")
+    replacement_value_switches = db.Column(db.Float, comment="Wiederbeschaffungswert Weichen Mrd. €")
+    replacement_value_crossing = db.Column(db.Float, comment="Wiederbeschaffungswert Bahnübergänge Mrd. €")
+    replacement_value_interlocking = db.Column(db.Float, comment="Wiederbeschaffungswert Stellwerke Mrd. €")
+    replacement_value_catenary = db.Column(db.Float, comment="Wiederbeschaffungswert Oberleitungen Mrd. €")
+
+    # wiederbeschaffungswert
+    replacement_value_corrected_all = db.Column(db.Float, comment="Wiederbeschaffungswert gesamt Mrd. €")
+    replacement_value_corrected_bridge = db.Column(db.Float, comment="Wiederbeschaffungswert Brücken Mrd. €")
+    replacement_value_corrected_tunnel = db.Column(db.Float, comment="Wiederbeschaffungswert Tunnel Mrd. €")
+    replacement_value_corrected_support_structure = db.Column(db.Float, comment="Wiederbeschaffungswert Stützbauwerke Mrd. €")
+    replacement_value_corrected_tracks = db.Column(db.Float, comment="Wiederbeschaffungswert Gleise Mrd. €")
+    replacement_value_corrected_switches = db.Column(db.Float, comment="Wiederbeschaffungswert Weichen Mrd. €")
+    replacement_value_corrected_crossing = db.Column(db.Float, comment="Wiederbeschaffungswert Bahnübergänge Mrd. €")
+    replacement_value_corrected_interlocking = db.Column(db.Float, comment="Wiederbeschaffungswert Stellwerke Mrd. €")
+    replacement_value_corrected_catenary = db.Column(db.Float, comment="Wiederbeschaffungswert Oberleitungen Mrd. €")
+
+    # Wiederbeschaffungswert Verteilung
+    replacement_distribution_all = db.Column(db.Float, comment="Wiederbeschaffungswert gesamt %")
+    replacement_distribution_bridge = db.Column(db.Float, comment="Wiederbeschaffungswert Brücken %")
+    replacement_distribution_tunnel = db.Column(db.Float, comment="Wiederbeschaffungswert Tunnel %")
+    replacement_distribution_support_structure = db.Column(db.Float, comment="Wiederbeschaffungswert Stützbauwerke %")
+    replacement_distribution_tracks = db.Column(db.Float, comment="Wiederbeschaffungswert Gleise %")
+    replacement_distribution_switches = db.Column(db.Float, comment="Wiederbeschaffungswert Weichen %")
+    replacement_distribution_crossing = db.Column(db.Float, comment="Wiederbeschaffungswert Bahnübergänge %")
+    replacement_distribution_interlocking = db.Column(db.Float, comment="Wiederbeschaffungswert Stellwerke %")
+    replacement_distribution_catenary = db.Column(db.Float, comment="Wiederbeschaffungswert Oberleitungen %")
+
+    # Menge Portfolio
+    amount_portfolio_all = db.Column(db.Float, comment="Menge Portfolio gesamt Stück")
+    amount_portfolio_bridge = db.Column(db.Float, comment="Menge Portfolio Brücken Stück")
+    amount_portfolio_tunnel = db.Column(db.Float, comment="Menge Portfolio Tunnel Stück")
+    amount_portfolio_support_structure = db.Column(db.Float, comment="Menge Portfolio Stützbauwerke km")
+    amount_portfolio_tracks = db.Column(db.Float, comment="Menge Portfolio Gleise km")
+    amount_portfolio_switches = db.Column(db.Float, comment="Menge Portfolio Weichen Stück")
+    amount_portfolio_crossing = db.Column(db.Float, comment="Menge Portfolio Bahnübergänge Stück")
+    amount_portfolio_interlocking = db.Column(db.Float, comment="Menge Portfolio Stellwerke Stück")
+    amount_portfolio_catenary = db.Column(db.Float, comment="Menge Portfolio Oberleitungen km")
+
+    # Menge Portfolio in Zustandsbericht
+    amount_portfolio_rated_all = db.Column(db.Float, comment="Menge Portfolio gesamt Stück")
+    amount_portfolio_rated_bridge = db.Column(db.Float, comment="Menge Portfolio Brücken Stück")
+    amount_portfolio_rated_tunnel = db.Column(db.Float, comment="Menge Portfolio Tunnel Stück")
+    amount_portfolio_rated_support_structure = db.Column(db.Float, comment="Menge Portfolio Stützbauwerke km")
+    amount_portfolio_rated_tracks = db.Column(db.Float, comment="Menge Portfolio Gleise km")
+    amount_portfolio_rated_switches = db.Column(db.Float, comment="Menge Portfolio Weichen Stück")
+    amount_portfolio_rated_crossing = db.Column(db.Float, comment="Menge Portfolio Bahnübergänge Stück")
+    amount_portfolio_rated_interlocking = db.Column(db.Float, comment="Menge Portfolio Stellwerke Stück")
+    amount_portfolio_rated_catenary = db.Column(db.Float, comment="Menge Portfolio Oberleitungen km")
+
+    # Zustandsnote
+    note_all = db.Column(db.Float, comment="Zustandsnote gesamt")
+    note_bridge = db.Column(db.Float, comment="Zustandsnote Brücken")
+    note_tunnel = db.Column(db.Float, comment="Zustandsnote Tunnel")
+    note_support_structure = db.Column(db.Float, comment="Zustandsnote Stützbauwerke")
+    note_tracks = db.Column(db.Float, comment="Zustandsnote Gleise")
+    note_switches = db.Column(db.Float, comment="Zustandsnote Weichen")
+    note_crossing = db.Column(db.Float, comment="Zustandsnote Bahnübergänge")
+    note_interlocking = db.Column(db.Float, comment="Zustandsnote Stellwerke")
+    note_catenary = db.Column(db.Float, comment="Zustandsnote Oberleitungen")
+
+    # Anteil Note 1
+    note_1_all = db.Column(db.Float, comment="Anteil Note 1 gesamt")
+    note_1_bridge = db.Column(db.Float, comment="Anteil Note 1 Brücken")
+    note_1_tunnel = db.Column(db.Float, comment="Anteil Note 1 Tunnel")
+    note_1_support_structure = db.Column(db.Float, comment="Anteil Note 1 Stützbauwerke")
+    note_1_tracks = db.Column(db.Float, comment="Anteil Note 1 Gleise")
+    note_1_switches = db.Column(db.Float, comment="Anteil Note 1 Weichen")
+    note_1_crossing = db.Column(db.Float, comment="Anteil Note 1 Bahnübergänge")
+    note_1_interlocking = db.Column(db.Float, comment="Anteil Note 1 Stellwerke")
+    note_1_catenary = db.Column(db.Float, comment="Anteil Note 1 Oberleitungen")
+
+    # Anteil Note 2
+    note_2_all = db.Column(db.Float, comment="Anteil Note 2 gesamt")
+    note_2_bridge = db.Column(db.Float, comment="Anteil Note 2 Brücken")
+    note_2_tunnel = db.Column(db.Float, comment="Anteil Note 2 Tunnel")
+    note_2_support_structure = db.Column(db.Float, comment="Anteil Note 2 Stützbauwerke")
+    note_2_tracks = db.Column(db.Float, comment="Anteil Note 2 Gleise")
+    note_2_switches = db.Column(db.Float, comment="Anteil Note 2 Weichen")
+    note_2_crossing = db.Column(db.Float, comment="Anteil Note 2 Bahnübergänge")
+    note_2_interlocking = db.Column(db.Float, comment="Anteil Note 2 Stellwerke")
+    note_2_catenary = db.Column(db.Float, comment="Anteil Note 2 Oberleitungen")
+
+    # Anteil Note 3
+    note_3_all = db.Column(db.Float, comment="Anteil Note 3 gesamt")
+    note_3_bridge = db.Column(db.Float, comment="Anteil Note 3 Brücken")
+    note_3_tunnel = db.Column(db.Float, comment="Anteil Note 3 Tunnel")
+    note_3_support_structure = db.Column(db.Float, comment="Anteil Note 3 Stützbauwerke")
+    note_3_tracks = db.Column(db.Float, comment="Anteil Note 3 Gleise")
+    note_3_switches = db.Column(db.Float, comment="Anteil Note 3 Weichen")
+    note_3_crossing = db.Column(db.Float, comment="Anteil Note 3 Bahnübergänge")
+    note_3_interlocking = db.Column(db.Float, comment="Anteil Note 3 Stellwerke")
+    note_3_catenary = db.Column(db.Float, comment="Anteil Note 3 Oberleitungen")
+
+    # Anteil Note 4
+    note_4_all = db.Column(db.Float, comment="Anteil Note 4 gesamt")
+    note_4_bridge = db.Column(db.Float, comment="Anteil Note 4 Brücken")
+    note_4_tunnel = db.Column(db.Float, comment="Anteil Note 4 Tunnel")
+    note_4_support_structure = db.Column(db.Float, comment="Anteil Note 4 Stützbauwerke")
+    note_4_tracks = db.Column(db.Float, comment="Anteil Note 4 Gleise")
+    note_4_switches = db.Column(db.Float, comment="Anteil Note 4 Weichen")
+    note_4_crossing = db.Column(db.Float, comment="Anteil Note 4 Bahnübergänge")
+    note_4_interlocking = db.Column(db.Float, comment="Anteil Note 4 Stellwerke")
+    note_4_catenary = db.Column(db.Float, comment="Anteil Note 4 Oberleitungen")
+
+    # Anteil Note 5
+    note_5_all = db.Column(db.Float, comment="Anteil Note 5 gesamt")
+    note_5_bridge = db.Column(db.Float, comment="Anteil Note 5 Brücken")
+    note_5_tunnel = db.Column(db.Float, comment="Anteil Note 5 Tunnel")
+    note_5_support_structure = db.Column(db.Float, comment="Anteil Note 5 Stützbauwerke")
+    note_5_tracks = db.Column(db.Float, comment="Anteil Note 5 Gleise")
+    note_5_switches = db.Column(db.Float, comment="Anteil Note 5 Weichen")
+    note_5_crossing = db.Column(db.Float, comment="Anteil Note 5 Bahnübergänge")
+    note_5_interlocking = db.Column(db.Float, comment="Anteil Note 5 Stellwerke")
+    note_5_catenary = db.Column(db.Float, comment="Anteil Note 5 Oberleitungen")
+
+    # Anteil Note 6
+    note_6_all = db.Column(db.Float, comment="Anteil Note 6 gesamt")
+    note_6_bridge = db.Column(db.Float, comment="Anteil Note 6 Brücken")
+    note_6_tunnel = db.Column(db.Float, comment="Anteil Note 6 Tunnel")
+    note_6_support_structure = db.Column(db.Float, comment="Anteil Note 6 Stützbauwerke")
+    note_6_tracks = db.Column(db.Float, comment="Anteil Note 6 Gleise")
+    note_6_switches = db.Column(db.Float, comment="Anteil Note 6 Weichen")
+    note_6_crossing = db.Column(db.Float, comment="Anteil Note 6 Bahnübergänge")
+    note_6_interlocking = db.Column(db.Float, comment="Anteil Note 6 Stellwerke")
+    note_6_catenary = db.Column(db.Float, comment="Anteil Note 6 Oberleitungen")
+
+    # Anzahl Note 1
+    count_1_bridge = db.Column(db.Float, comment="Anzahl Note 1 Brücken")
+    count_1_tunnel = db.Column(db.Float, comment="Anzahl Note 1 Tunnel")
+    count_1_support_structure = db.Column(db.Float, comment="Anzahl Note 1 Stützbauwerke")
+    count_1_tracks = db.Column(db.Float, comment="Anzahl Note 1 Gleise")
+    count_1_switches = db.Column(db.Float, comment="Anzahl Note 1 Weichen")
+    count_1_crossing = db.Column(db.Float, comment="Anzahl Note 1 Bahnübergänge")
+    count_1_interlocking = db.Column(db.Float, comment="Anzahl Note 1 Stellwerke")
+    count_1_catenary = db.Column(db.Float, comment="Anzahl Note 1 Oberleitungen")
+
+    # Anzahl Note 2
+    count_2_bridge = db.Column(db.Float, comment="Anzahl Note 2 Brücken")
+    count_2_tunnel = db.Column(db.Float, comment="Anzahl Note 2 Tunnel")
+    count_2_support_structure = db.Column(db.Float, comment="Anzahl Note 2 Stützbauwerke")
+    count_2_tracks = db.Column(db.Float, comment="Anzahl Note 2 Gleise")
+    count_2_switches = db.Column(db.Float, comment="Anzahl Note 2 Weichen")
+    count_2_crossing = db.Column(db.Float, comment="Anzahl Note 2 Bahnübergänge")
+    count_2_interlocking = db.Column(db.Float, comment="Anzahl Note 2 Stellwerke")
+    count_2_catenary = db.Column(db.Float, comment="Anzahl Note 2 Oberleitungen")
+
+    # Anzahl Note 3
+    count_3_bridge = db.Column(db.Float, comment="Anzahl Note 3 Brücken")
+    count_3_tunnel = db.Column(db.Float, comment="Anzahl Note 3 Tunnel")
+    count_3_support_structure = db.Column(db.Float, comment="Anzahl Note 3 Stützbauwerke")
+    count_3_tracks = db.Column(db.Float, comment="Anzahl Note 3 Gleise")
+    count_3_switches = db.Column(db.Float, comment="Anzahl Note 3 Weichen")
+    count_3_crossing = db.Column(db.Float, comment="Anzahl Note 3 Bahnübergänge")
+    count_3_interlocking = db.Column(db.Float, comment="Anzahl Note 3 Stellwerke")
+    count_3_catenary = db.Column(db.Float, comment="Anzahl Note 3 Oberleitungen")
+
+    # Anzahl Note 4
+    count_4_bridge = db.Column(db.Float, comment="Anzahl Note 4 Brücken")
+    count_4_tunnel = db.Column(db.Float, comment="Anzahl Note 4 Tunnel")
+    count_4_support_structure = db.Column(db.Float, comment="Anzahl Note 4 Stützbauwerke")
+    count_4_tracks = db.Column(db.Float, comment="Anzahl Note 4 Gleise")
+    count_4_switches = db.Column(db.Float, comment="Anzahl Note 4 Weichen")
+    count_4_crossing = db.Column(db.Float, comment="Anzahl Note 4 Bahnübergänge")
+    count_4_interlocking = db.Column(db.Float, comment="Anzahl Note 4 Stellwerke")
+    count_4_catenary = db.Column(db.Float, comment="Anzahl Note 4 Oberleitungen")
+
+    # Anzahl Note 5
+    count_5_bridge = db.Column(db.Float, comment="Anzahl Note 5 Brücken")
+    count_5_tunnel = db.Column(db.Float, comment="Anzahl Note 5 Tunnel")
+    count_5_support_structure = db.Column(db.Float, comment="Anzahl Note 5 Stützbauwerke")
+    count_5_tracks = db.Column(db.Float, comment="Anzahl Note 5 Gleise")
+    count_5_switches = db.Column(db.Float, comment="Anzahl Note 5 Weichen")
+    count_5_crossing = db.Column(db.Float, comment="Anzahl Note 5 Bahnübergänge")
+    count_5_interlocking = db.Column(db.Float, comment="Anzahl Note 5 Stellwerke")
+    count_5_catenary = db.Column(db.Float, comment="Anzahl Note 5 Oberleitungen")
+
+    # Anzahl Note 6
+    count_6_bridge = db.Column(db.Float, comment="Anzahl Note 6 Brücken")
+    count_6_tunnel = db.Column(db.Float, comment="Anzahl Note 6 Tunnel")
+    count_6_support_structure = db.Column(db.Float, comment="Anzahl Note 6 Stützbauwerke")
+    count_6_tracks = db.Column(db.Float, comment="Anzahl Note 6 Gleise")
+    count_6_switches = db.Column(db.Float, comment="Anzahl Note 6 Weichen")
+    count_6_crossing = db.Column(db.Float, comment="Anzahl Note 6 Bahnübergänge")
+    count_6_interlocking = db.Column(db.Float, comment="Anzahl Note 6 Stellwerke")
+    count_6_catenary = db.Column(db.Float, comment="Anzahl Note 6 Oberleitungen")
+
+    # zustandsbasierte Nachholbedarf
+    backlog_condition_all = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Anteil")
+    backlog_condition_bridge = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Brücken Stück")
+    backlog_condition_tunnel = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Tunnel Stück")
+    backlog_condition_support_structure = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Stützbauwerke km")
+    backlog_condition_tracks = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Gleise km")
+    backlog_condition_switches = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Weichen Stück")
+    backlog_condition_crossing = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Bahnübergänge Stück")
+    backlog_condition_interlocking = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Stellwerke Stück")
+    backlog_condition_catenary = db.Column(db.Float, comment="zustandsbasierte Nachholbedarf Oberleitungen km")
+
+    # zustandsbasierter Nachholbedarf dringend
+    backlog_condition_urgent_all = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Anteil")
+    backlog_condition_urgent_bridge = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Brücken Stück")
+    backlog_condition_urgent_tunnel = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Tunnel Stück")
+    backlog_condition_urgent_support_structure = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Stützbauwerke km")
+    backlog_condition_urgent_tracks = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Gleise km")
+    backlog_condition_urgent_switches = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Weichen Stück")
+    backlog_condition_urgent_crossing = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Bahnübergänge Stück")
+    backlog_condition_urgent_interlocking = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Stellwerke Stück")
+    backlog_condition_urgent_catenary = db.Column(db.Float, comment="zustandsbasierter Nachholbedarf dringend Oberleitungen km")
+
+    # Zustandsbasierter nachholbedarf
+    backlog_condition_urgent_value_all = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf gesamt Mrd. €")
+    backlog_condition_urgent_relative_bridge = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Brücken %")
+    backlog_condition_urgent_relative_tunnel = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Tunnel %")
+    backlog_condition_urgent_relative_support_structure = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Stützbauwerke %")
+    backlog_condition_urgent_relative_tracks = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Gleise %")
+    backlog_condition_urgent_relative_switches = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Weichen %")
+    backlog_condition_urgent_relative_crossing = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Bahnübergänge %")
+    backlog_condition_urgent_relative_interlocking = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Stellwerke %")
+    backlog_condition_urgent_relative_catenary = db.Column(db.Float, comment="Zustandsbasierter Nachholbedarf Oberleitungen %")
+
+    # altersbasierter Nachholbedarf
+    backlog_age_value_all = db.Column(db.Float, comment="Altersbasierter Nachholbedarf gesamt Mrd. €")
+    backlog_age_relative_bridge = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Brücken %")
+    backlog_age_relative_tunnel = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Tunnel %")
+    backlog_age_relative_support_structure = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Stützbauwerke %")
+    backlog_age_relative_tracks = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Gleise %")
+    backlog_age_relative_switches = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Weichen %")
+    backlog_age_relative_crossing = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Bahnübergänge %")
+    backlog_age_relative_interlocking = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Stellwerke %")
+    backlog_age_relative_catenary = db.Column(db.Float, comment="Altersbasierter Nachholbedarf Oberleitungen %")
 

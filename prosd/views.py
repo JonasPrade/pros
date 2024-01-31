@@ -530,3 +530,10 @@ class BksHandlungsfeldSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.BksHandlungsfeld
         include_fk = True
+
+
+class NetzzustandsberichtSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.Netzzustandsbericht
+        include_fk = True
+

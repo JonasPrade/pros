@@ -377,6 +377,16 @@ def get_bks_action(**kwargs):
     return response
 
 
+@app.route("/netzzustandsbericht/all", methods=['GET'])
+@cross_origin()
+def get_all_netzzustandsbericht(**kwargs):
+    netzzustandsberichts = models.Netzzustandsbericht.query.all()
+    netzzustandsbericht_schema = views.NetzzustandsberichtSchema(many=True)
+    output = netzzustandsbericht_schema.dump(netzzustandsberichts)
+    response = make_response({'netzzustandsberichte': output})
+    return response
+
+
 @app.route("/auth/login", methods=['POST'])
 @cross_origin()
 def auth_login():

@@ -8,7 +8,7 @@ from prosd import db
 from prosd.models import Budget, FinVe
 
 # SETTINGS
-YEAR = 2022
+YEAR = 2020
 DROP_FIRST_ROWS = 3
 logging.basicConfig(level=logging.INFO)
 
@@ -18,6 +18,7 @@ IGNORE_COLUMNS_VALUES = [
     "Nr.\nBedarfsplan Schiene",
     "Bezeichnung der Investitionsmaßnahme",
     "Aufnahme in EP oder Abschluss FinVe",
+    "Gründe"
 ]
 correct_header = {
     "voraussichtliche Gesamtausgaben": "Aufnahme in EP oder Abschluss FinVe",
@@ -96,6 +97,16 @@ ignore_rows_investment_title = [
     "davon:",
     "Unterlagen entsprechend § 24 Abs. 4 BHO liegen noch nicht (vollständig) vor."
 ]
+translate_category_corrector = {
+    'Kap. 1210, Titel 891 72 (ZIP)': "Kap. 1210 (alt), Titel 891 72 (ZIP)",
+    "Kap. 1202 (alt), Titel 891 91‐  IIP Schiene ‐ Kap. 6091 (alt),": "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐",
+    'Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐ Kap. 6091 (alt)': "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐",
+    'Kap. 1202 (alt), Titel 891 91- IIP Schiene -': "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐",
+    "Kap. 1202 (alt), Titel 891 91-  IIP Schiene -": "Kap. 1202 (alt), Titel 891 91‐ IIP Schiene ‐",
+    'Titel 891 21‐ ITF ‐': "Kap. 6091 (alt), Titel 891 21‐ ITF ‐",
+    "Kap. 6091 (alt), Titel 891 21- ITF -": "Kap. 6091 (alt), Titel 891 21‐ ITF ‐",
+    "nachrichtlich:\xa0Eigenmittel\xa0der\xa0EIU\xa0gemäß\xa0BUV": "nachrichtlich: Eigenmittel der EIU gemäß BUV"
+}
 
 
 class ExcelPreparationError(Exception):
@@ -166,6 +177,10 @@ def create_budget(row):
         starting_year=row["Aufnahme in EP oder Abschluss FinVe"]
     )
 
+    # check if reaseon exists and add
+    if isinstance(row["Gründe"], str):
+        budget.delta_previous_year_reasons = row["Gründe"]
+
     # check if finve exists -> if not create one
     finve_temporary = False
     if fin_ve == '‐':
@@ -179,6 +194,7 @@ def create_budget(row):
         name_finve = create_name_finve(row)
         finve = FinVe.query.filter_by(name=name_finve).first()
         finve_temporary = True
+
 
     if finve is None:
         name_finve = create_name_finve(row)
@@ -204,7 +220,7 @@ def create_budget(row):
 
         db.session.add(finve)
         db.session.commit()
-        info.logging(f'Created new FinVe with id {finve.id} and name {finve.name} for budget {budget.lfd_nr}.')
+        logging.info(f'Created new FinVe with id {finve.id} and name {finve.name} for budget {budget.lfd_nr}.')
 
     budget.fin_ve = finve.id
 
@@ -214,11 +230,22 @@ def create_budget(row):
 
 
 def convert_german_number_to_int(number):
-    if number == '‐' or number == '‐ ':
+    if number == '‐' or number == '‐ ' or number == '-':
         return 0
 
     number = number.replace(".", "")
     number = number.replace(",", ".")
+
+    # number negativ but wrong minus symbol
+    if number[0] == '‐':
+        number = number.replace('‐', '-')
+        number = number.replace(' ','')
+
+    # number is percent but with symbol
+    if number[-1] == '%':
+        number = number[:-1]
+        number = float(number) / 100
+
     return int(number)
 
 
@@ -240,14 +267,20 @@ def create_element_index(row):
         element_names = row["Bezeichnung der Investitionsmaßnahme"].split("\n")
         for index, name in enumerate(element_names):
             name = clean_element_name(name)
+            if name in translate_category_corrector.keys():
+                name = translate_category_corrector[name]
             if name not in translate_category_to_db.keys() and index !=0:
                 continue
             if name not in translate_category_to_db.keys() and index == 0 and row["Lfd. Nr."] is numpy.nan:
                 # in this case the is are annotation in a row not the first row of the budget which is irrelevant
                 continue
+            # some titles are spelled differently → gets corrected here
             elements_index[index_cleaned] = name
             index_cleaned += 1
     else:
+        # some titles are spelled differently → gets corrected here
+        if row["Bezeichnung der Investitionsmaßnahme"] in translate_category_corrector.keys():
+            row["Bezeichnung der Investitionsmaßnahme"] = translate_category_corrector[row["Bezeichnung der Investitionsmaßnahme"]]
         element = clean_element_name(row["Bezeichnung der Investitionsmaßnahme"])
         elements_index[0] = element
 
@@ -272,7 +305,7 @@ def get_cash_values(row):
             try:
                 categories[elements_index[0]][translation[index]] = convert_german_number_to_int(str(value))
             except KeyError as e:
-                raise KeyNotYetExisting(f"KeyError in row {row} with error {e}")
+                raise KeyNotYetExisting(f"KeyError with {elements_index} and index 0 in row {row} with {e}")
         else:
             if value == '‐':
                 categories[elements_index[0]][translation[index]] = 0
@@ -282,7 +315,7 @@ def get_cash_values(row):
                     try:
                         categories[elements_index[number_index]][translation[index]] = convert_german_number_to_int(str(number))
                     except KeyError as e:
-                        raise KeyNotYetExisting(f"KeyError in row {row} with {e}")
+                        raise KeyNotYetExisting(f"KeyError with {elements_index} and {number_index} in row {row} with {e}")
     categories = translate_category_dict(categories)
     return categories
 
@@ -358,5 +391,5 @@ def add_all_budgets(filename):
 
 
 if __name__ == "__main__":
-    filename = '../../example_data/import/verkehrsinvestitionsbericht/2022/2022_table1.xlsx'
+    filename = f'../../example_data/import/verkehrsinvestitionsbericht/{YEAR}/{YEAR}_table1-1.xlsx'
     add_all_budgets(filename)

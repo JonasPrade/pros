@@ -229,4 +229,10 @@ class TestApi(BaseTestCase):
             self.assertTrue(len(data['action']) > 0)
             self.assertEqual(response.status_code, 200)
 
-
+    def test_get_all_netzzustandsberichts(self):
+        with self.client:
+            api_string = f"/netzzustandsbericht/all"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertEqual(response.status_code, 200)
