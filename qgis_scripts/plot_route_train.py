@@ -4,7 +4,7 @@ import json
 import os
 import sys
 
-sys.path.append('/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros')
+sys.path.append('/../Masterarbeit/Code/pros')
 import prosd
 
 scenario_id = 4

@@ -4,7 +4,7 @@ import json
 import os
 from_station = 'LANG'
 to_station = 'LGLB'
-filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/Studium/TU Berlin/Masterarbeit/Code/pros/example_data/railgraph/paths/{from_station}to{to_station}.json")
+filepath = os.path.abspath(f"/../Code/pros/example_data/railgraph/paths/{from_station}to{to_station}.json")
 print(filepath)
 
 with open(filepath, 'r') as f:

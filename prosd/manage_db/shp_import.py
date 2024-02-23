@@ -247,8 +247,7 @@ class DBManager:
 
 if __name__ == '__main__':
     States = prosd.models.States
-    filepath_shp = '/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/import/states/vg2500_bld.shp'
-
+    filepath_shp = ''
     DbInput = DBManager()
 
     DbInput.shp_to_states(

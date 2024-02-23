@@ -4,7 +4,7 @@ import json
 import os
 
 traingroup_id = 'tg_FV24_x0020_C_x0020_24002_127661'
-filepath = os.path.abspath(f"/Users/jonas/Library/CloudStorage/OneDrive-Persönlich/TU Berlin neu/Masterarbeit/Code/pros/example_data/railgraph/paths_traingroups/{traingroup_id}.json")
+filepath = os.path.abspath(f"/''/{traingroup_id}.json")
 print(filepath)
 
 with open(filepath, 'r') as f:

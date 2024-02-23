@@ -158,10 +158,10 @@ def correct_values(value):
 
 
 if __name__ == "__main__":
-    year = 2022
-    link = 'https://www.dbinfrago.com/resource/blob/12636182/e8fa5bda445e0d32ecf5d47623e2bdbd/Netzzustandsbericht-DB-InfraGO-AG-2022-data.pdf'
-    filename = '../../../example_data/import/netzzustandsbericht/2022.xlsx'
+    year = 2021
+    link = 'https://www.dbinfrago.com/resource/blob/12645038/fb8f1fe8d9c1c1443e201fedf4893a35/Netzzustandsbericht-DB-Netz-AG-2021-data.pdf'
+    filename = '../../../example_data/import/netzzustandsbericht/2021.xlsx'
     gesamt, hochleistung = read_file(filename)
-    # import_to_db(gesamt, year, link, hlk=False)
+    import_to_db(gesamt, year, link, hlk=False)
     import_to_db(hochleistung, year, link, hlk=True)
 
