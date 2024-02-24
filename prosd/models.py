@@ -166,6 +166,7 @@ projectcontent_to_group = db.Table('projectcontent_to_group',
                                    db.Column('projectgroup_id', db.Integer,
                                              db.ForeignKey('project_groups.id', onupdate='CASCADE', ondelete='CASCADE')),
                                    db.Index('projectcontent_to_group_index', 'projectcontent_id', 'projectgroup_id'),
+                                   db.UniqueConstraint('projectcontent_id', 'projectgroup_id', name='unique_mn')
                                    )
 
 # project to railway Lines
@@ -173,7 +174,8 @@ projectcontent_to_line = db.Table('projectcontent_to_lines',
                                   db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                   db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                  db.UniqueConstraint('projectcontent_id', 'railway_lines_id', name='unique_pc_line')
                                   )
 
 projectcontent_to_railwaystations = db.Table('projectcontent_to_railwaystations',
@@ -182,7 +184,8 @@ projectcontent_to_railwaystations = db.Table('projectcontent_to_railwaystations'
                                                            ondelete='CASCADE')),
                                              db.Column('railway_station_id', db.Integer,
                                                        db.ForeignKey('railway_stations.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                             db.UniqueConstraint('projectcontent_id', 'railway_station_id', name='unique_pc_station')
 
                                              )
 
@@ -190,7 +193,8 @@ texts_to_project_content = db.Table('texts_to_projects',
                                     db.Column('project_content_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                     db.Column('text_id', db.Integer, db.ForeignKey('texts.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                    db.UniqueConstraint('project_content_id', 'text_id', name='unique_pc_text')
                                     )
 
 project_contents_to_states = db.Table('projectcontent_to_states',
@@ -198,7 +202,8 @@ project_contents_to_states = db.Table('projectcontent_to_states',
                                                 db.ForeignKey('projects_contents.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                       db.Column('states_id', db.Integer, db.ForeignKey('states.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                      db.UniqueConstraint('project_content_id', 'states_id', name='unique_pc_states')
                                       )
 
 project_contents_to_counties = db.Table('projectcontent_to_counties',
@@ -206,7 +211,8 @@ project_contents_to_counties = db.Table('projectcontent_to_counties',
                                                   db.ForeignKey('projects_contents.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                         db.Column('counties_id', db.Integer, db.ForeignKey('counties.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                        db.UniqueConstraint('project_content_id', 'counties_id', name='unique_pc_to_counties')
                                         )
 
 project_contents_to_constituencies = db.Table('projectcontent_to_constituencies',
@@ -215,7 +221,8 @@ project_contents_to_constituencies = db.Table('projectcontent_to_constituencies'
                                                            ondelete='CASCADE')),
                                               db.Column('constituencies_id', db.Integer,
                                                         db.ForeignKey('constituencies.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                              db.UniqueConstraint('project_content_id', 'constituencies_id', name='unique_pc_constituencies')
                                               )
 
 railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
@@ -223,7 +230,8 @@ railway_nodes_to_railway_routes = db.Table('nodes_to_routes',
                                                      db.ForeignKey('railway_nodes.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                            db.Column('route_id', db.Integer, db.ForeignKey('railway_route.id', onupdate='CASCADE',
-                                                           ondelete='CASCADE'))
+                                                           ondelete='CASCADE')),
+                                           db.UniqueConstraint('node_id', 'route_id', name='unique_node_route')
                                            )
 
 formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
@@ -232,43 +240,50 @@ formations_to_vehicles = db.Table('formations_to_vehicles', db.Model.metadata,
                                   db.Column('vehicle_id', db.String(100), db.ForeignKey('vehicles.id'))
                                   )
 
-
 finve_to_projectcontent = db.Table('finve_to_projectcontent',
                                    db.Column('finve_id', db.Integer, db.ForeignKey('finve.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
                                    db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE',
                                                            ondelete='CASCADE')),
-                                   sqlalchemy.PrimaryKeyConstraint('finve_id', 'pc_id')
+                                   sqlalchemy.PrimaryKeyConstraint('finve_id', 'pc_id'),
+                                   db.UniqueConstraint('finve_id', 'pc_id', name='unique_finve_pc')
+
                                    )
 
 tunnel_to_railwaylines = db.Table('rltunnel_to_rllines',
                                   db.Column('railway_tunnels_id', db.Integer, db.ForeignKey('railway_tunnels.id')),
-                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                  db.Column('railway_lines_id', db.Integer, db.ForeignKey('railway_lines.id')),
+                                  db.UniqueConstraint('railway_tunnels_id', 'railway_lines_id', name='unique_tunnel_line')
                                   )
 
 bridges_to_railwaylines = db.Table('rwbridges_to_rwlines',
                                    db.Column('rw_bridges_id', db.Integer, db.ForeignKey('railway_bridges.id')),
-                                   db.Column('rw_lines.id', db.Integer, db.ForeignKey('railway_lines.id'))
+                                   db.Column('rw_lines_id', db.Integer, db.ForeignKey('railway_lines.id')),
+                                   db.UniqueConstraint('rw_bridges_id', 'rw_lines_id', name='unique_bridge_line')
                                    )
 
 traingroups_to_masterareas = db.Table('tg_to_masterareas',
                                        db.Column('traingroup_id', db.String(255), db.ForeignKey('timetable_train_groups.id')),
-                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id')),
+                                       db.UniqueConstraint('traingroup_id', 'masterarea_id', name='unique_traingroup_masterarea')
                                        )
 
 railwaylines_to_masterareas = db.Table('rwl_to_masterareas',
                                        db.Column('railwayline_id', db.Integer, db.ForeignKey('railway_lines.id')),
-                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                       db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id')),
+                                       db.UniqueConstraint('railwayline_id', 'masterarea_id', name='unique_line_area')
                                        )
 
 projectcontents_to_masterareas = db.Table('pc_to_masterareas',
                                           db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                                          db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id'))
+                                          db.Column('masterarea_id', db.Integer, db.ForeignKey('master_areas.id')),
+                                          db.UniqueConstraint('projectcontent_id', 'masterarea_id', name='unique_pc_masterarea')
                                           )
 
 projectcontents_to_masterscenario = db.Table('pc_to_masterscenario',
                                              db.Column('projectcontent_id', db.Integer, db.ForeignKey('projects_contents.id')),
-                                             db.Column('masterscenario_id', db.Integer, db.ForeignKey('master_scenarios.id'))
+                                             db.Column('masterscenario_id', db.Integer, db.ForeignKey('master_scenarios.id')),
+                                             db.UniqueConstraint('projectcontent_id', 'masterscenario_id', name='unique_pc_masterscenario')
                                              )
 
 # classes/Tables
@@ -1096,8 +1111,8 @@ class Project(db.Model):
         'projects_contents.id', onupdate='SET NULL', ondelete='SET NULL'))
 
     # references
-    project_contents = db.relationship('ProjectContent', backref='project', lazy=True,
-                                       foreign_keys="ProjectContent.project_id")
+    # project_contents = db.relationship('ProjectContent', backref='project', lazy=True,
+    #                                    foreign_keys="ProjectContent.project_id")
     superior_project = db.relationship("ProjectContent", backref='sub_project',
                                        foreign_keys=[superior_project_content_id])
 
