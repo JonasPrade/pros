@@ -389,6 +389,9 @@ def add_all_budgets(filename):
     # db.session.add_all(finished_budgets)
     # db.session.commit()
 
+    # there is a last budget that is not added to db
+    db.session.add(budget)
+    db.session.commit()
 
 if __name__ == "__main__":
     filename = f'../../example_data/import/verkehrsinvestitionsbericht/{YEAR}/{YEAR}_table1-1.xlsx'
