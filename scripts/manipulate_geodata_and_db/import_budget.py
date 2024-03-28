@@ -31,7 +31,7 @@ def add_budget(budget):
     db.session.commit()
 
 
-filename = '../../example_data/import/verkehrsinvestitionsbericht/2024_bedarfsplan.xlsx'
+filename = '../../example_data/import/haushaltsinvestitionsbericht/2024_bedarfsplan.xlsx'
 df = pandas.read_excel(filename)
 
 for index, budget in df.iterrows():

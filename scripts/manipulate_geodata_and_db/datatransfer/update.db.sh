@@ -1,7 +1,7 @@
 #!/bin/bash
 source config.env
 
-name="20240118_221808.sql"
+name="20240224_221820.sql"
 
 SSH_USER="$SSH_USER"
 SSH_HOST="$SSH_HOST"

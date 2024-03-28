@@ -8,7 +8,10 @@ from prosd.graph.railgraph import RailGraph
 
 
 def add_project_content(pd, project_group_id, rg, graph, update=False):
-    project_group = ProjectGroup.query.get(project_group_id)
+    if project_group_id is not None:
+        project_groups = [ProjectGroup.query.get(project_group_id)]
+    else:
+        project_groups = []
 
     if math.isnan(pd["number_junction_station"]):
         pd["number_junction_station"] = 0
@@ -35,7 +38,7 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
         pd["planned_total_cost"] = float(pd["planned_total_cost"])
 
     pc = ProjectContent(
-        projectcontent_groups=[project_group],
+        projectcontent_groups=project_groups,
         project_number=pd["project_number"],
         name=pd["pc_name"],
         description=pd["pc_description"],
@@ -92,7 +95,8 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
         path_lines = path["edges"]
         for line_id in path_lines:
             line = RailwayLine.query.get(line_id)
-            pc.railway_lines.append(line)
+            if line not in pc.railway_lines:
+                pc.railway_lines.append(line)
 
     elif isinstance(from_station, str):
         station = RailwayStation.query.filter(RailwayStation.db_kuerzel == from_station).scalar()
@@ -106,10 +110,10 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
     return pc
 
 
-filename = ('../../example_data/import/project_contents/import 2024-02-23.xlsx')
+filename = ('../../example_data/import/project_contents/import 2024-03-28-1.xlsx')
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = 6
+PROJECT_GROUP_ID = None
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 

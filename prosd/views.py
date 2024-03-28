@@ -256,6 +256,7 @@ class ProjectContentShortSchema(ma.SQLAlchemySchema):
     superior_project_content_id = auto_field()
     geojson_representation = GeoJSONField()
     centroid = WKBField()
+    tilting = auto_field()
 
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):

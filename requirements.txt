@@ -49,3 +49,4 @@ marko==2.0.1
 PyYAML~=6.0.1
 geoalchemy2==0.12.4
 openpyxl==3.0.10
+pytest==8.1.1

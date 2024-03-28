@@ -26,5 +26,8 @@ echo "Backup created: $backup_file.gz"
 scp "$backup_file.gz" $SSH_USER@$SSH_HOST:$BACKUP_DIR_REMOTE
 echo "Backup copied to server $backup_file.gz"
 
-
+# change to server und load backup
+ssh "$SSH_USER"@"$SSH_HOST" << EOF
+  gunzip -c $BACKUP_DIR_REMOTE/$(basename "$backup_file.gz") | pg_restore -U $DB_USER_REMOTE -h localhost -d $DB_NAME_REMOTE -p $DB_PORT_REMOTE -v --clean --if-exists
+EOF
 

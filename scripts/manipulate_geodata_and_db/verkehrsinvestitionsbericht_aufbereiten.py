@@ -9,10 +9,10 @@ import os
 from datetime import datetime
 
 #%% create empty dataframe - possible to put it at the end
-filename_output = '../../example_data/import/verkehrsinvestitionsbericht/prepared table/2024_bedarfsplan.xlsx'
+filename_output = '../../example_data/import/haushaltsinvestitionsbericht/prepared table/2024_bedarfsplan.xlsx'
 # filename_output = os.path.join('C:\\','Users','Gut','Documents','Gastel_Praktikum','Programme','Verkehrsinvestitionsbericht','Ergebnisse','budget_2023_bedarfsplan.csv')
 
-filename_input = '../../example_data/import/verkehrsinvestitionsbericht/2024_bedarfsplan.xlsx'
+filename_input = '../../example_data/import/haushaltsinvestitionsbericht/2024_bedarfsplan.xlsx'
 
 col_names_budget_bedarfsplan = ['budget_year', 'lfd_nr', 'fin_ve', 'bedarfsplan_number', 'name', 'starting_year', 
                                 'cost_estimate_original', 'cost_estimate_last_year', 'cost_estimate_actual', 
