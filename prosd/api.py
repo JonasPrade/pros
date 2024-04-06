@@ -345,6 +345,20 @@ def search_projectcontent_by_string(**kwargs):
     response = make_response({'projects': output})
     return response
 
+@app.route("/search/finve/<string:search_string>", methods=['GET'])
+@cross_origin()
+def search_finve_by_string(**kwargs):
+    # searches for the search string in Finve and returns all finve inclusive budget
+    search_string = kwargs.pop('search_string')
+    if search_string == 'null' or search_string == 'all':
+        search_string = '%'
+    finve = db.session.query(models.FinVe).filter(
+        models.FinVe.name.like('%' + search_string + '%'),
+    ).distinct(models.FinVe.id).all()
+    output = views.FinveSchema(many=True).dump(finve)
+    response = make_response({'finve': output})
+    return response
+
 
 @app.route("/subprojects-progress/<int:projectcontent_id>", methods=['GET'])
 @cross_origin()
@@ -384,6 +398,17 @@ def get_all_netzzustandsbericht(**kwargs):
     netzzustandsbericht_schema = views.NetzzustandsberichtSchema(many=True)
     output = netzzustandsbericht_schema.dump(netzzustandsberichts)
     response = make_response({'netzzustandsberichte': output})
+    return response
+
+
+@app.route("/finve/<int:id>", methods=['GET'])
+@cross_origin()
+def get_finve(**kwargs):
+    finve_id = kwargs.pop('id')
+    finve = models.FinVe.query.get(finve_id)
+    finve_schema = views.FinveMainSchema()
+    output = finve_schema.dump(finve)
+    response = make_response({'finve': output})
     return response
 
 

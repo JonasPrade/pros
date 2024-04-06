@@ -236,3 +236,19 @@ class TestApi(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'success')
             self.assertEqual(response.status_code, 200)
+
+    def test_search_finve(self):
+        with self.client:
+            api_string = f"/search/finve/Frankfurt"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['finve'])> 0)
+            self.assertEqual(response.status_code, 200)
+
+    def test_finve(self):
+        with self.client:
+            api_string = f"/finve/30"
+            response = get_api(self, api_string)
+            data = json.loads(response.data.decode())
+            self.assertTrue(len(data['finve']) > 0)
+            self.assertEqual(response.status_code, 200)

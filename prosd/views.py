@@ -75,6 +75,15 @@ class FinveSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+class FinveMainSchema(ma.SQLAlchemyAutoSchema):
+    budgets = ma.Nested(BudgetSchema, many=True)
+    project_contents = ma.Nested(lambda: ProjectContentSchema(), many=True, exclude = ("finve",))
+    class Meta:
+        model = models.FinVe
+        include_fk = True
+
+
+
 class TextSchema(ma.SQLAlchemyAutoSchema):
     text_type = ma.Nested(TextTypeSchema(only=("name",)))
 
