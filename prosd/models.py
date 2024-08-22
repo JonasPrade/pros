@@ -4353,6 +4353,11 @@ class BksAction(db.Model):
     review_1_next = db.Column(db.Text)
     review_1_status = db.Column(db.String(255))
     review_1_changed_aim = db.Column(db.Boolean)
+    review_2_start = db.Column(db.Text)
+    review_2_done = db.Column(db.Text)
+    review_2_next = db.Column(db.Text)
+    review_2_status = db.Column(db.String(255))
+    review_2_changed_aim = db.Column(db.Boolean)
 
     cluster_number = db.Column(db.String(255), db.ForeignKey('bks_cluster.number', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     cluster = db.relationship("BksCluster", backref=db.backref('bks_action'))

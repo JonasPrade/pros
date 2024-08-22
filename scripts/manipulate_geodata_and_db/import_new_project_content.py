@@ -110,10 +110,10 @@ def add_project_content(pd, project_group_id, rg, graph, update=False):
     return pc
 
 
-filename = ('../../example_data/import/project_contents/import 2024-03-28-1.xlsx')
+filename = ('../../example_data/import/project_contents/import 2024-04-11.xlsx')
 df = pandas.read_excel(filename)
 
-PROJECT_GROUP_ID = None
+PROJECT_GROUP_ID = 6
 rg = RailGraph()
 graph = rg.load_graph(rg.filepath_save_with_station_and_parallel_connections)
 
