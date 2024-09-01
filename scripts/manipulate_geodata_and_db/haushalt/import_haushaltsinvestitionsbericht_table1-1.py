@@ -3,13 +3,14 @@ import pandas
 import re
 import logging
 import sqlalchemy
+import os
 
 from prosd import db
 from prosd.models import Budget, FinVe
 
 # SETTINGS
-YEAR = 2020
-DROP_FIRST_ROWS = 3
+YEAR = 2024
+DROP_FIRST_ROWS = 4
 logging.basicConfig(level=logging.INFO)
 
 IGNORE_COLUMNS_VALUES = [
@@ -156,12 +157,18 @@ def create_budget(row):
         elements = lfd_nr.split()
         lfd_nr = elements[0]
         fin_ve = int(elements[1])
-        bedarfsplan_number = elements[2] + " " + elements[3]
+        try:
+            bedarfsplan_number = elements[2] + " " + elements[3]
+        except IndexError:
+            bedarfsplan_number = elements[2]
 
     # clear the starting year
     if isinstance(row["Aufnahme in EP oder Abschluss FinVe"], str):
         if row["Aufnahme in EP oder Abschluss FinVe"][:4] == "vsl.":
             row["Aufnahme in EP oder Abschluss FinVe"] = int(row["Aufnahme in EP oder Abschluss FinVe"][4:])
+
+    if numpy.isnan(row["Aufnahme in EP oder Abschluss FinVe"]):
+        raise ExcelPreparationError(f"Excel preparation error in row {row}. year and rest of row is not at the first row.")
 
     # clear the cost_estimate_original
     if row["ursprünglich"] == '‐' or row["ursprünglich"] == '‐':
@@ -393,6 +400,8 @@ def add_all_budgets(filename):
     db.session.add(budget)
     db.session.commit()
 
+
 if __name__ == "__main__":
-    filename = f'../../example_data/import/verkehrsinvestitionsbericht/{YEAR}/{YEAR}_table1-1.xlsx'
-    add_all_budgets(filename)
+    filename = f'../../../example_data/import/haushaltsinvestitionsbericht/{YEAR}/{YEAR}_table1-1.xlsx'
+    filepath = os.path.abspath(filename)
+    add_all_budgets(filepath)

@@ -1,11 +1,11 @@
 from prosd import db
 from prosd.models import Text, TextType, ProjectContent
 
-projectcontent_id = 95834
+projectcontent_id = 95377
 type = 2
-header = "Hinweis zur Finanzierungsvereinbarung"
+header = "GVFG"
 weblink = ""
-text_content = "Die Finanzierungsvereinbarung bezieht sich ausschließlich auf dem vom Bund finanzierten Anteil."
+text_content = "Gemäß Verkehrsinvestitionsbericht wird das Projekt über Gemeindeverkehrsfinanzierungsgesetz (GVFG) gefördert."
 logo_url = None
 
 text = Text(
