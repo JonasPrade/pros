@@ -247,8 +247,14 @@ finve_to_projectcontent = db.Table('finve_to_projectcontent',
                                                            ondelete='CASCADE')),
                                    sqlalchemy.PrimaryKeyConstraint('finve_id', 'pc_id'),
                                    db.UniqueConstraint('finve_id', 'pc_id', name='unique_finve_pc')
-
                                    )
+
+budget_to_projectcontent = db.Table('budget_to_projectcontent',
+                                    db.Column('budget_id', db.Integer, db.ForeignKey('budgets.id', onupdate='CASCADE', ondelete='CASCADE')),
+                                    db.Column('pc_id', db.Integer, db.ForeignKey('projects_contents.id', onupdate='CASCADE', ondelete='CASCADE')),
+                                    sqlalchemy.PrimaryKeyConstraint('budget_id', 'pc_id'),
+                                    db.UniqueConstraint('budget_id', 'pc_id', name='unique_budget_pc')
+                                    )
 
 tunnel_to_railwaylines = db.Table('rltunnel_to_rllines',
                                   db.Column('railway_tunnels_id', db.Integer, db.ForeignKey('railway_tunnels.id')),
@@ -2764,6 +2770,7 @@ class Budget(db.Model):
     lfd_nr = db.Column(db.String(100))
     fin_ve = db.Column(db.Integer, db.ForeignKey('finve.id'))
     bedarfsplan_number = db.Column(db.String(100))
+    sammel_finve = db.Column(db.Boolean, default=False)
 
     starting_year = db.Column(db.Integer)
     cost_estimate_original = db.Column(db.Integer)
