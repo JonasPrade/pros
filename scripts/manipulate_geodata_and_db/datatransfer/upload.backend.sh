@@ -23,6 +23,6 @@ scp "$MANAGE_PY" $SSH_USER@$SSH_HOST:$BACKEND_REMOTE/manage.py
 ssh $SSH_USER@$SSH_HOST << EOF
   echo $BACKEND_DOCKER_COMPOSE_DIR
   cd $BACKEND_DOCKER_COMPOSE_DIR
-  docker-compose -f $BACKEND_DOCKER_COMPOSE_NAME down
-  docker-compose -f $BACKEND_DOCKER_COMPOSE_NAME up -d --build
+  docker compose -f $BACKEND_DOCKER_COMPOSE_NAME down
+  docker compose -f $BACKEND_DOCKER_COMPOSE_NAME up -d --build
 EOF
