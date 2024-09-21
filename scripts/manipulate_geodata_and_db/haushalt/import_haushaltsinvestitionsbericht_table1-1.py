@@ -49,6 +49,7 @@ translation = {
     f"Veranschlagt {YEAR+1}": "year_planned",
     f"Vorbehalten {YEAR+2}": "next_years"
 }
+
 row_templates = {
     "cost_estimate_original": None,
     "cost_estimate_last_year": None,
