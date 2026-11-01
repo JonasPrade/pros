@@ -701,6 +701,20 @@ validation:
 outputs: [prosd-db, parquet]
 ```
 
+## D8 Netz- und Routingmodell nach dem raildashboard (Ergebnis Schritt 0)
+
+Sichtung des Repos `JonasPrade/raildashboard` (Stand 2026-11-01, Commit 5769f3a). Dort gibt es zwei Ebenen, die für `traction_eval` beide relevant sind.
+
+**Geometrie-Routing über OpenStreetMap.** Ein GraphHopper-Dienst mit OpenRailRouting (geofabrik, v1.1, GraphHopper 11) läuft auf dem OSM-Extrakt Deutschland (`germany-latest.osm.pbf`), Profil `rail_default` mit Abbiegekosten für Züge. Codierte Attribute im Graphen: `gauge`, `voltage`, `electrified`, `frequency`, `max_speed`, `rail_access`, `rail_average_speed`, `railway_class`, `railway_service`, `preferred_direction`. Das Backend (`services/route_service.py`, `services/routing_client.py`) schickt Wegpunkte als Koordinaten (Betriebsstellen oder freie Punkte) und übernimmt nur Linie, Distanz und Dauer; Routen werden je Projekt mit `graph_version` und `cache_key` als Geography gespeichert. Pfaddetails je Teilstück (GraphHopper-Parameter `details`, zum Beispiel `electrified`, `voltage`, `max_speed`) fragt das raildashboard nicht ab, der Dienst kann sie aber liefern.
+
+**Topologisches Netz aus RINF.** Tabellen nach dem ERA-Datenmodell: `operational_point` (Betriebsstellen mit `op_id`, Name, Typ, Koordinaten), `section_of_line` (Abschnitt zwischen zwei Betriebsstellen mit Länge und Streckennummer), `sol_track` (Gleise je Abschnitt) und `sol_track_parameter` (RINF-Parameter je Gleis, darunter Elektrifizierung, Spannung, Höchstgeschwindigkeit). Dazu ein pgRouting-Dijkstra über `section_of_line` nach Länge (`routing/core.py`), bisher nur für die Migration der alten Projekte genutzt. Die Dokumentation vermerkt, dass die deutschen RINF-Daten keine Geometrie je Abschnitt liefern und der Import von Gleisen und Gleisparametern noch unvollständig ist.
+
+**Zuordnung zum Fahrplan.** Die railML-Betriebsstellen des Deutschlandtakts tragen DB-Kürzel; RINF-`op_id` enthält dasselbe Kürzel mit Länderpräfix. Die alte `pros`-Datenbank verknüpfte `railway_stations.db_kuerzel` entsprechend.
+
+**Folgerung für `traction_eval`.** Betriebsstellen kommen aus RINF, Routing-Geometrie aus GraphHopper mit OpenRailRouting, Zwangspunkte wie entschieden alle Zwischenbetriebsstellen (EK-2026-074). Offen ist, welche Einheit das Netzsegment der Methodik bildet (Teil A2 „Segment“): der RINF-Abschnitt zwischen zwei Betriebsstellen oder das OSM-Teilstück aus der GraphHopper-Route. Das entscheidet EK-2026-077. In beiden Fällen braucht `traction_eval` einen eigenen Netz-Loader und muss nicht die raildashboard-Datenbank teilen; es kann aber denselben GraphHopper-Dienst nutzen.
+
+Risiken: Vollständigkeit der RINF-Gleisparameter für Deutschland (Elektrifizierung, Gleiszahl, Geschwindigkeit) ist zu prüfen, bevor sie als Quelle gelten; OSM-Attribute sind flächig vorhanden, aber nicht amtlich. Abschnitte, die im Deutschlandtakt neu gebaut werden (Neubaustrecken), gibt es in keinem der beiden Netze; sie müssen als Szenario-Maßnahmen mit eigener Geometrie und Attributen eingehen.
+
 ## D5 Datenfluss
 
 Eingangsdaten (EK-2026-061): Netz nach dem Netzmodell des raildashboard, railML des dritten Zielfahrplans des Deutschlandtakts, Fahrzeugkennwerte, Szenario-Maßnahmen, Korrekturlisten. Jonas stellt die Daten bereit. Der Loader überführt sie einmal je Lauf in das Domänenmodell und legt es als Datei ab (Parquet oder JSON); diese Datei ist die reproduzierbare Eingabe eines Laufs und zugleich Quelle für Fixtures. Ein Loader aus der alten prosd-Datenbank bleibt optional für Fahrzeugmuster und Formationen, falls diese nicht neu erhoben werden.
