@@ -419,7 +419,7 @@ Daten, Einheiten, Robustheit
 
 - **Kern ohne Anwendungswissen.** Der Kern kennt Netz, Zustand, Verkehrsleistung, Bündel, Technologieoption, Maßnahme, Kostenkomponente, Gebiet, Parametersatz. Er kennt weder „Oberleitung“ noch „BVWP“ noch Euro-Beträge. Alles Anwendungsspezifische kommt über Plugins und Konfiguration.
 - **Keine Zahl im Code.** Jeder Kostensatz, Faktor, Zeitraum, Schwellwert, Rückfallwert und jede Formelkonstante (auch 55,6, 3,6, 365, Skalierungen) liegt im Parametersatz mit Einheit, Preisjahr, Quelle und Gültigkeit. Code referenziert Parameter über Namen und schlägt fehl, wenn ein Parameter fehlt.
-- **Typisierte Größen.** Zahlen tragen Einheiten (zum Beispiel über `pint` oder eigene Quantity-Typen); Einheitenfehler wie in Teil C Nr. 3, 23 scheitern beim Rechnen, nicht im Ergebnis.
+- **Typisierte Größen.** Zahlen tragen Einheiten als eigene leichte Typen (NewType je Einheit, Umrechnung nur über benannte Funktionen, statische Prüfung mit mypy; EK-2026-076). Der Parameterlader prüft die Einheitenangabe jeder Zahl. `pint` wird höchstens in Tests zur Gegenprobe eingesetzt. Einheitenfehler wie in Teil C Nr. 3, 23 scheitern damit vor dem Rechnen.
 - **Rechnen im Speicher, ohne Nebenwirkungen.** Zustand ist unveränderlich; Änderungen erzeugen neue Zustände. Keine Datenbank, keine Dateien in der Rechenlogik. Laden und Schreiben sind Adapter.
 - **Registrierte, austauschbare Formeln.** Energie-, Kosten-, Platzierungs-, Cluster-, Umlauf-, Routing-, Phasen-, Verteilungs- und Entscheidungsfunktionen sind benannte Plugins, die per Konfiguration ausgewählt werden.
 - **Nachvollziehbarkeit.** Jeder Lauf hat eine Lauf-ID und schreibt ein Manifest (Parametersatz mit Hash, Szenariodefinition, Korrekturlisten mit Hash, Plugin-Auswahl, Codeversion, Datenstände, Validierungsbericht); Zwischenergebnisse je Stufe werden gespeichert; mehrere Läufe existieren nebeneinander.
@@ -778,4 +778,4 @@ Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergl
 | EK-2026-073 | Gebietsbildung | transitiv über Zuggruppen und Bahnhöfe; Bahnhofsrelation ausdrücklich gewollt |
 | EK-2026-074 | Via-Punkte Routing | alle Zwischenbetriebsstellen mit Bahnhof; Routing-Modul nach dem Ansatz des raildashboard |
 | EK-2026-075 | Ergebnisse | eigenes Ergebnisschema mit Lauf-ID und eigenständiges Frontend; kein Writer in prosd |
-| EK-2026-076 | Einheiten | Rückfrage, Erklärung erbeten |
+| EK-2026-076 | Einheiten | eigene leichte Einheitentypen mit statischer Prüfung; pint nur in Tests |
