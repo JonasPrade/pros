@@ -11,6 +11,8 @@ Aufbau des Dokuments:
 
 Gestaltungsgrundsätze für die Neuentwicklung: maximal modular, jede Kostengröße und jeder Faktor konfigurierbar, keine Zahl im Code, Methodik zuerst allgemein, dann adaptiert.
 
+Entscheidungsstand: Die offenen Punkte wurden am 2026-11-01 als Entscheidungsstapel EKS-2026-010 vorgelegt und entschieden (Teil F). Wichtigste Festlegung: kompletter Neubau in einem eigenen Repo, kein Nachbau des Altcodes. Teil B beschreibt deshalb nur noch, was der Altcode tat; maßgeblich für die Neuentwicklung sind Teil A, Teil D und Teil F.
+
 ---
 
 # Teil A: Allgemeines Verfahren
@@ -360,7 +362,9 @@ Diese Eigenschaften bestimmen das Ergebnis mit, sind aber keine Methodik. Sie we
 
 # Teil C: Mehrdeutigkeiten und Verdachtsfälle
 
-Jeder Punkt braucht eine Entscheidung gegen den Thesis-Text, bevor er in der Neuentwicklung festgelegt wird. Jede Entscheidung wird, wo sinnvoll, als Schalter im Parametersatz `altcode-kompatibel` nachgebildet, damit Alt- und Neurechnung vergleichbar bleiben (D4). Priorität A: beeinflusst Ergebnisse wahrscheinlich erheblich. B: beeinflusst Ergebnisse begrenzt oder nur Nebenwerte. C: Robustheit, Datenqualität.
+Priorität A: beeinflusst Ergebnisse wahrscheinlich erheblich. B: beeinflusst Ergebnisse begrenzt oder nur Nebenwerte. C: Robustheit, Datenqualität.
+
+Entscheidungsstand 2026-11-01 (Teil F): Die Neuentwicklung ist ein Neubau ohne Nachbildung des Altcodes. Die Punkte 1, 2, 3, 4, 5, 8, 20, 21, 22, 23, 24, 25 und 30 wurden als Rechenfehler eingestuft und werden korrigiert (EK-2026-072). Die Punkte 6, 9, 10, 11, 12, 13, 15, 26 und 28 sind durch eigene Karten entschieden (EK-2026-062 bis 071). Die Punkte 19, 27, 29, 31 bis 37 entfallen durch die Architektur (Zustände als Werte, Validierung, keine Datenbank in der Rechnung). Die Punkte 14, 16, 17 und 18 bleiben als dokumentierte Annahmen und Parameter. Der Abgleich einzelner Formeln mit dem Thesis-Text (vor allem 5, 9, 17) steht weiterhin aus, ändert aber am Vorgehen nichts mehr.
 
 Rechenkern und Formeln
 1. **(A) Elektrifizierung wirkt nicht im Zustand.** `Version._add_electrification` setzt `catenary = False` und schreibt einen Boolean in die Textspalte `electrified`; alle Kostenformeln prüfen `catenary`. Szenario-Projekte mit `elektrification = True` und alle im Lauf erzeugten Elektrifizierungsmaßnahmen bleiben wirkungslos; `remove_electrification_for_rw_lines` ist damit ebenfalls wirkungslos, und bereits „elektrifizierte“ Strecken können im selben Lauf erneut gewählt und bekostet werden. (`prosd/manage_db/version.py:195` bis `:201`)
@@ -419,7 +423,8 @@ Daten, Einheiten, Robustheit
 - **Rechnen im Speicher, ohne Nebenwirkungen.** Zustand ist unveränderlich; Änderungen erzeugen neue Zustände. Keine Datenbank, keine Dateien in der Rechenlogik. Laden und Schreiben sind Adapter.
 - **Registrierte, austauschbare Formeln.** Energie-, Kosten-, Platzierungs-, Cluster-, Umlauf-, Routing-, Phasen-, Verteilungs- und Entscheidungsfunktionen sind benannte Plugins, die per Konfiguration ausgewählt werden.
 - **Nachvollziehbarkeit.** Jeder Lauf hat eine Lauf-ID und schreibt ein Manifest (Parametersatz mit Hash, Szenariodefinition, Korrekturlisten mit Hash, Plugin-Auswahl, Codeversion, Datenstände, Validierungsbericht); Zwischenergebnisse je Stufe werden gespeichert; mehrere Läufe existieren nebeneinander.
-- **Alte Ergebnisse reproduzierbar.** Parametersatz und Plugin-Auswahl `altcode-kompatibel` bilden das heutige Verhalten nach, inklusive der in Teil C entschiedenen Abweichungen als Schalter, damit Golden-Master-Vergleiche möglich sind. Voraussetzung: das Fixture friert den Datenbankzustand vor dem Altlauf ein (Routen, vorhandene Zugkosten, vorhandene Maßnahmen, Reihenfolgen), nicht nur die Eingaben, weil der Altcode davon abhängt (Teil C Nr. 19).
+- **Neubau, kein Nachbau.** Der Altcode wird nicht nachgebildet (EK-2026-060). Es gibt keinen Parametersatz `altcode-kompatibel` und keinen Golden-Master gegen alte Ergebnisse. Richtig ist, was Teil A, Teil F und die Handrechnungstests festlegen. Ein Plausibilitätsvergleich mit den veröffentlichten Thesis-Ergebnissen ist optional und dient nur der Einordnung.
+- **Eigenes Repo und eigenes Frontend.** Das Paket `traction_eval` entsteht in einem eigenen Repo (EK-2026-059). Ergebnisse werden in einem eigenen Schema mit Lauf-ID gehalten und über ein eigenständiges Frontend dargestellt (EK-2026-075); es gibt keinen Writer in die prosd-Tabellen. `pros` ist nur noch eine mögliche Datenquelle für den Loader.
 
 ## D2 Paketstruktur
 
@@ -451,20 +456,24 @@ traction_eval/                      # eigenständiges Paket mit pyproject.toml
     disruption/   Störfallbewertung
   applications/
     masterarbeit/
-      config/     parameters/masterarbeit-2023.yaml, parameters/altcode-kompatibel.yaml,
-                  scenario/*.yaml, technologies.yaml, methods.yaml, corrections/*.json
+      config/     parameters/masterarbeit-2026.yaml, scenario/*.yaml, technologies.yaml,
+                  methods.yaml, corrections/*.json
       plugins/    Technologieoptionen, Kostenkomponenten BVWP und Standi, Maßnahmentypen,
                   Kategorie-Zuordnung, Ersatzformationsregel
-      adapters/   Loader aus der prosd-Datenbank, Writer in die prosd-Ergebnistabellen,
-                  Export für Auswertung und Fixtures
-      reports/    Kennzahlen, Karten, LaTeX (aus scripts/masterarbeit/auswertung übernommen)
+      adapters/   Loader für Netz (nach dem Netzmodell des raildashboard), railML des dritten
+                  Zielfahrplans, Fahrzeugkennwerte; optional Loader aus der prosd-Datenbank
+      reports/    Kennzahlen, Karten, Berichte (Ersatz für scripts/masterarbeit/auswertung)
+  results/        Ergebnisschema mit Lauf-ID (Datei und Datenbank), Abfrage-API für das Frontend
   cli/            run, resume, compare, export, validate-params, validate-data
+frontend/         eigenständiges Frontend für Szenarien, Gebiete, Optionen, Maßnahmen und Karten
 tests/
   unit/           Formeln mit Handrechnung, Finanzmodul, Parametersystem, Einheiten
   properties/     Invarianten Gebietsbildung, Energiebilanz, Zustandsunveränderlichkeit
-  golden/         Fixture-Gebiete gegen eingefrorene Ergebnisse
+  fixtures/       kleine Netz- und Fahrplanausschnitte aus den neuen Eingangsdaten
   example/        durchgerechnetes Minimalbeispiel (zwei Strecken, eine Linie, zwei Optionen)
 ```
+
+Routing: Das Routing-Modul folgt dem Ansatz des raildashboard (Routing über das Schienennetz mit Betriebsstellensuche, EK-2026-074). Der Abgleich mit dem Netzmodell und dem Routing-Code des raildashboard-Repos ist der erste Schritt der Umsetzung, damit Netzschema, Betriebsstellen und Streckenattribute (einschließlich Streckengeschwindigkeit) gemeinsam genutzt werden können.
 
 ## D3 Plugin-Schnittstellen
 
@@ -659,7 +668,7 @@ disruption:
   deducted_operating_cost_option: electrification
 ```
 
-`altcode-kompatibel.yaml` erbt davon und setzt die Schalter so, dass der Altcode nachgebildet wird. Schalter, die dafür vorgesehen sind: `primary_energy_points_exponent: 2` (C5); `charging_at_intermediate_stops: none` (C2); `terminal_stand_time: {sign: raw, divisor: 60}` (C3); `time_maintenance_mass_source: base` (C7); `bundle_vehicle_source: first_service` (C18); `cycle_turnaround_source: fixed_5min` (C24); `section_cut: after` (C25); `small_charging_station.counts_as_supply: false` (C26); `candidate_filter_single_trip: all` (C29); `terminal_rule_drop_last_measure: true` (C20); `station_supply_check: last_station_only` (C21); `charge_gain_mode: fill_level` (C22); `stop_fallback_length_scale: 0.001` (C23); `electrification_sets_supply: false` (C1); `bundle_order: database_order` (C13); `result_rounding: integer_keur` (C30); `infeasible_option: accept` (C12); `shared_state_across_options_and_areas: true` und `operating_cost_cache: database` (C19); `suboption_assignment: sticky_battery` (C28). Jeder Schalter wird einzeln umgestellt und seine Wirkung im Vergleichsbericht ausgewiesen.
+Das YAML oben zeigt die Struktur mit den Altwerten der Thesis als Startpunkt. Für den Neubau gelten folgende Abweichungen aus Teil F: `finance.comparison_sums` führt zwei Summen (`investment_pv` und `annuity`), beide werden ausgewiesen, `decision.uses` wählt eine (EK-2026-062); `finance.phases.model: by_measure_type` mit Baudauer je Maßnahmentyp (EK-2026-071); `standi.reference_speed_fallback: {mode: vehicle_vmax_and_line_speed}` (EK-2026-070); `small_charging_station: {counts_as_supply: true, charge_power: …, max_per_place: 1}` (EK-2026-068); `range_model.section_additional_energy: full_on_unsupplied` (EK-2026-069); `range_model.bundle_order: by_running_km_desc` (EK-2026-066); `optimisation.suboption_assignment: sticky_with_single_valuation` (EK-2026-067); `methods.infeasible_option: exclude` (EK-2026-064); `clustering.relations.shared_place.transitive: true` (EK-2026-073). Die Hinweise `note: "Altcode …"` in den Einträgen dienen nur der Dokumentation der Herkunft; es gibt keinen Parametersatz, der das Altverhalten nachbildet. Die Konstanten der Energieformel Güterverkehr (`bvwp.freight_energy`) und die Baudauern je Maßnahmentyp brauchen Quellen aus der Thesis beziehungsweise neue Festlegungen, bevor der Satz als `masterarbeit-2026` gilt.
 
 Szenariodefinition:
 
@@ -692,9 +701,11 @@ validation:
 outputs: [prosd-db, parquet]
 ```
 
-## D5 Datenfluss gegenüber dem bestehenden System
+## D5 Datenfluss
 
-Der Loader liest einmal je Lauf aus der bestehenden PostGIS-Datenbank: Strecken, Bahnhöfe, Graph, Zuggruppen mit Fahrplan, Formationen, Fahrzeugmuster, Szenario-Projekte, Korrekturlisten. Daraus entsteht das Domänenmodell als Datei (Parquet oder JSON), die auch ohne Datenbank als Eingabe dient. Der Writer schreibt am Ende unter einer Lauf-ID in die bestehenden Tabellen (`master_areas`, `timetable_train_cost`, `projects_contents` für Maßnahmen samt Zuordnungen `pc_to_masterareas` und `sub_project_contents`, `traction_optimised_electrification`, Kennzahlenspalten), damit Dashboard und API unverändert funktionieren; die Flag-basierte Zuordnung der Gebietsmaßnahme in `infrastructure_cost_all_tractions` muss dabei eindeutig bleiben. Zusätzlich schreibt er das vollständige Ergebnisschema (Komponenten, Maßnahmenlisten, Durchführbarkeit, Manifest) als Datei. Später kann der Writer durch ein eigenes Ergebnisschema mit Lauf-ID in der Datenbank ersetzt werden.
+Eingangsdaten (EK-2026-061): Netz nach dem Netzmodell des raildashboard, railML des dritten Zielfahrplans des Deutschlandtakts, Fahrzeugkennwerte, Szenario-Maßnahmen, Korrekturlisten. Jonas stellt die Daten bereit. Der Loader überführt sie einmal je Lauf in das Domänenmodell und legt es als Datei ab (Parquet oder JSON); diese Datei ist die reproduzierbare Eingabe eines Laufs und zugleich Quelle für Fixtures. Ein Loader aus der alten prosd-Datenbank bleibt optional für Fahrzeugmuster und Formationen, falls diese nicht neu erhoben werden.
+
+Ergebnisse (EK-2026-075): eigenes Ergebnisschema mit Lauf-ID, das je Szenario, Gebiet und Option Kosten nach Komponenten, Maßnahmen mit Geometriebezug, Durchführbarkeit, physische Kennzahlen, Emissionen und das Manifest hält. Es wird als Datei geschrieben und in eine eigene Datenbank geladen, aus der ein eigenständiges Frontend liest (Szenarienvergleich, Gebietskarte mit gewählter Option, Kostenzerlegung, Maßnahmenliste, Sensitivität). Es gibt keinen Writer in die prosd-Tabellen; das alte Dashboard zeigt weiter die Thesis-Ergebnisse, bis es abgelöst wird. Gestaltung des Frontends nach dem Design-System der Initiative Deutschlandtakt, wie beim raildashboard.
 
 ## D6 Tests
 
@@ -703,25 +714,27 @@ Der Loader liest einmal je Lauf aus der bestehenden PostGIS-Datenbank: Strecken,
 - Parametersystem: fehlende Parameter führen zu Fehlern, Vererbung und Overrides, Hash-Stabilität, Zeitreihen-Interpolation.
 - Eigenschaftstests: Gebiete disjunkt und vollständig, transitiv geschlossen; Energiebilanz nie über Kapazität, Ladezuwachs nie negativ, Maßnahmen verändern nur Zustandskopien; Entscheidungen unabhängig von Gebiets- und Optionsreihenfolge bei `state_sharing: none`.
 - Minimalbeispiel: zwei Strecken, eine Linie mit zwei Zuggruppen, zwei Optionen, von Hand durchgerechnet und als Dokumentationsbeispiel und Test geführt.
-- Golden-Master: zwei bis drei kleine Gebiete aus der Produktionsdatenbank als Fixtures (ein reines Nahverkehrsgebiet, eines mit Güterverkehr, eines mit optimierter Elektrifizierung), heutige Ergebnisse und der Datenbankzustand vor dem Altlauf eingefroren, Vergleich mit Parametersatz `altcode-kompatibel`. Jede Korrektur aus Teil C wird als eigener Schalter umgestellt und ihre Wirkung im Vergleichsbericht ausgewiesen.
+- Fixtures aus den neuen Eingangsdaten: zwei bis drei kleine Netzausschnitte mit Fahrplan (ein reines Nahverkehrsgebiet, eines mit Güterverkehr, eines mit Teilgebieten), Ergebnisse nach Freigabe eingefroren als Regressionsschutz für spätere Änderungen. Kein Vergleich mit dem Altcode.
+- Plausibilität: Vergleich der Szenariokennzahlen mit den veröffentlichten Thesis-Ergebnissen (Größenordnung, Verteilung der Traktionen), dokumentiert, nicht als Test.
 
 ## D7 Umsetzungsreihenfolge
 
-1. Paketgerüst, Domänenmodell, Einheiten, Parametersystem mit den beiden Parametersätzen, Finanzmodul, Validierung. Tests.
-2. Loader aus der prosd-Datenbank in das Domänenmodell, Export als Datei. Fixtures erzeugen (Eingaben und Datenbankzustand).
-3. Betriebsleistungsgrößen, Umlaufbildung, Bündelverteilung. Tests gegen Fixtures. Minimalbeispiel.
-4. Kostenkomponenten BVWP und Standi als Plugins. Golden-Master für Betriebskosten.
-5. Gebietsbildung und Teilgebiete. Eigenschaftstests.
-6. Maßnahmengeneratoren Oberleitung, Tankstellen, Ladepunkte, Phasenmodell. Golden-Master Infrastrukturkosten ohne Batterie.
-7. Reichweitenmodell mit Fahrtenfolge-Selektor, Diagnose und Platzierungsregeln als Plugins. Golden-Master Batterie, dann Schalter aus Teil C Nr. 2, 3, 6, 20 bis 26, 29 einzeln umstellen und Wirkung ausweisen.
-8. Kombinierte Optimierung mit Zuordnungsregel. Golden-Master optimierte Elektrifizierung, Schalter Nr. 19 und 28.
-9. Entscheidung, Aggregation, Writer in die prosd-Tabellen, Ergebnisschema, Manifest, CLI, Parallelisierung je Gebiet.
-10. Auswertungsskripte (Karten, LaTeX) auf das neue Ergebnisschema umstellen.
+0. Netzmodell und Routing des raildashboard sichten (Repo hinzuziehen), Netzschema und Betriebsstellenmodell für `traction_eval` daraus ableiten; Eingangsdaten (dritter Zielfahrplan, Netz, Fahrzeuge) von Jonas übernehmen und prüfen.
+1. Eigenes Repo `traction_eval`, Paketgerüst, Domänenmodell, Einheiten, Parametersystem mit `masterarbeit-2026`, Finanzmodul mit beiden Vergleichssummen, Validierung. Tests.
+2. Loader für Netz, railML und Fahrzeugkennwerte in das Domänenmodell, Export als Datei. Fixtures aus den neuen Daten erzeugen.
+3. Routing nach dem Ansatz des raildashboard, Betriebsleistungsgrößen, Umlaufbildung, Bündelverteilung. Tests gegen Fixtures. Minimalbeispiel.
+4. Kostenkomponenten BVWP (Güterverkehr) und Standi (Personenverkehr) als Plugins. Handrechnungstests.
+5. Gebietsbildung (transitiv über Zuggruppen und Bahnhöfe) und Teilgebiete. Eigenschaftstests.
+6. Maßnahmengeneratoren Oberleitung, Tankstellen, Ladepunkte; Phasenmodell mit Baudauer je Maßnahmentyp.
+7. Reichweitenmodell mit Fahrtenfolge-Selektor, Diagnose und Platzierungsregeln als Plugins; Durchführbarkeitsstatus.
+8. Kombinierte Optimierung mit Zuordnungsregel (Einmalbewertung).
+9. Entscheidung (Ausschluss nicht durchführbarer Optionen), Aggregation, Ergebnisschema mit Lauf-ID, Manifest, CLI, Parallelisierung je Gebiet.
+10. Eigenständiges Frontend: Szenarienvergleich, Gebietskarte, Kostenzerlegung, Maßnahmen, Sensitivität; Abfrage-API auf dem Ergebnisschema.
 11. Störfallbewertung als eigenes Modul auf Zustandskopien.
-12. Erweiterungen aus Teil E nach Bedarf.
-13. Abschluss: Altcode in `prosd` auf Modelle, API und Importe reduzieren; Rechenlogik entfernen.
+12. Erweiterungen aus Teil E (Rückfall je Linie, Zeitreihen, Sensitivität) nach Bedarf.
+13. Abschluss: Altcode in `pros` einfrieren oder archivieren; Thesis-Ansichten des alten Dashboards durch das neue Frontend ablösen.
 
-Voraussetzung für Schritt 2 und alle Golden-Master-Tests ist ein Zugriff auf einen Dump der Produktionsdatenbank oder ein Auszug mit mindestens einem Szenario und einigen Gebieten, einschließlich der gespeicherten Routen, Zugkosten und Maßnahmen.
+Voraussetzung für Schritt 0 ist der Zugriff auf das raildashboard-Repo in der Arbeitsumgebung; für Schritt 2 die Eingangsdaten von Jonas.
 
 ---
 
@@ -737,4 +750,32 @@ Diese Punkte sind durch die Architektur vorbereitet (A5, A6, A9, A11), aber kein
 6. **Restwert und Lebensdauern** als explizite Methode für alle Anlagen und Fahrzeuge.
 7. **Optimierung.** Exakte Verfahren über Teilgebiete (dynamische Programmierung oder ganzzahlige Optimierung) als Alternative zum Greedy-Durchlauf; Mehrfachdurchläufe.
 8. **Validierung mit Plausibilitätsgrenzen** je Kennzahl (Kosten je km, Energie je km, Geschwindigkeiten), Verletzungen im Manifest.
-9. **Ergebnisvisualisierung** aus dem Ergebnisschema (Karten je Option, Kostenzerlegung je Gebiet, Break-even-Karten), unabhängig vom Dashboard.
+9. **Ergebnisvisualisierung** im eigenständigen Frontend (Karten je Option, Kostenzerlegung je Gebiet, Break-even-Karten).
+10. **Rückfall je Linie** bei nicht durchführbarer Batterieoption: die nicht fahrbare Linie erhält Oberleitung auf ihrem Laufweg, die übrigen fahren Batterie (EK-2026-064, Option C).
+
+---
+
+# Teil F: Getroffene Entscheidungen (Stapel EKS-2026-010, 2026-11-01)
+
+Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergleich Neuentwicklung“); hier die Kurzfassung.
+
+| Karte | Frage | Entscheidung |
+|---|---|---|
+| EK-2026-059 | Ablage des Pakets | eigenes Repo `traction_eval`; `pros` nur Datenquelle |
+| EK-2026-060 | Nachbildung vor Erweiterung | kompletter Neubau, kein Nachbau; kein altcode-kompatibler Satz, kein Golden-Master |
+| EK-2026-061 | Testdaten | Eingangsdaten von Jonas auf Basis des dritten Zielfahrplans; Fixtures daraus |
+| EK-2026-062 | Vergleichssumme | Investitionsbarwert und Annuität beide ausweisen; Entscheidungsregel wählt per Konfiguration |
+| EK-2026-063 | Methode Fernverkehr | Standi wie bisher |
+| EK-2026-064 | nicht durchführbare Option | ausschließen und ausweisen; Rückfall je Linie als zweiter Schritt |
+| EK-2026-065 | Fahrtenfolge Batterie | Hin- und Rückfahrt mit Mehrfolgeprüfung; voller Umlauf als Sensitivität |
+| EK-2026-066 | Reihenfolge Linien | absteigend nach Zug-km je Tag |
+| EK-2026-067 | Zuggruppen in mehreren Teilgebieten | Batterie bleibt, Betriebskostendifferenz zählt einmal |
+| EK-2026-068 | kleine Ladestation | zählt als Versorgung mit eigener Ladeleistung, höchstens eine je Bahnhof |
+| EK-2026-069 | Batteriezuschlag | voller Zuschlag auf Abschnitten ohne Oberleitung |
+| EK-2026-070 | Rückfall Referenzgeschwindigkeit | Fahrzeug-Höchstgeschwindigkeit, zusätzlich begrenzt durch Streckengeschwindigkeit, sofern im Netz vorhanden |
+| EK-2026-071 | Baudauer | je Maßnahmentyp als Parameter |
+| EK-2026-072 | 13 Rechenfehler | alle korrigieren |
+| EK-2026-073 | Gebietsbildung | transitiv über Zuggruppen und Bahnhöfe; Bahnhofsrelation ausdrücklich gewollt |
+| EK-2026-074 | Via-Punkte Routing | alle Zwischenbetriebsstellen mit Bahnhof; Routing-Modul nach dem Ansatz des raildashboard |
+| EK-2026-075 | Ergebnisse | eigenes Ergebnisschema mit Lauf-ID und eigenständiges Frontend; kein Writer in prosd |
+| EK-2026-076 | Einheiten | Rückfrage, Erklärung erbeten |
