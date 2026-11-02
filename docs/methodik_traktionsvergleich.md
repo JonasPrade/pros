@@ -711,9 +711,15 @@ Sichtung des Repos `JonasPrade/raildashboard` (Stand 2026-11-01, Commit 5769f3a)
 
 **Zuordnung zum Fahrplan.** Die railML-Betriebsstellen des Deutschlandtakts tragen DB-Kürzel; RINF-`op_id` enthält dasselbe Kürzel mit Länderpräfix. Die alte `pros`-Datenbank verknüpfte `railway_stations.db_kuerzel` entsprechend.
 
-**Folgerung für `traction_eval`.** Betriebsstellen kommen aus RINF, Routing-Geometrie aus GraphHopper mit OpenRailRouting, Zwangspunkte wie entschieden alle Zwischenbetriebsstellen (EK-2026-074). Offen ist, welche Einheit das Netzsegment der Methodik bildet (Teil A2 „Segment“): der RINF-Abschnitt zwischen zwei Betriebsstellen oder das OSM-Teilstück aus der GraphHopper-Route. Das entscheidet EK-2026-077. In beiden Fällen braucht `traction_eval` einen eigenen Netz-Loader und muss nicht die raildashboard-Datenbank teilen; es kann aber denselben GraphHopper-Dienst nutzen.
+**Entscheidung (EK-2026-077, 2026-11-02): OSM als einzige Netzgrundlage mit Korrekturschicht.** RINF wird nicht verwendet. Das Netzmodell von `traction_eval` entsteht in drei Schichten:
 
-Risiken: Vollständigkeit der RINF-Gleisparameter für Deutschland (Elektrifizierung, Gleiszahl, Geschwindigkeit) ist zu prüfen, bevor sie als Quelle gelten; OSM-Attribute sind flächig vorhanden, aber nicht amtlich. Abschnitte, die im Deutschlandtakt neu gebaut werden (Neubaustrecken), gibt es in keinem der beiden Netze; sie müssen als Szenario-Maßnahmen mit eigener Geometrie und Attributen eingehen.
+1. **Gepinnter OSM-Extrakt.** Ein Geofabrik-Extrakt Deutschland (oder ein Ausschnitt) mit Datum; Datei oder Prüfsumme im Manifest. Derselbe Extrakt speist den GraphHopper-Dienst mit OpenRailRouting (Konfiguration wie im raildashboard, Profil `rail_default`).
+2. **Abgeleitetes Segmentmodell.** Ein Extraktionsschritt (osmium-Filter auf `railway=rail|construction|proposed` mit `usage=main|branch` sowie Betriebsstellenknoten `railway=station|halt|junction|service_station|yard|crossover` mit `railway:ref`) bildet Segmente: alle Gleise einer VzG-Streckennummer (`railway:ref` am Weg) zwischen zwei aufeinanderfolgenden Betriebsstellen. Kennung = (Streckennummer, Von-Kürzel, Bis-Kürzel), stabil über Extrakte. Attribute je Segment aus den zugehörigen Wegen: Länge aus der Geometrie, Gleiszahl als Anzahl paralleler Gleise, Elektrifizierung (`electrified`: contact_line, rail, no), `voltage`, `frequency`, `maxspeed` (für die Streckengeschwindigkeit nach EK-2026-070), `gauge`, `usage`, Lebenszyklus (`proposed:*`, `construction:*`) für geplante Elektrifizierung und Neubaustrecken. Betriebsstellen tragen das DS100-Kürzel aus `railway:ref` und werden darüber den railML-Betriebsstellen zugeordnet.
+3. **Manuelle Korrekturschicht (Diff).** Eine versionierte Konfigurationsdatei je Szenario oder global, die vor dem Domänenmodell angewendet wird: Overrides je Segment (einzelne Attribute, zum Beispiel Elektrifizierung oder Gleiszahl), Zusammenlegen oder Ausschließen von Segmenten, ergänzte Segmente mit eigener Geometrie (Neubaustrecken, die in OSM fehlen), Zuordnungen Betriebsstelle zu Kürzel, Ignorierlisten für das Routing. Jeder Eintrag trägt Begründung und Datum. Die Schicht erscheint mit Hash im Manifest; ein Lauf ohne sie ist ebenfalls möglich, damit die Wirkung der Korrekturen ausgewiesen werden kann.
+
+Routing: Zuggruppen werden mit allen Zwischenbetriebsstellen als Zwangspunkten (EK-2026-074) über GraphHopper geroutet; die zurückgegebene Linie wird über die passierten Betriebsstellen auf die Segmentfolge abgebildet. Validierung: Segmente ohne `electrified`-Tag, Betriebsstellen ohne Kürzel und Routen, die ein Segment nur teilweise nutzen, werden ausgewiesen; der Lauf startet nur, wenn die Lücken durch die Korrekturschicht erklärt oder als akzeptiert markiert sind.
+
+Risiken: OSM ist nicht amtlich; Attributlücken und Fehler werden durch Validierung und Korrekturschicht abgefangen. Die Gleiszahl ist eine Ableitung aus parallelen Wegen. Abzweig- und Überleitstellen tragen in OSM nicht immer ein Kürzel; die Korrekturschicht ergänzt sie. RINF kann später als Gegenprobe für Elektrifizierung und Geschwindigkeit dienen, ohne Teil des Modells zu sein.
 
 ## D5 Datenfluss
 
@@ -733,9 +739,9 @@ Ergebnisse (EK-2026-075): eigenes Ergebnisschema mit Lauf-ID, das je Szenario, G
 
 ## D7 Umsetzungsreihenfolge
 
-0. Netzmodell und Routing des raildashboard sichten (Repo hinzuziehen), Netzschema und Betriebsstellenmodell für `traction_eval` daraus ableiten; Eingangsdaten (dritter Zielfahrplan, Netz, Fahrzeuge) von Jonas übernehmen und prüfen.
+0. Erledigt (D8): Netzmodell und Routing des raildashboard gesichtet, Netzgrundlage OSM mit Korrekturschicht entschieden. Offen: railML des dritten Zielfahrplans und Fahrzeugkennwerte von Jonas.
 1. Eigenes Repo `traction_eval`, Paketgerüst, Domänenmodell, Einheiten, Parametersystem mit `masterarbeit-2026`, Finanzmodul mit beiden Vergleichssummen, Validierung. Tests.
-2. Loader für Netz, railML und Fahrzeugkennwerte in das Domänenmodell, Export als Datei. Fixtures aus den neuen Daten erzeugen.
+2. Netz-Pipeline: OSM-Extrakt pinnen, osmium-Filter, Segmentbildung, Korrekturschicht, Validierungsbericht; GraphHopper-Dienst nach raildashboard-Vorlage; Loader für railML und Fahrzeugkennwerte; Export des Domänenmodells als Datei. Fixtures aus den neuen Daten erzeugen.
 3. Routing nach dem Ansatz des raildashboard, Betriebsleistungsgrößen, Umlaufbildung, Bündelverteilung. Tests gegen Fixtures. Minimalbeispiel.
 4. Kostenkomponenten BVWP (Güterverkehr) und Standi (Personenverkehr) als Plugins. Handrechnungstests.
 5. Gebietsbildung (transitiv über Zuggruppen und Bahnhöfe) und Teilgebiete. Eigenschaftstests.
@@ -793,3 +799,4 @@ Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergl
 | EK-2026-074 | Via-Punkte Routing | alle Zwischenbetriebsstellen mit Bahnhof; Routing-Modul nach dem Ansatz des raildashboard |
 | EK-2026-075 | Ergebnisse | eigenes Ergebnisschema mit Lauf-ID und eigenständiges Frontend; kein Writer in prosd |
 | EK-2026-076 | Einheiten | eigene leichte Einheitentypen mit statischer Prüfung; pint nur in Tests |
+| EK-2026-077 | Netzsegment | OSM als einzige Netzgrundlage (gepinnter Extrakt, Segment je VzG-Strecke und Betriebsstellenpaar, Elektrifizierung aus OSM, GraphHopper mit OpenRailRouting) mit manueller versionierter Korrekturschicht; RINF nur optionale Gegenprobe |
