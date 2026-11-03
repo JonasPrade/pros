@@ -1,4 +1,4 @@
-# Methodik des Traktionsvergleichs: allgemeines Verfahren und Anwendung Masterarbeit
+# TRAVE: Methodik des Traktionsvergleichs, allgemeines Verfahren und Anwendung Masterarbeit
 
 Stand: rekonstruiert aus dem Code des Repos `pros` (Commit a5a5269), Oktober 2026, nach unabhängigem Review gegen den Code. Quellen sind `prosd/models.py` (MasterScenario, MasterArea, TimetableTrainGroup, TimetableTrainCost, TrainCycle, TimetableLine), `prosd/calculation_methods/use.py`, `prosd/calculation_methods/cost.py`, `prosd/calculation_methods/base.py`, `prosd/manage_db/version.py`, `prosd/graph/routing.py`, `prosd/graph/block_rw_lines.py` und `prosd/parameter.py`. Der Text der Masterarbeit lag bei der Rekonstruktion nicht vor; ebenso nicht die Datenbankinhalte (Fahrzeugkennwerte und ihre Einheiten) und die externen JSON-Korrekturlisten unter `example_data/railgraph/`. Jede Stelle, an der der Code mehrdeutig ist oder von der vermuteten Absicht abweicht, ist in Teil C gesammelt und muss gegen den Thesis-Text entschieden werden, bevor neu entwickelt wird.
 
@@ -424,12 +424,12 @@ Daten, Einheiten, Robustheit
 - **Registrierte, austauschbare Formeln.** Energie-, Kosten-, Platzierungs-, Cluster-, Umlauf-, Routing-, Phasen-, Verteilungs- und Entscheidungsfunktionen sind benannte Plugins, die per Konfiguration ausgewählt werden.
 - **Nachvollziehbarkeit.** Jeder Lauf hat eine Lauf-ID und schreibt ein Manifest (Parametersatz mit Hash, Szenariodefinition, Korrekturlisten mit Hash, Plugin-Auswahl, Codeversion, Datenstände, Validierungsbericht); Zwischenergebnisse je Stufe werden gespeichert; mehrere Läufe existieren nebeneinander.
 - **Neubau, kein Nachbau.** Der Altcode wird nicht nachgebildet (EK-2026-060). Es gibt keinen Parametersatz `altcode-kompatibel` und keinen Golden-Master gegen alte Ergebnisse. Richtig ist, was Teil A, Teil F und die Handrechnungstests festlegen. Ein Plausibilitätsvergleich mit den veröffentlichten Thesis-Ergebnissen ist optional und dient nur der Einordnung.
-- **Eigenes Repo und eigenes Frontend.** Das Paket `traction_eval` entsteht in einem eigenen Repo (EK-2026-059). Ergebnisse werden in einem eigenen Schema mit Lauf-ID gehalten und über ein eigenständiges Frontend dargestellt (EK-2026-075); es gibt keinen Writer in die prosd-Tabellen. `pros` ist nur noch eine mögliche Datenquelle für den Loader.
+- **Eigenes Repo und eigenes Frontend.** Das Paket `trave` entsteht in einem eigenen Repo (EK-2026-059). Ergebnisse werden in einem eigenen Schema mit Lauf-ID gehalten und über ein eigenständiges Frontend dargestellt (EK-2026-075); es gibt keinen Writer in die prosd-Tabellen. `pros` ist nur noch eine mögliche Datenquelle für den Loader.
 
 ## D2 Paketstruktur
 
 ```
-traction_eval/                      # eigenständiges Paket mit pyproject.toml
+trave/                      # eigenständiges Paket mit pyproject.toml
   core/
     model/        Segment, Node, Place, Network, Service, ServiceBundle,
                   VehicleType, VehicleConfig, Scenario, Area, SubArea, Measure, Result
@@ -703,7 +703,7 @@ outputs: [prosd-db, parquet]
 
 ## D8 Netz- und Routingmodell nach dem raildashboard (Ergebnis Schritt 0)
 
-Sichtung des Repos `JonasPrade/raildashboard` (Stand 2026-11-01, Commit 5769f3a). Dort gibt es zwei Ebenen, die für `traction_eval` beide relevant sind.
+Sichtung des Repos `JonasPrade/raildashboard` (Stand 2026-11-01, Commit 5769f3a). Dort gibt es zwei Ebenen, die für `trave` beide relevant sind.
 
 **Geometrie-Routing über OpenStreetMap.** Ein GraphHopper-Dienst mit OpenRailRouting (geofabrik, v1.1, GraphHopper 11) läuft auf dem OSM-Extrakt Deutschland (`germany-latest.osm.pbf`), Profil `rail_default` mit Abbiegekosten für Züge. Codierte Attribute im Graphen: `gauge`, `voltage`, `electrified`, `frequency`, `max_speed`, `rail_access`, `rail_average_speed`, `railway_class`, `railway_service`, `preferred_direction`. Das Backend (`services/route_service.py`, `services/routing_client.py`) schickt Wegpunkte als Koordinaten (Betriebsstellen oder freie Punkte) und übernimmt nur Linie, Distanz und Dauer; Routen werden je Projekt mit `graph_version` und `cache_key` als Geography gespeichert. Pfaddetails je Teilstück (GraphHopper-Parameter `details`, zum Beispiel `electrified`, `voltage`, `max_speed`) fragt das raildashboard nicht ab, der Dienst kann sie aber liefern.
 
@@ -711,7 +711,7 @@ Sichtung des Repos `JonasPrade/raildashboard` (Stand 2026-11-01, Commit 5769f3a)
 
 **Zuordnung zum Fahrplan.** Die railML-Betriebsstellen des Deutschlandtakts tragen DB-Kürzel; RINF-`op_id` enthält dasselbe Kürzel mit Länderpräfix. Die alte `pros`-Datenbank verknüpfte `railway_stations.db_kuerzel` entsprechend.
 
-**Entscheidung (EK-2026-077, 2026-11-02): OSM als einzige Netzgrundlage mit Korrekturschicht.** RINF wird nicht verwendet. Das Netzmodell von `traction_eval` entsteht in drei Schichten:
+**Entscheidung (EK-2026-077, 2026-11-02): OSM als einzige Netzgrundlage mit Korrekturschicht.** RINF wird nicht verwendet. Das Netzmodell von `trave` entsteht in drei Schichten:
 
 1. **Gepinnter OSM-Extrakt.** Ein Geofabrik-Extrakt Deutschland (oder ein Ausschnitt) mit Datum; Datei oder Prüfsumme im Manifest. Derselbe Extrakt speist den GraphHopper-Dienst mit OpenRailRouting (Konfiguration wie im raildashboard, Profil `rail_default`).
 2. **Abgeleitetes Segmentmodell.** Ein Extraktionsschritt (osmium-Filter auf `railway=rail|construction|proposed` mit `usage=main|branch` sowie Betriebsstellenknoten `railway=station|halt|junction|service_station|yard|crossover` mit `railway:ref`) bildet Segmente: alle Gleise einer VzG-Streckennummer (`railway:ref` am Weg) zwischen zwei aufeinanderfolgenden Betriebsstellen. Kennung = (Streckennummer, Von-Kürzel, Bis-Kürzel), stabil über Extrakte. Attribute je Segment aus den zugehörigen Wegen: Länge aus der Geometrie, Gleiszahl als Anzahl paralleler Gleise, Elektrifizierung (`electrified`: contact_line, rail, no), `voltage`, `frequency`, `maxspeed` (für die Streckengeschwindigkeit nach EK-2026-070), `gauge`, `usage`, Lebenszyklus (`proposed:*`, `construction:*`) für geplante Elektrifizierung und Neubaustrecken. Betriebsstellen tragen das DS100-Kürzel aus `railway:ref` und werden darüber den railML-Betriebsstellen zugeordnet.
@@ -740,7 +740,7 @@ Ergebnisse (EK-2026-075): eigenes Ergebnisschema mit Lauf-ID, das je Szenario, G
 ## D7 Umsetzungsreihenfolge
 
 0. Erledigt (D8): Netzmodell und Routing des raildashboard gesichtet, Netzgrundlage OSM mit Korrekturschicht entschieden. Offen: railML des dritten Zielfahrplans und Fahrzeugkennwerte von Jonas.
-1. Eigenes Repo `traction_eval`, Paketgerüst, Domänenmodell, Einheiten, Parametersystem mit `masterarbeit-2026`, Finanzmodul mit beiden Vergleichssummen, Validierung. Tests.
+1. Eigenes Repo `trave`, Paketgerüst, Domänenmodell, Einheiten, Parametersystem mit `masterarbeit-2026`, Finanzmodul mit beiden Vergleichssummen, Validierung. Tests.
 2. Netz-Pipeline: OSM-Extrakt pinnen, osmium-Filter, Segmentbildung, Korrekturschicht, Validierungsbericht; GraphHopper-Dienst nach raildashboard-Vorlage; Loader für railML und Fahrzeugkennwerte; Export des Domänenmodells als Datei. Fixtures aus den neuen Daten erzeugen.
 3. Routing nach dem Ansatz des raildashboard, Betriebsleistungsgrößen, Umlaufbildung, Bündelverteilung. Tests gegen Fixtures. Minimalbeispiel.
 4. Kostenkomponenten BVWP (Güterverkehr) und Standi (Personenverkehr) als Plugins. Handrechnungstests.
@@ -781,7 +781,7 @@ Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergl
 
 | Karte | Frage | Entscheidung |
 |---|---|---|
-| EK-2026-059 | Ablage des Pakets | eigenes Repo `traction_eval`; `pros` nur Datenquelle |
+| EK-2026-059 | Ablage des Pakets | eigenes Repo `trave`; `pros` nur Datenquelle |
 | EK-2026-060 | Nachbildung vor Erweiterung | kompletter Neubau, kein Nachbau; kein altcode-kompatibler Satz, kein Golden-Master |
 | EK-2026-061 | Testdaten | Eingangsdaten von Jonas auf Basis des dritten Zielfahrplans; Fixtures daraus |
 | EK-2026-062 | Vergleichssumme | Investitionsbarwert und Annuität beide ausweisen; Entscheidungsregel wählt per Konfiguration |
@@ -799,7 +799,7 @@ Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergl
 | EK-2026-074 | Via-Punkte Routing | alle Zwischenbetriebsstellen mit Bahnhof; Routing-Modul nach dem Ansatz des raildashboard |
 | EK-2026-075 | Ergebnisse | eigenes Ergebnisschema mit Lauf-ID und eigenständiges Frontend; kein Writer in prosd |
 | EK-2026-076 | Einheiten | eigene leichte Einheitentypen mit statischer Prüfung; pint nur in Tests |
-| EK-2026-078 | Repo | zunächst privat, Lizenz bei Veröffentlichung, Name in Klärung |
+| EK-2026-078 | Repo | Name TRAVE (Traktionsvergleich), Repo `JonasPrade/trave`, Paket `trave`; zunächst privat, Lizenz bei Veröffentlichung |
 | EK-2026-079 | Technikstack | aktuellster Stack ohne Bindung an das raildashboard: Python 3.13 mit uv, pydantic v2, Polars, shapely 2, pyosmium, DuckDB, FastAPI; Frontend schlank mit SvelteKit, MapLibre GL, Observable Plot |
 | EK-2026-080 | Routing-Dienst | eigener GraphHopper-Container mit OpenRailRouting, gepinnter Extrakt; zentrale OSM-Ergänzung als eigenes Projekt vorgemerkt |
 | EK-2026-081 | Ergebnisspeicherung | offen, Erklärung Parquet erbeten |
