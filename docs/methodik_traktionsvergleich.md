@@ -460,12 +460,12 @@ traction_eval/                      # eigenständiges Paket mit pyproject.toml
                   methods.yaml, corrections/*.json
       plugins/    Technologieoptionen, Kostenkomponenten BVWP und Standi, Maßnahmentypen,
                   Kategorie-Zuordnung, Ersatzformationsregel
-      adapters/   Loader für Netz (nach dem Netzmodell des raildashboard), railML des dritten
-                  Zielfahrplans, Fahrzeugkennwerte; optional Loader aus der prosd-Datenbank
+      adapters/   Loader für OSM-Extrakt und Korrekturschicht, railML des dritten Zielfahrplans,
+                  Fahrzeugkennwerte aus versionierten Dateien
       reports/    Kennzahlen, Karten, Berichte (Ersatz für scripts/masterarbeit/auswertung)
   results/        Ergebnisschema mit Lauf-ID (Datei und Datenbank), Abfrage-API für das Frontend
   cli/            run, resume, compare, export, validate-params, validate-data
-frontend/         eigenständiges Frontend für Szenarien, Gebiete, Optionen, Maßnahmen und Karten
+frontend/         schlankes Frontend (SvelteKit, MapLibre GL) für Szenarien, Gebiete, Optionen, Maßnahmen und Karten
 tests/
   unit/           Formeln mit Handrechnung, Finanzmodul, Parametersystem, Einheiten
   properties/     Invarianten Gebietsbildung, Energiebilanz, Zustandsunveränderlichkeit
@@ -723,9 +723,9 @@ Risiken: OSM ist nicht amtlich; Attributlücken und Fehler werden durch Validier
 
 ## D5 Datenfluss
 
-Eingangsdaten (EK-2026-061): Netz nach dem Netzmodell des raildashboard, railML des dritten Zielfahrplans des Deutschlandtakts, Fahrzeugkennwerte, Szenario-Maßnahmen, Korrekturlisten. Jonas stellt die Daten bereit. Der Loader überführt sie einmal je Lauf in das Domänenmodell und legt es als Datei ab (Parquet oder JSON); diese Datei ist die reproduzierbare Eingabe eines Laufs und zugleich Quelle für Fixtures. Ein Loader aus der alten prosd-Datenbank bleibt optional für Fahrzeugmuster und Formationen, falls diese nicht neu erhoben werden.
+Eingangsdaten (EK-2026-061): Netz nach dem Netzmodell des raildashboard, railML des dritten Zielfahrplans des Deutschlandtakts, Fahrzeugkennwerte, Szenario-Maßnahmen, Korrekturlisten. Jonas stellt die Daten bereit. Der Loader überführt sie einmal je Lauf in das Domänenmodell und legt es als Datei ab (Parquet oder JSON); diese Datei ist die reproduzierbare Eingabe eines Laufs und zugleich Quelle für Fixtures. Fahrzeugkennwerte werden neu aufgebaut (EK-2026-082): Formationen und Fahrzeugkürzel aus der railML, Kennwerte je Fahrzeugmuster und Traktionsvariante aus Standi-Anhang, BVWP-Methodenhandbuch und Herstellerangaben, jede Zahl mit Quelle, als versionierte Dateien im Datenordner. Die alte prosd-Datenbank wird nicht mehr gelesen.
 
-Ergebnisse (EK-2026-075): eigenes Ergebnisschema mit Lauf-ID, das je Szenario, Gebiet und Option Kosten nach Komponenten, Maßnahmen mit Geometriebezug, Durchführbarkeit, physische Kennzahlen, Emissionen und das Manifest hält. Es wird als Datei geschrieben und in eine eigene Datenbank geladen, aus der ein eigenständiges Frontend liest (Szenarienvergleich, Gebietskarte mit gewählter Option, Kostenzerlegung, Maßnahmenliste, Sensitivität). Es gibt keinen Writer in die prosd-Tabellen; das alte Dashboard zeigt weiter die Thesis-Ergebnisse, bis es abgelöst wird. Gestaltung des Frontends nach dem Design-System der Initiative Deutschlandtakt, wie beim raildashboard.
+Ergebnisse (EK-2026-075): eigenes Ergebnisschema mit Lauf-ID, das je Szenario, Gebiet und Option Kosten nach Komponenten, Maßnahmen mit Geometriebezug, Durchführbarkeit, physische Kennzahlen, Emissionen und das Manifest hält. Es wird als Datei geschrieben und in eine eigene Datenbank geladen, aus der ein eigenständiges Frontend liest (Szenarienvergleich, Gebietskarte mit gewählter Option, Kostenzerlegung, Maßnahmenliste, Sensitivität). Es gibt keinen Writer in die prosd-Tabellen; das alte Dashboard zeigt weiter die Thesis-Ergebnisse, bis es abgelöst wird. Das Frontend bleibt schlank (EK-2026-079): SvelteKit mit MapLibre GL und Observable Plot, eigenes CSS mit Design-Tokens; die Tokens der Initiative Deutschlandtakt können übernommen werden, eine Komponentenbibliothek nicht.
 
 ## D6 Tests
 
@@ -799,4 +799,9 @@ Maßgeblich sind die Karten im gemeinsamen Vault (Projektnotiz „Traktionsvergl
 | EK-2026-074 | Via-Punkte Routing | alle Zwischenbetriebsstellen mit Bahnhof; Routing-Modul nach dem Ansatz des raildashboard |
 | EK-2026-075 | Ergebnisse | eigenes Ergebnisschema mit Lauf-ID und eigenständiges Frontend; kein Writer in prosd |
 | EK-2026-076 | Einheiten | eigene leichte Einheitentypen mit statischer Prüfung; pint nur in Tests |
+| EK-2026-078 | Repo | zunächst privat, Lizenz bei Veröffentlichung, Name in Klärung |
+| EK-2026-079 | Technikstack | aktuellster Stack ohne Bindung an das raildashboard: Python 3.13 mit uv, pydantic v2, Polars, shapely 2, pyosmium, DuckDB, FastAPI; Frontend schlank mit SvelteKit, MapLibre GL, Observable Plot |
+| EK-2026-080 | Routing-Dienst | eigener GraphHopper-Container mit OpenRailRouting, gepinnter Extrakt; zentrale OSM-Ergänzung als eigenes Projekt vorgemerkt |
+| EK-2026-081 | Ergebnisspeicherung | offen, Erklärung Parquet erbeten |
+| EK-2026-082 | Fahrzeugkennwerte | komplett neu aus railML und weiteren Quellen, kein Export aus prosd |
 | EK-2026-077 | Netzsegment | OSM als einzige Netzgrundlage (gepinnter Extrakt, Segment je VzG-Strecke und Betriebsstellenpaar, Elektrifizierung aus OSM, GraphHopper mit OpenRailRouting) mit manueller versionierter Korrekturschicht; RINF nur optionale Gegenprobe |
